@@ -1,6 +1,5 @@
-[0m[[0m[31merror[0m] [0m[0m/home/waleedbinehsan/Desktop/SweRV-Chislified-master/src/main/scala/dec/el2_dec_dec_ctl.scala:173:12: type mismatch;[0m
-[0m[[0m[31merror[0m] [0m[0m found   : Unit[0m
-[0m[[0m[31merror[0m] [0m[0m required: dec.el2_dec_dec_ctl => chisel3.iotesters.PeekPokeTester[dec.el2_dec_dec_ctl][0m
-[0m[[0m[31merror[0m] [0m[0m    println(chisel3.Driver.emitVerilog(new el2_dec_dec_ctl()))[0m
-[0m[[0m[31merror[0m] [0m[0m           ^[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[33mwarn[0m] [0m[0mthere was one deprecation warning (since 3.2.2)[0m
+[0m[[0m[33mwarn[0m] [0m[0mthere was one deprecation warning (since 3.2.4)[0m
+[0m[[0m[33mwarn[0m] [0m[0mthere were two deprecation warnings in total; re-run with -deprecation for details[0m
+[0m[[0m[33mwarn[0m] [0m[0mthere were 72 feature warnings; re-run with -feature for details[0m
+[0m[[0m[33mwarn[0m] [0m[0mfour warnings found[0m

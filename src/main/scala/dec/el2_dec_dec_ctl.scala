@@ -169,6 +169,5 @@ class el2_dec_dec_ctl extends Module{
 }
 
 object dec extends App {
-  chisel3.Driver.execute(args, () => new el2_dec_dec_ctl())
-  println(Driver.emitVerilog(new el2_dec_dec_ctl()))
+  println(chisel3.Driver.emitVerilog(new el2_dec_dec_ctl()))
 }
