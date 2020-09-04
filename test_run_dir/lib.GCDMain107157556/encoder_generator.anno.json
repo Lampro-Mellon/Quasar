@@ -1,0 +1,31 @@
+[
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~encoder_generator|encoder_generator>io_out",
+    "sources":[
+      "~encoder_generator|encoder_generator>io_in"
+    ]
+  },
+  {
+    "class":"logger.LogLevelAnnotation",
+    "globalLogLevel":{
+      
+    }
+  },
+  {
+    "class":"firrtl.options.TargetDirAnnotation",
+    "directory":"test_run_dir/lib.GCDMain107157556"
+  },
+  {
+    "class":"firrtl.options.OutputAnnotationFileAnnotation",
+    "file":"encoder_generator"
+  },
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"test_run_dir/lib.GCDMain107157556"
+  }
+]

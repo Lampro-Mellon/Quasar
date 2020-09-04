@@ -1,0 +1,30 @@
+[
+  {
+    "class":"logger.LogLevelAnnotation",
+    "globalLogLevel":{
+      
+    }
+  },
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxInlineAnno",
+    "target":"rvdff.rvdff_verilog",
+    "name":"rvdff.v",
+    "text":"\nmodule InoutPort( input [15:0] in,\n                  input clk,\n                  input reset,\n                  output [15:0] out);\n  always@(posedge clk or negedge reset)\n  begin\n  if(reset == 0)\n  out <= 0;\n  else\n  out <= in\n  end\nendmodule\n    "
+  },
+  {
+    "class":"firrtl.options.TargetDirAnnotation",
+    "directory":"."
+  },
+  {
+    "class":"firrtl.options.OutputAnnotationFileAnnotation",
+    "file":"rvdff"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"."
+  }
+]

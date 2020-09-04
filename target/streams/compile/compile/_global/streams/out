@@ -1,0 +1,6 @@
+[0m[[0m[31merror[0m] [0m[0m/home/waleedbinehsan/Desktop/SweRV-Chislified-master/src/main/scala/dec/el2_dec_dec_ctl.scala:173:12: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Unit[0m
+[0m[[0m[31merror[0m] [0m[0m required: dec.el2_dec_dec_ctl => chisel3.iotesters.PeekPokeTester[dec.el2_dec_dec_ctl][0m
+[0m[[0m[31merror[0m] [0m[0m    println(chisel3.Driver.emitVerilog(new el2_dec_dec_ctl()))[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
