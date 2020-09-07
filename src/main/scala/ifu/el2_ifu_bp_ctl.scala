@@ -9,7 +9,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     val in = Input(UInt(32.W))
     val out = Output(UInt())
   })
-  io.out := el2_btb_tag_hash(io.in)
+  io.out := el2_btb_tag_hash(io.in) | el2_btb_tag_hash(io.in)
 }
 
 object ifu extends App {
