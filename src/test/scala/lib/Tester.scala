@@ -3,7 +3,7 @@ import java.io.File
 
 import chisel3.iotesters
 import chisel3.iotesters.{ChiselFlatSpec, Driver, PeekPokeTester}
-
+/*
 class Tester(c: encoder_generator) extends PeekPokeTester(c) {
 
   poke(c.io.in, 1)
@@ -29,3 +29,4 @@ object GCDMain extends App {
     c => new Tester(c)
   }
 }
+*/

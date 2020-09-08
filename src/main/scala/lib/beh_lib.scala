@@ -18,6 +18,25 @@ else
 {io.dout := flop}
 }
 
+class rvdffsc extends Module with el2_lib {
+  val io = IO(new Bundle{
+    val din = Input(UInt(32.W))
+    val en = Input(Bool())
+    val clear = Input(Bool())
+    val out = Output(UInt())
+  })
+  io.out := RegEnable(io.din & repl(io.din.getWidth, io.clear), 0.U, io.en)
+}
+
+class rvdffs extends Module with el2_lib {
+  val io = IO(new Bundle{
+    val din = Input(UInt(32.W))
+    val en = Input(Bool())
+    val clear = Input(Bool())
+    val out = Output(UInt())
+  })
+  io.out := RegEnable(io.din, 0.U, io.en)
+}
 
 class rvsyncss(WIDTH:Int = 251,SHORT:Int = 0) extends Module with RequireAsyncReset{  //Done for verification and testing
   val io = IO(new Bundle{
@@ -186,7 +205,7 @@ class rvecc_encode extends Module{   //Done for verification and testing
 }
 
 
-
+// Make generator and then make it a method
 class rvecc_decode extends Module{  //Done for verification and testing
   val io      =  IO(new Bundle{
     val en      =  Input(UInt(1.W))

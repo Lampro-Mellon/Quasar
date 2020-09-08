@@ -2,7 +2,7 @@ package lib
 
 import chisel3._
 import chisel3.util._
-
+/*
 ///////////////////////////////////////////////////////////////
 class rvdff(val Width:Int = 1, val short:Int = 0) extends Module with RequireAsyncReset {
   val io = IO(new Bundle {
@@ -120,4 +120,4 @@ class exp extends Module{
 }
 ////////////////////////////////////////////////////////////////
 
-//println((new chisel3.stage.ChiselStage).emitVerilog(new exp))
+//println((new chisel3.stage.ChiselStage).emitVerilog(new exp))*/

@@ -46,7 +46,7 @@ class EL2_IC_TAG extends Module with el2_lib with param {
     val rst_l = Input(Bool())
     val clk_override = Input(Bool())
     val dec_tlu_core_ecc_disable = Input(Bool())
-    val ic_rw_addr = Input(UInt(29.W))
+    val ic_rw_addr = Input(UInt(32.W))  // TODO : In SV we have 31:3 what should we do here
     val ic_wr_en = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_tag_valid = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_rd_en = Input(Bool())
@@ -76,11 +76,13 @@ class EL2_IC_TAG extends Module with el2_lib with param {
   val PAD_BITS = 21 - (32 - ICACHE_TAG_LO)
   val ic_tag_wren_q = ic_tag_wren | ic_debug_wr_way_en
 
+
   io.test:= ic_tag_wren
   io.ic_tag_perr := 0.U
   io.ic_rd_hit := 0.U
   io.ictag_debug_rd_data := 0.U
 }
+
 object ifu_ic extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new EL2_IC_TAG()))
 }
