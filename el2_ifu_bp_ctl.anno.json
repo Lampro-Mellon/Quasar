@@ -3,7 +3,8 @@
     "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_out",
     "sources":[
-      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_in"
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_in",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_in2"
     ]
   },
   {
