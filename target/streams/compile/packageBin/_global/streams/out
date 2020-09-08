@@ -2,8 +2,28 @@
 [0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	ifu[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ifu/ifu_ic.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu/ifu_ic.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	ifu/el2_ifu.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu/el2_ifu.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ifu/el2_ifu_ic_mem.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu/el2_ifu_ic_mem.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ifu/ifu_ic$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu/ifu_ic$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ifu/ifu$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu/ifu$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ifu/el2_ifu_bp_ctl$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu/el2_ifu_bp_ctl$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ifu/el2_ifu_bp_ctl.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu/el2_ifu_bp_ctl.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ifu/ifu.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu/ifu.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ifu/ifu_ic$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu/ifu_ic$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ifu/el2_ifu_ic_mem$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu/el2_ifu_ic_mem$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ifu/ifu$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/ifu/ifu$delayedInit$body.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	snapshot[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/snapshot[0m
 [0m[[0m[0mdebug[0m] [0m[0m	snapshot/pt$.class[0m
@@ -34,6 +54,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/lib/rvrangecheck$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	lib/exp.sc[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/lib/exp.sc[0m
+[0m[[0m[0mdebug[0m] [0m[0m	lib/el2_lib.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/lib/el2_lib.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	lib/exp.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/lib/exp.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	lib/top.class[0m
@@ -72,6 +94,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/lib/encoder_generator$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	lib/caller.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/lib/caller.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	lib/param.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/lib/param.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	lib/rvdff.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/lib/rvdff.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	lib/ExpandedInstruction.class[0m
@@ -96,10 +120,4 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/dec/el2_dec_pkt_t.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	dec/el2_dec_dec_ctl.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/dec/el2_dec_dec_ctl.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	dec/dec$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/dec/dec$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	dec/dec.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/dec/dec.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	dec/dec$delayedInit$body.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chislified-master/target/scala-2.12/classes/dec/dec$delayedInit$body.class[0m
 [0m[[0m[0mdebug[0m] [0m[0mDone packaging.[0m

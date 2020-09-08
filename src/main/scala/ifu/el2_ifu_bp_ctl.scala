@@ -13,6 +13,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   io.out := el2_btb_ghr_hash(io.in,io.in2)
 }
 
-object ifu extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_bp_ctl()))
-}
+//object ifu_ic extends App {
+//  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_bp_ctl()))
+//}
+

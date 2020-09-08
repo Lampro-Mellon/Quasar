@@ -1,0 +1,26 @@
+[
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test",
+    "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_wr_en",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_rw_addr"
+    ]
+  },
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.options.TargetDirAnnotation",
+    "directory":"."
+  },
+  {
+    "class":"firrtl.options.OutputAnnotationFileAnnotation",
+    "file":"EL2_IC_TAG"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"."
+  }
+]

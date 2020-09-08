@@ -12,8 +12,13 @@ trait param {
   val BTB_INDEX2_LO    = 10
   val BTB_INDEX3_HI    = 25
   val BTB_INDEX3_LO    = 18
-  val BHT_GHR_HASH_1   = false
+  val BHT_GHR_HASH_1   = true
   val BHT_GHR_SIZE     = 8
+  val ICACHE_NUM_WAYS = 2
+  val ICACHE_INDEX_HI = 12
+  val ICACHE_BANK_WAY = 2
+  val ICACHE_BEAT_ADDR_HI = 5
+  val ICACHE_TAG_LO = 13
 }
 
 trait el2_lib extends param{
@@ -28,6 +33,9 @@ trait el2_lib extends param{
     else pc(BTB_INDEX1_HI,BTB_INDEX1_LO) ^ pc(BTB_INDEX2_HI,BTB_INDEX2_LO) ^ pc(BTB_INDEX3_HI,BTB_INDEX3_LO)
 
   def el2_btb_ghr_hash(hashin : UInt, ghr :UInt) =
-    if(BHT_GHR_HASH_1) Cat(ghr(BHT_GHR_SIZE-1,BTB_INDEX1_HI), hashin(BTB_INDEX1_HI,2) ^ ghr(BTB_INDEX1_HI-2,0))
+    if(BHT_GHR_HASH_1) Cat(ghr(BHT_GHR_SIZE-1,BTB_INDEX1_HI-1), hashin(BTB_INDEX1_HI,2) ^ ghr(BTB_INDEX1_HI-2,0))
     else hashin(BHT_GHR_SIZE+1,2) ^ ghr(BHT_GHR_SIZE-1,0)
+
+  def repl(b:Int, a:UInt) : UInt =
+    VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
 }
