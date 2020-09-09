@@ -108,10 +108,10 @@ class  el2_lsu_bus_intf extends Module
    val lsu_axi_rready      = Output(UInt(1.W))
    val lsu_axi_rid         = Input(UInt(pt1.LSU_BUS_TAG.W))
    val lsu_axi_rdata       = Input(UInt(64.W))
-   val lsu_axi_rresp       = Intput(UInt(2.W))
-   val lsu_axi_rlast       = Intput(UInt(1.W))
+   val lsu_axi_rresp       = Input(UInt(2.W))
+   val lsu_axi_rlast       = Input(UInt(1.W))
 
-   val lsu_bus_clk_en      = Intput(UInt(1.W))
+   val lsu_bus_clk_en      = Input(UInt(1.W))
    })
    
    val lsu_pkt_m = new el2_lsu_pkt_t()
