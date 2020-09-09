@@ -1,4 +1,7 @@
-class  el2_lsu_bus_intf extends Module  
+import chisel3._
+import chisel3.util._
+
+class  el2_lsu_bus_intf extends Module
 {
    val io = IO (new Bundle {
    //val clk         = Input(Clock()) //implicit
@@ -115,63 +118,66 @@ class  el2_lsu_bus_intf extends Module
    val lsu_pkt_r = new el2_lsu_pkt_t()
 
 
-   lsu_busreq_r              := 0.U
-   lsu_bus_buffer_pend_any   := 0.U
-   lsu_bus_buffer_full_any   := 0.U
-   lsu_bus_buffer_empty_any  := 0.U
-   lsu_bus_idle_any          := 0.U
-   bus_read_data_m           := 0.U
+   io.lsu_busreq_r              := 0.U
+   io.lsu_bus_buffer_pend_any   := 0.U
+   io.lsu_bus_buffer_full_any   := 0.U
+   io.lsu_bus_buffer_empty_any  := 0.U
+   io.lsu_bus_idle_any          := 0.U
+   io.bus_read_data_m           := 0.U
 
-   lsu_imprecise_error_load_any  := 0.U
-   lsu_imprecise_error_store_any := 0.U
-   lsu_imprecise_error_addr_any  := 0.U
+   io.lsu_imprecise_error_load_any  := 0.U
+   io.lsu_imprecise_error_store_any := 0.U
+   io.lsu_imprecise_error_addr_any  := 0.U
 
-   lsu_nonblock_load_valid_m     := 0.U
-   lsu_nonblock_load_tag_m       := 0.U
-   lsu_nonblock_load_inv_r       := 0.U
-   lsu_nonblock_load_inv_tag_r   := 0.U
-   lsu_nonblock_load_data_valid  := 0.U
-   lsu_nonblock_load_data_error  := 0.U
-   lsu_nonblock_load_data_tag    := 0.U
-   lsu_nonblock_load_data        := 0.U
+   io.lsu_nonblock_load_valid_m     := 0.U
+   io.lsu_nonblock_load_tag_m       := 0.U
+   io.lsu_nonblock_load_inv_r       := 0.U
+   io.lsu_nonblock_load_inv_tag_r   := 0.U
+   io.lsu_nonblock_load_data_valid  := 0.U
+   io.lsu_nonblock_load_data_error  := 0.U
+   io.lsu_nonblock_load_data_tag    := 0.U
+   io.lsu_nonblock_load_data        := 0.U
 
-   lsu_pmu_bus_trxn              := 0.U
-   lsu_pmu_bus_misaligned        := 0.U
-   lsu_pmu_bus_error             := 0.U
-   lsu_pmu_bus_busy              := 0.U
+   io.lsu_pmu_bus_trxn              := 0.U
+   io.lsu_pmu_bus_misaligned        := 0.U
+   io.lsu_pmu_bus_error             := 0.U
+   io.lsu_pmu_bus_busy              := 0.U
 
-   lsu_axi_awvalid     := 0.U
-   lsu_axi_awid        := 0.U
-   lsu_axi_awaddr      := 0.U
-   lsu_axi_awregion    := 0.U
-   lsu_axi_awlen       := 0.U
-   lsu_axi_awsize      := 0.U
-   lsu_axi_awburst     := 0.U
-   lsu_axi_awlock      := 0.U
-   lsu_axi_awcache     := 0.U
-   lsu_axi_awprot      := 0.U
-   lsu_axi_awqos       := 0.U
+   io.lsu_axi_awvalid     := 0.U
+   io.lsu_axi_awid        := 0.U
+   io.lsu_axi_awaddr      := 0.U
+   io.lsu_axi_awregion    := 0.U
+   io.lsu_axi_awlen       := 0.U
+   io.lsu_axi_awsize      := 0.U
+   io.lsu_axi_awburst     := 0.U
+   io.lsu_axi_awlock      := 0.U
+   io.lsu_axi_awcache     := 0.U
+   io.lsu_axi_awprot      := 0.U
+   io.lsu_axi_awqos       := 0.U
 
-   lsu_axi_wvalid      := 0.U
-   lsu_axi_wdata       := 0.U
-   lsu_axi_wstrb       := 0.U
-   lsu_axi_wlast       := 0.U
+   io.lsu_axi_wvalid      := 0.U
+   io.lsu_axi_wdata       := 0.U
+   io.lsu_axi_wstrb       := 0.U
+   io.lsu_axi_wlast       := 0.U
 
-   lsu_axi_bready      := 0.U
+   io.lsu_axi_bready      := 0.U
 
-   lsu_axi_arvalid     := 0.U
-   lsu_axi_arid        := 0.U
-   lsu_axi_araddr      := 0.U
-   lsu_axi_arregion    := 0.U
-   lsu_axi_arlen       := 0.U
-   lsu_axi_arsize      := 0.U
-   lsu_axi_arburst     := 0.U
-   lsu_axi_arlock      := 0.U
-   lsu_axi_arcache     := 0.U
-   lsu_axi_arprot      := 0.U
-   lsu_axi_arqos       := 0.U
+   io.lsu_axi_arvalid     := 0.U
+   io.lsu_axi_arid        := 0.U
+   io.lsu_axi_araddr      := 0.U
+   io.lsu_axi_arregion    := 0.U
+   io.lsu_axi_arlen       := 0.U
+   io.lsu_axi_arsize      := 0.U
+   io.lsu_axi_arburst     := 0.U
+   io.lsu_axi_arlock      := 0.U
+   io.lsu_axi_arcache     := 0.U
+   io.lsu_axi_arprot      := 0.U
+   io.lsu_axi_arqos       := 0.U
 
-   lsu_axi_rready      := 0.U
+   io.lsu_axi_rready      := 0.U
    
     
+}
+object busIntfMain extends App {
+   println(chisel3.Driver.emitVerilog(new el2_lsu_bus_intf))
 }
