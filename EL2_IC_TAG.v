@@ -140,8 +140,7 @@ module EL2_IC_TAG(
   output [1:0]  io_ic_rd_hit,
   output        io_ic_tag_perr,
   input         io_scan_mode,
-  output [25:0] io_test_0,
-  output [25:0] io_test_1,
+  output [25:0] io_test,
   output [31:0] io_test_ecc_data_out_0,
   output [31:0] io_test_ecc_data_out_1,
   output [6:0]  io_test_ecc_out_0,
@@ -158,22 +157,24 @@ module EL2_IC_TAG(
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_1;
   reg [31:0] _RAND_3;
+  reg [31:0] _RAND_4;
+  reg [31:0] _RAND_5;
 `endif // RANDOMIZE_REG_INIT
   reg [25:0] ic_way_tag_0 [0:127]; // @[el2_ifu_ic_mem.scala 125:46]
   wire [25:0] ic_way_tag_0_ic_tag_data_raw_data; // @[el2_ifu_ic_mem.scala 125:46]
   wire [6:0] ic_way_tag_0_ic_tag_data_raw_addr; // @[el2_ifu_ic_mem.scala 125:46]
-  wire [25:0] ic_way_tag_0__T_488_data; // @[el2_ifu_ic_mem.scala 125:46]
-  wire [6:0] ic_way_tag_0__T_488_addr; // @[el2_ifu_ic_mem.scala 125:46]
-  wire  ic_way_tag_0__T_488_mask; // @[el2_ifu_ic_mem.scala 125:46]
-  wire  ic_way_tag_0__T_488_en; // @[el2_ifu_ic_mem.scala 125:46]
+  wire [25:0] ic_way_tag_0__T_487_data; // @[el2_ifu_ic_mem.scala 125:46]
+  wire [6:0] ic_way_tag_0__T_487_addr; // @[el2_ifu_ic_mem.scala 125:46]
+  wire  ic_way_tag_0__T_487_mask; // @[el2_ifu_ic_mem.scala 125:46]
+  wire  ic_way_tag_0__T_487_en; // @[el2_ifu_ic_mem.scala 125:46]
   reg [6:0] ic_way_tag_0_ic_tag_data_raw_addr_pipe_0;
   reg [25:0] ic_way_tag_1 [0:127]; // @[el2_ifu_ic_mem.scala 125:46]
   wire [25:0] ic_way_tag_1_ic_tag_data_raw_data; // @[el2_ifu_ic_mem.scala 125:46]
   wire [6:0] ic_way_tag_1_ic_tag_data_raw_addr; // @[el2_ifu_ic_mem.scala 125:46]
-  wire [25:0] ic_way_tag_1__T_488_data; // @[el2_ifu_ic_mem.scala 125:46]
-  wire [6:0] ic_way_tag_1__T_488_addr; // @[el2_ifu_ic_mem.scala 125:46]
-  wire  ic_way_tag_1__T_488_mask; // @[el2_ifu_ic_mem.scala 125:46]
-  wire  ic_way_tag_1__T_488_en; // @[el2_ifu_ic_mem.scala 125:46]
+  wire [25:0] ic_way_tag_1__T_487_data; // @[el2_ifu_ic_mem.scala 125:46]
+  wire [6:0] ic_way_tag_1__T_487_addr; // @[el2_ifu_ic_mem.scala 125:46]
+  wire  ic_way_tag_1__T_487_mask; // @[el2_ifu_ic_mem.scala 125:46]
+  wire  ic_way_tag_1__T_487_en; // @[el2_ifu_ic_mem.scala 125:46]
   reg [6:0] ic_way_tag_1_ic_tag_data_raw_addr_pipe_0;
   wire [31:0] rvecc_decode_io_din; // @[el2_ifu_ic_mem.scala 149:27]
   wire [6:0] rvecc_decode_io_ecc_in; // @[el2_ifu_ic_mem.scala 149:27]
@@ -199,37 +200,59 @@ module EL2_IC_TAG(
   wire [1:0] _T_14 = _T_13 | io_ic_wr_en; // @[el2_ifu_ic_mem.scala 77:74]
   wire [1:0] _T_15 = _T_14 | ic_debug_wr_way_en; // @[el2_ifu_ic_mem.scala 77:88]
   wire [1:0] ic_tag_clken = _T_15 | ic_debug_rd_way_en; // @[el2_ifu_ic_mem.scala 77:109]
+  reg [31:0] ic_rw_addr_ff; // @[el2_ifu_ic_mem.scala 80:30]
   wire [1:0] ic_tag_wren_q = ic_tag_wren | ic_debug_wr_way_en; // @[el2_ifu_ic_mem.scala 82:35]
-  wire [31:0] _T_31 = {13'h0,io_ic_rw_addr[31:13]}; // @[Cat.scala 29:58]
-  wire [8:0] _T_135 = {_T_31[16],_T_31[14],_T_31[12],_T_31[10],_T_31[8],_T_31[6],_T_31[5],_T_31[3],_T_31[1]}; // @[el2_lib.scala 211:22]
-  wire [17:0] _T_144 = {_T_31[31],_T_31[30],_T_31[28],_T_31[27],_T_31[25],_T_31[23],_T_31[21],_T_31[20],_T_31[18],_T_135}; // @[el2_lib.scala 211:22]
-  wire  _T_145 = ^_T_144; // @[el2_lib.scala 211:29]
-  wire [8:0] _T_153 = {_T_31[15],_T_31[14],_T_31[11],_T_31[10],_T_31[7],_T_31[6],_T_31[4],_T_31[3],_T_31[0]}; // @[el2_lib.scala 211:39]
-  wire [17:0] _T_162 = {_T_31[31],_T_31[29],_T_31[28],_T_31[26],_T_31[25],_T_31[22],_T_31[21],_T_31[19],_T_31[18],_T_153}; // @[el2_lib.scala 211:39]
-  wire  _T_163 = ^_T_162; // @[el2_lib.scala 211:46]
-  wire [8:0] _T_171 = {_T_31[15],_T_31[14],_T_31[9],_T_31[8],_T_31[7],_T_31[6],_T_31[2],_T_31[1],_T_31[0]}; // @[el2_lib.scala 211:56]
-  wire [17:0] _T_180 = {_T_31[30],_T_31[29],_T_31[28],_T_31[24],_T_31[23],_T_31[22],_T_31[21],_T_31[17],_T_31[16],_T_171}; // @[el2_lib.scala 211:56]
-  wire  _T_181 = ^_T_180; // @[el2_lib.scala 211:63]
-  wire [6:0] _T_187 = {_T_31[12],_T_31[11],_T_31[10],_T_31[9],_T_31[8],_T_31[7],_T_31[6]}; // @[el2_lib.scala 211:73]
-  wire [14:0] _T_195 = {_T_31[27],_T_31[26],_T_31[25],_T_31[24],_T_31[23],_T_31[22],_T_31[21],_T_31[13],_T_187}; // @[el2_lib.scala 211:73]
-  wire  _T_196 = ^_T_195; // @[el2_lib.scala 211:80]
-  wire [14:0] _T_210 = {_T_31[20],_T_31[19],_T_31[18],_T_31[17],_T_31[16],_T_31[15],_T_31[14],_T_31[13],_T_187}; // @[el2_lib.scala 211:90]
-  wire  _T_211 = ^_T_210; // @[el2_lib.scala 211:97]
-  wire [5:0] _T_216 = {_T_31[5],_T_31[4],_T_31[3],_T_31[2],_T_31[1],_T_31[0]}; // @[el2_lib.scala 211:107]
-  wire  _T_217 = ^_T_216; // @[el2_lib.scala 211:114]
-  wire [5:0] _T_222 = {_T_145,_T_163,_T_181,_T_196,_T_211,_T_217}; // @[Cat.scala 29:58]
-  wire  _T_223 = ^_T_31; // @[el2_lib.scala 212:13]
-  wire  _T_224 = ^_T_222; // @[el2_lib.scala 212:23]
-  wire  _T_225 = _T_223 ^ _T_224; // @[el2_lib.scala 212:18]
-  wire [6:0] _T_226 = {_T_225,_T_145,_T_163,_T_181,_T_196,_T_211,_T_217}; // @[Cat.scala 29:58]
-  wire [25:0] _T_230 = {io_ic_debug_wr_data[68:64],io_ic_debug_wr_data[31:11]}; // @[Cat.scala 29:58]
-  wire [25:0] _T_464 = {_T_226[4:0],2'h0,io_ic_rw_addr[31:13]}; // @[Cat.scala 29:58]
-  wire  _T_479 = io_ic_debug_rd_en | io_ic_debug_wr_en; // @[el2_ifu_ic_mem.scala 119:44]
+  wire [31:0] _T_30 = {13'h0,io_ic_rw_addr[31:13]}; // @[Cat.scala 29:58]
+  wire [8:0] _T_134 = {_T_30[16],_T_30[14],_T_30[12],_T_30[10],_T_30[8],_T_30[6],_T_30[5],_T_30[3],_T_30[1]}; // @[el2_lib.scala 211:22]
+  wire [17:0] _T_143 = {_T_30[31],_T_30[30],_T_30[28],_T_30[27],_T_30[25],_T_30[23],_T_30[21],_T_30[20],_T_30[18],_T_134}; // @[el2_lib.scala 211:22]
+  wire  _T_144 = ^_T_143; // @[el2_lib.scala 211:29]
+  wire [8:0] _T_152 = {_T_30[15],_T_30[14],_T_30[11],_T_30[10],_T_30[7],_T_30[6],_T_30[4],_T_30[3],_T_30[0]}; // @[el2_lib.scala 211:39]
+  wire [17:0] _T_161 = {_T_30[31],_T_30[29],_T_30[28],_T_30[26],_T_30[25],_T_30[22],_T_30[21],_T_30[19],_T_30[18],_T_152}; // @[el2_lib.scala 211:39]
+  wire  _T_162 = ^_T_161; // @[el2_lib.scala 211:46]
+  wire [8:0] _T_170 = {_T_30[15],_T_30[14],_T_30[9],_T_30[8],_T_30[7],_T_30[6],_T_30[2],_T_30[1],_T_30[0]}; // @[el2_lib.scala 211:56]
+  wire [17:0] _T_179 = {_T_30[30],_T_30[29],_T_30[28],_T_30[24],_T_30[23],_T_30[22],_T_30[21],_T_30[17],_T_30[16],_T_170}; // @[el2_lib.scala 211:56]
+  wire  _T_180 = ^_T_179; // @[el2_lib.scala 211:63]
+  wire [6:0] _T_186 = {_T_30[12],_T_30[11],_T_30[10],_T_30[9],_T_30[8],_T_30[7],_T_30[6]}; // @[el2_lib.scala 211:73]
+  wire [14:0] _T_194 = {_T_30[27],_T_30[26],_T_30[25],_T_30[24],_T_30[23],_T_30[22],_T_30[21],_T_30[13],_T_186}; // @[el2_lib.scala 211:73]
+  wire  _T_195 = ^_T_194; // @[el2_lib.scala 211:80]
+  wire [14:0] _T_209 = {_T_30[20],_T_30[19],_T_30[18],_T_30[17],_T_30[16],_T_30[15],_T_30[14],_T_30[13],_T_186}; // @[el2_lib.scala 211:90]
+  wire  _T_210 = ^_T_209; // @[el2_lib.scala 211:97]
+  wire [5:0] _T_215 = {_T_30[5],_T_30[4],_T_30[3],_T_30[2],_T_30[1],_T_30[0]}; // @[el2_lib.scala 211:107]
+  wire  _T_216 = ^_T_215; // @[el2_lib.scala 211:114]
+  wire [5:0] _T_221 = {_T_144,_T_162,_T_180,_T_195,_T_210,_T_216}; // @[Cat.scala 29:58]
+  wire  _T_222 = ^_T_30; // @[el2_lib.scala 212:13]
+  wire  _T_223 = ^_T_221; // @[el2_lib.scala 212:23]
+  wire  _T_224 = _T_222 ^ _T_223; // @[el2_lib.scala 212:18]
+  wire [6:0] _T_225 = {_T_224,_T_144,_T_162,_T_180,_T_195,_T_210,_T_216}; // @[Cat.scala 29:58]
+  wire [25:0] _T_229 = {io_ic_debug_wr_data[68:64],io_ic_debug_wr_data[31:11]}; // @[Cat.scala 29:58]
+  wire [25:0] _T_463 = {_T_225[4:0],2'h0,io_ic_rw_addr[31:13]}; // @[Cat.scala 29:58]
+  wire  _T_478 = io_ic_debug_rd_en | io_ic_debug_wr_en; // @[el2_ifu_ic_mem.scala 119:44]
+  reg [1:0] ic_debug_rd_way_en_ff; // @[el2_ifu_ic_mem.scala 123:38]
   wire [25:0] _GEN_17 = ic_way_tag_0_ic_tag_data_raw_data; // @[el2_ifu_ic_mem.scala 137:75]
   wire [25:0] _GEN_18 = ic_way_tag_0_ic_tag_data_raw_data[0] ? ic_way_tag_1_ic_tag_data_raw_data : _GEN_17; // @[el2_ifu_ic_mem.scala 137:75]
   wire [36:0] w_tout_0 = {_GEN_18[25:21],_GEN_18[18:0],13'h0}; // @[Cat.scala 29:58]
   wire [25:0] _GEN_22 = ic_way_tag_1_ic_tag_data_raw_data[0] ? ic_way_tag_1_ic_tag_data_raw_data : _GEN_17; // @[el2_ifu_ic_mem.scala 137:75]
   wire [36:0] w_tout_1 = {_GEN_22[25:21],_GEN_22[18:0],13'h0}; // @[Cat.scala 29:58]
+  wire  ic_tag_way_perr_0 = io_test_ecc_sb_out_0 | io_test_ecc_db_out_0; // @[el2_ifu_ic_mem.scala 165:54]
+  wire  ic_tag_way_perr_1 = io_test_ecc_sb_out_1 | io_test_ecc_db_out_1; // @[el2_ifu_ic_mem.scala 165:54]
+  wire [9:0] _T_533 = {ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0]}; // @[Cat.scala 29:58]
+  wire [18:0] _T_542 = {_T_533,ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0]}; // @[Cat.scala 29:58]
+  wire [25:0] _T_549 = {_T_542,ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0],ic_debug_rd_way_en_ff[0]}; // @[Cat.scala 29:58]
+  wire [25:0] _T_550 = _T_549 & ic_way_tag_0_ic_tag_data_raw_data; // @[el2_ifu_ic_mem.scala 168:75]
+  wire [9:0] _T_561 = {ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1]}; // @[Cat.scala 29:58]
+  wire [18:0] _T_570 = {_T_561,ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1]}; // @[Cat.scala 29:58]
+  wire [25:0] _T_577 = {_T_570,ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1],ic_debug_rd_way_en_ff[1]}; // @[Cat.scala 29:58]
+  wire [25:0] _T_578 = _T_577 & ic_way_tag_1_ic_tag_data_raw_data; // @[el2_ifu_ic_mem.scala 168:75]
+  wire [36:0] _T_636 = w_tout_0 & w_tout_1; // @[el2_ifu_ic_mem.scala 176:31]
+  wire [1:0] _T_637 = {ic_tag_way_perr_0,ic_tag_way_perr_1}; // @[Cat.scala 29:58]
+  wire [1:0] _T_638 = _T_637 & io_ic_tag_valid; // @[el2_ifu_ic_mem.scala 177:55]
+  wire  _T_642 = w_tout_0[31:13] == ic_rw_addr_ff[31:13]; // @[el2_ifu_ic_mem.scala 179:88]
+  wire [1:0] _GEN_25 = {{1'd0}, _T_642}; // @[el2_ifu_ic_mem.scala 179:133]
+  wire [1:0] _T_643 = _GEN_25 & io_ic_tag_valid; // @[el2_ifu_ic_mem.scala 179:133]
+  wire  _T_646 = w_tout_1[31:13] == ic_rw_addr_ff[31:13]; // @[el2_ifu_ic_mem.scala 179:88]
+  wire [1:0] _GEN_26 = {{1'd0}, _T_646}; // @[el2_ifu_ic_mem.scala 179:133]
+  wire [1:0] _T_647 = _GEN_26 & io_ic_tag_valid; // @[el2_ifu_ic_mem.scala 179:133]
+  wire [3:0] _T_649 = {_T_643,_T_647}; // @[Cat.scala 29:58]
   rvecc_decode rvecc_decode ( // @[el2_ifu_ic_mem.scala 149:27]
     .io_din(rvecc_decode_io_din),
     .io_ecc_in(rvecc_decode_io_ecc_in),
@@ -246,21 +269,20 @@ module EL2_IC_TAG(
   );
   assign ic_way_tag_0_ic_tag_data_raw_addr = ic_way_tag_0_ic_tag_data_raw_addr_pipe_0;
   assign ic_way_tag_0_ic_tag_data_raw_data = ic_way_tag_0[ic_way_tag_0_ic_tag_data_raw_addr]; // @[el2_ifu_ic_mem.scala 125:46]
-  assign ic_way_tag_0__T_488_data = _T_8 ? _T_230 : _T_464;
-  assign ic_way_tag_0__T_488_addr = _T_479 ? io_ic_debug_addr[12:6] : io_ic_rw_addr[12:6];
-  assign ic_way_tag_0__T_488_mask = ic_tag_wren_q[0] & ic_tag_clken[0];
-  assign ic_way_tag_0__T_488_en = 1'h1;
+  assign ic_way_tag_0__T_487_data = _T_8 ? _T_229 : _T_463;
+  assign ic_way_tag_0__T_487_addr = _T_478 ? io_ic_debug_addr[12:6] : io_ic_rw_addr[12:6];
+  assign ic_way_tag_0__T_487_mask = ic_tag_wren_q[0] & ic_tag_clken[0];
+  assign ic_way_tag_0__T_487_en = 1'h1;
   assign ic_way_tag_1_ic_tag_data_raw_addr = ic_way_tag_1_ic_tag_data_raw_addr_pipe_0;
   assign ic_way_tag_1_ic_tag_data_raw_data = ic_way_tag_1[ic_way_tag_1_ic_tag_data_raw_addr]; // @[el2_ifu_ic_mem.scala 125:46]
-  assign ic_way_tag_1__T_488_data = _T_8 ? _T_230 : _T_464;
-  assign ic_way_tag_1__T_488_addr = _T_479 ? io_ic_debug_addr[12:6] : io_ic_rw_addr[12:6];
-  assign ic_way_tag_1__T_488_mask = ic_tag_wren_q[1] & ic_tag_clken[1];
-  assign ic_way_tag_1__T_488_en = 1'h1;
-  assign io_ictag_debug_rd_data = 26'h0; // @[el2_ifu_ic_mem.scala 171:26]
-  assign io_ic_rd_hit = 2'h0; // @[el2_ifu_ic_mem.scala 170:16]
-  assign io_ic_tag_perr = 1'h0; // @[el2_ifu_ic_mem.scala 169:18]
-  assign io_test_0 = w_tout_0[25:0]; // @[el2_ifu_ic_mem.scala 168:11]
-  assign io_test_1 = w_tout_1[25:0]; // @[el2_ifu_ic_mem.scala 168:11]
+  assign ic_way_tag_1__T_487_data = _T_8 ? _T_229 : _T_463;
+  assign ic_way_tag_1__T_487_addr = _T_478 ? io_ic_debug_addr[12:6] : io_ic_rw_addr[12:6];
+  assign ic_way_tag_1__T_487_mask = ic_tag_wren_q[1] & ic_tag_clken[1];
+  assign ic_way_tag_1__T_487_en = 1'h1;
+  assign io_ictag_debug_rd_data = _T_550 | _T_578; // @[el2_ifu_ic_mem.scala 175:26]
+  assign io_ic_rd_hit = _T_649[1:0]; // @[el2_ifu_ic_mem.scala 179:16]
+  assign io_ic_tag_perr = |_T_638; // @[el2_ifu_ic_mem.scala 177:18]
+  assign io_test = _T_636[25:0]; // @[el2_ifu_ic_mem.scala 176:13]
   assign io_test_ecc_data_out_0 = rvecc_decode_io_dout; // @[el2_ifu_ic_mem.scala 160:29]
   assign io_test_ecc_data_out_1 = rvecc_decode_1_io_dout; // @[el2_ifu_ic_mem.scala 160:29]
   assign io_test_ecc_out_0 = rvecc_decode_io_ecc_out; // @[el2_ifu_ic_mem.scala 161:24]
@@ -320,6 +342,10 @@ initial begin
   ic_way_tag_0_ic_tag_data_raw_addr_pipe_0 = _RAND_1[6:0];
   _RAND_3 = {1{`RANDOM}};
   ic_way_tag_1_ic_tag_data_raw_addr_pipe_0 = _RAND_3[6:0];
+  _RAND_4 = {1{`RANDOM}};
+  ic_rw_addr_ff = _RAND_4[31:0];
+  _RAND_5 = {1{`RANDOM}};
+  ic_debug_rd_way_en_ff = _RAND_5[1:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -328,21 +354,31 @@ end // initial
 `endif
 `endif // SYNTHESIS
   always @(posedge clock) begin
-    if(ic_way_tag_0__T_488_en & ic_way_tag_0__T_488_mask) begin
-      ic_way_tag_0[ic_way_tag_0__T_488_addr] <= ic_way_tag_0__T_488_data; // @[el2_ifu_ic_mem.scala 125:46]
+    if(ic_way_tag_0__T_487_en & ic_way_tag_0__T_487_mask) begin
+      ic_way_tag_0[ic_way_tag_0__T_487_addr] <= ic_way_tag_0__T_487_data; // @[el2_ifu_ic_mem.scala 125:46]
     end
-    if (_T_479) begin
+    if (_T_478) begin
       ic_way_tag_0_ic_tag_data_raw_addr_pipe_0 <= io_ic_debug_addr[12:6];
     end else begin
       ic_way_tag_0_ic_tag_data_raw_addr_pipe_0 <= io_ic_rw_addr[12:6];
     end
-    if(ic_way_tag_1__T_488_en & ic_way_tag_1__T_488_mask) begin
-      ic_way_tag_1[ic_way_tag_1__T_488_addr] <= ic_way_tag_1__T_488_data; // @[el2_ifu_ic_mem.scala 125:46]
+    if(ic_way_tag_1__T_487_en & ic_way_tag_1__T_487_mask) begin
+      ic_way_tag_1[ic_way_tag_1__T_487_addr] <= ic_way_tag_1__T_487_data; // @[el2_ifu_ic_mem.scala 125:46]
     end
-    if (_T_479) begin
+    if (_T_478) begin
       ic_way_tag_1_ic_tag_data_raw_addr_pipe_0 <= io_ic_debug_addr[12:6];
     end else begin
       ic_way_tag_1_ic_tag_data_raw_addr_pipe_0 <= io_ic_rw_addr[12:6];
+    end
+    if (reset) begin
+      ic_rw_addr_ff <= 32'h0;
+    end else begin
+      ic_rw_addr_ff <= io_ic_rw_addr;
+    end
+    if (reset) begin
+      ic_debug_rd_way_en_ff <= 2'h0;
+    end else begin
+      ic_debug_rd_way_en_ff <= ic_debug_rd_way_en;
     end
   end
 endmodule

@@ -22,8 +22,27 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_ic_rd_hit",
+    "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_tag_valid"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_out_0",
     "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_dec_tlu_core_ecc_disable"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_ic_tag_perr",
+    "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_tag_valid",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_sb_out_0",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_db_out_0",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_sb_out_1",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_db_out_1",
       "~EL2_IC_TAG|EL2_IC_TAG>io_dec_tlu_core_ecc_disable"
     ]
   },

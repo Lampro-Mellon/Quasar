@@ -63,7 +63,7 @@ class EL2_IC_TAG extends Module with el2_lib with param {
     val ic_tag_perr = Output(Bool())
     val scan_mode = Input(Bool())
 
-    val test = Output(Vec(ICACHE_NUM_WAYS, UInt(26.W)))
+    val test = Output(UInt(26.W))
     val test_ecc_data_out = Output(Vec(ICACHE_NUM_WAYS,UInt(32.W)))
     val test_ecc_out = Output(Vec(ICACHE_NUM_WAYS,UInt(7.W)))
     val test_ecc_sb_out = Output(Vec(ICACHE_NUM_WAYS,UInt(1.W)))
@@ -77,7 +77,7 @@ class EL2_IC_TAG extends Module with el2_lib with param {
   val ic_tag_clken = repl(ICACHE_NUM_WAYS,io.ic_rd_en | io.clk_override) | io.ic_wr_en | ic_debug_wr_way_en |
     ic_debug_rd_way_en
   val ic_rd_en_ff = RegNext(io.ic_rd_en, init=0.U)
-  val ic_rw_addr_ff = RegNext(io.ic_rw_addr(31,ICACHE_TAG_LO))
+  val ic_rw_addr_ff = RegNext(io.ic_rw_addr, init=0.U)
   val PAD_BITS = 21 - (32 - ICACHE_TAG_LO)
   val ic_tag_wren_q = ic_tag_wren | ic_debug_wr_way_en
   val ic_tag_ecc = Wire(UInt(7.W))
@@ -120,7 +120,7 @@ class EL2_IC_TAG extends Module with el2_lib with param {
     io.ic_debug_addr(ICACHE_INDEX_HI, ICACHE_TAG_INDEX_LO),
     io.ic_rw_addr(ICACHE_INDEX_HI, ICACHE_TAG_INDEX_LO))
 
-  val ic_debug_rd_way_en_ff = RegNext(io.ic_debug_rd_en, init = 0.U)
+  val ic_debug_rd_way_en_ff = RegNext(ic_debug_rd_way_en, init = 0.U)
 
   val ic_way_tag = if(ICACHE_ECC) SyncReadMem(ICACHE_TAG_DEPTH, Vec(ICACHE_NUM_WAYS, UInt(26.W)))
   else SyncReadMem(ICACHE_TAG_DEPTH, Vec(ICACHE_NUM_WAYS, UInt(22.W)))
@@ -164,11 +164,19 @@ class EL2_IC_TAG extends Module with el2_lib with param {
 
     ic_tag_way_perr(i) := ic_tag_single_ecc_error(i) | ic_tag_double_ecc_error(i)
   }
+  val temp = if(ICACHE_ECC)
+    VecInit.tabulate(ICACHE_NUM_WAYS)(i=>repl(26,ic_debug_rd_way_en_ff(i))&ic_tag_data_raw(i)).reduce(_|_)
+  else
+    VecInit.tabulate(ICACHE_NUM_WAYS)(i=>Cat(0.U(4.W),repl(22,ic_debug_rd_way_en_ff(i))&ic_tag_data_raw(i))).reduce(_|_)
 
-  io.test := w_tout
-  io.ic_tag_perr := 0.U
-  io.ic_rd_hit := 0.U
-  io.ictag_debug_rd_data := 0.U
+    for(i <- 0 until ICACHE_NUM_WAYS){
+      repl(26,ic_debug_rd_way_en_ff(i))&ic_tag_data_raw(i)
+    }
+  io.ictag_debug_rd_data := temp
+    io.test := w_tout.reduce(_&_)
+  io.ic_tag_perr := (ic_tag_way_perr.reduce(Cat(_,_)) & io.ic_tag_valid).orR
+  val w_tout_Vec = VecInit.tabulate(ICACHE_NUM_WAYS)(i=> w_tout(i))
+  io.ic_rd_hit := VecInit.tabulate(ICACHE_NUM_WAYS)(i=>(w_tout_Vec(i)(31,ICACHE_TAG_LO)===ic_rw_addr_ff(31,ICACHE_TAG_LO)).asUInt() & io.ic_tag_valid).reduce(Cat(_,_))
 }
 
 object ifu_ic extends App {
