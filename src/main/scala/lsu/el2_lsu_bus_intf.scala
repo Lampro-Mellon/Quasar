@@ -1,4 +1,4 @@
-class  el2_lsu_lsc_ctl extends Module  
+class  el2_lsu_bus_intf extends Module  
 {
    val io = IO (new Bundle {
    //val clk         = Input(Clock()) //implicit
