@@ -2,23 +2,160 @@ package lib
 import chisel3._
 import chisel3.util._
 trait param {
-  val BTB_ADDR_HI      = 9
-  val BTB_ADDR_LO      = 2
-  val BTB_BTAG_SIZE    = 5
-  val BTB_FOLD2_INDEX_HASH = false
-  val BTB_INDEX1_HI    = 9
-  val BTB_INDEX1_LO    = 2
-  val BTB_INDEX2_HI    = 17
-  val BTB_INDEX2_LO    = 10
-  val BTB_INDEX3_HI    = 25
-  val BTB_INDEX3_LO    = 18
-  val BHT_GHR_HASH_1   = true
-  val BHT_GHR_SIZE     = 8
-  val ICACHE_NUM_WAYS = 2
-  val ICACHE_INDEX_HI = 12
-  val ICACHE_BANK_WAY = 2
-  val ICACHE_BEAT_ADDR_HI = 5
-  val ICACHE_TAG_LO = 13
+  val BHT_ADDR_HI            = 9
+  val BHT_ADDR_LO            = 2
+  val BHT_ARRAY_DEPTH        = 256
+  val BHT_GHR_HASH_1         = false
+  val BHT_GHR_SIZE           = 8
+  val BHT_SIZE               = 512
+  val BTB_ADDR_HI            = 9
+  val BTB_ADDR_LO            = 2
+  val BTB_ARRAY_DEPTH        = 256
+  val BTB_BTAG_FOLD          = false
+  val BTB_BTAG_SIZE          = 5
+  val BTB_FOLD2_INDEX_HASH   = false
+  val BTB_INDEX1_HI          = 9
+  val BTB_INDEX1_LO          = 2
+  val BTB_INDEX2_HI          = 17
+  val BTB_INDEX2_LO          = 10
+  val BTB_INDEX3_HI          = 25
+  val BTB_INDEX3_LO          = 18
+  val BTB_SIZE               = 512
+  val BUILD_AHB_LITE         = false
+  val BUILD_AXI4             = true
+  val BUILD_AXI_NATIVE       = true
+  val BUS_PRTY_DEFAULT       = 3
+  val DATA_ACCESS_ADDR0      = 0x00000000 //.U(32.W)
+  val DATA_ACCESS_ADDR1      = 0xC0000000 //.U(32.W)
+  val DATA_ACCESS_ADDR2      = 0xA0000000 //.U(32.W)
+  val DATA_ACCESS_ADDR3      = 0x80000000 //.U(32.W)
+  val DATA_ACCESS_ADDR4      = 0x00000000 //.U(32.W)
+  val DATA_ACCESS_ADDR5      = 0x00000000 //.U(32.W)
+  val DATA_ACCESS_ADDR6      = 0x00000000 //.U(32.W)
+  val DATA_ACCESS_ADDR7      = 0x00000000 //.U(32.W)
+  val DATA_ACCESS_ENABLE0    = 0x1 //.U(1.W)
+  val DATA_ACCESS_ENABLE1    = 0x1 //.U(1.W)
+  val DATA_ACCESS_ENABLE2    = 0x1 //.U(1.W)
+  val DATA_ACCESS_ENABLE3    = 0x1 //.U(1.W)
+  val DATA_ACCESS_ENABLE4    = 0x0 //.U(1.W)
+  val DATA_ACCESS_ENABLE5    = 0x0 //.U(1.W)
+  val DATA_ACCESS_ENABLE6    = 0x0 //.U(1.W)
+  val DATA_ACCESS_ENABLE7    = 0x0 //.U(1.W)
+  val DATA_ACCESS_MASK0      = 0x7FFFFFFF //.U(32.W)
+  val DATA_ACCESS_MASK1      = 0x3FFFFFFF //.U(32.W)
+  val DATA_ACCESS_MASK2      = 0x1FFFFFFF //.U(32.W)
+  val DATA_ACCESS_MASK3      = 0x0FFFFFFF //.U(32.W)
+  val DATA_ACCESS_MASK4      = 0xFFFFFFFF //.U(32.W)
+  val DATA_ACCESS_MASK5      = 0xFFFFFFFF //.U(32.W)
+  val DATA_ACCESS_MASK6      = 0xFFFFFFFF //.U(32.W)
+  val DATA_ACCESS_MASK7      = 0xFFFFFFFF //.U(32.W)
+  val DCCM_BANK_BITS         = 0x2  //.U(3.W)
+  val DCCM_BITS              = 0x10 //.U(5.W)
+  val DCCM_BYTE_WIDTH        = 0x4  //.U(3.W)
+  val DCCM_DATA_WIDTH        = 0x20 //.U(6.W)
+  val DCCM_ECC_WIDTH         = 0x7  //.U(3.W)
+  val DCCM_ENABLE            = 0x1  //.U(1.W)
+  val DCCM_FDATA_WIDTH       = 0x27 //.U(6.W)
+  val DCCM_INDEX_BITS        = 0xC  //.U(4.W)
+  val DCCM_NUM_BANKS         = 0x04 //.U(5.W)
+  val DCCM_REGION            = 0xF  //.U(4.W)
+  val DCCM_SADR              = 0xF0040000
+  val DCCM_SIZE              = 0x040
+  val DCCM_WIDTH_BITS        = 0x2 //.U(2.W)
+  val DMA_BUF_DEPTH          = 0x5 //.U(3.W)
+  val DMA_BUS_ID             = 0x1 //.U(1.W)
+  val DMA_BUS_PRTY           = 0x2 //.U(2.W)
+  val DMA_BUS_TAG            = 0x1 //.U(4.W)
+  val FAST_INTERRUPT_REDIRECT= 0x1 //.U(1.W)
+  val ICACHE_2BANKS          = 1
+  val ICACHE_BANK_BITS       = 1
+  val ICACHE_BANK_HI         = 3
+  val ICACHE_BANK_LO         = 3
+  val ICACHE_BANK_WIDTH      = 8
+  val ICACHE_BANKS_WAY       = 2
+  val ICACHE_BEAT_ADDR_HI    = 5
+  val ICACHE_BEAT_BITS       = 3
+  val ICACHE_DATA_DEPTH      = 512
+  val ICACHE_DATA_INDEX_LO   = 4
+  val ICACHE_DATA_WIDTH      = 64
+  val ICACHE_ECC             = true
+  val ICACHE_ENABLE          = true
+  val ICACHE_FDATA_WIDTH     = 71
+  val ICACHE_INDEX_HI        = 12
+  val ICACHE_LN_SZ           = 64
+  val ICACHE_NUM_BEATS       = 8
+  val ICACHE_NUM_WAYS        = 2
+  val ICACHE_ONLY            = false
+  val ICACHE_SCND_LAST       = 6
+  val ICACHE_SIZE            = 16
+  val ICACHE_STATUS_BITS     = 1
+  val ICACHE_TAG_DEPTH       = 128
+  val ICACHE_TAG_INDEX_LO    = 6
+  val ICACHE_TAG_LO          = 13
+  val ICACHE_WAYPACK         = false
+  val ICCM_BANK_BITS         = 2
+  val ICCM_BANK_HI           = 0x03  //.U(5.W)
+  val ICCM_BANK_INDEX_LO     = 0x04  //.U(5.W)
+  val ICCM_BITS              = 0x10  //.U(5.W)
+  val ICCM_ENABLE            = 0x1   //.U(1.W)
+  val ICCM_ICACHE            = 0x1   //.U(1.W)
+  val ICCM_INDEX_BITS        = 0xC   //.U(4.W)
+  val ICCM_NUM_BANKS         = 0x04  //.U(5.W)
+  val ICCM_ONLY              = 0x0   //.U(1.W)
+  val ICCM_REGION            = 0xE   //.U(4.W)
+  val ICCM_SADR              = 0xEE000000 //.U(32.W)
+  val ICCM_SIZE              = 0x040 //.U(10.W)
+  val IFU_BUS_ID             = 0x1   //.U(1.W)
+  val IFU_BUS_PRTY           = 0x2   //.U(2.W)
+  val IFU_BUS_TAG            = 0x3   //.U(4.W)
+  val INST_ACCESS_ADDR0      = 0x00000000 //.U(32.W)
+  val INST_ACCESS_ADDR1      = 0xC0000000 //.U(32.W)
+  val INST_ACCESS_ADDR2      = 0xA0000000 //.U(32.W)
+  val INST_ACCESS_ADDR3      = 0x80000000 //.U(32.W)
+  val INST_ACCESS_ADDR4      = 0x00000000 //.U(32.W)
+  val INST_ACCESS_ADDR5      = 0x00000000 //.U(32.W)
+  val INST_ACCESS_ADDR6      = 0x00000000 //.U(32.W)
+  val INST_ACCESS_ADDR7      = 0x00000000 //.U(32.W)
+  val INST_ACCESS_ENABLE0    = 0x1 //.U(1.W)
+  val INST_ACCESS_ENABLE1    = 0x1 //.U(1.W)
+  val INST_ACCESS_ENABLE2    = 0x1 //.U(1.W)
+  val INST_ACCESS_ENABLE3    = 0x1 //.U(1.W)
+  val INST_ACCESS_ENABLE4    = 0x0 //.U(1.W)
+  val INST_ACCESS_ENABLE5    = 0x0 //.U(1.W)
+  val INST_ACCESS_ENABLE6    = 0x0 //.U(1.W)
+  val INST_ACCESS_ENABLE7    = 0x0 //.U(1.W)
+  val INST_ACCESS_MASK0      = 0x7FFFFFFF //.U(32.W)
+  val INST_ACCESS_MASK1      = 0x3FFFFFFF //.U(32.W)
+  val INST_ACCESS_MASK2      = 0x1FFFFFFF //.U(32.W)
+  val INST_ACCESS_MASK3      = 0x0FFFFFFF //.U(32.W)
+  val INST_ACCESS_MASK4      = 0xFFFFFFFF //.U(32.W)
+  val INST_ACCESS_MASK5      = 0xFFFFFFFF //.U(32.W)
+  val INST_ACCESS_MASK6      = 0xFFFFFFFF //.U(32.W)
+  val INST_ACCESS_MASK7      = 0xFFFFFFFF //.U(32.W)
+  val LOAD_TO_USE_PLUS1      = 0x0 //.U(1.W)
+  val LSU2DMA                = 0x0 //.U(1.W)
+  val LSU_BUS_ID             = 0x1 //.U(1.W)
+  val LSU_BUS_PRTY           = 0x2 //.U(2.W)
+  val LSU_BUS_TAG            = 0x3 //.U(4.W)
+  val LSU_NUM_NBLOAD         = 0x04 //.U(5.W)
+  val LSU_NUM_NBLOAD_WIDTH   = 0x2  //.U(3.W)
+  val LSU_SB_BITS            = 0x10 //.U(5.W)
+  val LSU_STBUF_DEPTH        = 0x4  //.U(4.W)
+  val NO_ICCM_NO_ICACHE      = 0x0  //.U(1.W)
+  val PIC_2CYCLE             = 0x0  //.U(1.W)
+  val PIC_BASE_ADDR          = 0xF00C0000 //.U(32.W)
+  val PIC_BITS               = 0x0F  //.U(5.W)
+  val PIC_INT_WORDS          = 0x1   //.U(4.W)
+  val PIC_REGION             = 0xF   //.U(4.W)
+  val PIC_SIZE               = 0x020 //.U(9.W)
+  val PIC_TOTAL_INT          = 0x1F  //.U(8.W)
+  val PIC_TOTAL_INT_PLUS1    = 0x020 //.U(9.W)
+  val RET_STACK_SIZE         = 0x8   //.U(4.W)
+  val SB_BUS_ID              = 0x1   //.U(1.W)
+  val SB_BUS_PRTY            = 0x2   //.U(2.W)
+  val SB_BUS_TAG             = 0x1   //.U(4.W)
+  val TIMER_LEGAL_EN         = 0x1   //.U(1.W)
+
 }
 
 trait el2_lib extends param{
@@ -39,8 +176,11 @@ trait el2_lib extends param{
   def repl(b:Int, a:UInt) : UInt =
     VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
 
+  def rveven_paritycheck(data_in:UInt, parity_in:UInt) : UInt =
+    (data_in.xorR.asUInt) ^ parity_in
 
-
+  def rveven_paritygen(data_in : UInt) =
+    data_in.xorR.asUInt
 
   // Move rvecc_encode to a proper trait
   def rvecc_encode(din:UInt) = {   //Done for verification and testing
@@ -71,5 +211,6 @@ trait el2_lib extends param{
     val w6 = Cat((w0.asUInt.xorR),(w1.asUInt.xorR),(w2.asUInt.xorR),(w3.asUInt.xorR),(w4.asUInt.xorR),(w5.asUInt.xorR))
     Cat(din.xorR ^ w6.xorR, w6)
   }
+
 
 }

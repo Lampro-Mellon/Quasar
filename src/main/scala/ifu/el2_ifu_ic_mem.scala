@@ -19,13 +19,13 @@ class el2_ifu_ic_mem extends Module with param{
     val ic_debug_way = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_premux_data = Input(UInt(64.W))
     val ic_sel_premux_data = Input(Bool())
-    val ic_wr_data = Vec(ICACHE_BANK_WAY, Input(UInt(71.W)))
+    val ic_wr_data = Vec(ICACHE_BANKS_WAY, Input(UInt(71.W)))
     val ic_rd_data = Output(UInt(64.W))
     val ic_debug_rd_data = Output(UInt(71.W))
     val ictag_debug_rd_data = Output(UInt(26.W))
     val ic_debug_wr_data = Input(UInt(71.W))
-    val ic_eccerr = Output(UInt(ICACHE_BANK_WAY.W))
-    val ic_parerr = Output(UInt(ICACHE_BANK_WAY.W))
+    val ic_eccerr = Output(UInt(ICACHE_BANKS_WAY.W))
+    val ic_parerr = Output(UInt(ICACHE_BANKS_WAY.W))
     val ic_tag_valid = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_rd_hit = Output(UInt(ICACHE_NUM_WAYS.W))
     val ic_tag_perr = Output(Bool())
@@ -40,6 +40,8 @@ class el2_ifu_ic_mem extends Module with param{
   io.ic_rd_data := 0.U
   //val icache_tag = Module(new kncpa)
 }
+
+/////////// ICACHE TAG
 class EL2_IC_TAG extends Module with el2_lib with param {
   val io = IO(new Bundle{
     val clk = Input(Bool())
@@ -50,7 +52,7 @@ class EL2_IC_TAG extends Module with el2_lib with param {
     val ic_wr_en = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_tag_valid = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_rd_en = Input(Bool())
-    val ic_debug_addr = Input(UInt((ICACHE_INDEX_HI-3).W))
+    val ic_debug_addr = Input(UInt((ICACHE_INDEX_HI+1).W))
     val ic_debug_rd_en = Input(Bool())
     val ic_debug_wr_en = Input(Bool())
     val ic_debug_tag_array = Input(Bool())
@@ -61,9 +63,12 @@ class EL2_IC_TAG extends Module with el2_lib with param {
     val ic_tag_perr = Output(Bool())
     val scan_mode = Input(Bool())
 
-    val test = Output(UInt())
+    val test = Output(Vec(ICACHE_NUM_WAYS, UInt(26.W)))
+    val test_ecc_data_out = Output(Vec(ICACHE_NUM_WAYS,UInt(32.W)))
+    val test_ecc_out = Output(Vec(ICACHE_NUM_WAYS,UInt(7.W)))
+    val test_ecc_sb_out = Output(Vec(ICACHE_NUM_WAYS,UInt(1.W)))
+    val test_ecc_db_out = Output(Vec(ICACHE_NUM_WAYS,UInt(1.W)))
   })
-
 
   val ic_tag_wren = io.ic_wr_en & repl(ICACHE_NUM_WAYS, io.ic_rw_addr(ICACHE_BEAT_ADDR_HI,4)===
     repl(ICACHE_NUM_WAYS-1, 1.U))
@@ -75,9 +80,92 @@ class EL2_IC_TAG extends Module with el2_lib with param {
   val ic_rw_addr_ff = RegNext(io.ic_rw_addr(31,ICACHE_TAG_LO))
   val PAD_BITS = 21 - (32 - ICACHE_TAG_LO)
   val ic_tag_wren_q = ic_tag_wren | ic_debug_wr_way_en
+  val ic_tag_ecc = Wire(UInt(7.W))
+  val ic_tag_wr_data = Wire(UInt(26.W))
+  val ic_tag_parity = Wire(UInt(1.W))
+  ic_tag_ecc := 0.U
+  ic_tag_wr_data := 0.U
+  ic_tag_parity := 0.U
+  when((ICACHE_TAG_LO == 11).B){
+      when(ICACHE_ECC.B){
+      ic_tag_ecc := rvecc_encode(Cat(repl(ICACHE_TAG_LO,0.U) , io.ic_rw_addr(31,ICACHE_TAG_LO)))
+      ic_tag_wr_data := Mux(io.ic_debug_wr_en & io.ic_debug_tag_array,
+        Cat(io.ic_debug_wr_data(68,64), io.ic_debug_wr_data(31,11)) ,
+        Cat(ic_tag_ecc(4,0), io.ic_rw_addr(31,ICACHE_TAG_LO)))
+        }
+      .otherwise{
+        ic_tag_parity := rveven_paritygen(io.ic_rw_addr(31,ICACHE_TAG_LO))
+        ic_tag_wr_data := Mux(io.ic_debug_wr_en & io.ic_debug_tag_array,
+          Cat(io.ic_debug_wr_data(68,64), io.ic_debug_wr_data(31,11)) ,
+          Cat(ic_tag_ecc(4,0), io.ic_rw_addr(31,ICACHE_TAG_LO)))
+        }
+    }
 
+    .otherwise{
+      when(ICACHE_ECC.B){
+        ic_tag_ecc := rvecc_encode(Cat(repl(ICACHE_TAG_LO,0.U) , io.ic_rw_addr(31,ICACHE_TAG_LO)))
+        ic_tag_wr_data := Mux(io.ic_debug_wr_en & io.ic_debug_tag_array,
+          Cat(io.ic_debug_wr_data(68,64), io.ic_debug_wr_data(31,11)) ,
+          Cat(ic_tag_ecc(4,0), repl(PAD_BITS,0.U), io.ic_rw_addr(31,ICACHE_TAG_LO)))
+      }
+        .otherwise{
+          ic_tag_parity := rveven_paritygen(io.ic_rw_addr(31,ICACHE_TAG_LO))
+          ic_tag_wr_data := Mux(io.ic_debug_wr_en & io.ic_debug_tag_array,
+            Cat(io.ic_debug_wr_data(68,64), io.ic_debug_wr_data(31,11)) ,
+            Cat(ic_tag_ecc(4,0), repl(PAD_BITS,0.U), io.ic_rw_addr(31,ICACHE_TAG_LO)))
+        }
+      }
 
-  io.test:= ic_tag_wren
+  val ic_rw_addr_q = Mux(io.ic_debug_rd_en | io.ic_debug_wr_en,
+    io.ic_debug_addr(ICACHE_INDEX_HI, ICACHE_TAG_INDEX_LO),
+    io.ic_rw_addr(ICACHE_INDEX_HI, ICACHE_TAG_INDEX_LO))
+
+  val ic_debug_rd_way_en_ff = RegNext(io.ic_debug_rd_en, init = 0.U)
+
+  val ic_way_tag = if(ICACHE_ECC) SyncReadMem(ICACHE_TAG_DEPTH, Vec(ICACHE_NUM_WAYS, UInt(26.W)))
+  else SyncReadMem(ICACHE_TAG_DEPTH, Vec(ICACHE_NUM_WAYS, UInt(22.W)))
+  //val ic_tag_data_raw = if(ICACHE_ECC) Vec(ICACHE_NUM_WAYS, UInt(26.W)) else Vec(ICACHE_NUM_WAYS, UInt(22.W))
+
+  val write_data = VecInit.tabulate(ICACHE_NUM_WAYS)(i => ic_tag_wr_data)
+
+  val mem_mask = VecInit.tabulate(ICACHE_NUM_WAYS)(i => ic_tag_wren_q(i) & ic_tag_clken(i))
+
+  ic_way_tag.write(ic_rw_addr_q, write_data, mem_mask)
+
+  val ic_tag_data_raw = ic_way_tag.read(ic_rw_addr_q, 1.B)
+  //val w_tout = Wire(UInt(32.W))
+  val w_tout = if(ICACHE_ECC)ic_tag_data_raw.map(x=>Cat(ic_tag_data_raw(x)(25,21),ic_tag_data_raw(x)(31-ICACHE_TAG_LO,0),0.U(13.W)))
+  else ic_tag_data_raw.map(x=>Cat(0.U(4.W),ic_tag_data_raw(x)(32),ic_tag_data_raw(x)(31-ICACHE_TAG_LO,0),0.U(13.W)))
+
+  val ecc_decode = new Array[rvecc_decode](ICACHE_NUM_WAYS)
+  val parcheck = new Array[UInt](ICACHE_NUM_WAYS)
+  val ic_tag_corrected_data_unc = Wire(Vec(ICACHE_NUM_WAYS, UInt(32.W)))
+  val ic_tag_corrected_ecc_unc = Wire(Vec(ICACHE_NUM_WAYS, UInt(7.W)))
+  val ic_tag_single_ecc_error = Wire(Vec(ICACHE_NUM_WAYS, UInt(1.W)))
+  val ic_tag_double_ecc_error = Wire(Vec(ICACHE_NUM_WAYS, UInt(1.W)))
+
+  val ic_tag_way_perr = VecInit.tabulate(ICACHE_NUM_WAYS)(i => rveven_paritycheck(w_tout(i)(31,ICACHE_TAG_LO),w_tout(i)(31)))
+  for(i <- 0 until ICACHE_NUM_WAYS) {
+    ecc_decode(i) = Module(new rvecc_decode())
+    ecc_decode(i).io.en := ~io.dec_tlu_core_ecc_disable & ic_rd_en_ff
+    ecc_decode(i).io.sed_ded := 1.U
+    ecc_decode(i).io.din := Cat(0.U(11.W),ic_tag_data_raw(i)(20,0))
+    ecc_decode(i).io.ecc_in := Cat(0.U(2.W),ic_tag_data_raw(i)(25,21))
+
+    ic_tag_corrected_data_unc := io.test_ecc_data_out
+    ic_tag_corrected_ecc_unc := io.test_ecc_out
+    ic_tag_single_ecc_error := io.test_ecc_sb_out
+    ic_tag_double_ecc_error := io.test_ecc_db_out
+
+    io.test_ecc_data_out(i) := ecc_decode(i).io.dout
+    io.test_ecc_out(i) := ecc_decode(i).io.ecc_out
+    io.test_ecc_sb_out(i) := ecc_decode(i).io.single_ecc_error
+    io.test_ecc_db_out(i) := ecc_decode(i).io.double_ecc_error
+
+    ic_tag_way_perr(i) := ic_tag_single_ecc_error(i) | ic_tag_double_ecc_error(i)
+  }
+
+  io.test := w_tout
   io.ic_tag_perr := 0.U
   io.ic_rd_hit := 0.U
   io.ictag_debug_rd_data := 0.U

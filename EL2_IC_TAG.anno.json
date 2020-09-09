@@ -1,10 +1,58 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_out_1",
     "sources":[
-      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_wr_en",
-      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_rw_addr"
+      "~EL2_IC_TAG|EL2_IC_TAG>io_dec_tlu_core_ecc_disable"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_db_out_0",
+    "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_dec_tlu_core_ecc_disable"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_sb_out_1",
+    "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_dec_tlu_core_ecc_disable"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_out_0",
+    "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_dec_tlu_core_ecc_disable"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_data_out_1",
+    "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_dec_tlu_core_ecc_disable"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_sb_out_0",
+    "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_dec_tlu_core_ecc_disable"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_data_out_0",
+    "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_dec_tlu_core_ecc_disable"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test_ecc_db_out_1",
+    "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_dec_tlu_core_ecc_disable"
     ]
   },
   {
