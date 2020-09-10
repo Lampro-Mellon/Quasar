@@ -149,17 +149,17 @@ class rvrangecheck(CCM_SADR:Int=0, CCM_SIZE:Int=128) extends Module{
 
 
 
-
+// DONE
 class rveven_paritygen(WIDTH:Int= 16) extends Module{    //Done for verification and testing
   val io = IO(new Bundle{
     val data_in        =  Input (UInt(WIDTH.W))
     val parity_out     =  Output(UInt(1.W))
   })
   io.parity_out := io.data_in.xorR.asUInt
-}
+} // DONE
 
 
-
+// DONE
 class rveven_paritycheck(WIDTH:Int= 16) extends Module{    //Done for verification and testing
   val io = IO(new Bundle{
     val data_in        =  Input (UInt(WIDTH.W))
@@ -167,7 +167,7 @@ class rveven_paritycheck(WIDTH:Int= 16) extends Module{    //Done for verificati
     val parity_err     =  Output(UInt(1.W))
   })
   io.parity_err := (io.data_in.xorR.asUInt) ^ io.parity_in
-}
+} // DONE
 
 
 

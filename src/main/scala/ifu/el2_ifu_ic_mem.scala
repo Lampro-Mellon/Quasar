@@ -179,6 +179,48 @@ class EL2_IC_TAG extends Module with el2_lib with param {
   io.ic_rd_hit := VecInit.tabulate(ICACHE_NUM_WAYS)(i=>(w_tout_Vec(i)(31,ICACHE_TAG_LO)===ic_rw_addr_ff(31,ICACHE_TAG_LO)).asUInt() & io.ic_tag_valid).reduce(Cat(_,_))
 }
 
+
+
+class EL2_IC_DATA extends Module with param{
+  val io = IO (new Bundle{
+    val rst_l = Input(UInt(1.W))
+    val clk_override = Input(UInt(1.W))
+    val ic_rw_addr = Input(UInt(ICACHE_INDEX_HI.W))
+    val ic_wr_en = Input(UInt(ICACHE_NUM_WAYS.W))
+    val ic_rd_en = Input(UInt(1.W))
+    val ic_wr_data = Input(Vec(ICACHE_NUM_WAYS, UInt(71.W)))
+    val ic_rd_data = Output(UInt(64.W))
+    val ic_debug_wr_data = Input(UInt(71.W))
+    val ic_debug_rd_data = Output(UInt(71.W))
+    val ic_parerr = Output(UInt(ICACHE_NUM_WAYS.W))
+    val ic_eccerr = Output(UInt(ICACHE_BANKS_WAY.W))
+    val ic_debug_addr = Input(UInt((ICACHE_INDEX_HI+3).W))
+    val ic_debug_rd_en = Input(UInt(1.W))
+    val ic_debug_wr_en = Input(UInt(1.W))
+    val ic_debug_tag_array = Input(UInt(1.W))
+    val ic_debug_way = Input(UInt(ICACHE_NUM_WAYS.W))
+    val ic_premux_data = Input(UInt(64.W))
+    val ic_sel_premux_data = Input(UInt(1.W))
+    val ic_rd_hit = Input(UInt(ICACHE_NUM_WAYS.W))
+    val scan_mode = Input(UInt(1.W))
+    val mask = Input(Vec(2,Vec(2,Bool())))
+  })
+
+
+  // val data_memory = VecInit.tabulate(ICACHE_BANKS_WAY)(i => SyncReadMem(ICACHE_DATA_DEPTH, Vec(ICACHE_NUM_WAYS, UInt(26.W))))
+  // SyncReadMem(ICACHE_TAG_DEPTH, Vec(ICACHE_NUM_WAYS, UInt(22.W)))
+  val mask = VecInit.tabulate(ICACHE_NUM_WAYS)(i=>1.U)
+  val data_mem = (SyncReadMem(ICACHE_DATA_DEPTH, Vec(ICACHE_NUM_WAYS, UInt(26.W))), SyncReadMem(ICACHE_DATA_DEPTH, Vec(ICACHE_NUM_WAYS, UInt(26.W))))
+  data_mem(0).write(io.ic_rw_addr,io.ic_wr_data,mask)
+//  ic_memory.write(io.ic_rw_addr, io.ic_wr_data, io.mask)
+  io.ic_debug_rd_data := 0.U
+  io.ic_rd_data := 0.U
+  io.ic_eccerr := 0.U
+  io.ic_parerr := 0.U
+
+
+}
+
 object ifu_ic extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new EL2_IC_TAG()))
+  println((new chisel3.stage.ChiselStage).emitVerilog(new EL2_IC_DATA()))
 }
