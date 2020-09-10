@@ -1,3 +1,5 @@
+
+package lsu
 import chisel3._
 import chisel3.util._
 import lib._
@@ -77,7 +79,7 @@ class el2_lsu_clkdomain extends Module {
    // Clock Enable Logic
    //-------------------------------------------------------------------------------------------
 
-   lsu_c1_d_clken          := lsu_p.valid     | io.dma_dccm_req     | io.clk_override 
+   lsu_c1_d_clken          := lsu_p.valid     | io.dma_dccm_req  | io.clk_override
    lsu_c1_m_clken          := lsu_pkt_d.valid | lsu_c1_d_clken_q | io.clk_override 
    lsu_c1_r_clken          := lsu_pkt_m.valid | lsu_c1_m_clken_q | io.clk_override 
 
@@ -86,42 +88,58 @@ class el2_lsu_clkdomain extends Module {
 
    lsu_store_c1_m_clken    := ((lsu_c1_m_clken & lsu_pkt_d.store) | io.clk_override)  
    lsu_store_c1_r_clken    := ((lsu_c1_r_clken & lsu_pkt_m.store) | io.clk_override)  
-
-   lsu_stbuf_c1_clken      := io.ldst_stbuf_reqvld_r | io.stbuf_reqvld_any | io.stbuf_reqvld_flushed_any | io.clk_override 
-   lsu_bus_ibuf_c1_clken   := io.lsu_busreq_r | io.clk_override 
-   lsu_bus_obuf_c1_clken   := (io.lsu_bus_buffer_pend_any | io.lsu_busreq_r | io.clk_override) & io.lsu_bus_clk_en 
-   lsu_bus_buf_c1_clken    := ~io.lsu_bus_buffer_empty_any | io.lsu_busreq_r | io.clk_override 
+   lsu_stbuf_c1_clken      := st_stbu_reqvld_r | io.stbuf_reqvld_any | io.stbuf_reqvld_flushed_any | io.clk_override
+   lsu_bus_ibuf_c1_clken   := io.lsu_busreq_r  | io.clk_override
+   lsu_bus_obuf_c1_clken   := (io.lsu_bus_buffer_pend_any  | io.lsu_busreq_r | io.clk_override) & io.lsu_bus_clk_en
+   lsu_bus_buf_c1_clken    := ~io.lsu_bus_buffer_empty_any | io.lsu_busreq_r | io.clk_override
 
    lsu_free_c1_clken := (lsu_p.valid | lsu_pkt_d.valid | lsu_pkt_m.valid | lsu_pkt_r.valid) | ~io.lsu_bus_buffer_empty_any | ~io.lsu_stbuf_empty_any | io.clk_override 
-   lsu_free_c2_clken := lsu_free_c1_clken | lsu_free_c1_clken_q | io.clk_override 
-/*
-    // Flops
-   rvdff #(1) lsu_free_c1_clkenff (.din(lsu_free_c1_clken), dout(lsu_free_c1_clken_q), clk(free_clk), *) 
+   lsu_free_c2_clken := lsu_free_c1_clken | lsu_free_c1_clken_q | io.clk_override
 
-   rvdff #(1) lsu_c1_d_clkenff (.din(lsu_c1_d_clken), dout(lsu_c1_d_clken_q), clk(lsu_free_c2_clk), *) 
-   rvdff #(1) lsu_c1_m_clkenff (.din(lsu_c1_m_clken), dout(lsu_c1_m_clken_q), clk(lsu_free_c2_clk), *) 
-   rvdff #(1) lsu_c1_r_clkenff (.din(lsu_c1_r_clken), dout(lsu_c1_r_clken_q), clk(lsu_free_c2_clk), *) 
+   io.lsu_c1_m_clk              := 0.U          // m pipe single pulse clock
+   io.lsu_c1_r_clk              := 0.U          // r pipe single pulse clock
 
-   // Clock Headers
-   rvoclkhdr lsu_c1m_cgc ( .en(lsu_c1_m_clken), l1clk(lsu_c1_m_clk), * ) 
-   rvoclkhdr lsu_c1r_cgc ( .en(lsu_c1_r_clken), l1clk(lsu_c1_r_clk), * ) 
+   io.lsu_c2_m_clk              := 0.U          // m pipe double pulse clock
+   io.lsu_c2_r_clk              := 0.U          // r pipe double pulse clock
 
-   rvoclkhdr lsu_c2m_cgc ( .en(lsu_c2_m_clken), l1clk(lsu_c2_m_clk), * ) 
-   rvoclkhdr lsu_c2r_cgc ( .en(lsu_c2_r_clken), l1clk(lsu_c2_r_clk), * ) 
+   io.lsu_store_c1_m_clk        := 0.U          // store in m
+   io.lsu_store_c1_r_clk        := 0.U          // store in r
 
-   rvoclkhdr lsu_store_c1m_cgc (.en(lsu_store_c1_m_clken), l1clk(lsu_store_c1_m_clk), *) 
-   rvoclkhdr lsu_store_c1r_cgc (.en(lsu_store_c1_r_clken), l1clk(lsu_store_c1_r_clk), *) 
+   io.lsu_stbuf_c1_clk          := 0.U
+   io.lsu_bus_obuf_c1_clk       := 0.U          // ibuf clock
+   io.lsu_bus_ibuf_c1_clk       := 0.U          // ibuf clock
+   io.lsu_bus_buf_c1_clk        := 0.U          // ibuf clock
+   io.lsu_busm_clk              := 0.U          // bus clock
 
-   rvoclkhdr lsu_stbuf_c1_cgc ( .en(lsu_stbuf_c1_clken), l1clk(lsu_stbuf_c1_clk), * ) 
-   rvoclkhdr lsu_bus_ibuf_c1_cgc ( .en(lsu_bus_ibuf_c1_clken), l1clk(lsu_bus_ibuf_c1_clk), * ) 
-   rvclkhdr  lsu_bus_obuf_c1_cgc ( .en(lsu_bus_obuf_c1_clken), l1clk(lsu_bus_obuf_c1_clk), * ) 
-   rvoclkhdr lsu_bus_buf_c1_cgc  ( .en(lsu_bus_buf_c1_clken) =
-   val  .l1clk(lsu_bus_buf_c1_clk), * ) 
+   io.lsu_free_c2_clk           := 0.U
 
-   rvclkhdr  lsu_busm_cgc (.en(lsu_bus_clk_en), l1clk(lsu_busm_clk), *) 
+   /*0.U      // Flops
+      rvdff #(1) lsu_free_c1_clkenff (.din(lsu_free_c1_clken), dout(lsu_free_c1_clken_q), clk(free_clk), *)
 
-   rvoclkhdr lsu_free_cgc (.en(lsu_free_c2_clken), l1clk(lsu_free_c2_clk), *) 
+      rvdff #(1) lsu_c1_d_clkenff (.din(lsu_c1_d_clken), dout(lsu_c1_d_clken_q), clk(lsu_free_c2_clk), *)
+      rvdff #(1) lsu_c1_m_clkenff (.din(lsu_c1_m_clken), dout(lsu_c1_m_clken_q), clk(lsu_free_c2_clk), *)
+      rvdff #(1) lsu_c1_r_clkenff (.din(lsu_c1_r_clken), dout(lsu_c1_r_clken_q), clk(lsu_free_c2_clk), *)
 
-*/
+      // Clock Headers
+      rvoclkhdr lsu_c1m_cgc ( .en(lsu_c1_m_clken), l1clk(lsu_c1_m_clk), * )
+      rvoclkhdr lsu_c1r_cgc ( .en(lsu_c1_r_clken), l1clk(lsu_c1_r_clk), * )
+
+      rvoclkhdr lsu_c2m_cgc ( .en(lsu_c2_m_clken), l1clk(lsu_c2_m_clk), * )
+      rvoclkhdr lsu_c2r_cgc ( .en(lsu_c2_r_clken), l1clk(lsu_c2_r_clk), * )
+
+      rvoclkhdr lsu_store_c1m_cgc (.en(lsu_store_c1_m_clken), l1clk(lsu_store_c1_m_clk), *)
+      rvoclkhdr lsu_store_c1r_cgc (.en(lsu_store_c1_r_clken), l1clk(lsu_store_c1_r_clk), *)
+
+      rvoclkhdr lsu_stbuf_c1_cgc ( .en(lsu_stbuf_c1_clken), l1clk(lsu_stbuf_c1_clk), * )
+      rvoclkhdr lsu_bus_ibuf_c1_cgc ( .en(lsu_bus_ibuf_c1_clken), l1clk(lsu_bus_ibuf_c1_clk), * )
+      rvclkhdr  lsu_bus_obuf_c1_cgc ( .en(lsu_bus_obuf_c1_clken), l1clk(lsu_bus_obuf_c1_clk), * )
+      rvoclkhdr lsu_bus_buf_c1_cgc  ( .en(lsu_bus_buf_c1_clken) =
+      val  .l1clk(lsu_bus_buf_c1_clk), * )
+
+      rvclkhdr  lsu_busm_cgc (.en(lsu_bus_clk_en), l1clk(lsu_busm_clk), *)
+
+      rvoclkhdr lsu_free_cgc (.en(lsu_free_c2_clken), l1clk(lsu_free_c2_clk), *)
+
+   */
 }
 
