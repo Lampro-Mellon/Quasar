@@ -261,7 +261,6 @@ trait el2_lib extends param{
     }
 
     val ecc_check = Cat((io.din.xorR ^ io.ecc_in.xorR) & ~io.sed_ded ,io.ecc_in(5)^(w5.asUInt.xorR),io.ecc_in(4)^(w4.asUInt.xorR),io.ecc_in(3)^(w3.asUInt.xorR),io.ecc_in(2)^(w2.asUInt.xorR),io.ecc_in(1)^(w1.asUInt.xorR),io.ecc_in(0)^(w0.asUInt.xorR))
-    io.ecc_out := ecc_check
 
     io.single_ecc_error :=  io.en & (ecc_check!= 0.U) & ((io.din.xorR ^ io.ecc_in.xorR) & ~io.sed_ded)
     io.double_ecc_error :=  io.en & (ecc_check!= 0.U) & ((io.din.xorR ^ io.ecc_in.xorR) & ~io.sed_ded)
