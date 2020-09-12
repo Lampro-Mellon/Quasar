@@ -156,6 +156,17 @@ trait param {
   val SB_BUS_TAG             = 0x1   //.U(4.W)
   val TIMER_LEGAL_EN         = 0x1   //.U(1.W)
 
+  // Configuration Methods
+  def MEM_CAL : (Int, Int, Int)=
+    (ICACHE_WAYPACK, ICACHE_ECC) match{
+      case(false,false) => (68,22, 68)
+      case(false,true)  => (71,26, 71)
+      case(true,false)  => (68*ICACHE_NUM_WAYS,22*ICACHE_NUM_WAYS, 68)
+      case(true,true)   => (71*ICACHE_NUM_WAYS,26*ICACHE_NUM_WAYS, 71)
+    }
+
+  val DATA_MEM_LINE = MEM_CAL
+
 }
 
 trait el2_lib extends param{
@@ -173,8 +184,9 @@ trait el2_lib extends param{
     if(BHT_GHR_HASH_1) Cat(ghr(BHT_GHR_SIZE-1,BTB_INDEX1_HI-1), hashin(BTB_INDEX1_HI,2) ^ ghr(BTB_INDEX1_HI-2,0))
     else hashin(BHT_GHR_SIZE+1,2) ^ ghr(BHT_GHR_SIZE-1,0)
 
-  def repl(b:Int, a:UInt) : UInt =
-    VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
+  def repl(b:Int, a:UInt) = VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
+
+  def Mux1H_LM(a:Seq[Bool], b:Seq[UInt]) = (0 until b.size).map(i=> repl(b(i).getWidth,a(i)) & b(i)).reduce(_|_)
 
   def rveven_paritycheck(data_in:UInt, parity_in:UInt) : UInt =
     (data_in.xorR.asUInt) ^ parity_in
@@ -182,15 +194,6 @@ trait el2_lib extends param{
   def rveven_paritygen(data_in : UInt) =
     data_in.xorR.asUInt
 
-  def memory_cal =
-    (ICACHE_WAYPACK, ICACHE_ECC) match{
-        case(false,false) => 68
-        case(false,true)  => 71
-        case(true,false)  => 68*ICACHE_NUM_WAYS
-        case(true,true)   => 71*ICACHE_NUM_WAYS
-    }
-
-  val data_mem_size : Int = memory_cal
   // Move rvecc_encode to a proper trait
   def rvecc_encode(din:UInt) = {   //Done for verification and testing
     val mask0 = Array(0,1,0,1,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,1,0,1,1,0,1,1)

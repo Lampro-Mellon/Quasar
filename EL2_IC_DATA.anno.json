@@ -1,5 +1,21 @@
 [
   {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_rd_data",
+    "sources":[
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rd_hit"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_DATA|EL2_IC_DATA>io_ic_rd_data",
+    "sources":[
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_sel_premux_data",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_premux_data",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rd_hit"
+    ]
+  },
+  {
     "class":"firrtl.EmitCircuitAnnotation",
     "emitter":"firrtl.VerilogEmitter"
   },
