@@ -2,7 +2,16 @@ package ifu
 import lib._
 import chisel3._
 import chisel3.util._
-class el2_ifu_ifc_ctrl extends Module with el2_lib {
+class test extends Module with el2_lib {
+  val io = IO (new Bundle{
+    val in1 = Input(UInt(8.W))
+    val in2 = Input(UInt(8.W))
+    val in3 = Input(Bool())
+    val out = Output(UInt(1.W))}
+  )
+  io.out := rvmaskandmatch(io.in1, io.in2, io.in3)
+}
+/*class el2_ifu_ifc_ctrl extends Module with el2_lib {
 val io = IO(new Bundle{
   val free_clk = Input(Bool())
   val active_clk = Input(Bool())
@@ -137,7 +146,7 @@ val io = IO(new Bundle{
   val fb_write_f = RegNext(fb_write_ns, init = 0.U)
   val flush_fb = io.exu_flush_final
   val ifu_pmu_fetch_stall = wfm | (io.ifc_fetch_req_bf_raw & ( (fb_full_f &
-    ~(io.ifu_fb_consume2 | io.ifu_fb_consume1 | io.exu_flush_final)) | dma_stall))
+    ~(io.ifu_fb_consume2 rvrangecheck| io.ifu_fb_consume1 | io.exu_flush_final)) | dma_stall))
 
   io.test1 := dma_iccm_stall_any_f
   io.test2 := dma_stall
@@ -171,7 +180,7 @@ class test extends Module with el2_lib {
   val (range, region) = rvrangecheck(ICCM_SADR, ICCM_SIZE, io.addr)
   io.in_region := region
   io.in_range := range
-}
+}*/
 object ifu_ifc extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_ifc_ctrl()))
+  println((new chisel3.stage.ChiselStage).emitVerilog(new test()))
 }

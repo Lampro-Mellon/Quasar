@@ -1,16 +1,11 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~test|test>io_in_region",
+    "sink":"~test|test>io_out",
     "sources":[
-      "~test|test>io_addr"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~test|test>io_in_range",
-    "sources":[
-      "~test|test>io_addr"
+      "~test|test>io_in3",
+      "~test|test>io_in1",
+      "~test|test>io_in2"
     ]
   },
   {
