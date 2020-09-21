@@ -488,11 +488,11 @@ module EL2_IC_DATA(
   assign io_ic_debug_rd_data = _T_1530 | _T_1602; // @[el2_ifu_ic_mem.scala 278:23 el2_ifu_ic_mem.scala 284:23]
   assign io_ic_parerr = 2'h0; // @[el2_ifu_ic_mem.scala 279:16]
   assign io_ic_eccerr = 2'h0; // @[el2_ifu_ic_mem.scala 280:16]
-  assign io_test_port2 = 1'h0; // @[el2_ifu_ic_mem.scala 286:17]
-  assign io_test_port_0_0 = data_mem_0_0__T_137_data; // @[el2_ifu_ic_mem.scala 287:16]
-  assign io_test_port_0_1 = data_mem_0_1__T_144_data; // @[el2_ifu_ic_mem.scala 287:16]
-  assign io_test_port_1_0 = data_mem_1_0__T_151_data; // @[el2_ifu_ic_mem.scala 287:16]
-  assign io_test_port_1_1 = data_mem_1_1__T_158_data; // @[el2_ifu_ic_mem.scala 287:16]
+  assign io_test_port2 = 1'h0; // @[el2_ifu_ic_mem.scala 288:17]
+  assign io_test_port_0_0 = data_mem_0_0__T_137_data; // @[el2_ifu_ic_mem.scala 289:16]
+  assign io_test_port_0_1 = data_mem_0_1__T_144_data; // @[el2_ifu_ic_mem.scala 289:16]
+  assign io_test_port_1_0 = data_mem_1_0__T_151_data; // @[el2_ifu_ic_mem.scala 289:16]
+  assign io_test_port_1_1 = data_mem_1_1__T_158_data; // @[el2_ifu_ic_mem.scala 289:16]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif

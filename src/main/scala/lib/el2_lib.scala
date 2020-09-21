@@ -97,13 +97,13 @@ trait param {
   val ICCM_BANK_HI           = 0x03  //.U(5.W)
   val ICCM_BANK_INDEX_LO     = 0x04  //.U(5.W)
   val ICCM_BITS              = 0x10  //.U(5.W)
-  val ICCM_ENABLE            = 0x1   //.U(1.W)
+  val ICCM_ENABLE            = true   //.U(1.W)
   val ICCM_ICACHE            = 0x1   //.U(1.W)
   val ICCM_INDEX_BITS        = 0xC   //.U(4.W)
   val ICCM_NUM_BANKS         = 0x04  //.U(5.W)
   val ICCM_ONLY              = 0x0   //.U(1.W)
   val ICCM_REGION            = 0xE   //.U(4.W)
-  val ICCM_SADR              = 0xEE000000 //.U(32.W)
+  val ICCM_SADR              = 0xEE000000L //.U(32.W)
   val ICCM_SIZE              = 0x040 //.U(10.W)
   val IFU_BUS_ID             = 0x1   //.U(1.W)
   val IFU_BUS_PRTY           = 0x2   //.U(2.W)
@@ -193,6 +193,19 @@ trait el2_lib extends param{
 
   def rveven_paritygen(data_in : UInt) =
     data_in.xorR.asUInt
+
+  // RV range
+  def rvrangecheck(CCM_SADR:Long, CCM_SIZE:Int, addr:UInt) = {
+    val REGION_BITS = 4;
+    val MASK_BITS = 10 + log2Ceil(CCM_SIZE)
+    val start_addr = CCM_SADR.U(32.W)
+    val region = start_addr(31,32-REGION_BITS)
+    val in_region = addr(31,(32-REGION_BITS)) === region
+    val in_range = if(CCM_SIZE==48)
+      (addr(31, MASK_BITS) === start_addr(31,MASK_BITS)) & ~addr(MASK_BITS-1 , MASK_BITS-2).andR
+    else addr(31,MASK_BITS) === start_addr(31,MASK_BITS)
+    (in_region, in_range)
+  }
 
   // Move rvecc_encode to a proper trait
   def rvecc_encode(din:UInt) = {   //Done for verification and testing

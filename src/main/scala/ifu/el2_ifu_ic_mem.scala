@@ -298,6 +298,6 @@ class EL2_IC_DATA extends Module with el2_lib {
 //println(s"${DATA_MEM_LINE._2}")
 }
 
-object ifu_ic extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new EL2_IC_DATA()))
-}
+//object ifu_ic extends App {
+//  println((new chisel3.stage.ChiselStage).emitVerilog(new EL2_IC_DATA()))
+//}
