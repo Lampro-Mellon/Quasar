@@ -14,7 +14,7 @@ import chisel3.tester._
 import chisel3.tester.RawTester.test
 import chisel3.util.HasBlackBoxResource
 
-class el2_lsu_addrcheck extends Module
+class el2_lsu_addrcheck extends Module with RequireAsyncReset
 {val io = IO(new Bundle{
   val lsu_c2_m_clk        = Input(Clock())
   val start_addr_d        = Input(UInt(32.W))
@@ -148,12 +148,12 @@ class el2_lsu_addrcheck extends Module
   io.exc_mscause_d  := Mux(io.misaligned_fault_d.asBool, misaligned_fault_mscause_d(3,0), access_fault_mscause_d(3,0))
   io.fir_dccm_access_error_d  := ((start_addr_in_dccm_region_d & ~start_addr_in_dccm_d)|(end_addr_in_dccm_region_d   & ~end_addr_in_dccm_d)) & io.lsu_pkt_d.valid & io.lsu_pkt_d.fast_int
   io.fir_nondccm_access_error_d := ~(start_addr_in_dccm_region_d & end_addr_in_dccm_region_d) & io.lsu_pkt_d.valid & io.lsu_pkt_d.fast_int
-  withClock(io.lsu_c2_m_clk){io.is_sideeffects_m := RegNext(is_sideeffects_d)}  //TBD for clock and reset
+
+  withClock(io.lsu_c2_m_clk){io.is_sideeffects_m := RegNext(is_sideeffects_d,0.U)} //TBD for clock and reset
 }
 //println(chisel3.Driver.emitVerilog(new el2_lsu_addrcheck))
-/*
+
 object main extends App{
   println("Generate Verilog")
   chisel3.Driver.execute(args, ()=> new el2_lsu_addrcheck)
 }
-*/
