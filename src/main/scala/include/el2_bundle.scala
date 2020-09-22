@@ -55,7 +55,7 @@ class el2_br_pkt_t extends Bundle {
   val br_error       = UInt(1.W)
   val br_start_error = UInt(1.W)
   val bank           = UInt(1.W)
-  val prett          = UInt(32.W)     // predicted ret target
+  val prett          = UInt(32.W)     // predicted ret target //[31:1] in swerv
   val way            = UInt(1.W)
   val ret            = UInt(1.W)
 }
@@ -80,7 +80,7 @@ class el2_predict_pkt_t extends Bundle {
   val valid      = UInt(1.W)
   val br_error   = UInt(1.W)
   val br_start_error = UInt(1.W)
-  val prett      = UInt(32.W)
+  val prett      = UInt(32.W) //[31:1] in swerv
   val pcall      = UInt(1.W)
   val pret       = UInt(1.W)
   val pja        = UInt(1.W)
@@ -102,7 +102,7 @@ class el2_trap_pkt_t extends Bundle {
 }
 
 class el2_dest_pkt_t extends Bundle {
-  val i0rd      = UInt(4.W)
+  val i0rd      = UInt(5.W)
   val i0load    = UInt(1.W)
   val i0store   = UInt(1.W)
   val i0div     = UInt(1.W)
@@ -169,8 +169,8 @@ class el2_lsu_error_pkt_t extends Bundle {
   val single_ecc_error  = UInt(1.W)
   val inst_type    = UInt(1.W)    //0: Load, 1: Store
   val exc_type     = UInt(1.W)    //0: MisAligned, 1: Access Fault
-  val mscause      = UInt(1.W)
-  val addr         = UInt(1.W)
+  val mscause      = UInt(4.W)
+  val addr         = UInt(32.W)
 }
 
 class el2_dec_pkt_t extends Bundle {
@@ -321,5 +321,4 @@ class el2_cache_debug_pkt_t extends Bundle {
   val         icache_rd_valid    = UInt(1.W)
   val         icache_wr_valid    = UInt(1.W)
 }
-
 
