@@ -168,6 +168,6 @@ class el2_dec_dec_ctl extends Module{
     pattern(List(-6,4,-3,-2,1,0)).reduce(_&_)
 }
 
-object dec extends App {
-  println(chisel3.Driver.emitVerilog(new el2_dec_dec_ctl()))
-}
+//object dec extends App {
+//  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_dec_dec_ctl()))
+//}

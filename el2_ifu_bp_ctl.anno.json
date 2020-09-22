@@ -1,0 +1,26 @@
+[
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_out",
+    "sources":[
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_in",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_in2"
+    ]
+  },
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.options.TargetDirAnnotation",
+    "directory":"."
+  },
+  {
+    "class":"firrtl.options.OutputAnnotationFileAnnotation",
+    "file":"el2_ifu_bp_ctl"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"."
+  }
+]
