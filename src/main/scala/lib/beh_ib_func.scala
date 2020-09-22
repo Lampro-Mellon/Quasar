@@ -6,8 +6,9 @@ import chisel3.experimental._
 import chisel3.util.HasBlackBoxResource
 import chisel3.withClock
 
-object beh_ib_func {
-
+object beh_ib_func { 
+  // use this for rvdffsc = > io.out := RegEnable(io.din & repl(io.din.getWidth, io.clear), 0.U, io.en)
+  // use this for rvdffs  = > io.out := RegEnable(io.din, 0.U, io.en)
 
   def repl(b:Int, a:UInt) = VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
   def rvsyncss(din:UInt) = RegNext(RegNext(din,0.U),0.U)
