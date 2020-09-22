@@ -216,7 +216,7 @@ object beh_ib_func {
     obj.io.clk := clk
     obj.io.en := en
     obj.io.scan_mode := scan_mode
-    withClock(clk) {
+    withClock(l1clk) {
       RegNext(din,0.U)
     }
   }
