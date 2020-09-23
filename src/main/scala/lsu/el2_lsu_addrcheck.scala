@@ -42,13 +42,13 @@ class el2_lsu_addrcheck extends Module with RequireAsyncReset
   //DCCM check
   // Start address check
   if(pt1.DCCM_ENABLE==1){  // Gen_dccm_enable
-    val start_addr_dccm_rangecheck = Module(new rvrangecheck(pt1.DCCM_SADR,pt1.DCCM_SIZE))
+    val start_addr_dccm_rangecheck = Module(new rvrangecheck(pt.DCCM_SADR,pt1.DCCM_SIZE))
     start_addr_dccm_rangecheck.io.addr  := io.start_addr_d
     start_addr_in_dccm_d                := start_addr_dccm_rangecheck.io.in_range
     start_addr_in_dccm_region_d         := start_addr_dccm_rangecheck.io.in_region
 
     // End address check
-    val end_addr_dccm_rangecheck   = Module(new rvrangecheck(pt1.DCCM_SADR,pt1.DCCM_SIZE))
+    val end_addr_dccm_rangecheck   = Module(new rvrangecheck(pt.DCCM_SADR,pt1.DCCM_SIZE))
     end_addr_dccm_rangecheck.io.addr    := io.end_addr_d
     end_addr_in_dccm_d                  := end_addr_dccm_rangecheck.io.in_range
     end_addr_in_dccm_region_d           := end_addr_dccm_rangecheck.io.in_region
@@ -71,13 +71,13 @@ class el2_lsu_addrcheck extends Module with RequireAsyncReset
 
   //PIC memory check
   //start address check
-  val start_addr_pic_rangecheck = Module(new rvrangecheck(pt1.PIC_BASE_ADDR,pt1.PIC_SIZE))
+  val start_addr_pic_rangecheck = Module(new rvrangecheck(pt.PIC_BASE_ADDR,pt1.PIC_SIZE))
   start_addr_pic_rangecheck.io.addr := io.start_addr_d(31,0)
   val start_addr_in_pic_d            = start_addr_pic_rangecheck.io.in_range
   val start_addr_in_pic_region_d     = start_addr_pic_rangecheck.io.in_region
 
   //End address check
-  val end_addr_pic_rangecheck = Module(new rvrangecheck(pt1.PIC_BASE_ADDR,pt1.PIC_SIZE))
+  val end_addr_pic_rangecheck = Module(new rvrangecheck(pt.PIC_BASE_ADDR,pt1.PIC_SIZE))
   end_addr_pic_rangecheck.io.addr := io.end_addr_d(31,0)
   val end_addr_in_pic_d            = end_addr_pic_rangecheck.io.in_range
   val end_addr_in_pic_region_d     = end_addr_pic_rangecheck.io.in_region
