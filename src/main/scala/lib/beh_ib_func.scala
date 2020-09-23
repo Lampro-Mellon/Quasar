@@ -6,7 +6,7 @@ import chisel3.experimental._
 import chisel3.util.HasBlackBoxResource
 import chisel3.withClock
 
-object beh_ib_func { 
+object beh_ib_func extends RequireAsyncReset { 
   // use this for rvdffsc = > io.out := RegEnable(io.din & repl(io.din.getWidth, io.clear), 0.U, io.en)
   // use this for rvdffs  = > io.out := RegEnable(io.din, 0.U, io.en)
 
@@ -216,7 +216,7 @@ object beh_ib_func {
     obj.io.clk := clk
     obj.io.en := en
     obj.io.scan_mode := scan_mode
-    withClock(clk) {
+    withClock(l1clk) {
       RegNext(din,0.U)
     }
   }
