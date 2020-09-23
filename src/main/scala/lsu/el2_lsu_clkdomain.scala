@@ -77,7 +77,7 @@ class el2_lsu_clkdomain extends Module {
 
    val lsu_free_c1_clken_q    =  withClock(free_clk)RegNext(lsu_free_c1_clken,0.U)
 
-   val tuple3(   lsu_c1_d_clken_q,             lsu_c1_m_clken_q,             lsu_c1_r_clken_q) = withClock(lsu_free_c2_clk) {
+   val         ( lsu_c1_d_clken_q,             lsu_c1_m_clken_q,             lsu_c1_r_clken_q) = withClock(lsu_free_c2_clk) {
          RegNext(lsu_c1_d_clken, 0.U); RegNext(lsu_c1_m_clken, 0.U); RegNext(lsu_c1_r_clken, 0.U)
    }
 
