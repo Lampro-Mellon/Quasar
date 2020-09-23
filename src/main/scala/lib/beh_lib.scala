@@ -25,7 +25,7 @@ class rvdffsc extends Module with el2_lib {
     val clear = Input(Bool())
     val out = Output(UInt())
   })
-  io.out := RegEnable(io.din & repl(io.din.getWidth, io.clear), 0.U, io.en)
+  io.out := RegEnable(io.din & Fill(io.din.getWidth, ~io.clear), 0.U, io.en)
 }
 
 class rvdffs extends Module with el2_lib {

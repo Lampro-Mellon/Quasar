@@ -56,8 +56,8 @@ val io = IO(new Bundle{
   val goto_idle = WireInit(Bool(), init = 0.U)
   val leave_idle = WireInit(Bool(), init = 0.U)
   val fetch_bf_en = WireInit(Bool(), init = 0.U)
-  val line_wrap = WireInit(Bool(), init = io.testin)
-  val fetch_addr_next_1 = WireInit(Bool(), init = 0.U)
+  val line_wrap = WireInit(Bool(), init = 0.U)
+  //val fetch_addr_next_1 = WireInit(Bool(), init = 0.U)
   val state = WireInit(UInt(2.W), init = 0.U)
   val idle_E :: fetch_E :: stall_E :: wfm_E :: Nil = Enum(4)
 
@@ -81,12 +81,8 @@ val io = IO(new Bundle{
   sel_next_addr_bf := ~io.exu_flush_final & io.ifc_fetch_req_f & ~io.ifu_bp_hit_taken_f & io.ic_hit_f
 
 
-  // Checking the end of cache line wrapping
-  //line_wrap := fetch_addr_next(ICACHE_TAG_INDEX_LO) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO)
-
-  fetch_addr_next_1 := Mux(line_wrap.asBool(), 0.U, io.ifc_fetch_addr_f(0))
-
-  fetch_addr_next := Cat(io.ifc_fetch_addr_f+2.U,fetch_addr_next_1)
+  fetch_addr_next := (io.ifc_fetch_addr_f+2.U) |
+    Mux(line_wrap.asBool(), 0.U, io.ifc_fetch_addr_f(0))
 
 
   // TODO: Make an assertion for the 1H-Mux under here
@@ -154,6 +150,3 @@ val io = IO(new Bundle{
   io.ifc_fetch_uncacheable_bf := ~io.dec_tlu_mrac_ff(Cat(io.ifc_fetch_addr_bf(30,27), 0.U))
 }
 
-object ifu_ifc extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_ifc_ctrl()))
-}

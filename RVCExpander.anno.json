@@ -22,13 +22,6 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~RVCExpander|RVCExpander>io_legal",
-    "sources":[
-      "~RVCExpander|RVCExpander>io_in"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~RVCExpander|RVCExpander>io_out_bits",
     "sources":[
       "~RVCExpander|RVCExpander>io_in"
@@ -47,12 +40,6 @@
     "sources":[
       "~RVCExpander|RVCExpander>io_in"
     ]
-  },
-  {
-    "class":"logger.LogLevelAnnotation",
-    "globalLogLevel":{
-      
-    }
   },
   {
     "class":"firrtl.EmitCircuitAnnotation",
