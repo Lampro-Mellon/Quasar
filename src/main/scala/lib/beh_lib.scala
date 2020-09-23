@@ -1,7 +1,7 @@
 package lib
 import chisel3._
 import chisel3.util._
-import lib.beh_ib_func._
+//import lib.beh_ib_func._
 
 class rvdff(WIDTH:Int=1,SHORT:Int=0) extends Module{
   val io = IO(new Bundle{
@@ -109,7 +109,7 @@ class rvbsadder extends Module{   //Done for verification and testing
     val MASK_BITS   = 10 + log2Ceil(CCM_SIZE)
 
     val start_addr  = Wire(UInt(32.W))
-    start_addr  := CCM_SIZE.U
+    start_addr  := CCM_SADR.U
     val region  = start_addr(31,(32-REGION_BITS))
 
     io.in_region  := (io.addr(31,(32-REGION_BITS)) === region(REGION_BITS-1,0)).asUInt
@@ -141,12 +141,13 @@ class rvbsadder extends Module{   //Done for verification and testing
       val din     =  Input(UInt(32.W))
       val ecc_out =  Output(UInt(7.W))
     })
-    val mask0 = Array(0,1,0,1,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,1,0,1,1,0,1,1).reverse
-    val mask1 = Array(1,0,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,0,1,1,0,1,1,0,1).reverse
-    val mask2 = Array(1,1,1,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1,1,0,0,0,1,1,1,0).reverse
-    val mask3 = Array(0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0).reverse
-    val mask4 = Array(0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0).reverse
-    val mask5 = Array(1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0).reverse
+    val mask0 = Array(1,1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,1,0)
+    val mask1 = Array(1,0,1,1,0,1,1,0,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,0,1)
+    val mask2 = Array(0,1,1,1,0,0,0,1,1,1,1,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1)
+    val mask3 = Array(0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0)
+    val mask4 = Array(0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0)
+    val mask5 = Array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1)
+
     val w0 = Wire(Vec(18,UInt(1.W)))
     val w1 = Wire(Vec(18,UInt(1.W)))
     val w2 = Wire(Vec(18,UInt(1.W)))
@@ -154,7 +155,7 @@ class rvbsadder extends Module{   //Done for verification and testing
     val w4 = Wire(Vec(15,UInt(1.W)))
     val w5 = Wire(Vec(6, UInt(1.W)))
     var j = 0;var k = 0;var m = 0;
-    var x = 0;var y = 0;var z = 0
+    var x = 0;var y = 0;var z = 0;
 
     for(i <- 0 to 31)
     {
@@ -165,7 +166,7 @@ class rvbsadder extends Module{   //Done for verification and testing
       if(mask4(i)==1) {w4(y) := io.din(i); y = y +1 }
       if(mask5(i)==1) {w5(z) := io.din(i); z = z +1 }
     }
-    val w6 = Cat((w0.asUInt.xorR),(w1.asUInt.xorR),(w2.asUInt.xorR),(w3.asUInt.xorR),(w4.asUInt.xorR),(w5.asUInt.xorR))
+    val w6 = Cat((w5.asUInt.xorR),(w4.asUInt.xorR),(w3.asUInt.xorR),(w2.asUInt.xorR),(w1.asUInt.xorR),(w0.asUInt.xorR))
     io.ecc_out := Cat(io.din.xorR ^ w6.xorR, w6)
   }
 
@@ -182,6 +183,7 @@ class rvbsadder extends Module{   //Done for verification and testing
       val single_ecc_error = Output(UInt(1.W))
       val double_ecc_error = Output(UInt(1.W))
     })
+
     val mask0 = Array(1,1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,1,0).reverse
     val mask1 = Array(1,0,1,1,0,1,1,0,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,0,1).reverse
     val mask2 = Array(0,1,1,1,0,0,0,1,1,1,1,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1).reverse
@@ -344,23 +346,23 @@ class rvbsadder extends Module{   //Done for verification and testing
   }
 }
 
-
-
-  ////Instantiation example///////////////Can be use if using class instead of function rvdffe
-  class my_class extends Module{
-    val io = IO(new Bundle {
-      val l1clk = Output(Clock())
-      val clk  = Input(Clock())
-      val en  = Input(Bool())
-      val scan_mode = Input(Bool())
-    })
+////rvdffe ///////////////////////////////////////////////////////////////////////
+object rvdffe {
+  def apply(din: UInt, en: Bool, clk: Clock, scan_mode: Bool): UInt = {
     val obj = Module(new rvclkhdr())
-    io.l1clk := obj.io.l1clk
-    obj.io.clk := io.clk
-    obj.io.en := io.en
-    obj.io.scan_mode := io.scan_mode
+    val l1clk = obj.io.l1clk
+    obj.io.clk := clk
+    obj.io.en := en
+    obj.io.scan_mode := scan_mode
+    withClock(l1clk) {
+      RegNext(din, 0.U)
+    }
   }
+}
 
+
+/////////////rvdffe //////////////////////////
+/*
 class class_rvdffe extends Module{
   val io = IO(new Bundle {
     val in = Input(UInt(32.W))
@@ -371,18 +373,12 @@ class class_rvdffe extends Module{
   })
   io.out := rvdffe(io.in,io.en.asBool,io.clk,io.scan_mode.asBool)
 }
-/*
+
 object main extends App{
   println("Generate Verilog")
-  chisel3.Driver.execute(args, ()=> new rvecc_decode_64)
+  chisel3.Driver.execute(args, ()=> new rvrangecheck)
 }
 */
-/*
-object main extends App{
-  chisel3.Driver.execute(args,()=> new my_class)
-}*/
-
-
 
 
 
