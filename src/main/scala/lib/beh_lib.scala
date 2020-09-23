@@ -99,7 +99,7 @@ class rvbsadder extends Module{   //Done for verification and testing
     io.match_out := matchvec.asUInt.andR
   }
 
-  class rvrangecheck(CCM_SADR:Int=0, CCM_SIZE:Int=128) extends Module{
+  class rvrangecheck(CCM_SADR:UInt, CCM_SIZE:Int=128) extends Module{
     val io = IO(new Bundle{
       val addr       =  Input(UInt(32.W))
       val in_range   =  Output(UInt(1.W))
@@ -107,9 +107,7 @@ class rvbsadder extends Module{   //Done for verification and testing
     })
     val REGION_BITS = 4
     val MASK_BITS   = 10 + log2Ceil(CCM_SIZE)
-
-    val start_addr  = Wire(UInt(32.W))
-    start_addr  := CCM_SADR.U
+    val start_addr  = CCM_SADR
     val region  = start_addr(31,(32-REGION_BITS))
 
     io.in_region  := (io.addr(31,(32-REGION_BITS)) === region(REGION_BITS-1,0)).asUInt
