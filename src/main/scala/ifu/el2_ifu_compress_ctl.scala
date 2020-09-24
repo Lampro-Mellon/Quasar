@@ -2,7 +2,6 @@ package ifu
 
 import chisel3._
 import chisel3.util._
-import lib.ExpandedInstruction
 
 class ExpandedInstruction extends Bundle {
   val bits = UInt(32.W)
