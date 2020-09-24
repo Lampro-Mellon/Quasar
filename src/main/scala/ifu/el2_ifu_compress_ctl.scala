@@ -177,7 +177,7 @@ class RVCDecoder(x: UInt, xLen: Int) {
   def ret_q3 = q3
 }
 
-class el2_ifu_compress( val XLen: Int, val usingCompressed: Boolean) extends Module  {
+class el2_ifu_compress_ctl( val XLen: Int, val usingCompressed: Boolean) extends Module  {
   val io = IO(new Bundle {
     val in = Input(UInt(32.W))
     val out = Output(new ExpandedInstruction)
@@ -221,5 +221,5 @@ class el2_ifu_compress( val XLen: Int, val usingCompressed: Boolean) extends Mod
 }
 
 object ifu_compress extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_compress(64, true)))
+  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_compress_ctl(64, true)))
 }
