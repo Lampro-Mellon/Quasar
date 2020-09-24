@@ -220,3 +220,7 @@ class el2_ifu_compress( val XLen: Int, val usingCompressed: Boolean) extends Mod
     io.out := new RVCDecoder(io.in, XLen).passthrough
   }
 }
+
+object ifu_compress extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_compress(64, true)))
+}
