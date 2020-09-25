@@ -95,7 +95,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
 
   val aligndata = Mux1H(Seq(f0val(0).asBool -> q0final, (~f0val(1) & f0val(0)).asBool -> Cat(q1final,q0final)))
 
-  val decompressed = Module(new el2_ifu_compress(32, true))
+  val decompressed = Module(new el2_ifu_compress_ctl(32, true))
 
   decompressed.io.in := aligndata
 

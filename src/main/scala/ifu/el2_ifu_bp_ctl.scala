@@ -175,10 +175,10 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
   // Making virtual banks, made bit 1 of the pc to check
   val btb_vbank0_rd_data_f = Mux1H(Seq(~io.ifc_fetch_addr_f(1)->btb_bank0e_rd_data_f,
-    io.ifc_fetch_addr_f(1)->btb_bank0o_rd_data_f))
+                                        io.ifc_fetch_addr_f(1)->btb_bank0o_rd_data_f))
 
-  val btb_vbank1_rd_data_f = Mux1H(Seq(~io.ifc_fetch_addr_f(0)->btb_bank0o_rd_data_f,
-    io.ifc_fetch_addr_f(0)->btb_bank0e_rd_data_p1_f))
+  val btb_vbank1_rd_data_f = Mux1H(Seq(~io.ifc_fetch_addr_f(1)->btb_bank0o_rd_data_f,
+                                        io.ifc_fetch_addr_f(1)->btb_bank0e_rd_data_p1_f))
 
   // Implimenting the LRU for a 2-way BTB
   val mp_wrindex_dec = 1.U(LRU_SIZE) << exu_mp_addr
@@ -198,20 +198,113 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val use_mp_way_p1 = fetch_mp_collision_p1_f
 
   val btb_lru_b0_ns = Mux1H(Seq(~exu_mp_way.asBool->mp_wrlru_b0,
-    tag_match_way0_f.asBool->fetch_wrlru_b0,tag_match_way0_p1_f.asBool->fetch_wrlru_p1_b0)) | btb_lru_b0_hold & btb_lru_b0_f
+    tag_match_way0_f.asBool->fetch_wrlru_b0,
+    tag_match_way0_p1_f.asBool->fetch_wrlru_p1_b0)) | btb_lru_b0_hold & btb_lru_b0_f
 
   val btb_lru_rd_f = Mux(use_mp_way.asBool, exu_mp_way_f, (fetch_wrindex_dec & btb_lru_b0_f).orR)
   val btb_lru_rd_p1_f = Mux(use_mp_way_p1.asBool, exu_mp_way_f, (fetch_wrindex_p1_dec & btb_lru_b0_f).orR)
 
-  val btb_vlru_rd_f = Mux1H(Seq(~io.ifc_fetch_addr_f(1).asBool->Cat(btb_lru_rd_f, btb_lru_rd_f),
-    io.ifc_fetch_addr_f(1).asBool->Cat(btb_lru_rd_p1_f, btb_lru_rd_f)))
+  val btb_vlru_rd_f = Mux1H(Seq(!io.ifc_fetch_addr_f(1) -> Cat(btb_lru_rd_f, btb_lru_rd_f),
+    io.ifc_fetch_addr_f(1).asBool -> Cat(btb_lru_rd_p1_f, btb_lru_rd_f)))
 
   val tag_match_vway1_expanded_f = Mux1H(Seq(~io.ifc_fetch_addr_f(1).asBool->tag_match_way1_expanded_f,
     io.ifc_fetch_addr_f(1).asBool->Cat(tag_match_way1_expanded_p1_f(0),tag_match_way1_expanded_f(1))))
 
   val way_raw = tag_match_vway1_expanded_f | (~vwayhit_f & btb_vlru_rd_f)
 
-  //val btb_lru_b0_f = RegNext(btb_lru_b0_ns, init = 0.U)
+  btb_lru_b0_f := RegEnable(btb_lru_b0_ns, init = 0.U, (io.ifc_fetch_req_f|exu_mp_valid).asBool)
+
+  val eoc_near = io.ifc_fetch_addr_f(ICACHE_BEAT_ADDR_HI, 3).andR
+  eoc_mask := !eoc_near | !io.ifc_fetch_addr_f(2,1).orR()
+  val btb_sel_data_f = WireInit(UInt(17.W), init = 0.U)
+  val hist1_raw = WireInit(UInt(2.W), init = 0.U)
+  val btb_rd_tgt_f = btb_sel_data_f(16,5)
+  val btb_rd_pc4_f = btb_sel_data_f(4)
+  val btb_rd_call_f = btb_sel_data_f(2)
+  val btb_rd_ret_f = btb_sel_data_f(1)
+
+  btb_sel_data_f := Mux1H(Seq(btb_sel_f(1).asBool->Cat(btb_vbank1_rd_data_f(16,1),0.U),
+    btb_sel_f(0).asBool->Cat(btb_vbank1_rd_data_f(16,1),0.U)))
+
+  val ifu_bp_hit_taken_f = (vwayhit_f & hist1_raw).orR & io.ifc_fetch_req_f & ~leak_one_f_d1 & ~io.dec_tlu_bpred_disable
+
+  val bht_force_taken_f = Cat( btb_vbank1_rd_data_f(CALL) | btb_vbank1_rd_data_f(RET) ,
+    btb_vbank0_rd_data_f(CALL) | btb_vbank0_rd_data_f(RET))
+
+  val bht_valid_f = vwayhit_f
+
+  val bht_bank1_rd_data_f =WireInit(UInt(2.W), 0.U)
+  val bht_bank0_rd_data_f =WireInit(UInt(2.W), 0.U)
+  val bht_bank0_rd_data_p1_f =WireInit(UInt(2.W), 0.U)
+
+  val bht_vbank0_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(1).asBool->bht_bank0_rd_data_f,
+                                        io.ifc_fetch_addr_f(1).asBool->bht_bank1_rd_data_f))
+
+  val bht_vbank1_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(1).asBool->bht_bank1_rd_data_f,
+                                        io.ifc_fetch_addr_f(1).asBool->bht_bank0_rd_data_p1_f))
+  bht_dir_f := Cat((bht_force_taken_f(1) | bht_vbank1_rd_data_f(1)) & bht_valid_f(1),
+                      (bht_force_taken_f(0) | bht_vbank0_rd_data_f(1)) & bht_valid_f(0))
+
+  val ifu_bp_inst_mask_f = (ifu_bp_hit_taken_f & btb_sel_f(1)) | ~ifu_bp_hit_taken_f
+  // Bank explination
+
+  hist1_raw := bht_force_taken_f | Cat(bht_vbank1_rd_data_f(1), bht_vbank0_rd_data_f(1))
+
+  val hist0_raw = Cat(bht_vbank1_rd_data_f(0), bht_vbank0_rd_data_f(0))
+
+  val pc4_raw = Cat(vwayhit_f(1) & btb_vbank1_rd_data_f(PC4),
+    vwayhit_f(0) & btb_vbank0_rd_data_f(PC4))
+
+  val pret_raw = Cat(vwayhit_f(1) & ~btb_vbank1_rd_data_f(CALL) & btb_vbank1_rd_data_f(RET),
+                      vwayhit_f(0) & ~btb_vbank0_rd_data_f(CALL) & btb_vbank0_rd_data_f(RET))
+
+  //GHR
+  val num_valids = bht_valid_f(1) +& bht_valid_f(0)
+
+  val final_h = (btb_sel_f & bht_dir_f).andR
+
+  val fghr = WireInit(UInt(BHT_GHR_SIZE.W), 0.U)
+  val merged_ghr = Mux1H(Seq((num_valids===2.U).asBool->Cat(fghr(BHT_GHR_SIZE-3,0), 0.U, final_h),
+    (num_valids===1.U).asBool->Cat(fghr(BHT_GHR_SIZE-2,0), final_h),
+    (num_valids===0.U).asBool->Cat(fghr(BHT_GHR_SIZE-1,0))))
+
+  val exu_flush_ghr = io.exu_mp_fghr
+
+  val fghr_ns = Mux1H(Seq(exu_flush_final_d1.asBool->exu_flush_ghr,
+    (~exu_flush_final_d1 & io.ifc_fetch_req_f & io.ic_hit_f & ~leak_one_f_d1).asBool -> merged_ghr,
+    (~exu_flush_final_d1 & ~(io.ifc_fetch_req_f & io.ic_hit_f & ~leak_one_f_d1)).asBool -> fghr))
+
+  fghr := RegNext(fghr_ns, init = 0.U)
+  io.ifu_bp_fghr_f := fghr
+
+  io.ifu_bp_way_f := way_raw
+  io.ifu_bp_hist1_f := hist1_raw
+  io.ifu_bp_hist0_f := hist0_raw
+  io.ifu_bp_pc4_f := pc4_raw
+
+  io.ifu_bp_valid_f := vwayhit_f & ~Fill(2, io.dec_tlu_bpred_disable)
+  io.ifu_bp_ret_f := pret_raw
+
+  val bloc_f = Cat((bht_dir_f(0) & !fetch_start_f(0)) | (!bht_dir_f(0) & fetch_start_f(0)),
+    (bht_dir_f(0) & fetch_start_f(0)) | (!bht_dir_f(0) & !fetch_start_f(0)))
+
+  val use_fa_plus = !bht_dir_f(0) & io.ifc_fetch_addr_f(0) & !btb_rd_pc4_f
+
+  val btb_fg_crossing_f = fetch_start_f(0) & btb_sel_f(0) & btb_rd_pc4_f
+  val bp_total_branch_offset_f = bloc_f(1)^btb_rd_pc4_f
+
+  val ifc_fetch_adder_prior = RegEnable(io.ifc_fetch_addr_f, 0.U, (io.ifc_fetch_req_f & ~ifu_bp_hit_taken_f & io.ic_hit_f).asBool)
+
+  val ifu_bp_poffset_f = btb_rd_tgt_f
+  val adder_pc_in_f = Mux1H(Seq(use_fa_plus.asBool->fetch_addr_p1_f,
+    btb_fg_crossing_f.asBool->ifc_fetch_adder_prior,
+    (!btb_fg_crossing_f & !use_fa_plus).asBool->io.ifc_fetch_addr_f(31,2)))
+
+  val bp_btb_target_adder_f = rvbradder(Cat(adder_pc_in_f(31,2),bp_total_branch_offset_f, 0.U), btb_rd_tgt_f)
+
+
+
+
 }
 
 
