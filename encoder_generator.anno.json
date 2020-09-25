@@ -1,5 +1,12 @@
 [
   {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~encoder_generator|encoder_generator>io_out",
+    "sources":[
+      "~encoder_generator|encoder_generator>io_in"
+    ]
+  },
+  {
     "class":"firrtl.EmitCircuitAnnotation",
     "emitter":"firrtl.VerilogEmitter"
   },
@@ -9,7 +16,7 @@
   },
   {
     "class":"firrtl.options.OutputAnnotationFileAnnotation",
-    "file":"test"
+    "file":"encoder_generator"
   },
   {
     "class":"firrtl.transforms.BlackBoxTargetDirAnno",

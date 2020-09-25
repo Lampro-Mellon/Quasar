@@ -95,8 +95,11 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val btb_bank0_rd_data_way1_f = WireInit(UInt((TAG_START+1).W), 0.U)
   val btb_bank0_rd_data_way0_p1_f = WireInit(UInt((TAG_START+1).W), 0.U)
   val btb_bank0_rd_data_way1_p1_f = WireInit(UInt((TAG_START+1).W), 0.U)
-
+  val eoc_mask = WireInit(Bool(), 0.U)
+  val btb_lru_b0_f = WireInit(UInt(LRU_SIZE.W), init = 0.U)
   val dec_tlu_way_wb = WireInit(Bool(), 0.U)
+
+
   // Hash the first PC
   val btb_rd_addr_f = el2_btb_addr_hash(io.ifc_fetch_addr_f)
   // Second pc = pc +4
@@ -141,7 +144,76 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
   val tag_match_way1_p1_f = btb_bank0_rd_data_way1_p1_f(BV) & (btb_bank0_rd_data_way1_p1_f(TAG_START,17) === fetch_rd_tag_p1_f) &
     ~(dec_tlu_way_wb_f & branch_error_bank_conflict_f) & io.ifc_fetch_req_f & ~leak_one_f
+
+  // Reordering to avoid multiple hit
+  val tag_match_way0_expanded_f = Cat(tag_match_way0_f &  (btb_bank0_rd_data_way0_f(BOFF) ^ btb_bank0_rd_data_way0_f(PC4)),
+    tag_match_way0_f & ~(btb_bank0_rd_data_way0_f(BOFF) ^ btb_bank0_rd_data_way0_f(PC4)))
+
+  val tag_match_way1_expanded_f = Cat(tag_match_way1_f &  (btb_bank0_rd_data_way1_f(BOFF) ^ btb_bank0_rd_data_way1_f(PC4)),
+    tag_match_way1_f & ~(btb_bank0_rd_data_way1_f(BOFF) ^ btb_bank0_rd_data_way1_f(PC4)))
+
+
+  val tag_match_way0_expanded_p1_f = Cat(tag_match_way0_p1_f &  (btb_bank0_rd_data_way0_p1_f(BOFF) ^ btb_bank0_rd_data_way0_p1_f(PC4)),
+    tag_match_way0_p1_f & ~(btb_bank0_rd_data_way0_p1_f(BOFF) ^ btb_bank0_rd_data_way0_p1_f(PC4)))
+
+  val tag_match_way1_expanded_p1_f = Cat(tag_match_way1_p1_f &  (btb_bank0_rd_data_way1_p1_f(BOFF) ^ btb_bank0_rd_data_way1_p1_f(PC4)),
+    tag_match_way1_p1_f & ~(btb_bank0_rd_data_way1_p1_f(BOFF) ^ btb_bank0_rd_data_way1_p1_f(PC4)))
+
+  val wayhit_f = tag_match_way0_expanded_f | tag_match_way1_expanded_f
+
+  val wayhit_p1_f = tag_match_way0_expanded_p1_f | tag_match_way1_expanded_p1_f
+
+  // Chopping off the ways that had a hit
+  val btb_bank0e_rd_data_f = Mux1H(Seq(tag_match_way0_expanded_f(0).asBool->btb_bank0_rd_data_way0_f,
+    tag_match_way1_expanded_f(0).asBool->btb_bank0_rd_data_way1_f))
+
+  val btb_bank0o_rd_data_f = Mux1H(Seq(tag_match_way0_expanded_f(1).asBool->btb_bank0_rd_data_way0_f,
+    tag_match_way1_expanded_f(1).asBool->btb_bank0_rd_data_way1_f))
+
+  val btb_bank0e_rd_data_p1_f = Mux1H(Seq(tag_match_way0_expanded_p1_f(0).asBool->btb_bank0_rd_data_way0_p1_f,
+    tag_match_way1_expanded_p1_f(1).asBool->btb_bank0_rd_data_way1_p1_f))
+
+  // Making virtual banks, made bit 1 of the pc to check
+  val btb_vbank0_rd_data_f = Mux1H(Seq(~io.ifc_fetch_addr_f(1)->btb_bank0e_rd_data_f,
+    io.ifc_fetch_addr_f(1)->btb_bank0o_rd_data_f))
+
+  val btb_vbank1_rd_data_f = Mux1H(Seq(~io.ifc_fetch_addr_f(0)->btb_bank0o_rd_data_f,
+    io.ifc_fetch_addr_f(0)->btb_bank0e_rd_data_p1_f))
+
+  // Implimenting the LRU for a 2-way BTB
+  val mp_wrindex_dec = 1.U(LRU_SIZE) << exu_mp_addr
+  val fetch_wrindex_dec = 1.U(LRU_SIZE) << btb_rd_addr_f
+  val fetch_wrindex_p1_dec = 1.U(LRU_SIZE) << btb_rd_addr_p1_f
+  val mp_wrlru_b0 = mp_wrindex_dec & Fill(LRU_SIZE, exu_mp_valid)
+
+  val vwayhit_f = Mux1H(Seq(~io.ifc_fetch_addr_f(1).asBool->wayhit_f,
+    io.ifc_fetch_addr_f(1).asBool->Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
+  val lru_update_valid_f = (vwayhit_f(0) | vwayhit_f(1)) & io.ifc_fetch_req_f & ~leak_one_f
+
+  val fetch_wrlru_b0 = fetch_wrindex_dec & Fill(fetch_wrindex_dec.getWidth, lru_update_valid_f)
+  val fetch_wrlru_p1_b0 = fetch_wrindex_p1_dec & Fill(fetch_wrindex_dec.getWidth, lru_update_valid_f)
+
+  val btb_lru_b0_hold = ~mp_wrlru_b0 & ~fetch_wrlru_b0
+  val use_mp_way = fetch_mp_collision_f
+  val use_mp_way_p1 = fetch_mp_collision_p1_f
+
+  val btb_lru_b0_ns = Mux1H(Seq(~exu_mp_way.asBool->mp_wrlru_b0,
+    tag_match_way0_f.asBool->fetch_wrlru_b0,tag_match_way0_p1_f.asBool->fetch_wrlru_p1_b0)) | btb_lru_b0_hold & btb_lru_b0_f
+
+  val btb_lru_rd_f = Mux(use_mp_way.asBool, exu_mp_way_f, (fetch_wrindex_dec & btb_lru_b0_f).orR)
+  val btb_lru_rd_p1_f = Mux(use_mp_way_p1.asBool, exu_mp_way_f, (fetch_wrindex_p1_dec & btb_lru_b0_f).orR)
+
+  val btb_vlru_rd_f = Mux1H(Seq(~io.ifc_fetch_addr_f(1).asBool->Cat(btb_lru_rd_f, btb_lru_rd_f),
+    io.ifc_fetch_addr_f(1).asBool->Cat(btb_lru_rd_p1_f, btb_lru_rd_f)))
+
+  val tag_match_vway1_expanded_f = Mux1H(Seq(~io.ifc_fetch_addr_f(1).asBool->tag_match_way1_expanded_f,
+    io.ifc_fetch_addr_f(1).asBool->Cat(tag_match_way1_expanded_p1_f(0),tag_match_way1_expanded_f(1))))
+
+  val way_raw = tag_match_vway1_expanded_f | (~vwayhit_f & btb_vlru_rd_f)
+
+  //val btb_lru_b0_f = RegNext(btb_lru_b0_ns, init = 0.U)
 }
+
 
 object ifu_bp extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_bp_ctl()))

@@ -1,6 +1,20 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_test_out",
+    "sources":[
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_bf",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_btb_target_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_path_final",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_hit_taken_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_pmu_fetch_stall",
     "sources":[
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_bf_raw",
