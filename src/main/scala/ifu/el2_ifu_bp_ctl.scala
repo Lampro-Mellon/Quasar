@@ -317,8 +317,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
 }
 
-
+/*
 object ifu_bp extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_bp_ctl()))
-}
+}*/
 
