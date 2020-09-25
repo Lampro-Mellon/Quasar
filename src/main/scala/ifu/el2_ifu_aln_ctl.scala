@@ -377,7 +377,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
   f2pc := RegEnable(io.ifu_fetch_pc, 0.U, f2_wr_en.asBool)
   f2pc := RegEnable(f1pc_in, 0.U, f1_shift_wr_en.asBool)
   f2pc := RegEnable(f0pc_in, 0.U, f0_shift_wr_en.asBool)
-}
+}/*
 object ifu_aln extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_aln_ctl()))
-}
+}*/
