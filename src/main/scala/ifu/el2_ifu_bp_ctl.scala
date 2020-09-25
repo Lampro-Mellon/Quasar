@@ -300,10 +300,20 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     btb_fg_crossing_f.asBool->ifc_fetch_adder_prior,
     (!btb_fg_crossing_f & !use_fa_plus).asBool->io.ifc_fetch_addr_f(31,2)))
 
-  val bp_btb_target_adder_f = rvbradder(Cat(adder_pc_in_f(31,2),bp_total_branch_offset_f, 0.U), btb_rd_tgt_f)
+  val bp_btb_target_adder_f = rvbradder(Cat(adder_pc_in_f(31,2),bp_total_branch_offset_f, 0.U), Cat(btb_rd_tgt_f,0.U))
+//
+  val rets_out = Wire(Vec(RET_STACK_SIZE, UInt(32.W)))
+  rets_out := (0 until RET_STACK_SIZE).map(i=>0.U)
+  io.ifu_bp_btb_target_f := Mux((btb_rd_ret_f & ~btb_rd_call_f & rets_out(0)(0)).asBool,
+    rets_out(0)(31,1),bp_btb_target_adder_f(31,1))
 
+  //val bp_rs_call_target_f = rvbradder(Cat(adder_pc_in_f(31,2),bp_total_branch_offset_f, 0.U), Cat(Fill(11, 0.U),~btb_rd_pc4_f, 0.U))
 
+  val rs_push = btb_rd_call_f & ~btb_rd_ret_f & ifu_bp_hit_taken_f
+  val rs_pop = btb_rd_ret_f & ~btb_rd_call_f & ifu_bp_hit_taken_f
+  val rs_hold = ~rs_push & ~rs_pop
 
+// Return stack
 
 }
 
