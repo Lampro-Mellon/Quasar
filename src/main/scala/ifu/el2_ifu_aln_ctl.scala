@@ -95,23 +95,24 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
 
   val aligndata = Mux1H(Seq(f0val(0).asBool -> q0final, (~f0val(1) & f0val(0)).asBool -> Cat(q1final,q0final)))
 
-  val decompressed = Module(new el2_ifu_compress_ctl(32, true))
+//  val decompressed = Module(new el2_ifu_compress_ctl(32, true))
 
-  decompressed.io.in := aligndata
+  //decompressed.io.in := aligndata
 
-  decompressed.io.out <> io.ifu_i0_instr
+  //decompressed.io.out <> io.ifu_i0_instr
 
 
   // 16-bit compressed instruction from the aligner to the dec for tracer
   io.ifu_i0_cinst := aligndata(15,0)
 
   // Checking if its a 32-bit instruction or not
-  val first4B = decompressed.io.rvc
+  //val first4B = decompressed.io.rvc
+  val first4B = WireInit(Bool(), 0.U)
   val first2B = ~first4B
   val alignicaf = Mux1H(Seq(f0val(1).asBool -> f0icaf, (~f0val(1) & f0val(0)).asBool -> Cat(f1icaf,f0icaf)))
 
-  io.ifu_i0_icaf := Mux1H(Seq(first4B -> alignicaf.orR, first2B -> alignicaf(0)))
-  io.ifu_i0_valid := Mux1H(Seq(first4B -> alignval(1), first2B -> alignval(0)))
+  io.ifu_i0_icaf := Mux1H(Seq(first4B.asBool -> alignicaf.orR, first2B.asBool -> alignicaf(0)))
+  io.ifu_i0_valid := Mux1H(Seq(first4B.asBool -> alignval(1), first2B.asBool -> alignval(0)))
   io.ifu_i0_pc4 := first4B
 
   val shift_2B = i0_shift & first2B
@@ -325,7 +326,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
 
   io.ifu_i0_icaf_f1 := first4B & icaf_eff & alignfromf1
 
-  io.ifu_i0_dbecc := Mux1H(Seq(first4B->aligndbecc.orR, first2B->aligndbecc(0)))
+  io.ifu_i0_dbecc := Mux1H(Seq(first4B.asBool->aligndbecc.orR, first2B.asBool->aligndbecc(0)))
 
   val firstpc_hash =  el2_btb_addr_hash(f0pc)
 
