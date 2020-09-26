@@ -318,8 +318,8 @@ class RVCDecoder(x: UInt, xLen: Int) {
 
 class el2_ifu_compress_ctl( val XLen: Int, val usingCompressed: Boolean) extends Module  {
   val io = IO(new Bundle {
-    val in = Input(UInt(16.W))
-    val out = Output(UInt(32.W))
+    val din = Input(UInt(16.W))
+    val dout = Output(UInt(32.W))
     //val rvc = Output(Bool())
     //val legal = Output(Bool())
     //val waleed_out = Output(UInt(32.W))
@@ -328,10 +328,10 @@ class el2_ifu_compress_ctl( val XLen: Int, val usingCompressed: Boolean) extends
     //val q3_Out = Output(new ExpandedInstruction)
   })
   if (usingCompressed) {
-    val rvc = io.in(1,0) =/= 3.U
-    val inst = new RVCDecoder(Cat(Fill(16,0.U),io.in), XLen)
+    val rvc = io.din(1,0) =/= 3.U
+    val inst = new RVCDecoder(Cat(Fill(16,0.U),io.din), XLen)
     val decoded = inst.decode
-    io.out := Mux(rvc, 0.U, decoded.bits)
+    io.dout := Mux(rvc, 0.U, decoded.bits)
     //io.out.rd := 0.U
     //io.out.rs1 := 0.U
     //io.out.rs2 := 0.U
@@ -360,7 +360,7 @@ class el2_ifu_compress_ctl( val XLen: Int, val usingCompressed: Boolean) extends
     io.waleed_out := Mux(io.legal,io.out.bits,0.U)*/
   } else {
     //io.rvc := false.B
-    io.out := new RVCDecoder(io.in, XLen).passthrough
+    io.dout := new RVCDecoder(io.din, XLen).passthrough
   }
 }*/
 

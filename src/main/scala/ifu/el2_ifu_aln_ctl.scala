@@ -30,7 +30,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
     val ifu_i0_icaf_type = Output(UInt(2.W))
     val ifu_i0_icaf_f1 = Output(Bool())
     val ifu_i0_dbecc = Output(Bool())
-    val ifu_i0_instr = Output(new ExpandedInstruction)
+    val ifu_i0_instr = Output(UInt(32.W))
     val ifu_i0_pc = Output(UInt(32.W))
     val ifu_i0_pc4 = Output(Bool())
     val ifu_fb_consume1 = Output(Bool())
@@ -101,6 +101,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
 
   //decompressed.io.out <> io.ifu_i0_instr
 
+  io.ifu_i0_instr := 0.U
 
   // 16-bit compressed instruction from the aligner to the dec for tracer
   io.ifu_i0_cinst := aligndata(15,0)

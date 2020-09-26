@@ -154,7 +154,7 @@ val io = IO(new Bundle{
 
   io.ifc_fetch_addr_f := RegEnable(io.ifc_fetch_addr_bf, init = 0.U, io.exu_flush_final|io.ifc_fetch_req_f)
 }
-
+/*
 object ifu_ifc extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_ifc_ctrl()))
-}
+}*/
