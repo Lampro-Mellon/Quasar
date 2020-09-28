@@ -11,13 +11,14 @@ class el2_ifu_compress_ctl extends Module {
     val l2 = Output(UInt(32.W))
     val l3 = Output(UInt(32.W))
     val legal = Output(Bool())
+    val o = Output(UInt(32.W))
     //val test = Output(Bool())
   })
 
   //io.dout := (0 until 32).map(i=> 0.U.asBool)
 
   def pat(y : List[Int]) = (0 until y.size).map(i=> if(y(i)>=0) io.din(y(i)) else !io.din(y(i).abs)).reduce(_&_)
-  val out = Wire(Vec(32, Bool()))
+  val out = Wire(Vec(32, UInt(1.W)))
   out := (0 until 32).map(i=> 0.U.asBool)
   out(30) := pat(List(15, -14, -13, 10, -6, -5, 0)) | pat(List(15, -14, -13, -11, 10, 0))
   out(20) := pat(List(-14, 12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, 1))
@@ -27,17 +28,32 @@ class el2_ifu_compress_ctl extends Module {
   out(12) := pat(List(15, -14, -13, 6, 5, 0)) | pat(List(15, -14, -13, -11, 0)) | pat(List(15, -14, -13, -10, 0)) |
   pat(List(-15, -14, 1)) | pat(List(15, 14, 13))
   out(6) := (pat(List(15, -14, -6, -5, -4, -3, -2)) & !io.din(0)) | pat(List(-14, 13)) | pat(List(15, 14, 0))
+
   out(5) := (io.din(15)&(!io.din(0))) | pat(List(15, 11, 10)) | pat(List(13, -8)) | pat(List(13, 7)) |
     pat(List(13, 9)) | pat(List(13, 10)) | pat(List(13, 11)) | pat(List(-14, 13)) | pat(List(15, 14))
+
+
   out(4) := (pat(List(-14, -11, -10, -9, -8, -7))&(!io.din(0))) | (pat(List(-15, -14))&(!io.din(0))) |
     (pat(List(-14, 6))&(!io.din(0))) | pat(List(-15, 14, 0)) | (pat(List(-14, 5))&(!io.din(0))) |
     (pat(List(-14, 4))&(!io.din(0))) | (pat(List(-14, 3))&(!io.din(0))) | (pat(List(-14, 2))&(!io.din(0))) |
     pat(List(-14, -13, 0))
+
+
+
+
   out(3) := pat(List(-14, 13))
-  out(2) := pat(List(-14, 12, 11, -6, -5, -4, -3, -2, 1)) | pat(List(-14, 12, 10, -6, -5, -4, -3, -2, 1)) |
-  pat(List(-14, 12, 9, -6, -5, -4, -3, -2, 1)) | pat(List(-14,12,8,6,-5,-4,-3,-2,1)) | pat(List(-14,12,7,-6,-5,-4,-3,-2,1)) |
-    (pat(List(15,-14,-12,-6,-5,-4,-3,-2))&(!io.din(0))) | pat(List(-15,13,-8)) | pat(List(-15,13,7)) | pat(List(-15,13,9)) |
-  pat(List(-15,13,10)) | pat(List(-15,13,11)) | pat(List(-14,13))
+  out(2) := pat(List(-14, 12, 11, -6, -5, -4, -3, -2, 1)) |
+            pat(List(-14, 12, 10, -6, -5, -4, -3, -2, 1)) |
+            pat(List(-14, 12, 9, -6, -5, -4, -3, -2, 1)) |
+            pat(List(-14, 12, 8, -6,-5,-4, -3, -2,1)) |
+            pat(List(-14, 12, 7, -6, -5, -4, -3, -2,1)) |
+            (pat(List(15, -14,-12, -6, -5, -4, -3, -2))&(!io.din(0))) |
+            pat(List(-15,13,-8)) |
+            pat(List(-15,13,7)) |
+            pat(List(-15,13,9)) |
+            pat(List(-15,13,10)) |
+            pat(List(-15,13,11)) |
+            pat(List(-14,13))
   out(1) := 1.U.asBool
   out(0) := 1.U.asBool
 
@@ -148,6 +164,7 @@ class el2_ifu_compress_ctl extends Module {
   io.l2 := l2
   io.l3 := l3
   io.legal := legal
+  io.o := out.reverse.reduce(Cat(_,_))
 }
 /*
 class ExpandedInstruction extends Bundle {

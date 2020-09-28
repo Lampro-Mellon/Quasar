@@ -352,7 +352,17 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val bht_rd_addr_hashed_p1_f = el2_btb_ghr_hash(btb_rd_addr_p1_f, fghr)
 
   val bht_wr_addr0 = mp_hashed
-  //val bht_wr_addr2 =
+  val bht_wr_addr2 = br0_hashed_wb
+  val bht_rd_addr_f = bht_rd_addr_hashed_f
+  val bht_rd_addr_p1_f = bht_rd_addr_hashed_p1_f
+
+  // BTB
+  // Entry -> Tag[BTB-BTAG-SIZE], toffset[12], pc4, boffset, call, ret, valid
+
+  val btb_bank0_rd_data_way0_out = (0 until LRU_SIZE).map(i=>RegEnable(btb_wr_data,0.U,((btb_wr_addr===i.U) & btb_wr_en_way0).asBool))
+  val btb_bank0_rd_data_way1_out = (0 until LRU_SIZE).map(i=>RegEnable(btb_wr_data,0.U,((btb_wr_addr===i.U) & btb_wr_en_way1).asBool))
+
+
 }
 
 object ifu_bp extends App {
