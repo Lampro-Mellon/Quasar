@@ -16,8 +16,8 @@ class el2_ifu_compress_ctl extends Module {
     val rs2d = Output(UInt(5.W))
     val rs2pd = Output(UInt(5.W))
     val o = Output(UInt(32.W))
-    val sjaloffset11_1 = Output(Bool())
-    val sluimm17_12 = Output(Bool())
+    val l2_19 = Output(UInt())
+    val l2_31 = Output(UInt())
   })
 
   //io.dout := (0 until 32).map(i=> 0.U.asBool)
@@ -109,8 +109,11 @@ class el2_ifu_compress_ctl extends Module {
   val simm9_4 = pat(List(-15,14,13,-11,-10,-9,8,-7))
   val simm5_0 = pat(List(-14,-13,11,-10,0)) | pat(List(-15,-13,0))
   val sjaloffset11_1 = pat(List(-14,13))
-  val sluimm17_12 = pat(List(-15,14,13,7)) | pat(List(-15,14,13,-8)) | pat(List(-15,14,13,9)) |
-    pat(List(-15,14,13,10)) | pat(List(-15,14,13,11))
+  val sluimm17_12 = pat(List(-15,14,13,7)) |
+    pat(List(-15,14,13,-8)) |
+    pat(List(-15,14,13,9)) |
+    pat(List(-15,14,13,10)) |
+    pat(List(-15,14,13,11))
   val uimm5_0 = pat(List(15,-14,-13,-11,0)) | pat(List(-15,-14,1))
   val uswimm6_2 = pat(List(15,-1))&(!io.din(0))
   val uswspimm7_2 = pat(List(15,14,1))
@@ -154,6 +157,8 @@ class el2_ifu_compress_ctl extends Module {
   val l2_19 = l1(19,12) | Mux1H(Seq(sjaloffset11_1.asBool->sjald(19,11),
     sluimm17_12.asBool->sluimmd(7,0)))
   val l2 = Cat(l2_31, l2_19, l1(11,0))
+
+
   val sbr8d = Cat(io.din(12),io.din(6),io.din(5),io.din(2),io.din(11),io.din(10),io.din(4),io.din(3),0.U)
   val uswimm6d = Cat(io.din(5), io.din(12,10), io.din(6), 0.U(2.W))
   val uswspimm7d = Cat(io.din(8,7),io.din(12,9), 0.U(2.W))
@@ -187,8 +192,8 @@ class el2_ifu_compress_ctl extends Module {
   io.rdpd := rdpd
   io.rs2d := rs2d
   io.rs2pd := rs2pd
-  io.sjaloffset11_1 := sjaloffset11_1
-  io.sluimm17_12 := sluimm17_12
+  io.l2_19 := l2_19
+  io.l2_31 := l2_31
 }
 /*
 class ExpandedInstruction extends Bundle {
