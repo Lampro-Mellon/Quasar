@@ -38,6 +38,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     val ifu_bp_pc4_f = Output(UInt(2.W))
     val ifu_bp_valid_f = Output(UInt(2.W))
     val ifu_bp_poffset_f = Output(UInt(12.W))
+
+   // val test = Output(Vec(8,UInt(32.W)))
   })
   io.ifu_bp_hit_taken_f := 0.U
   io.ifu_bp_btb_target_f := 0.U
@@ -86,8 +88,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val dec_tlu_br0_start_error_wb = io.dec_tlu_br0_r_pkt.br_start_error
   val exu_i0_br_fghr_wb = io.exu_i0_br_fghr_r
 
-  val fetch_rd_tag_p1_f = WireInit(UInt(BTB_BTAG_SIZE.W), 0.U)
-  val fetch_rd_tag_f = WireInit(UInt(BTB_BTAG_SIZE.W), 0.U)
+  //val fetch_rd_tag_p1_f = WireInit(UInt(BTB_BTAG_SIZE.W), 0.U)
+  //val fetch_rd_tag_f = WireInit(UInt(BTB_BTAG_SIZE.W), 0.U)
   val bht_dir_f = WireInit(UInt(2.W), 0.U)
   val dec_tlu_error_wb = WireInit(Bool(), 0.U)
   val btb_error_addr_wb = WireInit(UInt((BTB_ADDR_HI-BTB_ADDR_LO).W), 0.U)
@@ -121,6 +123,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val branch_error_bank_conflict_f = branch_error_collision_f & dec_tlu_error_wb
   val branch_error_bank_conflict_p1_f = branch_error_collision_p1_f & dec_tlu_error_wb
 
+  val fetch_rd_tag_f = if(BTB_BTAG_FOLD) el2_btb_tag_hash_fold(io.ifc_fetch_addr_f) else el2_btb_tag_hash(io.ifc_fetch_addr_f)
+  val fetch_rd_tag_p1_f = if(BTB_BTAG_FOLD) el2_btb_tag_hash_fold(fetch_addr_p1_f) else el2_btb_tag_hash(fetch_addr_p1_f)
   // There is a misprediction and the exu is writing back
   val fetch_mp_collision_f = (io.exu_mp_btag === fetch_rd_tag_f) & exu_mp_valid & io.ifc_fetch_req_f & (exu_mp_addr === btb_rd_addr_f)
   val fetch_mp_collision_p1_f = (io.exu_mp_btag === fetch_rd_tag_p1_f) & exu_mp_valid & io.ifc_fetch_req_f & (exu_mp_addr === btb_rd_addr_p1_f)
@@ -301,24 +305,57 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     (!btb_fg_crossing_f & !use_fa_plus).asBool->io.ifc_fetch_addr_f(31,2)))
 
   val bp_btb_target_adder_f = rvbradder(Cat(adder_pc_in_f(31,2),bp_total_branch_offset_f, 0.U), Cat(btb_rd_tgt_f,0.U))
-//
-//  val rets_out = Wire(Vec(RET_STACK_SIZE, UInt(32.W)))
-//  rets_out := (0 until RET_STACK_SIZE).map(i=>0.U)
-//  io.ifu_bp_btb_target_f := Mux((btb_rd_ret_f & ~btb_rd_call_f & rets_out(0)(0)).asBool,
-//    rets_out(0)(31,1),bp_btb_target_adder_f(31,1))
+  val rets_out = Wire(Vec(RET_STACK_SIZE, UInt(32.W)))
+  rets_out := (0 until RET_STACK_SIZE).map(i=>0.U)
 
-  //val bp_rs_call_target_f = rvbradder(Cat(adder_pc_in_f(31,2),bp_total_branch_offset_f, 0.U), Cat(Fill(11, 0.U),~btb_rd_pc4_f, 0.U))
+  //io.test := bp_btb_target_adder_f
+  io.ifu_bp_btb_target_f := Mux((btb_rd_ret_f & ~btb_rd_call_f & rets_out(0)(0)).asBool,
+    rets_out(0)(31,1),bp_btb_target_adder_f(31,1))
 
-//  val rs_push = btb_rd_call_f & ~btb_rd_ret_f & ifu_bp_hit_taken_f
-//  val rs_pop = btb_rd_ret_f & ~btb_rd_call_f & ifu_bp_hit_taken_f
-//  val rs_hold = ~rs_push & ~rs_pop
+  // Return stack
+  val bp_rs_call_target_f = rvbradder(Cat(adder_pc_in_f(31,2),bp_total_branch_offset_f, 0.U), Cat(Fill(11, 0.U),~btb_rd_pc4_f, 0.U))
 
-// Return stack
+  val rs_push = btb_rd_call_f & ~btb_rd_ret_f & ifu_bp_hit_taken_f
+  val rs_pop = btb_rd_ret_f & ~btb_rd_call_f & ifu_bp_hit_taken_f
+  val rs_hold = ~rs_push & ~rs_pop
 
+  val rsenable = (0 until RET_STACK_SIZE).map(i=> if(i==0) !rs_hold else if(i==RET_STACK_SIZE-1) rs_push else rs_push | rs_pop)
+
+  val rets_in = (0 until RET_STACK_SIZE).map(i=> if(i==0)
+    Mux1H(Seq(rs_push.asBool -> Cat(bp_rs_call_target_f(31,1),1.U), rs_pop.asBool -> rets_out(1)))
+  else if(i==RET_STACK_SIZE-1) rets_out(i-1)
+  else Mux1H(Seq(rs_push.asBool->rets_out(i-1), rs_pop.asBool->rets_out(i+1))))
+  rets_out := (0 until RET_STACK_SIZE).map(i=>RegEnable(rets_in(i),0.U,rsenable(i).asBool))
+
+  dec_tlu_error_wb := dec_tlu_br0_start_error_wb | dec_tlu_br0_error_wb
+  btb_error_addr_wb := dec_tlu_br0_addr_wb
+  dec_tlu_way_wb := dec_tlu_br0_way_wb
+  val btb_valid = exu_mp_valid & (!dec_tlu_error_wb)
+  val btb_wr_tag = io.exu_mp_btag
+
+  val btb_wr_data = Cat(btb_wr_tag, exu_mp_tgt, exu_mp_pc4, exu_mp_boffset, exu_mp_call | exu_mp_ja, exu_mp_ret | exu_mp_ja, btb_valid)
+  val exu_mp_valid_write = exu_mp_valid & exu_mp_ataken
+
+  val btb_wr_en_way0 = ((!exu_mp_way) & exu_mp_valid_write & (!dec_tlu_error_wb)) | ((!dec_tlu_way_wb) & dec_tlu_error_wb)
+  val btb_wr_en_way1 = (exu_mp_way & exu_mp_valid_write & (!dec_tlu_error_wb)) | (dec_tlu_way_wb & dec_tlu_error_wb)
+
+  val btb_wr_addr = Mux(dec_tlu_error_wb.asBool , btb_error_addr_wb, exu_mp_addr)
+  val middle_of_bank = exu_mp_pc4 ^ exu_mp_boffset
+  val bht_wr_en0 = Fill(2, exu_mp_valid & !exu_mp_call & !exu_mp_ret & !exu_mp_ja) & Cat(middle_of_bank, ~middle_of_bank)
+  val bht_wr_en2 = Fill(2, dec_tlu_br0_v_wb) & Cat(dec_tlu_br0_middle_wb, ~dec_tlu_br0_middle_wb)
+  val bht_wr_data0 = exu_mp_hist
+  val bht_wr_data2 = dec_tlu_br0_hist_wb
+
+  val mp_hashed = el2_btb_ghr_hash(exu_mp_addr, io.exu_mp_eghr)
+  val br0_hashed_wb = el2_btb_ghr_hash(dec_tlu_br0_addr_wb, exu_i0_br_fghr_wb)
+  val bht_rd_addr_hashed_f = el2_btb_ghr_hash(btb_rd_addr_f, fghr)
+  val bht_rd_addr_hashed_p1_f = el2_btb_ghr_hash(btb_rd_addr_p1_f, fghr)
+
+  val bht_wr_addr0 = mp_hashed
+  //val bht_wr_addr2 =
 }
 
-/*
 object ifu_bp extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_bp_ctl()))
-}*/
+}
 

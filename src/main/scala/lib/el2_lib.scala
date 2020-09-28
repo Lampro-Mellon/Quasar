@@ -196,13 +196,13 @@ trait el2_lib extends param{
     data_in.xorR.asUInt
 
   def rvbradder (pc:UInt, offset:UInt) = {
-    val dout_lower = Cat(pc(12,1) +& offset(12,1), 0.U)
+    val dout_lower = pc(12,1) +& offset(12,1)
     val pc_inc = pc(31,13)+1.U
     val pc_dec = pc(31,13)+1.U
     val sign = offset(12)
     Cat(Mux1H(Seq((sign ^ !dout_lower(dout_lower.getWidth-1)).asBool -> pc(31,13),
-      (!sign & dout_lower(dout_lower.getWidth-1)).asBool -> (pc(31,13)+1.U),
-      (sign & !dout_lower(dout_lower.getWidth-1)).asBool -> (pc(31,13)-1.U))) , dout_lower(11,1), 0.U)
+      (!sign & dout_lower(dout_lower.getWidth-1)).asBool -> pc_inc,
+      (sign & !dout_lower(dout_lower.getWidth-1)).asBool -> pc_dec))  , dout_lower(11,0), 0.U)
   }
 
   // RV range

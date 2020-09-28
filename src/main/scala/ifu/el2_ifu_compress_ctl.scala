@@ -7,6 +7,10 @@ class el2_ifu_compress_ctl extends Module {
   val io = IO(new Bundle{
     val din = Input(UInt(16.W))
     val dout = Output(UInt(32.W))
+    val l1 = Output(UInt(32.W))
+    val l2 = Output(UInt(32.W))
+    val l3 = Output(UInt(32.W))
+    val legal = Output(Bool())
     //val test = Output(Bool())
   })
 
@@ -140,6 +144,10 @@ class el2_ifu_compress_ctl extends Module {
     pat(List(-15,-13,12,-1)) | (pat(List(14,-13))&(!io.din(0)))
 
   io.dout:= l3 & Fill(32, legal)
+  io.l1 := l1
+  io.l2 := l2
+  io.l3 := l3
+  io.legal := legal
 }
 /*
 class ExpandedInstruction extends Bundle {
