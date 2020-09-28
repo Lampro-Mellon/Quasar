@@ -100,16 +100,16 @@ class el2_ifu_compress_ctl extends Module {
   val uswimm6_2 = pat(List(15,-1))&(!io.din(0))
   val uswspimm7_2 = pat(List(15,14,1))
 
-  val l1_6 = VecInit(out(6),out(5),out(4),out(3),out(2),out(1),out(0)).asUInt()
-  val l1_11 = VecInit(out(11),out(10),out(9),out(8),out(7)).asUInt | Mux1H(Seq(rdrd.asBool->rdd,
+  val l1_6 = Cat(out(6),out(5),out(4),out(3),out(2),out(1),out(0)).asUInt()
+  val l1_11 = Cat(out(11),out(10),out(9),out(8),out(7)).asUInt | Mux1H(Seq(rdrd.asBool->rdd,
   rdprd.asBool->rdpd, rs2prd.asBool->rs2pd, rdeq1.asBool->1.U(5.W), rdeq2.asBool->2.U(5.W)))
 
   val l1_14 = Cat(out(14),out(13),out(12))
-  val l1_19 = VecInit(out(19),out(18),out(17),out(16),out(15)).asUInt | Mux1H(Seq(rdrs1.asBool->rdd,
+  val l1_19 = Cat(out(19),out(18),out(17),out(16),out(15)).asUInt | Mux1H(Seq(rdrs1.asBool->rdd,
     rdprs1.asBool->rdpd, rs1eq2.asBool->2.U(5.W)))
-  val l1_24 = VecInit(out(24),out(23),out(22),out(21),out(20)).asUInt | Mux1H(Seq(rs2rs2.asBool->rs2d,
+  val l1_24 = Cat(out(24),out(23),out(22),out(21),out(20)).asUInt | Mux1H(Seq(rs2rs2.asBool->rs2d,
     rs2prs2.asBool->rs2pd))
-  val l1_31 = VecInit(out(31),out(30),out(29),out(28),out(27),out(26),out(25)).asUInt
+  val l1_31 = Cat(out(31),out(30),out(29),out(28),out(27),out(26),out(25)).asUInt
   val l1 = Cat(l1_31,l1_24,l1_19,l1_14,l1_11,l1_6)
 
   val simm5d = Cat(io.din(12), io.din(6,2))
