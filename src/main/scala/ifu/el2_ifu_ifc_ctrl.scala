@@ -34,7 +34,9 @@ val io = IO(new Bundle{
   val ifc_iccm_access_bf = Output(Bool())
   val ifc_region_acc_fault_bf = Output(Bool())
   val ifc_dma_access_ok = Output(Bool())
-  val test_out = Output(UInt())
+  val sel_last_addr_bf = Output(Bool())
+  val sel_btb_addr_bf = Output(Bool())
+  val sel_next_addr_bf = Output(Bool())
 })
 
   io.ifc_region_acc_fault_bf := 0.U
@@ -49,9 +51,9 @@ val io = IO(new Bundle{
   val fb_left = WireInit(Bool(), init = 0.U)
   val wfm = WireInit(Bool(), init = 0.U)
   val idle = WireInit(Bool(), init = 0.U)
-  val sel_last_addr_bf = WireInit(Bool(), init = 0.U)
-  val sel_btb_addr_bf = WireInit(Bool(), init = 0.U)
-  val sel_next_addr_bf = WireInit(Bool(), init = 0.U)
+//  val sel_last_addr_bf = WireInit(Bool(), init = 0.U)
+//  val sel_btb_addr_bf = WireInit(Bool(), init = 0.U)
+//  val sel_next_addr_bf = WireInit(Bool(), init = 0.U)
   val miss_f = WireInit(Bool(), init = 0.U)
   val miss_a = WireInit(Bool(), init = 0.U)
   val flush_fb = WireInit(Bool(), init = 0.U)
@@ -71,17 +73,17 @@ val io = IO(new Bundle{
 
   miss_a := RegNext(miss_f, init=0.U)
 
-  sel_last_addr_bf := ~io.exu_flush_final & (~io.ifc_fetch_req_f | ~io.ic_hit_f)
-  sel_btb_addr_bf  := ~io.exu_flush_final & io.ifc_fetch_req_f & io.ifu_bp_hit_taken_f & io.ic_hit_f
-  sel_next_addr_bf := ~io.exu_flush_final & io.ifc_fetch_req_f & ~io.ifu_bp_hit_taken_f & io.ic_hit_f
+  io.sel_last_addr_bf := ~io.exu_flush_final & (~io.ifc_fetch_req_f | ~io.ic_hit_f)
+  io.sel_btb_addr_bf  := ~io.exu_flush_final & io.ifc_fetch_req_f & io.ifu_bp_hit_taken_f & io.ic_hit_f
+  io.sel_next_addr_bf := ~io.exu_flush_final & io.ifc_fetch_req_f & ~io.ifu_bp_hit_taken_f & io.ic_hit_f
 
   // TODO: Make an assertion for the 1H-Mux under here
   io.ifc_fetch_addr_bf := Mux1H(Seq(io.exu_flush_final.asBool -> io.exu_flush_path_final,  // Replay PC
-                            sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f,         // Hold the current PC
-                            sel_btb_addr_bf.asBool -> io.ifu_bp_btb_target_f,       // Take the predicted PC
-                            sel_next_addr_bf.asBool -> fetch_addr_next))            // PC+4
+                            io.sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f,         // Hold the current PC
+                            io.sel_btb_addr_bf.asBool -> io.ifu_bp_btb_target_f,       // Take the predicted PC
+                            io.sel_next_addr_bf.asBool -> fetch_addr_next))            // PC+4
 
-  io.test_out := io.ifc_fetch_addr_bf
+  //io.test_out := io.ifc_fetch_addr_bf
 
   line_wrap := 0.U//fetch_addr_next(ICACHE_TAG_INDEX_LO) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO)
 
@@ -154,7 +156,7 @@ val io = IO(new Bundle{
 
   io.ifc_fetch_addr_f := RegEnable(io.ifc_fetch_addr_bf, init = 0.U, io.exu_flush_final|io.ifc_fetch_req_f)
 }
-/*
+
 object ifu_ifc extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_ifc_ctrl()))
-}*/
+}

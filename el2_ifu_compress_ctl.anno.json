@@ -1,6 +1,13 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_sjald",
+    "sources":[
+      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_dout",
     "sources":[
       "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"

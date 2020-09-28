@@ -1,16 +1,38 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_test_out",
+    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_bf",
     "sources":[
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_bf",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_btb_target_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_next_addr_bf",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_path_final",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_btb_addr_bf",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_last_addr_bf",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_hit_taken_f",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_next_addr_bf",
+    "sources":[
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_hit_taken_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_btb_addr_bf",
+    "sources":[
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_hit_taken_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final"
     ]
   },
   {
@@ -22,33 +44,6 @@
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_fb_consume2",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_fb_consume1"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_bf",
-    "sources":[
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_btb_target_f",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_path_final",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_f",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_hit_taken_f",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_iccm_access_bf",
-    "sources":[
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_bf",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_btb_target_f",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_path_final",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_f",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_hit_taken_f",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f"
     ]
   },
   {
@@ -68,14 +63,43 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_last_addr_bf",
+    "sources":[
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_uncacheable_bf",
     "sources":[
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_dec_tlu_mrac_ff",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_bf",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_btb_target_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_next_addr_bf",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_path_final",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_btb_addr_bf",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_last_addr_bf",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_hit_taken_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_iccm_access_bf",
+    "sources":[
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_bf",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_btb_target_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_next_addr_bf",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_path_final",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_btb_addr_bf",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_sel_last_addr_bf",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_hit_taken_f",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f"
