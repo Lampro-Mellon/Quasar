@@ -73,9 +73,19 @@ class el2_ifu_compress_ctl extends Module {
     pat(List(-14,4,1)) | pat(List(-15,14,9,0)) | pat(List(-14,3,1)) | pat(List(-15,14,-8,0)) |
   pat(List(-14,2,1)) | pat(List(-15,14,7,0)) | pat(List(-15,1)) | pat(List(-15,-13,0))
 
-  val rdrs1 = pat(List(-14,12,11,1)) | pat(List(-14,12,10,1)) | pat(List(-14,12,9,1)) | pat(List(-14,12,8,1)) |
-    pat(List(-14,12,7,1)) | pat(List(-14,-12,-6,-5,-4,-3,-2,1)) | pat(List(-14,12,6,1)) | pat(List(-14,12,5,1)) |
-    pat(List(-14,12,4,1)) | pat(List(-14,12,3,1)) | pat(List(-14,12,2,1)) | pat(List(-15,-14,-13,0))
+  val rdrs1 = pat(List(-14,12,11,1)) |
+    pat(List(-14,12,10,1)) |
+    pat(List(-14,12,9,1)) |
+    pat(List(-14,12,8,1)) |
+    pat(List(-14,12,7,1)) |
+    pat(List(-14,-12,-6,-5,-4,-3,-2,1)) |
+    pat(List(-14,12,6,1)) |
+    pat(List(-14,12,5,1)) |
+    pat(List(-14,12,4,1)) |
+    pat(List(-14,12,3,1)) |
+    pat(List(-14,12,2,1)) |
+    pat(List(-15,-14,-13,0)) |
+    pat(List(-15,-14,1))
 
   val rs2rs2 = pat(List(15,6,1)) | pat(List(15,5,1)) | pat(List(15,4,1)) | pat(List(15,3,1)) | pat(List(15,2,1)) | pat(List(15,14,1))
 
