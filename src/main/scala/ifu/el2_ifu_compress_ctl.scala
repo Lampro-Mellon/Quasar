@@ -21,6 +21,7 @@ class el2_ifu_compress_ctl extends Module {
     val uimm9d = Output(UInt())
     val simm5d = Output(UInt())
     val sjald = Output(UInt())
+    val l2_31 = Output(UInt())
   })
 
   //io.dout := (0 until 32).map(i=> 0.U.asBool)
@@ -148,19 +149,19 @@ class el2_ifu_compress_ctl extends Module {
   val sluimmd = Cat(Fill(15, io.din(12)), io.din(6,2))
   io.sluimmd := sluimmd
 
-  val l2_31 = l1(31,20) |
-    Mux1H(Seq(simm5_0.asBool->Cat(Fill(7, simm5d(5)), simm5d(4,0)),
-              uimm9_2.asBool->Cat(0.U(2.W), uimm9d, 0.U(2.W)),
-              simm9_4.asBool->Cat(Fill(3, simm9d(5)), simm9d(4,0), 0.U(4.W)),
-              ulwimm6_2.asBool->Cat(0.U(5.W), ulwimm6d, 0.U(2.W)),
-              ulwspimm7_2.asBool->Cat(0.U(4.W), ulwspimm7d, 0.U(2.W)),
-              uimm5_0.asBool->Cat(0.U(6.W), uimm5d),
-              sjaloffset11_1->Cat(sjald(19), sjald(9,0), sjald(10)),
-              sluimm17_12->sluimmd(19,8)))
+  io.l2_31 := l1(31,20)// |
+//    Mux1H(Seq(simm5_0.asBool->Cat(Fill(7, simm5d(5)), simm5d(4,0)),
+//              uimm9_2.asBool->Cat(0.U(2.W), uimm9d, 0.U(2.W)),
+//              simm9_4.asBool->Cat(Fill(3, simm9d(5)), simm9d(4,0), 0.U(4.W)),
+//              ulwimm6_2.asBool->Cat(0.U(5.W), ulwimm6d, 0.U(2.W)),
+//              ulwspimm7_2.asBool->Cat(0.U(4.W), ulwspimm7d, 0.U(2.W)),
+//              uimm5_0.asBool->Cat(0.U(6.W), uimm5d),
+//              sjaloffset11_1->Cat(sjald(19), sjald(9,0), sjald(10)),
+//              sluimm17_12->sluimmd(19,8)))
 
   val l2_19 = l1(19,12) | Mux1H(Seq(sjaloffset11_1.asBool->sjald(19,11),
                                     sluimm17_12.asBool->sluimmd(7,0)))
-  val l2 = Cat(l2_31, l2_19, l1(11,0))
+  val l2 = Cat(io.l2_31, l2_19, l1(11,0))
 
 
   val sbr8d = Cat(io.din(12),io.din(6),io.din(5),io.din(2),io.din(11),io.din(10),io.din(4),io.din(3),0.U)

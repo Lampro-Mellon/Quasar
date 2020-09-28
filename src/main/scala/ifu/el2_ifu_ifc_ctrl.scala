@@ -87,7 +87,7 @@ val io = IO(new Bundle{
 
   line_wrap := 0.U//fetch_addr_next(ICACHE_TAG_INDEX_LO) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO)
 
-  fetch_addr_next := io.ifc_fetch_addr_f(30,1)+1.U //|
+  fetch_addr_next := Cat(io.ifc_fetch_addr_f(30,1)+1.U, 0.U) //|
     //Mux(line_wrap.asBool(), 0.U, io.ifc_fetch_addr_f(0)))
 
   io.ifc_fetch_req_bf_raw := ~idle
