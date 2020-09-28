@@ -11,13 +11,15 @@ class el2_ifu_compress_ctl extends Module {
     val l2 = Output(UInt(32.W))
     val l3 = Output(UInt(32.W))
     val legal = Output(Bool())
-    val rdd = Output(UInt(5.W))
-    val rdpd = Output(UInt(5.W))
-    val rs2d = Output(UInt(5.W))
-    val rs2pd = Output(UInt(5.W))
     val o = Output(UInt(32.W))
-    val l2_19 = Output(UInt())
-    val l2_31 = Output(UInt())
+    val sluimmd = Output(UInt())
+    val simm5_0 = Output(Bool())
+    val uimm9_2 = Output(Bool())
+    val simm9_4 = Output(Bool())
+    val ulwimm6_2 = Output(Bool())
+    val ulwspimm7_2 = Output(Bool())
+    val uimm5_0 = Output(Bool())
+
   })
 
   //io.dout := (0 until 32).map(i=> 0.U.asBool)
@@ -143,7 +145,7 @@ class el2_ifu_compress_ctl extends Module {
   val sjald_12 = Fill(9, io.din(12))
   val sjald = Cat(sjald_12,sjald_1)
   val sluimmd = Cat(Fill(15, io.din(12)), io.din(6,2))
-
+  io.sluimmd := sluimmd
   val l2_31 = l1(31,20) |
     Mux1H(Seq(simm5_0.asBool->Cat(Fill(7, simm5d(5)),simm5d(4,0)),
               uimm9_2.asBool->Cat(0.U(2.W),uimm9d,0.U(2.W)),
@@ -188,12 +190,14 @@ class el2_ifu_compress_ctl extends Module {
   io.l3 := l3
   io.legal := legal
   io.o := out.reverse.reduce(Cat(_,_))
-  io.rdd := rdd
-  io.rdpd := rdpd
-  io.rs2d := rs2d
-  io.rs2pd := rs2pd
-  io.l2_19 := l2_19
-  io.l2_31 := l2_31
+  io.sluimmd := sluimmd
+  io.simm5_0 := simm5_0
+  io.uimm9_2 := uimm9_2
+  io.simm9_4 := simm9_4
+  io.ulwimm6_2 := ulwimm6_2
+  io.ulwspimm7_2 := ulwspimm7_2
+  io.uimm5_0 := uimm5_0
+
 }
 /*
 class ExpandedInstruction extends Bundle {
