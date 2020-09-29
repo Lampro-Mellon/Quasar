@@ -7,16 +7,7 @@ class el2_ifu_compress_ctl extends Module {
   val io = IO(new Bundle{
     val din = Input(UInt(16.W))
     val dout = Output(UInt(32.W))
-    val l1 = Output(UInt(32.W))
-    val l2 = Output(UInt(32.W))
-    val l3 = Output(UInt(32.W))
-    val legal = Output(Bool())
-    val o = Output(UInt(32.W))
-    val l2_31 = Output(UInt())
-    val l2_19 = Output(UInt())
   })
-
-  //io.dout := (0 until 32).map(i=> 0.U.asBool)
 
   def pat(y : List[Int]) = (0 until y.size).map(i=> if(y(i)>=0) io.din(y(i)) else !io.din(y(i).abs)).reduce(_&_)
   val out = Wire(Vec(32, UInt(1.W)))
@@ -141,7 +132,7 @@ class el2_ifu_compress_ctl extends Module {
   val sluimmd = Cat(Fill(15, io.din(12)), io.din(6,2))
   //io.sluimmd := sluimmd
 
-  io.l2_31 := l1(31,20) |
+  val l2_31 = l1(31,20) |
     Mux1H(Seq(simm5_0.asBool->Cat(Fill(7, simm5d(5)), simm5d(4,0)),
               uimm9_2.asBool->Cat(0.U(2.W), uimm9d, 0.U(2.W)),
               simm9_4.asBool->Cat(Fill(3, simm9d(5)), simm9d(4,0), 0.U(4.W)),
@@ -153,7 +144,7 @@ class el2_ifu_compress_ctl extends Module {
 
   val l2_19 = l1(19,12) | Mux1H(Seq(sjaloffset11_1.asBool->sjald(19,12),
                                     sluimm17_12.asBool->sluimmd(7,0)))
-  val l2 = Cat(io.l2_31, l2_19, l1(11,0))
+  val l2 = Cat(l2_31, l2_19, l1(11,0))
 
 
   val sbr8d = Cat(io.din(12),io.din(6),io.din(5),io.din(2),io.din(11),io.din(10),io.din(4),io.din(3),0.U)
@@ -180,29 +171,6 @@ class el2_ifu_compress_ctl extends Module {
     pat(List(-15,-13,12,-1)) | (pat(List(14,-13))&(!io.din(0)))
 
   io.dout:= l3 & Fill(32, legal)
-  io.l1 := l1
-  io.l2 := l2
-  io.l3 := l3
-  io.legal := legal
-  io.l2_19 := l2_19
-  io.o := out.reverse.reduce(Cat(_,_))
-//  io.sluimmd := sluimmd
-//  io.simm5_0 := simm5_0
-//  io.uimm9_2 := uimm9_2
-//  io.simm9_4 := simm9_4
-//  io.ulwimm6_2 := ulwimm6_2
-//  io.ulwspimm7_2 := ulwspimm7_2
-//  io.uimm5_0 := uimm5_0
-//
-//  io.sjald := sjald
-//  io.uimm5d := uimm5d
-//  io.ulwspimm7d := ulwspimm7d
-//  io.ulwimm6d := ulwimm6d//Output(UInt())
-//  io.simm9d := simm9d//Output(UInt())
-//  io.uimm9d := uimm9d//Output(UInt())
-//  io.simm5d := simm5d//Output(UInt())
-
-
 }
 
 //class ExpandedInstruction extends Bundle {

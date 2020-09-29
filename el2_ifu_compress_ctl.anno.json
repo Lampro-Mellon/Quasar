@@ -1,59 +1,7 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_l2",
-    "sources":[
-      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_l2_31",
-      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_l2_19",
-    "sources":[
-      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_dout",
-    "sources":[
-      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_l2_31",
-      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_l1",
-    "sources":[
-      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_l2_31",
-    "sources":[
-      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_l3",
-    "sources":[
-      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_l2_31",
-      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_o",
-    "sources":[
-      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_legal",
     "sources":[
       "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
     ]
