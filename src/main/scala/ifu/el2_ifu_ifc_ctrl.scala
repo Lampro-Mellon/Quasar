@@ -35,7 +35,7 @@ val io = IO(new Bundle{
   val ifc_region_acc_fault_bf = Output(Bool())
   val ifc_dma_access_ok = Output(Bool())
   val mb_empty_mod = Output(Bool())
-
+  val miss_f = Output(Bool())
 })
 
   io.ifc_region_acc_fault_bf := 0.U
@@ -93,7 +93,7 @@ val io = IO(new Bundle{
   fetch_bf_en := io.exu_flush_final | io.ifc_fetch_req_f
 
   miss_f := io.ifc_fetch_req_f & !io.ic_hit_f & !io.exu_flush_final
-
+  io.miss_f := miss_f
   mb_empty_mod := (io.ifu_ic_mb_empty | io.exu_flush_final) & !dma_stall & !miss_f & !miss_a
   io.mb_empty_mod := mb_empty_mod
   goto_idle := io.exu_flush_final & io.dec_tlu_flush_noredir_wb
@@ -105,7 +105,7 @@ val io = IO(new Bundle{
 
   val next_state_0 = (!goto_idle & leave_idle) | (state(0) & !goto_idle)
 
-  state := RegNext(Cat(next_state_0, next_state_0), init = 0.U)
+  state := RegNext(Cat(next_state_1, next_state_0), init = 0.U)
 
   flush_fb := io.exu_flush_final
 

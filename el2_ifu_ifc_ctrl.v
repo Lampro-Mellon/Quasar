@@ -28,7 +28,8 @@ module el2_ifu_ifc_ctrl(
   output        io_ifc_iccm_access_bf,
   output        io_ifc_region_acc_fault_bf,
   output        io_ifc_dma_access_ok,
-  output        io_mb_empty_mod
+  output        io_mb_empty_mod,
+  output        io_miss_f
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -118,14 +119,23 @@ module el2_ifu_ifc_ctrl(
   wire  _T_50 = _T_48 & _T_37; // @[el2_ifu_ifc_ctrl.scala 97:61]
   wire  _T_52 = _T_50 & _T_91; // @[el2_ifu_ifc_ctrl.scala 97:74]
   wire  _T_53 = ~miss_a; // @[el2_ifu_ifc_ctrl.scala 97:86]
+  wire  mb_empty_mod = _T_52 & _T_53; // @[el2_ifu_ifc_ctrl.scala 97:84]
   wire  goto_idle = io_exu_flush_final & io_dec_tlu_flush_noredir_wb; // @[el2_ifu_ifc_ctrl.scala 99:35]
   wire  _T_57 = io_exu_flush_final & _T_41; // @[el2_ifu_ifc_ctrl.scala 101:36]
   wire  leave_idle = _T_57 & idle; // @[el2_ifu_ifc_ctrl.scala 101:67]
+  wire  _T_60 = ~state[1]; // @[el2_ifu_ifc_ctrl.scala 103:23]
+  wire  _T_62 = _T_60 & state[0]; // @[el2_ifu_ifc_ctrl.scala 103:33]
+  wire  _T_63 = _T_62 & miss_f; // @[el2_ifu_ifc_ctrl.scala 103:44]
   wire  _T_64 = ~goto_idle; // @[el2_ifu_ifc_ctrl.scala 103:55]
+  wire  _T_65 = _T_63 & _T_64; // @[el2_ifu_ifc_ctrl.scala 103:53]
+  wire  _T_67 = ~mb_empty_mod; // @[el2_ifu_ifc_ctrl.scala 104:17]
+  wire  _T_68 = state[1] & _T_67; // @[el2_ifu_ifc_ctrl.scala 104:15]
+  wire  _T_70 = _T_68 & _T_64; // @[el2_ifu_ifc_ctrl.scala 104:31]
+  wire  next_state_1 = _T_65 | _T_70; // @[el2_ifu_ifc_ctrl.scala 103:67]
   wire  _T_72 = _T_64 & leave_idle; // @[el2_ifu_ifc_ctrl.scala 106:34]
   wire  _T_75 = state[0] & _T_64; // @[el2_ifu_ifc_ctrl.scala 106:60]
   wire  next_state_0 = _T_72 | _T_75; // @[el2_ifu_ifc_ctrl.scala 106:48]
-  wire [1:0] _T_76 = {next_state_0,next_state_0}; // @[Cat.scala 29:58]
+  wire [1:0] _T_76 = {next_state_1,next_state_0}; // @[Cat.scala 29:58]
   wire  wfm = state == 2'h3; // @[el2_ifu_ifc_ctrl.scala 128:16]
   reg  fb_full_f; // @[el2_ifu_ifc_ctrl.scala 131:26]
   wire  _T_135 = _T_32 | io_exu_flush_final; // @[el2_ifu_ifc_ctrl.scala 135:61]
@@ -149,6 +159,7 @@ module el2_ifu_ifc_ctrl(
   assign io_ifc_region_acc_fault_bf = 1'h0; // @[el2_ifu_ifc_ctrl.scala 41:30]
   assign io_ifc_dma_access_ok = 1'h0; // @[el2_ifu_ifc_ctrl.scala 42:24]
   assign io_mb_empty_mod = _T_52 & _T_53; // @[el2_ifu_ifc_ctrl.scala 98:19]
+  assign io_miss_f = _T_45 & _T_2; // @[el2_ifu_ifc_ctrl.scala 96:13]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif

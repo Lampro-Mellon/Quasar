@@ -3,7 +3,7 @@ circuit el2_ifu_ifc_ctrl :
   module el2_ifu_ifc_ctrl : 
     input clock : Clock
     input reset : UInt<1>
-    output io : {flip free_clk : UInt<1>, flip active_clk : UInt<1>, flip rst_l : UInt<1>, flip scan_mode : UInt<1>, flip ic_hit_f : UInt<1>, flip ifu_ic_mb_empty : UInt<1>, flip ifu_fb_consume1 : UInt<1>, flip ifu_fb_consume2 : UInt<1>, flip dec_tlu_flush_noredir_wb : UInt<1>, flip exu_flush_final : UInt<1>, flip exu_flush_path_final : UInt<31>, flip ifu_bp_hit_taken_f : UInt<1>, flip ifu_bp_btb_target_f : UInt<31>, flip ic_dma_active : UInt<1>, flip ic_write_stall : UInt<1>, flip dma_iccm_stall_any : UInt<1>, flip dec_tlu_mrac_ff : UInt<32>, ifc_fetch_addr_f : UInt<31>, ifc_fetch_addr_bf : UInt<31>, ifc_fetch_req_f : UInt<1>, ifu_pmu_fetch_stall : UInt<1>, ifc_fetch_uncacheable_bf : UInt<1>, ifc_fetch_req_bf : UInt<1>, ifc_fetch_req_bf_raw : UInt<1>, ifc_iccm_access_bf : UInt<1>, ifc_region_acc_fault_bf : UInt<1>, ifc_dma_access_ok : UInt<1>, mb_empty_mod : UInt<1>}
+    output io : {flip free_clk : UInt<1>, flip active_clk : UInt<1>, flip rst_l : UInt<1>, flip scan_mode : UInt<1>, flip ic_hit_f : UInt<1>, flip ifu_ic_mb_empty : UInt<1>, flip ifu_fb_consume1 : UInt<1>, flip ifu_fb_consume2 : UInt<1>, flip dec_tlu_flush_noredir_wb : UInt<1>, flip exu_flush_final : UInt<1>, flip exu_flush_path_final : UInt<31>, flip ifu_bp_hit_taken_f : UInt<1>, flip ifu_bp_btb_target_f : UInt<31>, flip ic_dma_active : UInt<1>, flip ic_write_stall : UInt<1>, flip dma_iccm_stall_any : UInt<1>, flip dec_tlu_mrac_ff : UInt<32>, ifc_fetch_addr_f : UInt<31>, ifc_fetch_addr_bf : UInt<31>, ifc_fetch_req_f : UInt<1>, ifu_pmu_fetch_stall : UInt<1>, ifc_fetch_uncacheable_bf : UInt<1>, ifc_fetch_req_bf : UInt<1>, ifc_fetch_req_bf_raw : UInt<1>, ifc_iccm_access_bf : UInt<1>, ifc_region_acc_fault_bf : UInt<1>, ifc_dma_access_ok : UInt<1>, mb_empty_mod : UInt<1>, miss_f : UInt<1>}
     
     io.ifc_region_acc_fault_bf <= UInt<1>("h00") @[el2_ifu_ifc_ctrl.scala 41:30]
     io.ifc_dma_access_ok <= UInt<1>("h00") @[el2_ifu_ifc_ctrl.scala 42:24]
@@ -112,6 +112,7 @@ circuit el2_ifu_ifc_ctrl :
     node _T_46 = eq(io.exu_flush_final, UInt<1>("h00")) @[el2_ifu_ifc_ctrl.scala 95:49]
     node _T_47 = and(_T_45, _T_46) @[el2_ifu_ifc_ctrl.scala 95:47]
     miss_f <= _T_47 @[el2_ifu_ifc_ctrl.scala 95:10]
+    io.miss_f <= miss_f @[el2_ifu_ifc_ctrl.scala 96:13]
     node _T_48 = or(io.ifu_ic_mb_empty, io.exu_flush_final) @[el2_ifu_ifc_ctrl.scala 97:39]
     node _T_49 = eq(dma_stall, UInt<1>("h00")) @[el2_ifu_ifc_ctrl.scala 97:63]
     node _T_50 = and(_T_48, _T_49) @[el2_ifu_ifc_ctrl.scala 97:61]
@@ -146,7 +147,7 @@ circuit el2_ifu_ifc_ctrl :
     node _T_74 = eq(goto_idle, UInt<1>("h00")) @[el2_ifu_ifc_ctrl.scala 106:62]
     node _T_75 = and(_T_73, _T_74) @[el2_ifu_ifc_ctrl.scala 106:60]
     node next_state_0 = or(_T_72, _T_75) @[el2_ifu_ifc_ctrl.scala 106:48]
-    node _T_76 = cat(next_state_0, next_state_0) @[Cat.scala 29:58]
+    node _T_76 = cat(next_state_1, next_state_0) @[Cat.scala 29:58]
     reg _T_77 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_ifc_ctrl.scala 108:19]
     _T_77 <= _T_76 @[el2_ifu_ifc_ctrl.scala 108:19]
     state <= _T_77 @[el2_ifu_ifc_ctrl.scala 108:9]

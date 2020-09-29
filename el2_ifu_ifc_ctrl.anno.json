@@ -1,6 +1,15 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_miss_f",
+    "sources":[
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_pmu_fetch_stall",
     "sources":[
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_bf_raw",
