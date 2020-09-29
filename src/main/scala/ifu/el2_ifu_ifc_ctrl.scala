@@ -134,11 +134,14 @@ val io = IO(new Bundle{
   io.ifu_pmu_fetch_stall := wfm | (io.ifc_fetch_req_bf_raw &
     ((fb_full_f & !(io.ifu_fb_consume2 | io.ifu_fb_consume1 | io.exu_flush_final)) | dma_stall))
 
-    val (iccm_acc_in_region_bf, iccm_acc_in_range_bf) = if(ICCM_ENABLE)
+  val (iccm_acc_in_region_bf, iccm_acc_in_range_bf) = if(ICCM_ENABLE)
     rvrangecheck(ICCM_SADR, ICCM_SIZE, Cat(io.ifc_fetch_addr_bf,0.U))
-                                                        else (0.U, 0.U)
-
+  else (0.U, 0.U)
   io.ifc_iccm_access_bf := iccm_acc_in_range_bf
+  io.ifc_dma_access_ok := ( (!io.ifc_iccm_access_bf |
+    (fb_full_f & !(io.ifu_fb_consume2 | io.ifu_fb_consume1)) |
+    (wfm  & !io.ifc_fetch_req_bf) | idle ) & !io.exu_flush_final) | dma_iccm_stall_any_f
+
   io.ifc_fetch_uncacheable_bf := ~io.dec_tlu_mrac_ff(Cat(io.ifc_fetch_addr_bf(30,27), 0.U))
 
   io.ifc_fetch_req_f := RegNext(io.ifc_fetch_req_bf, init=0.U)
