@@ -34,9 +34,8 @@ val io = IO(new Bundle{
   val ifc_iccm_access_bf = Output(Bool())
   val ifc_region_acc_fault_bf = Output(Bool())
   val ifc_dma_access_ok = Output(Bool())
-  val sel_last_addr_bf = Output(Bool())
-  val sel_btb_addr_bf = Output(Bool())
-  val sel_next_addr_bf = Output(Bool())
+  val mb_empty_mod = Output(Bool())
+
 })
 
   io.ifc_region_acc_fault_bf := 0.U
@@ -51,9 +50,6 @@ val io = IO(new Bundle{
   val fb_left = WireInit(Bool(), init = 0.U)
   val wfm = WireInit(Bool(), init = 0.U)
   val idle = WireInit(Bool(), init = 0.U)
-//  val sel_last_addr_bf = WireInit(Bool(), init = 0.U)
-//  val sel_btb_addr_bf = WireInit(Bool(), init = 0.U)
-//  val sel_next_addr_bf = WireInit(Bool(), init = 0.U)
   val miss_f = WireInit(Bool(), init = 0.U)
   val miss_a = WireInit(Bool(), init = 0.U)
   val flush_fb = WireInit(Bool(), init = 0.U)
@@ -62,7 +58,6 @@ val io = IO(new Bundle{
   val leave_idle = WireInit(Bool(), init = 0.U)
   val fetch_bf_en = WireInit(Bool(), init = 0.U)
   val line_wrap = WireInit(Bool(), init = 0.U)
-  //val fetch_addr_next_1 = WireInit(Bool(), init = 0.U)
   val state = WireInit(UInt(2.W), init = 0.U)
   val dma_iccm_stall_any_f = WireInit(Bool(), init = 0.U)
 
@@ -73,15 +68,15 @@ val io = IO(new Bundle{
 
   miss_a := RegNext(miss_f, init=0.U)
 
-  io.sel_last_addr_bf := ~io.exu_flush_final & (~io.ifc_fetch_req_f | ~io.ic_hit_f)
-  io.sel_btb_addr_bf  := ~io.exu_flush_final & io.ifc_fetch_req_f & io.ifu_bp_hit_taken_f & io.ic_hit_f
-  io.sel_next_addr_bf := ~io.exu_flush_final & io.ifc_fetch_req_f & ~io.ifu_bp_hit_taken_f & io.ic_hit_f
+  val sel_last_addr_bf = !io.exu_flush_final & (!io.ifc_fetch_req_f | !io.ic_hit_f)
+  val sel_btb_addr_bf  = !io.exu_flush_final & io.ifc_fetch_req_f &  io.ifu_bp_hit_taken_f & io.ic_hit_f
+  val sel_next_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f
 
   // TODO: Make an assertion for the 1H-Mux under here
   io.ifc_fetch_addr_bf := Mux1H(Seq(io.exu_flush_final.asBool -> io.exu_flush_path_final,  // Replay PC
-                            io.sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f,         // Hold the current PC
-                            io.sel_btb_addr_bf.asBool -> io.ifu_bp_btb_target_f,       // Take the predicted PC
-                            io.sel_next_addr_bf.asBool -> fetch_addr_next))            // PC+4
+                            sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f,         // Hold the current PC
+                            sel_btb_addr_bf.asBool -> io.ifu_bp_btb_target_f,       // Take the predicted PC
+                            sel_next_addr_bf.asBool -> fetch_addr_next))            // PC+4
 
   //io.test_out := io.ifc_fetch_addr_bf
 
@@ -92,42 +87,39 @@ val io = IO(new Bundle{
 
   io.ifc_fetch_req_bf_raw := ~idle
 
-  io.ifc_fetch_req_bf :=  io.ifc_fetch_req_bf_raw & ~(fb_full_f_ns & ~(io.ifu_fb_consume2 | io.ifu_fb_consume1)) &
-    ~dma_stall & ~io.ic_write_stall & ~io.dec_tlu_flush_noredir_wb
+  io.ifc_fetch_req_bf :=  io.ifc_fetch_req_bf_raw & !(fb_full_f_ns & !(io.ifu_fb_consume2 | io.ifu_fb_consume1)) &
+    !dma_stall & !io.ic_write_stall & !io.dec_tlu_flush_noredir_wb
 
   fetch_bf_en := io.exu_flush_final | io.ifc_fetch_req_f
 
-  miss_f := io.ifc_fetch_req_f & ~io.ic_hit_f & ~io.exu_flush_final
+  miss_f := io.ifc_fetch_req_f & !io.ic_hit_f & !io.exu_flush_final
 
-  mb_empty_mod := (io.ifu_ic_mb_empty | io.exu_flush_final) & ~dma_stall & ~miss_f & ~miss_a
-
+  mb_empty_mod := (io.ifu_ic_mb_empty | io.exu_flush_final) & !dma_stall & !miss_f & !miss_a
+  io.mb_empty_mod := mb_empty_mod
   goto_idle := io.exu_flush_final & io.dec_tlu_flush_noredir_wb
 
-  leave_idle := io.exu_flush_final & ~io.dec_tlu_flush_noredir_wb & idle
+  leave_idle := io.exu_flush_final & !io.dec_tlu_flush_noredir_wb & idle
 
-  val next_state_1 = (~state(1) & state(0) & miss_f & ~goto_idle) |
-    (state(1) & ~mb_empty_mod & ~goto_idle)
+  val next_state_1 = (!state(1) & state(0) & miss_f & !goto_idle) |
+    (state(1) & !mb_empty_mod & !goto_idle)
 
-  val next_state_0 = (~goto_idle & leave_idle) | (state(0) & ~goto_idle)
+  val next_state_0 = (!goto_idle & leave_idle) | (state(0) & !goto_idle)
 
   state := RegNext(Cat(next_state_0, next_state_0), init = 0.U)
 
-
-
-
   flush_fb := io.exu_flush_final
 
-  fb_right := ( io.ifu_fb_consume1 & ~io.ifu_fb_consume2 & (~io.ifc_fetch_req_f | miss_f)) |
+  fb_right := ( io.ifu_fb_consume1 & !io.ifu_fb_consume2 & (!io.ifc_fetch_req_f | miss_f)) |
     (io.ifu_fb_consume2 &  io.ifc_fetch_req_f)
 
   fb_right2 := (io.ifu_fb_consume2 & (~io.ifc_fetch_req_f | miss_f))
-  fb_left := io.ifc_fetch_req_f & ~(io.ifu_fb_consume1 | io.ifu_fb_consume2) & ~miss_f
+  fb_left := io.ifc_fetch_req_f & !(io.ifu_fb_consume1 | io.ifu_fb_consume2) & !miss_f
 
   fb_write_ns := Mux1H(Seq(flush_fb.asBool -> 1.U(4.W),
-    (~flush_fb & fb_right).asBool -> Cat(0.U(1.W), fb_write_f(3,1)),
-    (~flush_fb & fb_right2).asBool -> Cat(0.U(2.W), fb_write_f(3,2)),
-    (~flush_fb & fb_left).asBool -> Cat(fb_write_f(2,0), 0.U(1.W)),
-    (~flush_fb & ~fb_right & ~fb_right2 & ~fb_left).asBool -> fb_write_f(3,0)
+    (!flush_fb & fb_right).asBool -> Cat(0.U(1.W), fb_write_f(3,1)),
+    (!flush_fb & fb_right2).asBool -> Cat(0.U(2.W), fb_write_f(3,2)),
+    (!flush_fb & fb_left).asBool -> Cat(fb_write_f(2,0), 0.U(1.W)),
+    (!flush_fb & !fb_right & !fb_right2 & !fb_left).asBool -> fb_write_f(3,0)
   ))
 
   fb_full_f_ns := RegNext(fb_write_ns(3), init = 0.U)
@@ -139,8 +131,8 @@ val io = IO(new Bundle{
   val fb_full_f = RegNext(fb_full_f_ns, init = 0.U)
   fb_write_f := RegNext(fb_write_ns, 0.U)
 
-  io.ifu_pmu_fetch_stall := wfm | (io.ifc_fetch_req_bf_raw & ( (fb_full_f &
-    !(io.ifu_fb_consume2 | io.ifu_fb_consume1 | io.exu_flush_final)) | dma_stall))
+  io.ifu_pmu_fetch_stall := wfm | (io.ifc_fetch_req_bf_raw &
+    ((fb_full_f & !(io.ifu_fb_consume2 | io.ifu_fb_consume1 | io.exu_flush_final)) | dma_stall))
 
     val (iccm_acc_in_region_bf, iccm_acc_in_range_bf) = if(ICCM_ENABLE)
     rvrangecheck(ICCM_SADR, ICCM_SIZE, Cat(io.ifc_fetch_addr_bf,0.U))
@@ -149,10 +141,7 @@ val io = IO(new Bundle{
   io.ifc_iccm_access_bf := iccm_acc_in_range_bf
   io.ifc_fetch_uncacheable_bf := ~io.dec_tlu_mrac_ff(Cat(io.ifc_fetch_addr_bf(30,27), 0.U))
 
-
-
   io.ifc_fetch_req_f := RegNext(io.ifc_fetch_req_bf, init=0.U)
-
 
   io.ifc_fetch_addr_f := RegEnable(io.ifc_fetch_addr_bf, init = 0.U, io.exu_flush_final|io.ifc_fetch_req_f)
 }

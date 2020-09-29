@@ -30,28 +30,15 @@ class el2_ifu_compress_ctl extends Module {
     (pat(List(-14, 4))&(!io.din(0))) | (pat(List(-14, 3))&(!io.din(0))) | (pat(List(-14, 2))&(!io.din(0))) |
     pat(List(-14, -13, 0))
 
-
-
-
   out(3) := pat(List(-14, 13))
-  out(2) := pat(List(-14, 12, 11, -6, -5, -4, -3, -2, 1)) |
-            pat(List(-14, 12, 10, -6, -5, -4, -3, -2, 1)) |
-            pat(List(-14, 12, 9, -6, -5, -4, -3, -2, 1)) |
-            pat(List(-14, 12, 8, -6,-5,-4, -3, -2,1)) |
-            pat(List(-14, 12, 7, -6, -5, -4, -3, -2,1)) |
-            (pat(List(15, -14,-12, -6, -5, -4, -3, -2))&(!io.din(0))) |
-            pat(List(-15,13,-8)) |
-            pat(List(-15,13,7)) |
-            pat(List(-15,13,9)) |
-            pat(List(-15,13,10)) |
-            pat(List(-15,13,11)) |
-            pat(List(-14,13))
+  out(2) := pat(List(-14, 12, 11, -6, -5, -4, -3, -2, 1)) | pat(List(-14, 12, 10, -6, -5, -4, -3, -2, 1)) |
+    pat(List(-14, 12, 9, -6, -5, -4, -3, -2, 1)) | pat(List(-14, 12, 8, -6,-5,-4, -3, -2,1)) |
+    pat(List(-14, 12, 7, -6, -5, -4, -3, -2,1)) | (pat(List(15, -14,-12, -6, -5, -4, -3, -2))&(!io.din(0))) |
+    pat(List(-15,13,-8)) | pat(List(-15,13,7)) | pat(List(-15,13,9)) | pat(List(-15,13,10)) |
+    pat(List(-15,13,11)) | pat(List(-14,13))
+
   out(1) := 1.U.asBool
   out(0) := 1.U.asBool
-
-
-
-
 
   val rs2d = io.din(6,2)
   val rdd = io.din(11,7)
@@ -62,19 +49,10 @@ class el2_ifu_compress_ctl extends Module {
     pat(List(-14,4,1)) | pat(List(-15,14,9,0)) | pat(List(-14,3,1)) | pat(List(-15,14,-8,0)) |
   pat(List(-14,2,1)) | pat(List(-15,14,7,0)) | pat(List(-15,1)) | pat(List(-15,-13,0))
 
-  val rdrs1 = pat(List(-14,12,11,1)) |
-    pat(List(-14,12,10,1)) |
-    pat(List(-14,12,9,1)) |
-    pat(List(-14,12,8,1)) |
-    pat(List(-14,12,7,1)) |
-    pat(List(-14,-12,-6,-5,-4,-3,-2,1)) |
-    pat(List(-14,12,6,1)) |
-    pat(List(-14,12,5,1)) |
-    pat(List(-14,12,4,1)) |
-    pat(List(-14,12,3,1)) |
-    pat(List(-14,12,2,1)) |
-    pat(List(-15,-14,-13,0)) |
-    pat(List(-15,-14,1))
+  val rdrs1 = pat(List(-14,12,11,1)) | pat(List(-14,12,10,1)) | pat(List(-14,12,9,1)) |
+    pat(List(-14,12,8,1)) | pat(List(-14,12,7,1)) | pat(List(-14,-12,-6,-5,-4,-3,-2,1)) |
+    pat(List(-14,12,6,1)) | pat(List(-14,12,5,1)) | pat(List(-14,12,4,1)) | pat(List(-14,12,3,1)) |
+    pat(List(-14,12,2,1)) | pat(List(-15,-14,-13,0)) | pat(List(-15,-14,1))
 
   val rs2rs2 = pat(List(15,6,1)) | pat(List(15,5,1)) | pat(List(15,4,1)) | pat(List(15,3,1)) | pat(List(15,2,1)) | pat(List(15,14,1))
 
@@ -130,7 +108,6 @@ class el2_ifu_compress_ctl extends Module {
   val sjald_12 = Fill(9, io.din(12))
   val sjald = Cat(sjald_12,sjald_1)
   val sluimmd = Cat(Fill(15, io.din(12)), io.din(6,2))
-  //io.sluimmd := sluimmd
 
   val l2_31 = l1(31,20) |
     Mux1H(Seq(simm5_0.asBool->Cat(Fill(7, simm5d(5)), simm5d(4,0)),
@@ -145,7 +122,6 @@ class el2_ifu_compress_ctl extends Module {
   val l2_19 = l1(19,12) | Mux1H(Seq(sjaloffset11_1.asBool->sjald(19,12),
                                     sluimm17_12.asBool->sluimmd(7,0)))
   val l2 = Cat(l2_31, l2_19, l1(11,0))
-
 
   val sbr8d = Cat(io.din(12),io.din(6),io.din(5),io.din(2),io.din(11),io.din(10),io.din(4),io.din(3),0.U)
   val uswimm6d = Cat(io.din(5), io.din(12,10), io.din(6), 0.U(2.W))
