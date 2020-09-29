@@ -63,6 +63,33 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifu_bp_poffset_f",
+    "sources":[
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifc_fetch_addr_f",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifc_fetch_req_f",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_flush_leak_one_wb",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_flush_lower_wb",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_br0_r_pkt_br_start_error",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_br0_r_pkt_br_error",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_exu_i0_br_index_r"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifu_bp_hit_taken_f",
+    "sources":[
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_bpred_disable",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifc_fetch_req_f",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifc_fetch_addr_f",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_flush_leak_one_wb",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_flush_lower_wb",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_br0_r_pkt_br_start_error",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_br0_r_pkt_br_error",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_exu_i0_br_index_r"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifu_bp_valid_f",
     "sources":[
       "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_bpred_disable",
@@ -81,6 +108,21 @@
     "sources":[
       "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifc_fetch_addr_f",
       "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifc_fetch_req_f",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_flush_leak_one_wb",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_flush_lower_wb",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_br0_r_pkt_br_start_error",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_br0_r_pkt_br_error",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_exu_i0_br_index_r"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifu_bp_inst_mask_f",
+    "sources":[
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifu_bp_hit_taken_f",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_bpred_disable",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifc_fetch_req_f",
+      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifc_fetch_addr_f",
       "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_flush_leak_one_wb",
       "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_flush_lower_wb",
       "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_dec_tlu_br0_r_pkt_br_start_error",
