@@ -13,6 +13,7 @@ class el2_ifu_compress_ctl extends Module {
     val legal = Output(Bool())
     val o = Output(UInt(32.W))
     val l2_31 = Output(UInt())
+    val l2_19 = Output(UInt())
   })
 
   //io.dout := (0 until 32).map(i=> 0.U.asBool)
@@ -183,6 +184,7 @@ class el2_ifu_compress_ctl extends Module {
   io.l2 := l2
   io.l3 := l3
   io.legal := legal
+  io.l2_19 := l2_19
   io.o := out.reverse.reduce(Cat(_,_))
 //  io.sluimmd := sluimmd
 //  io.simm5_0 := simm5_0
