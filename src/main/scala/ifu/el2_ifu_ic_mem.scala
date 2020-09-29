@@ -63,11 +63,6 @@ class EL2_IC_TAG extends Module with el2_lib with param {
     val ic_tag_perr = Output(Bool())
     val scan_mode = Input(Bool())
 
-    val test = Output(UInt(26.W))
-    val test_ecc_data_out = Output(Vec(ICACHE_NUM_WAYS,UInt(32.W)))
-    val test_ecc_out = Output(Vec(ICACHE_NUM_WAYS,UInt(7.W)))
-    val test_ecc_sb_out = Output(Vec(ICACHE_NUM_WAYS,UInt(1.W)))
-    val test_ecc_db_out = Output(Vec(ICACHE_NUM_WAYS,UInt(1.W)))
   })
 
   val ic_tag_wren = io.ic_wr_en & repl(ICACHE_NUM_WAYS, io.ic_rw_addr(ICACHE_BEAT_ADDR_HI,4)===
@@ -152,15 +147,6 @@ class EL2_IC_TAG extends Module with el2_lib with param {
     ecc_decode(i).io.din := Cat(0.U(11.W),ic_tag_data_raw(i)(20,0))
     ecc_decode(i).io.ecc_in := Cat(0.U(2.W),ic_tag_data_raw(i)(25,21))
 
-    ic_tag_corrected_data_unc := io.test_ecc_data_out
-    ic_tag_corrected_ecc_unc := io.test_ecc_out
-    ic_tag_single_ecc_error := io.test_ecc_sb_out
-    ic_tag_double_ecc_error := io.test_ecc_db_out
-
-    io.test_ecc_data_out(i) := ecc_decode(i).io.dout
-    io.test_ecc_out(i) := ecc_decode(i).io.ecc_out
-    io.test_ecc_sb_out(i) := ecc_decode(i).io.single_ecc_error
-    io.test_ecc_db_out(i) := ecc_decode(i).io.double_ecc_error
 
     ic_tag_way_perr(i) := ic_tag_single_ecc_error(i) | ic_tag_double_ecc_error(i)
   }
@@ -173,7 +159,6 @@ class EL2_IC_TAG extends Module with el2_lib with param {
       repl(26,ic_debug_rd_way_en_ff(i))&ic_tag_data_raw(i)
     }
   io.ictag_debug_rd_data := temp
-    io.test := w_tout.reduce(_&_)
   io.ic_tag_perr := (ic_tag_way_perr.reverse.reduce(Cat(_,_)) & io.ic_tag_valid).orR
   val w_tout_Vec = VecInit.tabulate(ICACHE_NUM_WAYS)(i=> w_tout(i))
   io.ic_rd_hit := VecInit.tabulate(ICACHE_NUM_WAYS)(i=>(w_tout_Vec(i)(31,ICACHE_TAG_LO)===ic_rw_addr_ff(31,ICACHE_TAG_LO)).asUInt() & io.ic_tag_valid).reverse.reduce(Cat(_,_))
@@ -298,6 +283,6 @@ class EL2_IC_DATA extends Module with el2_lib {
 //println(s"${DATA_MEM_LINE._2}")
 }
 
-//object ifu_ic extends App {
-//  println((new chisel3.stage.ChiselStage).emitVerilog(new EL2_IC_DATA()))
-//}
+object ifu_ic extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new EL2_IC_DATA()))
+}

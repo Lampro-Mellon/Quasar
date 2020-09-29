@@ -86,7 +86,7 @@ val io = IO(new Bundle{
   //io.test_out := io.ifc_fetch_addr_bf
 
   line_wrap := 0.U//fetch_addr_next(ICACHE_TAG_INDEX_LO) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO)
-
+  val fetch_addr_next_1 = Mux(line_wrap.asBool(), 0.U, io.ifc_fetch_addr_f(0))
   fetch_addr_next := Cat(io.ifc_fetch_addr_f(30,1)+1.U, 0.U) //|
     //Mux(line_wrap.asBool(), 0.U, io.ifc_fetch_addr_f(0)))
 
@@ -140,7 +140,7 @@ val io = IO(new Bundle{
   fb_write_f := RegNext(fb_write_ns, 0.U)
 
   io.ifu_pmu_fetch_stall := wfm | (io.ifc_fetch_req_bf_raw & ( (fb_full_f &
-    ~(io.ifu_fb_consume2 | io.ifu_fb_consume1 | io.exu_flush_final)) | dma_stall))
+    !(io.ifu_fb_consume2 | io.ifu_fb_consume1 | io.exu_flush_final)) | dma_stall))
 
     val (iccm_acc_in_region_bf, iccm_acc_in_range_bf) = if(ICCM_ENABLE)
     rvrangecheck(ICCM_SADR, ICCM_SIZE, Cat(io.ifc_fetch_addr_bf,0.U))

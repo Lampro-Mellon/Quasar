@@ -362,6 +362,9 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val btb_bank0_rd_data_way0_out = (0 until LRU_SIZE).map(i=>RegEnable(btb_wr_data,0.U,((btb_wr_addr===i.U) & btb_wr_en_way0).asBool))
   val btb_bank0_rd_data_way1_out = (0 until LRU_SIZE).map(i=>RegEnable(btb_wr_data,0.U,((btb_wr_addr===i.U) & btb_wr_en_way1).asBool))
 
+  // TODO:BTB_rd_mux for normal address
+
+  // TODO:BTB_rd_mux for p1 address
 
 }
 
