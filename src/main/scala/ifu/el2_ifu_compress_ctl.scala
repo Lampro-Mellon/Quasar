@@ -151,7 +151,7 @@ class el2_ifu_compress_ctl extends Module {
               sjaloffset11_1.asBool->Cat(sjald(19), sjald(9,0), sjald(10)),
               sluimm17_12.asBool->sluimmd(19,8)))
 
-  val l2_19 = l1(19,12) | Mux1H(Seq(sjaloffset11_1.asBool->sjald(19,11),
+  val l2_19 = l1(19,12) | Mux1H(Seq(sjaloffset11_1.asBool->sjald(19,12),
                                     sluimm17_12.asBool->sluimmd(7,0)))
   val l2 = Cat(io.l2_31, l2_19, l1(11,0))
 

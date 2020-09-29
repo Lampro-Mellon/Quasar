@@ -9,7 +9,7 @@ module el2_ifu_compress_ctl(
   output        io_legal,
   output [31:0] io_o,
   output [11:0] io_l2_31,
-  output [8:0]  io_l2_19
+  output [7:0]  io_l2_19
 );
   wire  _T_2 = ~io_din[14]; // @[el2_ifu_compress_ctl.scala 21:83]
   wire  _T_4 = ~io_din[13]; // @[el2_ifu_compress_ctl.scala 21:83]
@@ -373,13 +373,12 @@ module el2_ifu_compress_ctl(
   wire [11:0] _T_1328 = _T_1327 | _T_1321; // @[Mux.scala 27:72]
   wire [11:0] _T_1329 = _T_1328 | _T_1322; // @[Mux.scala 27:72]
   wire [11:0] _T_1330 = _T_1329 | _T_1323; // @[Mux.scala 27:72]
-  wire [8:0] _T_1338 = _T_228 ? sjald[19:11] : 9'h0; // @[Mux.scala 27:72]
+  wire [7:0] _T_1338 = _T_228 ? sjald[19:12] : 8'h0; // @[Mux.scala 27:72]
   wire [7:0] _T_1339 = sluimm17_12 ? sluimmd[7:0] : 8'h0; // @[Mux.scala 27:72]
-  wire [8:0] _GEN_0 = {{1'd0}, _T_1339}; // @[Mux.scala 27:72]
-  wire [8:0] _T_1340 = _T_1338 | _GEN_0; // @[Mux.scala 27:72]
-  wire [8:0] _GEN_1 = {{1'd0}, l1[19:12]}; // @[el2_ifu_compress_ctl.scala 154:25]
-  wire [8:0] l2_19 = _GEN_1 | _T_1340; // @[el2_ifu_compress_ctl.scala 154:25]
-  wire [32:0] l2 = {io_l2_31,l2_19,l1[11:0]}; // @[Cat.scala 29:58]
+  wire [7:0] _T_1340 = _T_1338 | _T_1339; // @[Mux.scala 27:72]
+  wire [7:0] l2_19 = l1[19:12] | _T_1340; // @[el2_ifu_compress_ctl.scala 154:25]
+  wire [19:0] _T_1343 = {io_l2_31,l2_19}; // @[Cat.scala 29:58]
+  wire [31:0] l2 = {io_l2_31,l2_19,l1[11:0]}; // @[Cat.scala 29:58]
   wire [8:0] sbr8d = {io_din[12],io_din[6],io_din[5],io_din[2],io_din[11],io_din[10],io_din[4],io_din[3],1'h0}; // @[Cat.scala 29:58]
   wire [6:0] uswimm6d = {io_din[5],io_din[12:10],io_din[6],2'h0}; // @[Cat.scala 29:58]
   wire [7:0] uswspimm7d = {io_din[8:7],io_din[12:9],2'h0}; // @[Cat.scala 29:58]
@@ -524,10 +523,10 @@ module el2_ifu_compress_ctl(
   wire [30:0] _T_1783 = {_T_1780,_T_228,out_2,1'h1}; // @[Cat.scala 29:58]
   assign io_dout = l3 & _T_1752; // @[el2_ifu_compress_ctl.scala 182:10]
   assign io_l1 = {_T_1234,_T_1232}; // @[el2_ifu_compress_ctl.scala 183:9]
-  assign io_l2 = l2[31:0]; // @[el2_ifu_compress_ctl.scala 184:9]
+  assign io_l2 = {_T_1343,l1[11:0]}; // @[el2_ifu_compress_ctl.scala 184:9]
   assign io_l3 = {_T_1403,_T_1402}; // @[el2_ifu_compress_ctl.scala 185:9]
   assign io_legal = _T_1743 | _T_1750; // @[el2_ifu_compress_ctl.scala 186:12]
   assign io_o = {_T_1783,1'h1}; // @[el2_ifu_compress_ctl.scala 188:8]
   assign io_l2_31 = l1[31:20] | _T_1330; // @[el2_ifu_compress_ctl.scala 144:12]
-  assign io_l2_19 = _GEN_1 | _T_1340; // @[el2_ifu_compress_ctl.scala 187:12]
+  assign io_l2_19 = l1[19:12] | _T_1340; // @[el2_ifu_compress_ctl.scala 187:12]
 endmodule
