@@ -1,7 +1,35 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_dout",
+    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_dout_rs1",
+    "sources":[
+      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_dout_rs3",
+    "sources":[
+      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_dout_rs2",
+    "sources":[
+      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_dout_bits",
+    "sources":[
+      "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_dout_rd",
     "sources":[
       "~el2_ifu_compress_ctl|el2_ifu_compress_ctl>io_din"
     ]

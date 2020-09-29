@@ -389,7 +389,7 @@ class RVCDecoder(x: UInt, xLen: Int) {
 class el2_ifu_compress_ctl( val XLen: Int, val usingCompressed: Boolean) extends Module  {
   val io = IO(new Bundle {
     val din = Input(UInt(32.W))
-    val dout = Output(UInt(32.W))
+    val dout = Output(new ExpandedInstruction)
     //val rvc = Output(Bool())
     //val legal = Output(Bool())
     //val waleed_out = Output(UInt(32.W))
@@ -401,7 +401,7 @@ class el2_ifu_compress_ctl( val XLen: Int, val usingCompressed: Boolean) extends
     val rvc = io.din(1,0) =/= 3.U
     val inst = new RVCDecoder(io.din, XLen)
     val decoded = inst.decode
-    io.dout := Mux(rvc, 0.U, decoded.bits)
+    io.dout := inst.decode
     //io.out.rd := 0.U
     //io.out.rs1 := 0.U
     //io.out.rs2 := 0.U
