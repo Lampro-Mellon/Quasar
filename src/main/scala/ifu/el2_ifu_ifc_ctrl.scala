@@ -5,6 +5,7 @@ import chisel3.util._
 
 class el2_ifu_ifc_ctrl extends Module with el2_lib with RequireAsyncReset {
 val io = IO(new Bundle{
+  val free_clk = Input(Clock())
   val active_clk = Input(Bool())
   val scan_mode = Input(Bool())
   val ic_hit_f = Input(Bool())
@@ -58,9 +59,9 @@ val io = IO(new Bundle{
   val idle_E :: fetch_E :: stall_E :: wfm_E :: Nil = Enum(4)
 
   val dma_stall = io.ic_dma_active | dma_iccm_stall_any_f
-  dma_iccm_stall_any_f := RegNext(io.dma_iccm_stall_any, init=0.U)
+  dma_iccm_stall_any_f := withClock(io.free_clk) {RegNext(io.dma_iccm_stall_any, init=0.U)}
 
-  miss_a := RegNext(miss_f, init=0.U)
+  miss_a := withClock(io.free_clk) {RegNext(miss_f, init=0.U)}
 
   val sel_last_addr_bf = !io.exu_flush_final & (!io.ifc_fetch_req_f | !io.ic_hit_f)
   val sel_btb_addr_bf  = !io.exu_flush_final & io.ifc_fetch_req_f &  io.ifu_bp_hit_taken_f & io.ic_hit_f
