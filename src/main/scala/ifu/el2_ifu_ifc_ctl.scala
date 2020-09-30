@@ -35,8 +35,9 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
     val ifc_dma_access_ok = Output(Bool())
   })
 
-  val fetch_addr_bf = WireInit(UInt(32.W), init = 0.U)
-  val fetch_addr_next = WireInit(UInt(32.W), init = 0.U)
+  val fetch_addr_bf = WireInit(UInt(31.W), init = 0.U)
+  val fetch_addr_next_0 = WireInit(Bool(), 0.U)
+  val fetch_addr_next = WireInit(UInt(31.W), init = 0.U)
   val fb_write_ns = WireInit(UInt(4.W), init = 0.U)
   val fb_write_f = WireInit(UInt(4.W), init = 0.U)
   val fb_full_f_ns = WireInit(Bool(), init = 0.U)
@@ -73,12 +74,10 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
     sel_btb_addr_bf.asBool -> io.ifu_bp_btb_target_f,       // Take the predicted PC
     sel_next_addr_bf.asBool -> fetch_addr_next))            // PC+4
 
-  //io.test_out := io.ifc_fetch_addr_bf
+  val address_upper = io.ifc_fetch_addr_f(30,1)+1.U
+  fetch_addr_next_0 := (address_upper(ICACHE_TAG_INDEX_LO-1) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO-1)) & io.ifc_fetch_addr_f(0)
 
-  line_wrap := 0.U//fetch_addr_next(ICACHE_TAG_INDEX_LO) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO)
-  val fetch_addr_next_1 = Mux(line_wrap.asBool(), 0.U, io.ifc_fetch_addr_f(0))
-  fetch_addr_next := Cat(io.ifc_fetch_addr_f(30,1)+1.U, 0.U) //|
-  //Mux(line_wrap.asBool(), 0.U, io.ifc_fetch_addr_f(0)))
+  fetch_addr_next := Cat(address_upper, fetch_addr_next_0)
 
   io.ifc_fetch_req_bf_raw := ~idle
 
@@ -137,7 +136,7 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
     (fb_full_f & !(io.ifu_fb_consume2 | io.ifu_fb_consume1)) |
     (wfm  & !io.ifc_fetch_req_bf) | idle ) & !io.exu_flush_final) | dma_iccm_stall_any_f
 
-  io.ifc_region_acc_fault_bf := ~iccm_acc_in_range_bf & iccm_acc_in_region_bf
+  io.ifc_region_acc_fault_bf := !iccm_acc_in_range_bf & iccm_acc_in_region_bf
   io.ifc_fetch_uncacheable_bf := ~io.dec_tlu_mrac_ff(Cat(io.ifc_fetch_addr_bf(30,27), 0.U))
 
   io.ifc_fetch_req_f := RegNext(io.ifc_fetch_req_bf, init=0.U)
