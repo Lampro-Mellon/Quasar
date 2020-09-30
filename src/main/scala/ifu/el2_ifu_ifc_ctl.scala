@@ -3,7 +3,7 @@ import lib._
 import chisel3._
 import chisel3.util._
 
-class el2_ifu_ifc_ctrl extends Module with el2_lib with RequireAsyncReset {
+class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
   val io = IO(new Bundle{
     val free_clk = Input(Clock())
     val active_clk = Input(Bool())
@@ -146,5 +146,5 @@ class el2_ifu_ifc_ctrl extends Module with el2_lib with RequireAsyncReset {
 }
 
 object ifu_ifc extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_ifc_ctrl()))
+  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_ifc_ctl()))
 }
