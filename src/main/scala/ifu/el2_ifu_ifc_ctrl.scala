@@ -3,7 +3,7 @@ import lib._
 import chisel3._
 import chisel3.util._
 
-class el2_ifu_ifc_ctrl extends Module with el2_lib {
+class el2_ifu_ifc_ctrl extends Module with el2_lib with RequireAsyncReset {
 val io = IO(new Bundle{
   val active_clk = Input(Bool())
   val scan_mode = Input(Bool())

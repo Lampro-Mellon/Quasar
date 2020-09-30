@@ -1,5 +1,15 @@
 [
   {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_DATA|EL2_IC_DATA>io_test",
+    "sources":[
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rw_addr",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_addr",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_rd_en",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_wr_en"
+    ]
+  },
+  {
     "class":"firrtl.EmitCircuitAnnotation",
     "emitter":"firrtl.VerilogEmitter"
   },

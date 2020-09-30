@@ -187,7 +187,7 @@ class EL2_IC_DATA extends Module with el2_lib {
     val ic_rd_hit           = Input(UInt(ICACHE_NUM_WAYS.W))
     val scan_mode           = Input(UInt(1.W))
 
-    val test                = Output(Vec(ICACHE_BANKS_WAY, UInt()))
+    val test                = Output(UInt())
   //  val test_port           = Output(Vec(ICACHE_BANKS_WAY, Vec(ICACHE_NUM_WAYS, UInt(71.W))))
   })
 
@@ -195,28 +195,60 @@ class EL2_IC_DATA extends Module with el2_lib {
   io.ic_debug_rd_data := 0.U
   io.ic_parerr := 0.U
   io.ic_eccerr := 0.U
+  io.test := 0.U
+
   val ic_debug_rd_way_en = Fill(ICACHE_NUM_WAYS, io.ic_debug_rd_en & !io.ic_debug_tag_array) & io.ic_debug_way
   val ic_debug_wr_way_en = repl(ICACHE_NUM_WAYS, io.ic_debug_wr_en & !io.ic_debug_tag_array) & io.ic_debug_way
 
-  val ic_bank_wr_data = WireInit(UInt(71.W))
-  val ic_rw_addr_q = WireInit(UInt(ICACHE_INDEX_HI.W), 0.U)
+  val ic_bank_wr_data = WireInit(UInt(71.W), 0.U)
   val ic_rd_en_with_debug = WireInit(Bool(), 0.U)
 
+  val ic_rw_addr_q = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en).asBool, Cat(io.ic_debug_addr,0.U(2.W)), io.ic_rw_addr)
+
+  val ic_rw_addr_q_inc = ic_rw_addr_q(ICACHE_TAG_LO-2,ICACHE_DATA_INDEX_LO-1) + 1.U
+  io.test := ic_rw_addr_q_inc
   val ic_b_sb_wren = (0 until ICACHE_NUM_WAYS).map(i=>
     io.ic_wr_en | ic_debug_wr_way_en & Fill(ICACHE_NUM_WAYS, io.ic_debug_addr(ICACHE_BANK_HI-3,ICACHE_BANK_LO-3)===i.U))
-  //val ic_debug_sel_sb = (0 until ICACHE_NUM_WAYS).map(i=> (io.ic_debug_addr(ICACHE_BANK_HI-3,ICACHE_BANK_LO-3)===i.U).asBool).reverse.reduce(Cat(_,_))
-  //val ic_sb_wr_data = (0 until ICACHE_NUM_WAYS).map(i=> Mux((ic_debug_sel_sb(i)&io.ic_debug_wr_en).asBool, io.ic_debug_wr_data, ic_bank_wr_data(i)))
-  val ic_b_rden = VecInit.tabulate(ICACHE_BANKS_WAY)(i=>
-                  Mux1H(Seq(!ic_rw_addr_q(ICACHE_BANK_HI-1).asBool -> (i.U === 0.U),
+  val ic_debug_sel_sb = (0 until ICACHE_NUM_WAYS).map(i=> (io.ic_debug_addr(ICACHE_BANK_HI-3,ICACHE_BANK_LO-3)===i.U).asUInt).reverse.reduce(Cat(_,_))
+  val ic_sb_wr_data = (0 until ICACHE_NUM_WAYS).map(i=> Mux((ic_debug_sel_sb(i)&io.ic_debug_wr_en).asBool, io.ic_debug_wr_data, ic_bank_wr_data(i)))
+  val ic_b_rden = (0 until ICACHE_NUM_WAYS).map(i=>
+    (Mux1H(Seq(!ic_rw_addr_q(ICACHE_BANK_HI-1).asBool -> (i.U === 0.U),
                             (ic_rw_addr_q(ICACHE_BANK_HI-1)).asBool -> ((ic_rw_addr_q(1,0)===3.U)&(i.U===0.U)),
                              ic_rw_addr_q(ICACHE_BANK_HI-1).asBool -> (i.U === 1.U),
-                            (!ic_rw_addr_q(ICACHE_BANK_HI-1)).asBool -> ((ic_rw_addr_q(1,0)===3.U)&(i.U === 1.U)))) & ic_rd_en_with_debug)
-  val ic_b_sb_rden = ic_b_rden.map(Fill(ICACHE_NUM_WAYS, _))
-//  val ic_bank_way_clken = (0 until ICACHE_BANKS_WAY).map(i=>(0 until ICACHE_NUM_WAYS).map(j=>
-//    ic_b_sb_rden(i)(j) | io.clk_override | ic_b_sb_wren(i)(j)).reduce(Cat(_,_)))
+                            (!ic_rw_addr_q(ICACHE_BANK_HI-1)).asBool -> ((ic_rw_addr_q(1,0)===3.U)&(i.U === 1.U)))) & ic_rd_en_with_debug).asUInt).reverse.reduce(Cat(_,_))
+  val ic_b_sb_rden = (0 until ic_b_rden.getWidth).map(i=>Fill(ICACHE_NUM_WAYS, ic_b_rden(i)))
+  val ic_bank_way_clken = (0 until ICACHE_BANKS_WAY).map(i=>(0 until ICACHE_NUM_WAYS).map(j=>
+    (ic_b_sb_rden(i)(j) | io.clk_override | ic_b_sb_wren(i)(j)).asUInt).reduce(Cat(_,_)))
+
+  ic_rd_en_with_debug := io.ic_rd_en | io.ic_debug_rd_en & (!io.ic_wr_en.orR)
+
+  val ic_rw_addr_wrap = ic_rw_addr_q(ICACHE_BANK_HI-1) & (ic_rw_addr_q(1,0) === 3.U) & ic_rd_en_with_debug & !(io.ic_wr_en.orR)
+
+  val ic_rw_addr_bank_q = VecInit(Mux((!ic_rw_addr_wrap).asBool,ic_rw_addr_q(ICACHE_INDEX_HI-1,ICACHE_DATA_INDEX_LO-1),
+    Cat(ic_rw_addr_q(ICACHE_INDEX_HI-1, ICACHE_TAG_INDEX_LO-1) , ic_rw_addr_q_inc(ICACHE_TAG_INDEX_LO-2,ICACHE_DATA_INDEX_LO-1))),
+    ic_rw_addr_q(ICACHE_INDEX_HI-1,ICACHE_DATA_INDEX_LO-1)
+  )
 
 
 
+  val ic_b_rden_ff = RegNext(ic_b_rden, 0.U)
+  val ic_rw_addr_ff = RegNext(ic_rw_addr_q(ICACHE_TAG_INDEX_LO-2,0), 0.U)
+  val ic_debug_rd_way_en_ff = RegNext(ic_debug_rd_way_en, 0.U)
+  val ic_debug_rd_en_ff = RegNext(io.ic_debug_rd_en, 0.U)
+
+  val ic_cacheline_wrap_ff = ic_rw_addr_ff(ICACHE_TAG_INDEX_LO-2,ICACHE_BANK_LO-1) === Fill(ICACHE_TAG_INDEX_LO-ICACHE_BANK_LO, 1.U)
+
+  io.test := ic_rw_addr_bank_q(1)
+
+//////////////////////////////////////////// Memory stated
+  val (data_mem_word, tag_mem_word, ecc_offset) = DATA_MEM_LINE
+
+//  val data_mem = Mem(ICACHE_DATA_DEPTH, Vec(ICACHE_BANKS_WAY,Vec(ICACHE_NUM_WAYS, UInt(data_mem_word.W))))
+//  for(i<-0 until ICACHE_NUM_WAYS; k<-0 until ICACHE_BANKS_WAY){
+//    when((ic_b_sb_wren(k)(i)&ic_bank_way_clken(k)(i)).asBool){
+//      data_mem()
+//    }
+//  }
 //  val ic_bank_way_clken = new Array[UInt](ICACHE_NUM_WAYS)
 //  ic_bank_way_clken(0) = (repl(ICACHE_NUM_WAYS,ic_b_rden(0)) | io.clk_override | ic_b_sb_wren(0))
 //  for(i<-1 until ICACHE_NUM_WAYS){

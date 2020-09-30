@@ -131,7 +131,6 @@ module el2_ifu_ifc_ctrl(
   wire  _T_72 = _T_64 & leave_idle; // @[el2_ifu_ifc_ctrl.scala 100:34]
   wire  _T_75 = state[0] & _T_64; // @[el2_ifu_ifc_ctrl.scala 100:60]
   wire  next_state_0 = _T_72 | _T_75; // @[el2_ifu_ifc_ctrl.scala 100:48]
-  wire [1:0] _T_76 = {next_state_1,next_state_0}; // @[Cat.scala 29:58]
   wire  wfm = state == 2'h3; // @[el2_ifu_ifc_ctrl.scala 122:16]
   reg  fb_full_f; // @[el2_ifu_ifc_ctrl.scala 125:26]
   wire  _T_135 = _T_32 | io_exu_flush_final; // @[el2_ifu_ifc_ctrl.scala 129:61]
@@ -215,43 +214,76 @@ initial begin
   _RAND_6 = {1{`RANDOM}};
   _T_165 = _RAND_6[30:0];
 `endif // RANDOMIZE_REG_INIT
+  if (reset) begin
+    dma_iccm_stall_any_f = 1'h0;
+  end
+  if (reset) begin
+    miss_a = 1'h0;
+  end
+  if (reset) begin
+    state = 2'h0;
+  end
+  if (reset) begin
+    fb_write_f = 4'h0;
+  end
+  if (reset) begin
+    fb_full_f = 1'h0;
+  end
+  if (reset) begin
+    _T_163 = 1'h0;
+  end
+  if (reset) begin
+    _T_165 = 31'h0;
+  end
   `endif // RANDOMIZE
 end // initial
 `ifdef FIRRTL_AFTER_INITIAL
 `FIRRTL_AFTER_INITIAL
 `endif
 `endif // SYNTHESIS
-  always @(posedge clock) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       dma_iccm_stall_any_f <= 1'h0;
     end else begin
       dma_iccm_stall_any_f <= io_dma_iccm_stall_any;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       miss_a <= 1'h0;
     end else begin
-      miss_a <= miss_f;
+      miss_a <= _T_45 & _T_2;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       state <= 2'h0;
     end else begin
-      state <= _T_76;
+      state <= {next_state_1,next_state_0};
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       fb_write_f <= 4'h0;
     end else begin
-      fb_write_f <= fb_write_ns;
+      fb_write_f <= _T_125 | _T_122;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       fb_full_f <= 1'h0;
     end else begin
-      fb_full_f <= fb_full_f_ns;
+      fb_full_f <= fb_write_ns[3];
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       _T_163 <= 1'h0;
     end else begin
       _T_163 <= io_ifc_fetch_req_bf;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       _T_165 <= 31'h0;
     end else if (fetch_bf_en) begin

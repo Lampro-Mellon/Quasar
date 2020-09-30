@@ -2,7 +2,7 @@
 circuit el2_ifu_ifc_ctrl : 
   module el2_ifu_ifc_ctrl : 
     input clock : Clock
-    input reset : UInt<1>
+    input reset : AsyncReset
     output io : {flip active_clk : UInt<1>, flip scan_mode : UInt<1>, flip ic_hit_f : UInt<1>, flip ifu_ic_mb_empty : UInt<1>, flip ifu_fb_consume1 : UInt<1>, flip ifu_fb_consume2 : UInt<1>, flip dec_tlu_flush_noredir_wb : UInt<1>, flip exu_flush_final : UInt<1>, flip exu_flush_path_final : UInt<31>, flip ifu_bp_hit_taken_f : UInt<1>, flip ifu_bp_btb_target_f : UInt<31>, flip ic_dma_active : UInt<1>, flip ic_write_stall : UInt<1>, flip dma_iccm_stall_any : UInt<1>, flip dec_tlu_mrac_ff : UInt<32>, ifc_fetch_addr_f : UInt<31>, ifc_fetch_addr_bf : UInt<31>, ifc_fetch_req_f : UInt<1>, ifu_pmu_fetch_stall : UInt<1>, ifc_fetch_uncacheable_bf : UInt<1>, ifc_fetch_req_bf : UInt<1>, ifc_fetch_req_bf_raw : UInt<1>, ifc_iccm_access_bf : UInt<1>, ifc_region_acc_fault_bf : UInt<1>, ifc_dma_access_ok : UInt<1>}
     
     wire fetch_addr_bf : UInt<32>
