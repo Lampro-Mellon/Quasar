@@ -23,15 +23,6 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_miss_f",
-    "sources":[
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_pmu_fetch_stall",
     "sources":[
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_bf_raw",
@@ -85,9 +76,8 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_uncacheable_bf",
+    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_region_acc_fault_bf",
     "sources":[
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_dec_tlu_mrac_ff",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_bf",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_btb_target_f",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_path_final",
@@ -100,13 +90,17 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_mb_empty_mod",
+    "sink":"~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_uncacheable_bf",
     "sources":[
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_ic_mb_empty",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_dec_tlu_mrac_ff",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_bf",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_btb_target_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_path_final",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_addr_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f",
       "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_exu_flush_final",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_dma_active",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f",
-      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ic_hit_f"
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifu_bp_hit_taken_f",
+      "~el2_ifu_ifc_ctrl|el2_ifu_ifc_ctrl>io_ifc_fetch_req_f"
     ]
   },
   {

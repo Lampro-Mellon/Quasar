@@ -33,14 +33,14 @@ trait param {
   val DATA_ACCESS_ADDR5      = 0x00000000 //.U(32.W)
   val DATA_ACCESS_ADDR6      = 0x00000000 //.U(32.W)
   val DATA_ACCESS_ADDR7      = 0x00000000 //.U(32.W)
-  val DATA_ACCESS_ENABLE0    = 0x1 //.U(1.W)
-  val DATA_ACCESS_ENABLE1    = 0x1 //.U(1.W)
-  val DATA_ACCESS_ENABLE2    = 0x1 //.U(1.W)
-  val DATA_ACCESS_ENABLE3    = 0x1 //.U(1.W)
-  val DATA_ACCESS_ENABLE4    = 0x0 //.U(1.W)
-  val DATA_ACCESS_ENABLE5    = 0x0 //.U(1.W)
-  val DATA_ACCESS_ENABLE6    = 0x0 //.U(1.W)
-  val DATA_ACCESS_ENABLE7    = 0x0 //.U(1.W)
+  val DATA_ACCESS_ENABLE0    = true //.U(1.W)
+  val DATA_ACCESS_ENABLE1    = true //.U(1.W)
+  val DATA_ACCESS_ENABLE2    = true //.U(1.W)
+  val DATA_ACCESS_ENABLE3    = true //.U(1.W)
+  val DATA_ACCESS_ENABLE4    = false //.U(1.W)
+  val DATA_ACCESS_ENABLE5    = false //.U(1.W)
+  val DATA_ACCESS_ENABLE6    = false //.U(1.W)
+  val DATA_ACCESS_ENABLE7    = false //.U(1.W)
   val DATA_ACCESS_MASK0      = 0x7FFFFFFF //.U(32.W)
   val DATA_ACCESS_MASK1      = 0x3FFFFFFF //.U(32.W)
   val DATA_ACCESS_MASK2      = 0x1FFFFFFF //.U(32.W)
@@ -49,21 +49,21 @@ trait param {
   val DATA_ACCESS_MASK5      = 0xFFFFFFFF //.U(32.W)
   val DATA_ACCESS_MASK6      = 0xFFFFFFFF //.U(32.W)
   val DATA_ACCESS_MASK7      = 0xFFFFFFFF //.U(32.W)
-  val DCCM_BANK_BITS         = 0x2  //.U(3.W)
-  val DCCM_BITS              = 0x10 //.U(5.W)
-  val DCCM_BYTE_WIDTH        = 0x4  //.U(3.W)
-  val DCCM_DATA_WIDTH        = 0x20 //.U(6.W)
-  val DCCM_ECC_WIDTH         = 0x7  //.U(3.W)
-  val DCCM_ENABLE            = 0x1  //.U(1.W)
+  val DCCM_BANK_BITS         = 2  //.U(3.W)
+  val DCCM_BITS              = 16 //.U(5.W)
+  val DCCM_BYTE_WIDTH        = 4  //.U(3.W)
+  val DCCM_DATA_WIDTH        = 32 //.U(6.W)
+  val DCCM_ECC_WIDTH         = 7  //.U(3.W)
+  val DCCM_ENABLE            = true  //.U(1.W)
   val DCCM_FDATA_WIDTH       = 0x27 //.U(6.W)
   val DCCM_INDEX_BITS        = 0xC  //.U(4.W)
   val DCCM_NUM_BANKS         = 0x04 //.U(5.W)
-  val DCCM_REGION            = 0xF  //.U(4.W)
+  val DCCM_REGION            = 15  //.U(4.W)
   val DCCM_SADR              = 0xF0040000
   val DCCM_SIZE              = 0x040
-  val DCCM_WIDTH_BITS        = 0x2 //.U(2.W)
-  val DMA_BUF_DEPTH          = 0x5 //.U(3.W)
-  val DMA_BUS_ID             = 0x1 //.U(1.W)
+  val DCCM_WIDTH_BITS        = 2 //.U(2.W)
+  val DMA_BUF_DEPTH          = 5 //.U(3.W)
+  val DMA_BUS_ID             = true //.U(1.W)
   val DMA_BUS_PRTY           = 0x2 //.U(2.W)
   val DMA_BUS_TAG            = 0x1 //.U(4.W)
   val FAST_INTERRUPT_REDIRECT= 0x1 //.U(1.W)
@@ -94,11 +94,11 @@ trait param {
   val ICACHE_TAG_LO          = 13
   val ICACHE_WAYPACK         = false
   val ICCM_BANK_BITS         = 2
-  val ICCM_BANK_HI           = 0x03  //.U(5.W)
-  val ICCM_BANK_INDEX_LO     = 0x04  //.U(5.W)
-  val ICCM_BITS              = 0x10  //.U(5.W)
+  val ICCM_BANK_HI           = 3  //.U(5.W)
+  val ICCM_BANK_INDEX_LO     = 4  //.U(5.W)
+  val ICCM_BITS              = 16  //.U(5.W)
   val ICCM_ENABLE            = true   //.U(1.W)
-  val ICCM_ICACHE            = 0x1   //.U(1.W)
+  val ICCM_ICACHE            = true   //.U(1.W)
   val ICCM_INDEX_BITS        = 0xC   //.U(4.W)
   val ICCM_NUM_BANKS         = 0x04  //.U(5.W)
   val ICCM_ONLY              = 0x0   //.U(1.W)
@@ -155,7 +155,9 @@ trait param {
   val SB_BUS_PRTY            = 0x2   //.U(2.W)
   val SB_BUS_TAG             = 0x1   //.U(4.W)
   val TIMER_LEGAL_EN         = 0x1   //.U(1.W)
+}
 
+trait el2_lib extends param{
   // Configuration Methods
   def MEM_CAL : (Int, Int, Int)=
     (ICACHE_WAYPACK, ICACHE_ECC) match{
@@ -164,12 +166,7 @@ trait param {
       case(true,false)  => (68*ICACHE_NUM_WAYS,22*ICACHE_NUM_WAYS, 68)
       case(true,true)   => (71*ICACHE_NUM_WAYS,26*ICACHE_NUM_WAYS, 71)
     }
-
   val DATA_MEM_LINE = MEM_CAL
-
-}
-
-trait el2_lib extends param{
 
   def el2_btb_tag_hash(pc : UInt) =
     VecInit.tabulate(3)(i => pc(BTB_ADDR_HI+((i+1)*(BTB_BTAG_SIZE)),BTB_ADDR_HI+(i*BTB_BTAG_SIZE)+1)).reduce(_^_)

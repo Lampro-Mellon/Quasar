@@ -5,9 +5,7 @@ import chisel3.util._
 
 class el2_ifu_ifc_ctrl extends Module with el2_lib {
 val io = IO(new Bundle{
-  val free_clk = Input(Bool())
   val active_clk = Input(Bool())
-  val rst_l = Input(Bool())
   val scan_mode = Input(Bool())
   val ic_hit_f = Input(Bool())
   val ifu_ic_mb_empty = Input(Bool())
@@ -34,12 +32,8 @@ val io = IO(new Bundle{
   val ifc_iccm_access_bf = Output(Bool())
   val ifc_region_acc_fault_bf = Output(Bool())
   val ifc_dma_access_ok = Output(Bool())
-  val mb_empty_mod = Output(Bool())
-  val miss_f = Output(Bool())
 })
 
-  io.ifc_region_acc_fault_bf := 0.U
-  io.ifc_dma_access_ok := 0.U
   val fetch_addr_bf = WireInit(UInt(32.W), init = 0.U)
   val fetch_addr_next = WireInit(UInt(32.W), init = 0.U)
   val fb_write_ns = WireInit(UInt(4.W), init = 0.U)
@@ -93,9 +87,9 @@ val io = IO(new Bundle{
   fetch_bf_en := io.exu_flush_final | io.ifc_fetch_req_f
 
   miss_f := io.ifc_fetch_req_f & !io.ic_hit_f & !io.exu_flush_final
-  io.miss_f := miss_f
+
   mb_empty_mod := (io.ifu_ic_mb_empty | io.exu_flush_final) & !dma_stall & !miss_f & !miss_a
-  io.mb_empty_mod := mb_empty_mod
+
   goto_idle := io.exu_flush_final & io.dec_tlu_flush_noredir_wb
 
   leave_idle := io.exu_flush_final & !io.dec_tlu_flush_noredir_wb & idle
@@ -142,6 +136,7 @@ val io = IO(new Bundle{
     (fb_full_f & !(io.ifu_fb_consume2 | io.ifu_fb_consume1)) |
     (wfm  & !io.ifc_fetch_req_bf) | idle ) & !io.exu_flush_final) | dma_iccm_stall_any_f
 
+  io.ifc_region_acc_fault_bf := ~iccm_acc_in_range_bf & iccm_acc_in_region_bf
   io.ifc_fetch_uncacheable_bf := ~io.dec_tlu_mrac_ff(Cat(io.ifc_fetch_addr_bf(30,27), 0.U))
 
   io.ifc_fetch_req_f := RegNext(io.ifc_fetch_req_bf, init=0.U)
