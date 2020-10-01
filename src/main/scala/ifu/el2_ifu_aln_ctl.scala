@@ -7,7 +7,6 @@ import include._
 class el2_ifu_aln_ctl extends Module with el2_lib {
   val io = IO(new Bundle{
     val scan_mode = Input(Bool())
-    val free_clk                  = Input(Clock())
     val active_clk                = Input(Clock())
     val ifu_async_error_start = Input(Bool())
     val iccm_rd_ecc_double_err = Input(Bool())
