@@ -200,7 +200,7 @@ class EL2_IC_DATA extends Module with el2_lib {
   val ic_debug_rd_way_en = Fill(ICACHE_NUM_WAYS, io.ic_debug_rd_en & !io.ic_debug_tag_array) & io.ic_debug_way
   val ic_debug_wr_way_en = repl(ICACHE_NUM_WAYS, io.ic_debug_wr_en & !io.ic_debug_tag_array) & io.ic_debug_way
 
-  val ic_bank_wr_data = WireInit(UInt(71.W), 0.U)
+  val ic_bank_wr_data = Wire(Vec(ICACHE_BANKS_WAY,UInt(71.W)))
   val ic_rd_en_with_debug = WireInit(Bool(), 0.U)
 
   val ic_rw_addr_q = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en).asBool, Cat(io.ic_debug_addr,0.U(2.W)), io.ic_rw_addr)
@@ -239,86 +239,39 @@ class EL2_IC_DATA extends Module with el2_lib {
 
 //////////////////////////////////////////// Memory stated
   val (data_mem_word, tag_mem_word, ecc_offset) = DATA_MEM_LINE
-  val wb_out = Wire(Vec(ICACHE_BANKS_WAY,Vec(ICACHE_NUM_WAYS, UInt(data_mem_word.W))))
+  val wb_dout = Wire(Vec(ICACHE_BANKS_WAY,Vec(ICACHE_NUM_WAYS, UInt(data_mem_word.W))))
   val data_mem = Mem(ICACHE_DATA_DEPTH, Vec(ICACHE_BANKS_WAY,Vec(ICACHE_NUM_WAYS, UInt(data_mem_word.W))))
   for(i<-0 until ICACHE_NUM_WAYS; k<-0 until ICACHE_BANKS_WAY){
-    wb_out(i)(k) := 0.U
+    wb_dout(i)(k) := 0.U
     val WE = if(ICACHE_WAYPACK) ic_b_sb_wren(k).orR else ic_b_sb_wren(k)(i)
     val ME = if(ICACHE_WAYPACK) ic_bank_way_clken(k).orR else ic_bank_way_clken(k)(i)
     when((ic_b_sb_wren(k)(i) & ic_bank_way_clken(k)(i)).asBool){
       data_mem(ic_rw_addr_bank_q(k))(k)(i) := io.test_in
     }.elsewhen((!ic_b_sb_wren(k)(i)&ic_bank_way_clken(k)(i)).asBool){
-      wb_out(i)(k) := data_mem(ic_rw_addr_bank_q(k))(k)(i)
+      wb_dout(i)(k) := data_mem(ic_rw_addr_bank_q(k))(k)(i)
     }
   }
-  io.test_port := wb_out
+  io.test_port := wb_dout
+  val ic_rd_hit_q = Mux(ic_debug_rd_en_ff.asBool, ic_debug_rd_way_en_ff, io.ic_rd_hit)
+  ic_bank_wr_data := (0 until ICACHE_BANKS_WAY).map(io.ic_wr_data(_))
 
-//  val ic_bank_way_clken = new Array[UInt](ICACHE_NUM_WAYS)
-//  ic_bank_way_clken(0) = (repl(ICACHE_NUM_WAYS,ic_b_rden(0)) | io.clk_override | ic_b_sb_wren(0))
-//  for(i<-1 until ICACHE_NUM_WAYS){
-//    ic_bank_way_clken(i) = (repl(ICACHE_NUM_WAYS,ic_b_rden(0)) | io.clk_override | ic_b_sb_wren(i)) | ic_bank_way_clken(i-1)
-//  }
-//  // TODO: AS it is being used at only one place replace
-//  val ic_rw_addr_q_inc = ic_rw_addr_q(ICACHE_TAG_LO-1,ICACHE_DATA_INDEX_LO) + 1.U
-//  val ic_rw_addr_wrap = ic_rw_addr_q(ICACHE_BANK_HI) & (ic_rw_addr_q(2,1)===3.U) & ic_rd_en_with_debug & ~(io.ic_wr_en.orR)
-//  // All flops rw-address
-//  // rd-enable as it is a sync mem
-//  val ic_rw_addr_ff = RegNext(ic_rw_addr_q, init = 0.U)
-//  val ic_b_rden_ff = RegNext(ic_b_rden.reverse.reduce(Cat(_,_)), init = 0.U)
-//  val ic_debug_rd_way_en_ff = RegNext(ic_debug_rd_way_en, init = 0.U)
-//  val ic_debug_rd_en_ff = RegNext(io.ic_debug_rd_en, init = 0.U)
-//  val ic_cacheline_wrap_ff = ic_rw_addr_ff(ICACHE_TAG_INDEX_LO-1,ICACHE_BANK_LO) === repl(ICACHE_TAG_INDEX_LO - ICACHE_BANK_LO, 1.U)
-//
-//  val ic_rw_addr_bank_q = Wire(Vec(ICACHE_BANKS_WAY,UInt((ICACHE_INDEX_HI+1).W)))
-//  ic_rw_addr_bank_q(0) := Mux(~ic_rw_addr_wrap.asBool, ic_rw_addr_q(ICACHE_INDEX_HI,ICACHE_DATA_INDEX_LO), Cat(ic_rw_addr_q(ICACHE_INDEX_HI, ICACHE_TAG_INDEX_LO), ic_rw_addr_q_inc(ICACHE_TAG_INDEX_LO-1, ICACHE_DATA_INDEX_LO)))
-//  ic_rw_addr_bank_q(1) := ic_rw_addr_q(ICACHE_INDEX_HI, ICACHE_DATA_INDEX_LO)
-//  val (data_mem_word, tag_mem_word, ecc_offset) = DATA_MEM_LINE
-//  // Making a memory with Location=ICACHE_DATA_DEPTH banks and ways
-//  val data_mem = SyncReadMem(ICACHE_DATA_DEPTH, Vec(ICACHE_BANKS_WAY,Vec(ICACHE_NUM_WAYS, UInt(data_mem_word.W))))
-//  data_mem(ic_rw_addr_bank_q(0)(ICACHE_INDEX_HI,ICACHE_DATA_INDEX_LO))(0)(0):= ic_sb_wr_data(0)
-//  val wb_dout = Wire(Vec(ICACHE_NUM_WAYS, Vec(ICACHE_BANKS_WAY, UInt(data_mem_word.W))))
-//  // Initializing the wire
-//  wb_dout.indices.foreach { i => wb_dout(i).indices.foreach{ j=>
-//    wb_dout(i)(j) := 0.U
-//      when(ic_sb_wr_data(i)(j) & ic_bank_way_clken(i)(j)){
-//        data_mem(ic_rw_addr_bank_q(j)(ICACHE_INDEX_HI,ICACHE_DATA_INDEX_LO))(j)(i) := ic_sb_wr_data(j)
-//      }
-//    wb_dout(i)(j) := data_mem(ic_rw_addr_bank_q(j)(ICACHE_INDEX_HI,ICACHE_DATA_INDEX_LO))(i)(j)
-//    }
-//  }
-//  val wb_dout_way_pre_lower = (0 until ICACHE_NUM_WAYS).map(i=>
-//    (0 until ICACHE_BANKS_WAY).map(j=>
-//      repl(data_mem_word,ic_rw_addr_ff(ICACHE_BANK_HI, ICACHE_BANK_LO)===j.U)&wb_dout(i)(j)).reduce(_|_))
-//
-//  val wb_dout_way_pre_upper = (0 until ICACHE_NUM_WAYS).map(i=>
-//    (0 until ICACHE_BANKS_WAY).map(j=>
-//      repl(data_mem_word,ic_rw_addr_ff(ICACHE_BANK_HI, ICACHE_BANK_LO)===j.U-1.U)&wb_dout(i)(j)).reduce(_|_))
-//
-//  val wb_dout_way_pre = (0 until ICACHE_NUM_WAYS).map(i=>Cat(wb_dout_way_pre_upper(i),wb_dout_way_pre_lower(i)))
-//
-//  // TODO: Put an assertion here
-//  val wb_dout_way = (0 until ICACHE_NUM_WAYS).map(i=>
-//        repl(64 ,ic_rw_addr_ff(2,1)===0.U) & wb_dout_way_pre(i)(63,0) |
-//        repl(64 ,ic_rw_addr_ff(2,1)===1.U) & Cat(wb_dout_way_pre(i)(ecc_offset+15,ecc_offset),wb_dout_way_pre(i)(63,16)) |
-//        repl(64 ,ic_rw_addr_ff(2,1)===2.U) & Cat(wb_dout_way_pre(i)(ecc_offset+31,ecc_offset),wb_dout_way_pre(i)(63,32)) |
-//        repl(64 ,ic_rw_addr_ff(2,1)===3.U) & Cat(wb_dout_way_pre(i)(ecc_offset+47,ecc_offset),wb_dout_way_pre(i)(63,48))
-//  )
-//  //  ic_rw_addr_ff(ICACHE_BANK_HI,ICACHE_BANK_LO)===1.U -> wb_dout(1)(0)))
-//  val ic_rd_hit_q = Mux(ic_debug_rd_en_ff===1.U, ic_debug_rd_way_en_ff, io.ic_rd_hit) ;
-//  val wb_dout_way_with_premux = wb_dout_way.map(Mux(io.ic_sel_premux_data, io.ic_premux_data, _))
-//
-//  io.ic_debug_rd_data := 0.U
-//  io.ic_parerr := 0.U
-//  io.ic_eccerr := 0.U
-//
-//  io.ic_rd_data := Mux1H_LM((0 until ICACHE_NUM_WAYS).map(i => ic_rd_hit_q(i) | io.ic_sel_premux_data),
-//        (0 until ICACHE_NUM_WAYS).map(wb_dout_way_with_premux(_)))
-//  io.ic_debug_rd_data := Mux1H_LM((0 until ICACHE_NUM_WAYS).map(i => ic_rd_hit_q(i)),
-//    (0 until ICACHE_NUM_WAYS).map(wb_dout_way_pre(_)(data_mem_word-1,0)))
-//  val wb_dout_ecc = Mux1H_LM((0 until ICACHE_NUM_WAYS).map(i => ic_rd_hit_q(i)),
-//    (0 until ICACHE_NUM_WAYS).map(wb_dout_way_pre(_)))
-//  io.test_port2 := 0.U//inter2//wb_dout_way_pre
-//  io.test_port := wb_dout
+  val wb_dout_way_pre = (0 until ICACHE_BANKS_WAY).map(i=>Cat(
+    Mux1H((0 until ICACHE_BANKS_WAY).map(j=>(ic_rw_addr_ff(ICACHE_BANK_HI-1, ICACHE_BANK_LO-1)===j.U).asBool->wb_dout(i)(j))),
+    Mux1H((0 until ICACHE_BANKS_WAY).map(j=>(ic_rw_addr_ff(ICACHE_BANK_HI-1, ICACHE_BANK_LO-1)===(j.U-1.U)).asBool->wb_dout(i)(j)))))
+
+  val wb_dout_way = (0 until ICACHE_NUM_WAYS).map(i=>Mux1H(Seq((ic_rw_addr_ff(1,0)===0.U).asBool->wb_dout_way_pre(i)(63,0),
+                              (ic_rw_addr_ff(1,0)===1.U).asBool->Cat(wb_dout_way_pre(i)(86,71),wb_dout_way_pre(i)(63,16)),
+                              (ic_rw_addr_ff(1,0)===2.U).asBool->Cat(wb_dout_way_pre(i)(102,71),wb_dout_way_pre(i)(63,32)),
+                              (ic_rw_addr_ff(1,0)===3.U).asBool->Cat(wb_dout_way_pre(i)(119,71),wb_dout_way_pre(i)(63,48)))))
+
+  val wb_dout_way_with_premux = (0 until ICACHE_NUM_WAYS).map(i=>Mux(io.ic_sel_premux_data.asBool,io.ic_premux_data, wb_dout_way(i)))
+
+  val ic_rd_data = Mux1H((0 until ICACHE_NUM_WAYS).map(i=>(ic_rd_hit_q(i) | io.ic_sel_premux_data).asBool->wb_dout_way_with_premux(i)))
+  val ic_debug_rd_data = Mux1H((0 until ICACHE_NUM_WAYS).map(i=>ic_rd_hit_q(i).asBool->wb_dout_way_pre(i)(70,0)))
+  val wb_dout_ecc = Mux1H((0 until ICACHE_NUM_WAYS).map(i=>ic_rd_hit_q(i).asBool->wb_dout_way_pre(i)))
+
+  val bank_check_en = for(i<-0 until ICACHE_BANKS_WAY) yield(io.ic_rd_hit.orR & ((i.U==0.U).asBool | (!ic_cacheline_wrap_ff & (ic_b_rden_ff(ICACHE_BANKS_WAY-1,0) === Fill(ICACHE_BANKS_WAY,1.U)))))
+//  val wb_dout_ecc_bank = (0 until ICACHE_BANKS_WAY).map(i=> wb_dout_ecc((71*i)+70,71*i)))
 }
 
 object ifu_ic extends App {
