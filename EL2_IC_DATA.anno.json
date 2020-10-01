@@ -7,10 +7,10 @@
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_way",
       "~EL2_IC_DATA|EL2_IC_DATA>io_clk_override",
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rw_addr",
-      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_addr",
-      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_rd_en",
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_wr_en",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_addr",
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_tag_array",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_rd_en",
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rd_en"
     ]
   },
