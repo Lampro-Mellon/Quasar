@@ -85,7 +85,7 @@ circuit el2_ifu_ifc_ctl :
     node _T_25 = bits(io.ifc_fetch_addr_f, 30, 1) @[el2_ifu_ifc_ctl.scala 77:42]
     node _T_26 = add(_T_25, UInt<1>("h01")) @[el2_ifu_ifc_ctl.scala 77:48]
     node address_upper = tail(_T_26, 1) @[el2_ifu_ifc_ctl.scala 77:48]
-    node _T_27 = bits(address_upper, 4, 4) @[el2_ifu_ifc_ctl.scala 78:39]
+    node _T_27 = bits(address_upper, 5, 5) @[el2_ifu_ifc_ctl.scala 78:39]
     node _T_28 = bits(io.ifc_fetch_addr_f, 5, 5) @[el2_ifu_ifc_ctl.scala 78:84]
     node _T_29 = xor(_T_27, _T_28) @[el2_ifu_ifc_ctl.scala 78:63]
     node _T_30 = eq(_T_29, UInt<1>("h00")) @[el2_ifu_ifc_ctl.scala 78:24]

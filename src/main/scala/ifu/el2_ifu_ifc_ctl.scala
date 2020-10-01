@@ -75,7 +75,7 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
     sel_next_addr_bf.asBool -> fetch_addr_next))            // PC+4
 
   val address_upper = io.ifc_fetch_addr_f(30,1)+1.U
-  fetch_addr_next_0 := !(address_upper(ICACHE_TAG_INDEX_LO-2) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO-1)) & io.ifc_fetch_addr_f(0)
+  fetch_addr_next_0 := !(address_upper(ICACHE_TAG_INDEX_LO-1) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO-1)) & io.ifc_fetch_addr_f(0)
 
   fetch_addr_next := Cat(address_upper, fetch_addr_next_0)
 
