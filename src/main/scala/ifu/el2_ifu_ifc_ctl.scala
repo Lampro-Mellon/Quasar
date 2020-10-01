@@ -33,6 +33,7 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
     val ifc_iccm_access_bf = Output(Bool())
     val ifc_region_acc_fault_bf = Output(Bool())
     val ifc_dma_access_ok = Output(Bool())
+    val test = Output(Bool())
   })
 
   val fetch_addr_bf = WireInit(UInt(31.W), init = 0.U)
@@ -75,8 +76,8 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
     sel_next_addr_bf.asBool -> fetch_addr_next))            // PC+4
 
   val address_upper = io.ifc_fetch_addr_f(30,1)+1.U
-  fetch_addr_next_0 := !(address_upper(ICACHE_TAG_INDEX_LO-1) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO-1)) & io.ifc_fetch_addr_f(0)
-
+  fetch_addr_next_0 := !(address_upper(ICACHE_TAG_INDEX_LO-2) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO-1)) & io.ifc_fetch_addr_f(0)
+  io.test := fetch_addr_next_0
   fetch_addr_next := Cat(address_upper, fetch_addr_next_0)
 
   io.ifc_fetch_req_bf_raw := ~idle
