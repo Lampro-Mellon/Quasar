@@ -270,8 +270,8 @@ class EL2_IC_DATA extends Module with el2_lib {
   val ic_debug_rd_data = Mux1H((0 until ICACHE_NUM_WAYS).map(i=>ic_rd_hit_q(i).asBool->wb_dout_way_pre(i)(70,0)))
   val wb_dout_ecc = Mux1H((0 until ICACHE_NUM_WAYS).map(i=>ic_rd_hit_q(i).asBool->wb_dout_way_pre(i)))
 
-  val bank_check_en = for(i<-0 until ICACHE_BANKS_WAY) yield(io.ic_rd_hit.orR & ((i.U==0.U).asBool | (!ic_cacheline_wrap_ff & (ic_b_rden_ff(ICACHE_BANKS_WAY-1,0) === Fill(ICACHE_BANKS_WAY,1.U)))))
-//  val wb_dout_ecc_bank = (0 until ICACHE_BANKS_WAY).map(i=> wb_dout_ecc((71*i)+70,71*i)))
+  val bank_check_en = for(i<-0 until ICACHE_BANKS_WAY) yield io.ic_rd_hit.orR & ((i.U==0.U).asBool | (!ic_cacheline_wrap_ff & (ic_b_rden_ff(ICACHE_BANKS_WAY-1,0) === Fill(ICACHE_BANKS_WAY,1.U))))
+  val wb_dout_ecc_bank = (0 until ICACHE_BANKS_WAY).map(i=> wb_dout_ecc((71*i)+70,71*i))
 }
 
 object ifu_ic extends App {
