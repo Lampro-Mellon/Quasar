@@ -22,7 +22,11 @@ module EL2_IC_DATA(
   input  [1:0]  io_ic_rd_hit,
   input         io_scan_mode,
   input  [70:0] io_test_in,
-  output [70:0] io_test
+  output        io_test,
+  output [70:0] io_test_port_0_0,
+  output [70:0] io_test_port_0_1,
+  output [70:0] io_test_port_1_0,
+  output [70:0] io_test_port_1_1
 );
 `ifdef RANDOMIZE_MEM_INIT
   reg [95:0] _RAND_0;
@@ -174,25 +178,22 @@ module EL2_IC_DATA(
   wire  ic_rw_addr_wrap = _T_121 & _T_114; // @[el2_ifu_ic_mem.scala 224:108]
   wire  _T_124 = ~ic_rw_addr_wrap; // @[el2_ifu_ic_mem.scala 226:40]
   wire [8:0] _T_129 = {ic_rw_addr_q[11:5],ic_rw_addr_q_inc[4:3]}; // @[Cat.scala 29:58]
-  wire  _T_139 = ic_b_sb_wren_0[0] & ic_bank_way_clken_0[0]; // @[el2_ifu_ic_mem.scala 247:30]
-  wire  _T_143 = ~ic_b_sb_wren_0[0]; // @[el2_ifu_ic_mem.scala 249:17]
-  wire  _T_145 = _T_143 & ic_bank_way_clken_0[0]; // @[el2_ifu_ic_mem.scala 249:36]
-  wire [70:0] _GEN_3 = _T_145 ? data_mem_0_0__T_147_data : 71'h0; // @[el2_ifu_ic_mem.scala 249:69]
-  wire [70:0] _GEN_13 = _T_139 ? 71'h0 : _GEN_3; // @[el2_ifu_ic_mem.scala 247:64]
-  wire  _T_152 = ic_b_sb_wren_1[0] & ic_bank_way_clken_1[0]; // @[el2_ifu_ic_mem.scala 247:30]
-  wire  _T_156 = ~ic_b_sb_wren_1[0]; // @[el2_ifu_ic_mem.scala 249:17]
-  wire  _T_158 = _T_156 & ic_bank_way_clken_1[0]; // @[el2_ifu_ic_mem.scala 249:36]
-  wire [70:0] _GEN_17 = _T_158 ? data_mem_1_0__T_160_data : _GEN_13; // @[el2_ifu_ic_mem.scala 249:69]
-  wire [70:0] _GEN_27 = _T_152 ? _GEN_13 : _GEN_17; // @[el2_ifu_ic_mem.scala 247:64]
-  wire  _T_165 = ic_b_sb_wren_0[1] & ic_bank_way_clken_0[1]; // @[el2_ifu_ic_mem.scala 247:30]
-  wire  _T_169 = ~ic_b_sb_wren_0[1]; // @[el2_ifu_ic_mem.scala 249:17]
-  wire  _T_171 = _T_169 & ic_bank_way_clken_0[1]; // @[el2_ifu_ic_mem.scala 249:36]
-  wire [70:0] _GEN_31 = _T_171 ? data_mem_0_1__T_173_data : _GEN_27; // @[el2_ifu_ic_mem.scala 249:69]
-  wire [70:0] _GEN_41 = _T_165 ? _GEN_27 : _GEN_31; // @[el2_ifu_ic_mem.scala 247:64]
-  wire  _T_178 = ic_b_sb_wren_1[1] & ic_bank_way_clken_1[1]; // @[el2_ifu_ic_mem.scala 247:30]
-  wire  _T_182 = ~ic_b_sb_wren_1[1]; // @[el2_ifu_ic_mem.scala 249:17]
-  wire  _T_184 = _T_182 & ic_bank_way_clken_1[1]; // @[el2_ifu_ic_mem.scala 249:36]
-  wire [70:0] _GEN_45 = _T_184 ? data_mem_1_1__T_186_data : _GEN_41; // @[el2_ifu_ic_mem.scala 249:69]
+  wire  _T_139 = ic_b_sb_wren_0[0] & ic_bank_way_clken_0[0]; // @[el2_ifu_ic_mem.scala 248:30]
+  wire  _T_143 = ~ic_b_sb_wren_0[0]; // @[el2_ifu_ic_mem.scala 250:17]
+  wire  _T_145 = _T_143 & ic_bank_way_clken_0[0]; // @[el2_ifu_ic_mem.scala 250:36]
+  wire [70:0] _GEN_3 = _T_145 ? data_mem_0_0__T_147_data : 71'h0; // @[el2_ifu_ic_mem.scala 250:69]
+  wire  _T_152 = ic_b_sb_wren_1[0] & ic_bank_way_clken_1[0]; // @[el2_ifu_ic_mem.scala 248:30]
+  wire  _T_156 = ~ic_b_sb_wren_1[0]; // @[el2_ifu_ic_mem.scala 250:17]
+  wire  _T_158 = _T_156 & ic_bank_way_clken_1[0]; // @[el2_ifu_ic_mem.scala 250:36]
+  wire [70:0] _GEN_17 = _T_158 ? data_mem_1_0__T_160_data : 71'h0; // @[el2_ifu_ic_mem.scala 250:69]
+  wire  _T_165 = ic_b_sb_wren_0[1] & ic_bank_way_clken_0[1]; // @[el2_ifu_ic_mem.scala 248:30]
+  wire  _T_169 = ~ic_b_sb_wren_0[1]; // @[el2_ifu_ic_mem.scala 250:17]
+  wire  _T_171 = _T_169 & ic_bank_way_clken_0[1]; // @[el2_ifu_ic_mem.scala 250:36]
+  wire [70:0] _GEN_31 = _T_171 ? data_mem_0_1__T_173_data : 71'h0; // @[el2_ifu_ic_mem.scala 250:69]
+  wire  _T_178 = ic_b_sb_wren_1[1] & ic_bank_way_clken_1[1]; // @[el2_ifu_ic_mem.scala 248:30]
+  wire  _T_182 = ~ic_b_sb_wren_1[1]; // @[el2_ifu_ic_mem.scala 250:17]
+  wire  _T_184 = _T_182 & ic_bank_way_clken_1[1]; // @[el2_ifu_ic_mem.scala 250:36]
+  wire [70:0] _GEN_45 = _T_184 ? data_mem_1_1__T_186_data : 71'h0; // @[el2_ifu_ic_mem.scala 250:69]
   assign data_mem_0_0__T_147_addr = _T_124 ? ic_rw_addr_q[11:3] : _T_129;
   assign data_mem_0_0__T_147_data = data_mem_0_0[data_mem_0_0__T_147_addr]; // @[el2_ifu_ic_mem.scala 243:21]
   assign data_mem_0_0__T_160_addr = ic_rw_addr_q[11:3];
@@ -293,7 +294,11 @@ module EL2_IC_DATA(
   assign io_ic_debug_rd_data = 71'h0; // @[el2_ifu_ic_mem.scala 195:23]
   assign io_ic_parerr = 2'h0; // @[el2_ifu_ic_mem.scala 196:16]
   assign io_ic_eccerr = 2'h0; // @[el2_ifu_ic_mem.scala 197:16]
-  assign io_test = _T_178 ? _GEN_41 : _GEN_45; // @[el2_ifu_ic_mem.scala 198:11 el2_ifu_ic_mem.scala 250:15 el2_ifu_ic_mem.scala 250:15 el2_ifu_ic_mem.scala 250:15 el2_ifu_ic_mem.scala 250:15]
+  assign io_test = 1'h0; // @[el2_ifu_ic_mem.scala 198:11]
+  assign io_test_port_0_0 = _T_139 ? 71'h0 : _GEN_3; // @[el2_ifu_ic_mem.scala 254:16]
+  assign io_test_port_0_1 = _T_152 ? 71'h0 : _GEN_17; // @[el2_ifu_ic_mem.scala 254:16]
+  assign io_test_port_1_0 = _T_165 ? 71'h0 : _GEN_31; // @[el2_ifu_ic_mem.scala 254:16]
+  assign io_test_port_1_1 = _T_178 ? 71'h0 : _GEN_45; // @[el2_ifu_ic_mem.scala 254:16]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif

@@ -5,35 +5,34 @@ import chisel3.util._
 
 class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
   val io = IO(new Bundle{
-    val free_clk = Input(Clock())
-    val active_clk = Input(Bool())
-    val scan_mode = Input(Bool())
-    val ic_hit_f = Input(Bool())
-    val ifu_ic_mb_empty = Input(Bool())
-    val ifu_fb_consume1 = Input(Bool())
-    val ifu_fb_consume2 = Input(Bool())
-    val dec_tlu_flush_noredir_wb = Input(Bool())
-    val exu_flush_final = Input(Bool())
-    val exu_flush_path_final = Input(UInt(31.W))
-    val ifu_bp_hit_taken_f = Input(Bool())
-    val ifu_bp_btb_target_f = Input(UInt(31.W))
-    val ic_dma_active = Input(Bool())
-    val ic_write_stall = Input(Bool())
-    val dma_iccm_stall_any = Input(Bool())
-    val dec_tlu_mrac_ff = Input(UInt(32.W))
+    val free_clk                  = Input(Clock())
+    val active_clk                = Input(Bool())
+    val scan_mode                 = Input(Bool())
+    val ic_hit_f                  = Input(Bool())
+    val ifu_ic_mb_empty           = Input(Bool())
+    val ifu_fb_consume1           = Input(Bool())
+    val ifu_fb_consume2           = Input(Bool())
+    val dec_tlu_flush_noredir_wb  = Input(Bool())
+    val exu_flush_final           = Input(Bool())
+    val exu_flush_path_final      = Input(UInt(31.W))
+    val ifu_bp_hit_taken_f        = Input(Bool())
+    val ifu_bp_btb_target_f       = Input(UInt(31.W))
+    val ic_dma_active             = Input(Bool())
+    val ic_write_stall            = Input(Bool())
+    val dma_iccm_stall_any        = Input(Bool())
+    val dec_tlu_mrac_ff           = Input(UInt(32.W))
 
-    val ifc_fetch_addr_f = Output(UInt(31.W))
-    val ifc_fetch_addr_bf = Output(UInt(31.W))
+    val ifc_fetch_addr_f          = Output(UInt(31.W))
+    val ifc_fetch_addr_bf         = Output(UInt(31.W))
 
-    val ifc_fetch_req_f = Output(Bool())
-    val ifu_pmu_fetch_stall = Output(Bool())
-    val ifc_fetch_uncacheable_bf = Output(Bool())
-    val ifc_fetch_req_bf = Output(Bool())
-    val ifc_fetch_req_bf_raw = Output(Bool())
-    val ifc_iccm_access_bf = Output(Bool())
-    val ifc_region_acc_fault_bf = Output(Bool())
-    val ifc_dma_access_ok = Output(Bool())
-    val test = Output(Bool())
+    val ifc_fetch_req_f           = Output(Bool())
+    val ifu_pmu_fetch_stall       = Output(Bool())
+    val ifc_fetch_uncacheable_bf  = Output(Bool())
+    val ifc_fetch_req_bf          = Output(Bool())
+    val ifc_fetch_req_bf_raw      = Output(Bool())
+    val ifc_iccm_access_bf        = Output(Bool())
+    val ifc_region_acc_fault_bf   = Output(Bool())
+    val ifc_dma_access_ok         = Output(Bool())
   })
 
   val fetch_addr_bf = WireInit(UInt(31.W), init = 0.U)
@@ -77,7 +76,7 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
 
   val address_upper = io.ifc_fetch_addr_f(30,1)+1.U
   fetch_addr_next_0 := !(address_upper(ICACHE_TAG_INDEX_LO-2) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO-1)) & io.ifc_fetch_addr_f(0)
-  io.test := fetch_addr_next_0
+
   fetch_addr_next := Cat(address_upper, fetch_addr_next_0)
 
   io.ifc_fetch_req_bf_raw := ~idle

@@ -188,7 +188,7 @@ class EL2_IC_DATA extends Module with el2_lib {
     val scan_mode           = Input(UInt(1.W))
     val test_in             = Input(UInt(71.W))
     val test                = Output(UInt())
-  //  val test_port           = Output(Vec(ICACHE_BANKS_WAY, Vec(ICACHE_NUM_WAYS, UInt(71.W))))
+    val test_port           = Output(Vec(ICACHE_BANKS_WAY, Vec(ICACHE_NUM_WAYS, UInt(71.W))))
   })
 
   io.ic_rd_data := 0.U
@@ -242,14 +242,16 @@ class EL2_IC_DATA extends Module with el2_lib {
   val wb_out = Wire(Vec(ICACHE_BANKS_WAY,Vec(ICACHE_NUM_WAYS, UInt(data_mem_word.W))))
   val data_mem = Mem(ICACHE_DATA_DEPTH, Vec(ICACHE_BANKS_WAY,Vec(ICACHE_NUM_WAYS, UInt(data_mem_word.W))))
   for(i<-0 until ICACHE_NUM_WAYS; k<-0 until ICACHE_BANKS_WAY){
+    wb_out(i)(k) := 0.U
     val WE = if(ICACHE_WAYPACK) ic_b_sb_wren(k).orR else ic_b_sb_wren(k)(i)
     val ME = if(ICACHE_WAYPACK) ic_bank_way_clken(k).orR else ic_bank_way_clken(k)(i)
     when((ic_b_sb_wren(k)(i) & ic_bank_way_clken(k)(i)).asBool){
       data_mem(ic_rw_addr_bank_q(k))(k)(i) := io.test_in
     }.elsewhen((!ic_b_sb_wren(k)(i)&ic_bank_way_clken(k)(i)).asBool){
-      wb_out := data_mem(ic_rw_addr_bank_q(k))(k)(i)
+      wb_out(i)(k) := data_mem(ic_rw_addr_bank_q(k))(k)(i)
     }
   }
+  io.test_port := wb_out
 
 //  val ic_bank_way_clken = new Array[UInt](ICACHE_NUM_WAYS)
 //  ic_bank_way_clken(0) = (repl(ICACHE_NUM_WAYS,ic_b_rden(0)) | io.clk_override | ic_b_sb_wren(0))

@@ -1,7 +1,7 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~EL2_IC_DATA|EL2_IC_DATA>io_test",
+    "sink":"~EL2_IC_DATA|EL2_IC_DATA>io_test_port_1_1",
     "sources":[
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_wr_en",
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_way",
@@ -9,6 +9,51 @@
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rw_addr",
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_wr_en",
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_addr",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_tag_array",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_rd_en",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rd_en"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_DATA|EL2_IC_DATA>io_test_port_0_0",
+    "sources":[
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_wr_en",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_way",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_clk_override",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_wr_en",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_addr",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rw_addr",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_tag_array",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_rd_en",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rd_en"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_DATA|EL2_IC_DATA>io_test_port_0_1",
+    "sources":[
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_wr_en",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_way",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_clk_override",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rw_addr",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_wr_en",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_addr",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_tag_array",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_rd_en",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rd_en"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_DATA|EL2_IC_DATA>io_test_port_1_0",
+    "sources":[
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_wr_en",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_way",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_clk_override",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_wr_en",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_addr",
+      "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rw_addr",
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_tag_array",
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_debug_rd_en",
       "~EL2_IC_DATA|EL2_IC_DATA>io_ic_rd_en"
