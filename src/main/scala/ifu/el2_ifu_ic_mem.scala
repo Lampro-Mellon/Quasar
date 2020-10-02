@@ -48,7 +48,7 @@ class EL2_IC_TAG extends Module with el2_lib with param {
     val ic_wr_en                  = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_tag_valid              = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_rd_en                  = Input(Bool())
-    val ic_debug_addr             = Input(UInt((ICACHE_INDEX_HI-2).W))
+    val ic_debug_addr             = Input(UInt((ICACHE_INDEX_HI-2).W)) // 12-2 = 10-bit value
     val ic_debug_rd_en            = Input(Bool())
     val ic_debug_wr_en            = Input(Bool())
     val ic_debug_tag_array        = Input(Bool())
@@ -59,7 +59,6 @@ class EL2_IC_TAG extends Module with el2_lib with param {
     val ic_tag_perr               = Output(Bool())
     val scan_mode                 = Input(Bool())
     val test                      = Output(UInt())
-
   })
 
   io.ictag_debug_rd_data := 0.U
@@ -67,6 +66,8 @@ class EL2_IC_TAG extends Module with el2_lib with param {
   io.ic_tag_perr := 0.U
   val ic_debug_wr_way_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
   val ic_debug_rd_way_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
+
+
   val ic_tag_wren = io.ic_wr_en & Fill(ICACHE_NUM_WAYS, io.ic_rw_addr(ICACHE_BEAT_ADDR_HI-3,1)=== Fill(ICACHE_NUM_WAYS-1, 1.U))
   val ic_tag_clken = Fill(ICACHE_NUM_WAYS, io.ic_rd_en|io.clk_override) | io.ic_wr_en | ic_debug_wr_way_en | ic_debug_rd_way_en
 
@@ -80,11 +81,19 @@ class EL2_IC_TAG extends Module with el2_lib with param {
 
   val ic_tag_wren_q = ic_tag_wren | ic_debug_wr_way_en
 
-  val ic_tag_ecc = rvecc_encode(Cat(Fill(ICACHE_TAG_LO,0.U),io.ic_rw_addr(31-3, ICACHE_TAG_LO-3)))
+  val ic_tag_ecc = if(ICACHE_ECC) rvecc_encode(Cat(Fill(ICACHE_TAG_LO,0.U),io.ic_rw_addr(31-3, ICACHE_TAG_LO-3))) else 0.U
 
-  val ic_tag_wr_data = Mux((io.ic_debug_wr_en & io.ic_debug_tag_array).asBool, Cat(io.ic_debug_wr_data(68,64), io.ic_debug_wr_data(31,11)),
-    Cat(ic_tag_ecc(4,0),io.ic_rw_addr(31-3,ICACHE_TAG_LO-3)))
-  io.test := io.ic_rw_addr
+  val ic_tag_parity = if(ICACHE_ECC) rveven_paritygen(Cat(Fill(ICACHE_TAG_LO,0.U),io.ic_rw_addr(31-3, ICACHE_TAG_LO-3))) else 0.U
+
+  val ic_tag_wr_data = if(ICACHE_TAG_LO==11) Mux(io.ic_debug_wr_en & io.ic_debug_tag_array, Cat(if(ICACHE_ECC) io.ic_debug_wr_data(68,64) else io.ic_debug_wr_data(64), io.ic_debug_wr_data(31,11)),
+    Cat(if(ICACHE_ECC) ic_tag_ecc(4,0) else ic_tag_parity, io.ic_rw_addr(31-3,ICACHE_TAG_LO-3)))
+  else Mux(io.ic_debug_wr_en & io.ic_debug_tag_array, Cat(if(ICACHE_ECC) io.ic_debug_wr_data(68,64) else io.ic_debug_wr_data(64), io.ic_debug_wr_data(31,11)),
+    Cat(if(ICACHE_ECC) Cat(ic_tag_ecc(4,0), Fill(PAD_BITS,0.U)) else Cat(ic_tag_parity,Fill(PAD_BITS,0.U), io.ic_rw_addr(31-3,ICACHE_TAG_LO-3))))
+
+  io.test := ic_tag_wr_data
+
+
+
 
 
 

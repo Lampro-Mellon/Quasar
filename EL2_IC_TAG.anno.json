@@ -3,6 +3,9 @@
     "class":"firrtl.transforms.CombinationalPath",
     "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test",
     "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_wr_en",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_tag_array",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_wr_data",
       "~EL2_IC_TAG|EL2_IC_TAG>io_ic_rw_addr"
     ]
   },
