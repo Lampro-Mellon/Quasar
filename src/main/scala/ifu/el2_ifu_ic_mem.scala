@@ -44,7 +44,7 @@ class EL2_IC_TAG extends Module with el2_lib with param {
   val io = IO(new Bundle{
     val clk_override              = Input(Bool())
     val dec_tlu_core_ecc_disable  = Input(Bool())
-    val ic_rw_addr                = Input(UInt(28.W))
+    val ic_rw_addr                = Input(UInt(29.W)) // 32:3
     val ic_wr_en                  = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_tag_valid              = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_rd_en                  = Input(Bool())
@@ -53,16 +53,43 @@ class EL2_IC_TAG extends Module with el2_lib with param {
     val ic_debug_wr_en            = Input(Bool())
     val ic_debug_tag_array        = Input(Bool())
     val ic_debug_way              = Input(UInt(ICACHE_NUM_WAYS.W))
-  //  val ictag_debug_rd_data       = Output(UInt(26.W))
+    val ictag_debug_rd_data       = Output(UInt(26.W))
     val ic_debug_wr_data          = Input(UInt(71.W))
-//    val ic_rd_hit                 = Output(UInt(ICACHE_NUM_WAYS.W))
-//    val ic_tag_perr               = Output(Bool())
+    val ic_rd_hit                 = Output(UInt(ICACHE_NUM_WAYS.W))
+    val ic_tag_perr               = Output(Bool())
     val scan_mode                 = Input(Bool())
+    val test                      = Output(UInt())
 
   })
 
-//  val ic_tag_wren = io.ic_wr_en & Fill(ICACHE_NUM_WAYS, io.ic_rw_addr(ICACHE_BEAT_ADDR_HI-3,1)=== Fill(ICACHE_NUM_WAYS-1, 1.U))
-//  val ic_tag_clken = Fill(ICACHE_NUM_WAYS, io.ic_rd_en|io.clk_override) | io.ic_wr_en |
+  io.ictag_debug_rd_data := 0.U
+  io.ic_rd_hit := 0.U
+  io.ic_tag_perr := 0.U
+  val ic_debug_wr_way_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
+  val ic_debug_rd_way_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
+  val ic_tag_wren = io.ic_wr_en & Fill(ICACHE_NUM_WAYS, io.ic_rw_addr(ICACHE_BEAT_ADDR_HI-3,1)=== Fill(ICACHE_NUM_WAYS-1, 1.U))
+  val ic_tag_clken = Fill(ICACHE_NUM_WAYS, io.ic_rd_en|io.clk_override) | io.ic_wr_en | ic_debug_wr_way_en | ic_debug_rd_way_en
+
+  val ic_rd_en_ff = RegNext(io.ic_rd_en, 0.U)
+  val ic_rw_addr_ff = RegNext(io.ic_rw_addr(31-ICACHE_TAG_LO, 0), 0.U)
+
+  val PAD_BITS = 21 - (32 - ICACHE_TAG_LO)
+
+  ic_debug_rd_way_en := Fill(ICACHE_NUM_WAYS, io.ic_debug_rd_en & io.ic_debug_tag_array) & io.ic_debug_way
+  ic_debug_wr_way_en := Fill(ICACHE_NUM_WAYS, io.ic_debug_wr_en & io.ic_debug_tag_array) & io.ic_debug_way
+
+  val ic_tag_wren_q = ic_tag_wren | ic_debug_wr_way_en
+
+  val ic_tag_ecc = rvecc_encode(Cat(Fill(ICACHE_TAG_LO,0.U),io.ic_rw_addr(31-3, ICACHE_TAG_LO-3)))
+
+  val ic_tag_wr_data = Mux((io.ic_debug_wr_en & io.ic_debug_tag_array).asBool, Cat(io.ic_debug_wr_data(68,64), io.ic_debug_wr_data(31,11)),
+    Cat(ic_tag_ecc(4,0),io.ic_rw_addr(31-3,ICACHE_TAG_LO-3)))
+  io.test := io.ic_rw_addr
+
+
+
+
+
 //  val ic_debug_rd_way_en = Fill(ICACHE_NUM_WAYS, io.ic_debug_rd_en & io.ic_debug_tag_array) & io.ic_debug_way
 //  val ic_debug_wr_way_en = repl(ICACHE_NUM_WAYS, io.ic_debug_wr_en & io.ic_debug_tag_array) & io.ic_debug_way
 //  val ic_tag_clken = repl(ICACHE_NUM_WAYS,io.ic_rd_en | io.clk_override) | io.ic_wr_en | ic_debug_wr_way_en | ic_debug_wr_way_en | ic_debug_rd_way_en
@@ -215,10 +242,7 @@ class EL2_IC_DATA extends Module with el2_lib {
 
   val ic_rw_addr_bank_q = VecInit(Mux((!ic_rw_addr_wrap).asBool,ic_rw_addr_q(ICACHE_INDEX_HI-1,ICACHE_DATA_INDEX_LO-1),
     Cat(ic_rw_addr_q(ICACHE_INDEX_HI-1, ICACHE_TAG_INDEX_LO-1) , ic_rw_addr_q_inc(ICACHE_TAG_INDEX_LO-2,ICACHE_DATA_INDEX_LO-1))),
-    ic_rw_addr_q(ICACHE_INDEX_HI-1,ICACHE_DATA_INDEX_LO-1)
-  )
-
-
+    ic_rw_addr_q(ICACHE_INDEX_HI-1,ICACHE_DATA_INDEX_LO-1))
 
   val ic_b_rden_ff = RegNext(ic_b_rden, 0.U)
   val ic_rw_addr_ff = RegNext(ic_rw_addr_q(ICACHE_TAG_INDEX_LO-2,0), 0.U)
