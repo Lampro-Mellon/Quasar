@@ -37,11 +37,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     val ifu_bp_valid_f = Output(UInt(2.W))
     val ifu_bp_poffset_f = Output(UInt(12.W))
 
-    val test_hash = Output(UInt())
-    val test_hash_p1 = Output(UInt())
-    val test = Output(UInt())
-//    val test = Output(UInt())
-//    val test = Output(UInt())
+    val test1 = Output(UInt())
+    val test2 = Output(UInt())
   })
 
   val TAG_START = 16+BTB_BTAG_SIZE
@@ -98,12 +95,13 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
   // Hash the first PC
   val btb_rd_addr_f = el2_btb_addr_hash(io.ifc_fetch_addr_f)
-  io.test_hash := btb_rd_addr_f
+
   // Second pc = pc +4
   val fetch_addr_p1_f = io.ifc_fetch_addr_f(30,1) + 1.U
+
   // Hash the second pc
   val btb_rd_addr_p1_f = el2_btb_addr_hash(Cat(fetch_addr_p1_f,0.U))
-  io.test_hash_p1 := btb_rd_addr_p1_f
+
   // TODO
   val btb_sel_f = Cat(~bht_dir_f(0),bht_dir_f(0))
 
@@ -189,7 +187,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val mp_wrlru_b0 = mp_wrindex_dec & Fill(LRU_SIZE, exu_mp_valid)
   val vwayhit_f = Mux1H(Seq(~io.ifc_fetch_addr_f(0).asBool->wayhit_f,
     io.ifc_fetch_addr_f(0).asBool->Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
-  io.test := vwayhit_f
+
   val lru_update_valid_f = (vwayhit_f(0) | vwayhit_f(1)) & io.ifc_fetch_req_f & !leak_one_f
 
   val fetch_wrlru_b0 = fetch_wrindex_dec & Fill(fetch_wrindex_dec.getWidth, lru_update_valid_f)
@@ -214,7 +212,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     io.ifc_fetch_addr_f(0).asBool->Cat(tag_match_way1_expanded_p1_f(0),tag_match_way1_expanded_f(1))))
 
   val way_raw = tag_match_vway1_expanded_f | (!vwayhit_f & btb_vlru_rd_f)
-
+  io.test1 := tag_match_vway1_expanded_f
+  io.test2 := btb_vlru_rd_f
   btb_lru_b0_f := RegEnable(btb_lru_b0_ns, init = 0.U, (io.ifc_fetch_req_f|exu_mp_valid).asBool)
 
   val eoc_near = io.ifc_fetch_addr_f(ICACHE_BEAT_ADDR_HI-1, 2).andR
