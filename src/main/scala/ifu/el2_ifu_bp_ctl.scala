@@ -116,7 +116,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val branch_error_bank_conflict_p1_f = branch_error_collision_p1_f & dec_tlu_error_wb
 
   val fetch_rd_tag_f = if(BTB_BTAG_FOLD) el2_btb_tag_hash_fold(io.ifc_fetch_addr_f) else el2_btb_tag_hash(io.ifc_fetch_addr_f)
-  val fetch_rd_tag_p1_f = if(BTB_BTAG_FOLD) el2_btb_tag_hash_fold(fetch_addr_p1_f) else el2_btb_tag_hash(fetch_addr_p1_f)
+  val fetch_rd_tag_p1_f = if(BTB_BTAG_FOLD) el2_btb_tag_hash_fold(Cat(fetch_addr_p1_f,0.U)) else el2_btb_tag_hash(Cat(fetch_addr_p1_f,0.U))
   // There is a misprediction and the exu is writing back
   val fetch_mp_collision_f = (io.exu_mp_btag === fetch_rd_tag_f) & exu_mp_valid & io.ifc_fetch_req_f & (exu_mp_addr === btb_rd_addr_f)
   val fetch_mp_collision_p1_f = (io.exu_mp_btag === fetch_rd_tag_p1_f) & exu_mp_valid & io.ifc_fetch_req_f & (exu_mp_addr === btb_rd_addr_p1_f)
