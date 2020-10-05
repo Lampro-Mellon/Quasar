@@ -93,9 +93,9 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val btb_rd_addr_f = el2_btb_addr_hash(io.ifc_fetch_addr_f)
   io.test_hash := btb_rd_addr_f
   // Second pc = pc +4
-  val fetch_addr_p1_f = io.ifc_fetch_addr_f + 2.U
+  val fetch_addr_p1_f = io.ifc_fetch_addr_f(30,1) + 1.U
   // Hash the second pc
-  val btb_rd_addr_p1_f = el2_btb_addr_hash(fetch_addr_p1_f)
+  val btb_rd_addr_p1_f = el2_btb_addr_hash(Cat(fetch_addr_p1_f,0.U))
   io.test_hash_p1 := btb_rd_addr_p1_f
   // TODO
   val btb_sel_f = Cat(~bht_dir_f(0),bht_dir_f(0))
