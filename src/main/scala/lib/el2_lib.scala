@@ -170,7 +170,7 @@ trait el2_lib extends param{
   val Tag_Word = MEM_CAL._4
 
   def el2_btb_tag_hash(pc : UInt) =
-    VecInit.tabulate(3)(i => pc(BTB_ADDR_HI+((i+1)*(BTB_BTAG_SIZE)),BTB_ADDR_HI+(i*BTB_BTAG_SIZE)+1)).reduce(_^_)
+    VecInit.tabulate(3)(i => pc(BTB_ADDR_HI-1+((i+1)*(BTB_BTAG_SIZE)),BTB_ADDR_HI+(i*BTB_BTAG_SIZE))).reduce(_^_)
 
   def el2_btb_tag_hash_fold(pc : UInt) =
     pc(BTB_ADDR_HI+(2*BTB_BTAG_SIZE),BTB_ADDR_HI+BTB_BTAG_SIZE+1)^pc(BTB_ADDR_HI+BTB_BTAG_SIZE,BTB_ADDR_HI+1)

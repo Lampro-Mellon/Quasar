@@ -89,6 +89,10 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val dec_tlu_br0_start_error_wb  = io.dec_tlu_br0_r_pkt.br_start_error
   val exu_i0_br_fghr_wb           = io.exu_i0_br_fghr_r
 
+  dec_tlu_error_wb := dec_tlu_br0_start_error_wb | dec_tlu_br0_error_wb
+  btb_error_addr_wb := dec_tlu_br0_addr_wb
+  dec_tlu_way_wb := dec_tlu_br0_way_wb
+
   // Hash the first PC
   val btb_rd_addr_f = el2_btb_addr_hash(io.ifc_fetch_addr_f)
   io.test_hash := btb_rd_addr_f
@@ -121,6 +125,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val dec_tlu_way_wb_f = RegNext(dec_tlu_way_wb, init = 0.U)
   val exu_mp_way_f = RegNext(exu_mp_way, init = 0.U)
   val exu_flush_final_d1 = RegNext(io.exu_flush_final, init = 0.U)
+
   // TODO
   leak_one_f := (io.dec_tlu_flush_leak_one_wb & io.dec_tlu_flush_lower_wb) | (leak_one_f_d1 & io.dec_tlu_flush_lower_wb)
 
@@ -328,9 +333,6 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
   rets_out := (0 until RET_STACK_SIZE).map(i=>RegEnable(rets_in(i),0.U,rsenable(i).asBool))
 
-  dec_tlu_error_wb := dec_tlu_br0_start_error_wb | dec_tlu_br0_error_wb
-  btb_error_addr_wb := dec_tlu_br0_addr_wb
-  dec_tlu_way_wb := dec_tlu_br0_way_wb
   val btb_valid = exu_mp_valid & (!dec_tlu_error_wb)
   val btb_wr_tag = io.exu_mp_btag
 
