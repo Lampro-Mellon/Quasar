@@ -40,6 +40,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     val test_hash = Output(UInt())
     val test_hash_p1 = Output(UInt())
     val test = Output(UInt())
+//    val test = Output(UInt())
+//    val test = Output(UInt())
   })
 
   val TAG_START = 16+BTB_BTAG_SIZE
@@ -172,10 +174,10 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     tag_match_way1_expanded_p1_f(1).asBool->btb_bank0_rd_data_way1_p1_f))
 
   // Making virtual banks, made bit 1 of the pc to check
-  val btb_vbank0_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(1)->btb_bank0e_rd_data_f,
-                                        io.ifc_fetch_addr_f(1)->btb_bank0o_rd_data_f))
-  val btb_vbank1_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(1)->btb_bank0o_rd_data_f,
-                                        io.ifc_fetch_addr_f(1)->btb_bank0e_rd_data_p1_f))
+  val btb_vbank0_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0)->btb_bank0e_rd_data_f,
+                                        io.ifc_fetch_addr_f(0)->btb_bank0o_rd_data_f))
+  val btb_vbank1_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0)->btb_bank0o_rd_data_f,
+                                        io.ifc_fetch_addr_f(0)->btb_bank0e_rd_data_p1_f))
 
   // Implimenting the LRU for a 2-way BTB
   val mp_wrindex_dec = 1.U(LRU_SIZE) << exu_mp_addr
@@ -205,17 +207,17 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
   val btb_lru_rd_p1_f = Mux(use_mp_way_p1.asBool, exu_mp_way_f, (fetch_wrindex_p1_dec & btb_lru_b0_f).orR)
 
-  val btb_vlru_rd_f = Mux1H(Seq(!io.ifc_fetch_addr_f(1) -> Cat(btb_lru_rd_f, btb_lru_rd_f),
-    io.ifc_fetch_addr_f(1).asBool -> Cat(btb_lru_rd_p1_f, btb_lru_rd_f)))
+  val btb_vlru_rd_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> Cat(btb_lru_rd_f, btb_lru_rd_f),
+    io.ifc_fetch_addr_f(0).asBool -> Cat(btb_lru_rd_p1_f, btb_lru_rd_f)))
 
-  val tag_match_vway1_expanded_f = Mux1H(Seq(~io.ifc_fetch_addr_f(1).asBool->tag_match_way1_expanded_f,
-    io.ifc_fetch_addr_f(1).asBool->Cat(tag_match_way1_expanded_p1_f(0),tag_match_way1_expanded_f(1))))
+  val tag_match_vway1_expanded_f = Mux1H(Seq(~io.ifc_fetch_addr_f(0).asBool->tag_match_way1_expanded_f,
+    io.ifc_fetch_addr_f(0).asBool->Cat(tag_match_way1_expanded_p1_f(0),tag_match_way1_expanded_f(1))))
 
   val way_raw = tag_match_vway1_expanded_f | (!vwayhit_f & btb_vlru_rd_f)
 
   btb_lru_b0_f := RegEnable(btb_lru_b0_ns, init = 0.U, (io.ifc_fetch_req_f|exu_mp_valid).asBool)
 
-  val eoc_near = io.ifc_fetch_addr_f(ICACHE_BEAT_ADDR_HI, 3).andR
+  val eoc_near = io.ifc_fetch_addr_f(ICACHE_BEAT_ADDR_HI-1, 2).andR
 
   eoc_mask := !eoc_near | (!io.ifc_fetch_addr_f(1,0).orR())
 
