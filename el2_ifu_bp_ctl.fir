@@ -439,7 +439,7 @@ circuit el2_ifu_bp_ctl :
     node _T_301 = bits(bht_valid_f, 0, 0) @[el2_ifu_bp_ctl.scala 268:49]
     node num_valids = add(_T_300, _T_301) @[el2_ifu_bp_ctl.scala 268:35]
     node _T_302 = and(btb_sel_f, bht_dir_f) @[el2_ifu_bp_ctl.scala 270:28]
-    node final_h = andr(_T_302) @[el2_ifu_bp_ctl.scala 270:41]
+    node final_h = orr(_T_302) @[el2_ifu_bp_ctl.scala 270:41]
     wire fghr : UInt<8>
     fghr <= UInt<1>("h00")
     node _T_303 = eq(num_valids, UInt<2>("h02")) @[el2_ifu_bp_ctl.scala 274:41]
@@ -482,8 +482,8 @@ circuit el2_ifu_bp_ctl :
     node _T_338 = or(_T_337, _T_336) @[Mux.scala 27:72]
     wire fghr_ns : UInt<8> @[Mux.scala 27:72]
     fghr_ns <= _T_338 @[Mux.scala 27:72]
-    reg _T_339 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_bp_ctl.scala 284:18]
-    _T_339 <= fghr_ns @[el2_ifu_bp_ctl.scala 284:18]
+    reg _T_339 : UInt, io.active_clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_bp_ctl.scala 284:44]
+    _T_339 <= fghr_ns @[el2_ifu_bp_ctl.scala 284:44]
     fghr <= _T_339 @[el2_ifu_bp_ctl.scala 284:8]
     io.ifu_bp_fghr_f <= fghr @[el2_ifu_bp_ctl.scala 286:20]
     io.ifu_bp_way_f <= way_raw @[el2_ifu_bp_ctl.scala 288:19]

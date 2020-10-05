@@ -4244,7 +4244,7 @@ module el2_ifu_bp_ctl(
   wire  _T_244 = btb_vbank0_rd_data_f[2] | btb_vbank0_rd_data_f[1]; // @[el2_ifu_bp_ctl.scala 237:59]
   wire [1:0] bht_force_taken_f = {_T_241,_T_244}; // @[Cat.scala 29:58]
   wire [9:0] _T_566 = {btb_rd_addr_f,2'h0}; // @[Cat.scala 29:58]
-  reg [7:0] fghr; // @[el2_ifu_bp_ctl.scala 284:18]
+  reg [7:0] fghr; // @[el2_ifu_bp_ctl.scala 284:44]
   wire [7:0] bht_rd_addr_f = _T_566[9:2] ^ fghr; // @[el2_lib.scala 188:35]
   wire  _T_20797 = bht_rd_addr_f == 8'h0; // @[el2_ifu_bp_ctl.scala 388:106]
   reg [1:0] bht_bank_rd_data_out_1_0; // @[Reg.scala 27:20]
@@ -6915,7 +6915,7 @@ module el2_ifu_bp_ctl(
   wire  _T_299 = _T_297 & btb_vbank0_rd_data_f[1]; // @[el2_ifu_bp_ctl.scala 265:65]
   wire [1:0] num_valids = bht_valid_f[1] + bht_valid_f[0]; // @[el2_ifu_bp_ctl.scala 268:35]
   wire [1:0] _T_302 = btb_sel_f & bht_dir_f; // @[el2_ifu_bp_ctl.scala 270:28]
-  wire  final_h = &_T_302; // @[el2_ifu_bp_ctl.scala 270:41]
+  wire  final_h = |_T_302; // @[el2_ifu_bp_ctl.scala 270:41]
   wire  _T_303 = num_valids == 2'h2; // @[el2_ifu_bp_ctl.scala 274:41]
   wire [7:0] _T_307 = {fghr[5:0],1'h0,final_h}; // @[Cat.scala 29:58]
   wire  _T_308 = num_valids == 2'h1; // @[el2_ifu_bp_ctl.scala 275:41]
@@ -14216,11 +14216,6 @@ end // initial
       btb_bank0_rd_data_way1_out_255 <= btb_wr_data;
     end
     if (reset) begin
-      fghr <= 8'h0;
-    end else begin
-      fghr <= fghr_ns;
-    end
-    if (reset) begin
       bht_bank_rd_data_out_1_0 <= 2'h0;
     end else if (bht_bank_sel_1_0_0) begin
       if (_T_8514) begin
@@ -18887,6 +18882,13 @@ end // initial
       rets_out_7 <= 32'h0;
     end else if (rs_push) begin
       rets_out_7 <= rets_out_6;
+    end
+  end
+  always @(posedge io_active_clk) begin
+    if (reset) begin
+      fghr <= 8'h0;
+    end else begin
+      fghr <= fghr_ns;
     end
   end
 endmodule

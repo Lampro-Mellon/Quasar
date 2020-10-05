@@ -267,7 +267,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   //GHR
   val num_valids = bht_valid_f(1) +& bht_valid_f(0) // countones
 
-  val final_h = (btb_sel_f & bht_dir_f).andR
+  val final_h = (btb_sel_f & bht_dir_f).orR
 
   val fghr = WireInit(UInt(BHT_GHR_SIZE.W), 0.U)
 
@@ -281,7 +281,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
                          (!exu_flush_final_d1 & io.ifc_fetch_req_f & io.ic_hit_f & !leak_one_f_d1).asBool -> merged_ghr,
                          (!exu_flush_final_d1 & !(io.ifc_fetch_req_f & io.ic_hit_f & !leak_one_f_d1)).asBool -> fghr))
 
-  fghr := RegNext(fghr_ns, init = 0.U)
+  fghr := withClock(io.active_clk) {RegNext(fghr_ns, init = 0.U)}
 
   io.ifu_bp_fghr_f := fghr
 
