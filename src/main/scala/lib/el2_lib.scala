@@ -159,14 +159,15 @@ trait param {
 
 trait el2_lib extends param{
   // Configuration Methods
-  def MEM_CAL : (Int, Int, Int)=
+  def MEM_CAL : (Int, Int, Int, Int)=
     (ICACHE_WAYPACK, ICACHE_ECC) match{
-      case(false,false) => (68,22, 68)
-      case(false,true)  => (71,26, 71)
-      case(true,false)  => (68*ICACHE_NUM_WAYS,22*ICACHE_NUM_WAYS, 68)
-      case(true,true)   => (71*ICACHE_NUM_WAYS,26*ICACHE_NUM_WAYS, 71)
+      case(false,false) => (68, 22, 68, 22)
+      case(false,true)  => (71, 26, 71, 26)
+      case(true,false)  => (68*ICACHE_NUM_WAYS, 22*ICACHE_NUM_WAYS, 68, 22)
+      case(true,true)   => (71*ICACHE_NUM_WAYS, 26*ICACHE_NUM_WAYS, 71, 26)
     }
   val DATA_MEM_LINE = MEM_CAL
+  val Tag_Word = MEM_CAL._4
 
   def el2_btb_tag_hash(pc : UInt) =
     VecInit.tabulate(3)(i => pc(BTB_ADDR_HI+((i+1)*(BTB_BTAG_SIZE)),BTB_ADDR_HI+(i*BTB_BTAG_SIZE)+1)).reduce(_^_)
@@ -175,8 +176,8 @@ trait el2_lib extends param{
     pc(BTB_ADDR_HI+(2*BTB_BTAG_SIZE),BTB_ADDR_HI+BTB_BTAG_SIZE+1)^pc(BTB_ADDR_HI+BTB_BTAG_SIZE,BTB_ADDR_HI+1)
 
   def el2_btb_addr_hash(pc : UInt) =
-    if(BTB_FOLD2_INDEX_HASH) pc(BTB_INDEX1_HI,BTB_INDEX1_LO) ^ pc(BTB_INDEX3_HI,BTB_INDEX3_LO)
-    else pc(BTB_INDEX1_HI,BTB_INDEX1_LO) ^ pc(BTB_INDEX2_HI,BTB_INDEX2_LO) ^ pc(BTB_INDEX3_HI,BTB_INDEX3_LO)
+    if(BTB_FOLD2_INDEX_HASH) pc(BTB_INDEX1_HI-1,BTB_INDEX1_LO-1) ^ pc(BTB_INDEX3_HI-1,BTB_INDEX3_LO-1)
+    else pc(BTB_INDEX1_HI-1,BTB_INDEX1_LO-1) ^ pc(BTB_INDEX2_HI-1,BTB_INDEX2_LO-1) ^ pc(BTB_INDEX3_HI-1,BTB_INDEX3_LO-1)
 
   def el2_btb_ghr_hash(hashin : UInt, ghr :UInt) =
     if(BHT_GHR_HASH_1) Cat(ghr(BHT_GHR_SIZE-1,BTB_INDEX1_HI-1), hashin(BTB_INDEX1_HI,2) ^ ghr(BTB_INDEX1_HI-2,0))

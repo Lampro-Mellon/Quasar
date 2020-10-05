@@ -85,12 +85,41 @@ class EL2_IC_TAG extends Module with el2_lib with param {
 
   val ic_tag_parity = if(ICACHE_ECC) rveven_paritygen(Cat(Fill(ICACHE_TAG_LO,0.U),io.ic_rw_addr(31-3, ICACHE_TAG_LO-3))) else 0.U
 
-  val ic_tag_wr_data = if(ICACHE_TAG_LO==11) Mux(io.ic_debug_wr_en & io.ic_debug_tag_array, Cat(if(ICACHE_ECC) io.ic_debug_wr_data(68,64) else io.ic_debug_wr_data(64), io.ic_debug_wr_data(31,11)),
+  val ic_tag_wr_data = if(ICACHE_TAG_LO==1)Mux(io.ic_debug_wr_en & io.ic_debug_tag_array, Cat(if(ICACHE_ECC) io.ic_debug_wr_data(68,64) else io.ic_debug_wr_data(64), io.ic_debug_wr_data(31,11)),
     Cat(if(ICACHE_ECC) ic_tag_ecc(4,0) else ic_tag_parity, io.ic_rw_addr(31-3,ICACHE_TAG_LO-3)))
   else Mux(io.ic_debug_wr_en & io.ic_debug_tag_array, Cat(if(ICACHE_ECC) io.ic_debug_wr_data(68,64) else io.ic_debug_wr_data(64), io.ic_debug_wr_data(31,11)),
-    Cat(if(ICACHE_ECC) Cat(ic_tag_ecc(4,0), Fill(PAD_BITS,0.U)) else Cat(ic_tag_parity,Fill(PAD_BITS,0.U), io.ic_rw_addr(31-3,ICACHE_TAG_LO-3))))
+    Cat(if(ICACHE_ECC) Cat(ic_tag_ecc(4,0),Fill(PAD_BITS,0.U)) else Cat(ic_tag_parity,Fill(PAD_BITS,0.U)), io.ic_rw_addr(31-3,ICACHE_TAG_LO-3)))
 
-  io.test := ic_tag_wr_data
+  val ic_rw_addr_q = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en).asBool,io.ic_debug_addr(ICACHE_INDEX_HI-3,ICACHE_TAG_INDEX_LO-3),io.ic_rw_addr)
+
+  val ic_debug_rd_way_en_ff = RegNext(ic_debug_rd_way_en, 0.U)
+
+  val tag_mem = Mem(ICACHE_TAG_DEPTH, Vec(ICACHE_NUM_WAYS, UInt(Tag_Word.W)))
+  val ic_tag_data_raw = Wire(Vec(ICACHE_NUM_WAYS, UInt(Tag_Word.W)))
+
+  for(i<-0 until ICACHE_NUM_WAYS){
+    ic_tag_data_raw(i) := 0.U
+    when(ic_tag_wren_q(i)&ic_tag_clken(i)){
+    tag_mem(ic_rw_addr_q(ICACHE_INDEX_HI-3, ICACHE_TAG_INDEX_LO-3))(ic_rw_addr_q(ICACHE_INDEX_HI-3, ICACHE_TAG_INDEX_LO-3)) := ic_tag_wr_data
+    }.elsewhen(ic_tag_clken(i)){
+      ic_tag_data_raw(i) := tag_mem(ic_rw_addr_q(ICACHE_INDEX_HI-3, ICACHE_TAG_INDEX_LO-3))(ic_rw_addr_q(ICACHE_INDEX_HI-3, ICACHE_TAG_INDEX_LO-3))
+    }
+  }
+  io.test := ic_tag_data_raw(0)
+//  for(i<-0 until ICACHE_NUM_WAYS; k<-0 until ICACHE_BANKS_WAY){
+//    wb_dout(i)(k) := 0.U
+//    val WE = if(ICACHE_WAYPACK) ic_b_sb_wren(k).orR else ic_b_sb_wren(k)(i)
+//    val ME = if(ICACHE_WAYPACK) ic_bank_way_clken(k).orR else ic_bank_way_clken(k)(i)
+//    when((ic_b_sb_wren(k)(i) & ic_bank_way_clken(k)(i)).asBool){
+//      data_mem(ic_rw_addr_bank_q(k))(k)(i) := ic_sb_wr_data(k)
+//    }.elsewhen((!ic_b_sb_wren(k)(i)&ic_bank_way_clken(k)(i)).asBool){
+//      wb_dout(i)(k) := data_mem(ic_rw_addr_bank_q(k))(k)(i)
+//    }
+//  }
+
+
+//  io.test := ic_tag_wr_data
+//  println(Tag_Word)
 
 
 
@@ -261,7 +290,7 @@ class EL2_IC_DATA extends Module with el2_lib {
   val ic_cacheline_wrap_ff = ic_rw_addr_ff(ICACHE_TAG_INDEX_LO-2,ICACHE_BANK_LO-1) === Fill(ICACHE_TAG_INDEX_LO-ICACHE_BANK_LO, 1.U)
 
 //////////////////////////////////////////// Memory stated
-  val (data_mem_word, tag_mem_word, ecc_offset) = DATA_MEM_LINE
+  val (data_mem_word, tag_mem_word, ecc_offset, tag_word) = DATA_MEM_LINE
   val wb_dout = Wire(Vec(ICACHE_BANKS_WAY,Vec(ICACHE_NUM_WAYS, UInt(data_mem_word.W))))
   val data_mem = Mem(ICACHE_DATA_DEPTH, Vec(ICACHE_BANKS_WAY,Vec(ICACHE_NUM_WAYS, UInt(data_mem_word.W))))
   for(i<-0 until ICACHE_NUM_WAYS; k<-0 until ICACHE_BANKS_WAY){
@@ -305,4 +334,5 @@ class EL2_IC_DATA extends Module with el2_lib {
 
 object ifu_ic extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new EL2_IC_TAG()))
+  //println()
 }
