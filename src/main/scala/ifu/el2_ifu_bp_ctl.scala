@@ -39,6 +39,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
     val test_hash = Output(UInt())
     val test_hash_p1 = Output(UInt())
+    val test = Output(UInt())
   })
 
   val TAG_START = 16+BTB_BTAG_SIZE
@@ -160,7 +161,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
   val wayhit_p1_f = tag_match_way0_expanded_p1_f | tag_match_way1_expanded_p1_f
 
-  // Chopping off the ways that had a hit
+  // Chopping off the ways that had a hitbtb_vbank0_rd_data_f
   val btb_bank0e_rd_data_f = Mux1H(Seq(tag_match_way0_expanded_f(0).asBool->btb_bank0_rd_data_way0_f,
     tag_match_way1_expanded_f(0).asBool->btb_bank0_rd_data_way1_f))
 
@@ -173,7 +174,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   // Making virtual banks, made bit 1 of the pc to check
   val btb_vbank0_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(1)->btb_bank0e_rd_data_f,
                                         io.ifc_fetch_addr_f(1)->btb_bank0o_rd_data_f))
-
+  io.test:=btb_vbank0_rd_data_f
   val btb_vbank1_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(1)->btb_bank0o_rd_data_f,
                                         io.ifc_fetch_addr_f(1)->btb_bank0e_rd_data_p1_f))
 
@@ -222,10 +223,10 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
   val btb_sel_data_f = WireInit(UInt(17.W), init = 0.U)
   val hist1_raw = WireInit(UInt(2.W), init = 0.U)
-  val btb_rd_tgt_f = btb_sel_data_f(16,5)
-  val btb_rd_pc4_f = btb_sel_data_f(4)
-  val btb_rd_call_f = btb_sel_data_f(2)
-  val btb_rd_ret_f = btb_sel_data_f(1)
+  val btb_rd_tgt_f = btb_sel_data_f(15,4)
+  val btb_rd_pc4_f = btb_sel_data_f(3)
+  val btb_rd_call_f = btb_sel_data_f(1)
+  val btb_rd_ret_f = btb_sel_data_f(0)
 
   btb_sel_data_f := Mux1H(Seq(btb_sel_f(1).asBool-> btb_vbank1_rd_data_f(16,1),
                               btb_sel_f(0).asBool-> btb_vbank1_rd_data_f(16,1)))
