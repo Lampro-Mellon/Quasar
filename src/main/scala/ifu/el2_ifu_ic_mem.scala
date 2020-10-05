@@ -253,7 +253,7 @@ class EL2_IC_DATA extends Module with el2_lib {
   })
 
   val ic_debug_rd_way_en = Fill(ICACHE_NUM_WAYS, io.ic_debug_rd_en & !io.ic_debug_tag_array) & io.ic_debug_way
-  val ic_debug_wr_way_en = repl(ICACHE_NUM_WAYS, io.ic_debug_wr_en & !io.ic_debug_tag_array) & io.ic_debug_way
+  val ic_debug_wr_way_en = Fill(ICACHE_NUM_WAYS, io.ic_debug_wr_en & !io.ic_debug_tag_array) & io.ic_debug_way
 
   val ic_bank_wr_data = Wire(Vec(ICACHE_BANKS_WAY,UInt(71.W)))
   val ic_rd_en_with_debug = WireInit(Bool(), 0.U)

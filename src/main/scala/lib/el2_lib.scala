@@ -169,24 +169,25 @@ trait el2_lib extends param{
   val DATA_MEM_LINE = MEM_CAL
   val Tag_Word = MEM_CAL._4
 
+  ///////////////////////////////////////////////////////////////////
   def el2_btb_tag_hash(pc : UInt) =
     VecInit.tabulate(3)(i => pc(BTB_ADDR_HI-1+((i+1)*(BTB_BTAG_SIZE)),BTB_ADDR_HI+(i*BTB_BTAG_SIZE))).reduce(_^_)
 
+  ///////////////////////////////////////////////////////////////////
   def el2_btb_tag_hash_fold(pc : UInt) =
     pc(BTB_ADDR_HI+(2*BTB_BTAG_SIZE),BTB_ADDR_HI+BTB_BTAG_SIZE+1)^pc(BTB_ADDR_HI+BTB_BTAG_SIZE,BTB_ADDR_HI+1)
 
+  ///////////////////////////////////////////////////////////////////
   def el2_btb_addr_hash(pc : UInt) =
     if(BTB_FOLD2_INDEX_HASH) pc(BTB_INDEX1_HI-1,BTB_INDEX1_LO-1) ^ pc(BTB_INDEX3_HI-1,BTB_INDEX3_LO-1)
     else pc(BTB_INDEX1_HI-1,BTB_INDEX1_LO-1) ^ pc(BTB_INDEX2_HI-1,BTB_INDEX2_LO-1) ^ pc(BTB_INDEX3_HI-1,BTB_INDEX3_LO-1)
 
+  ///////////////////////////////////////////////////////////////////
   def el2_btb_ghr_hash(hashin : UInt, ghr :UInt) =
     if(BHT_GHR_HASH_1) Cat(ghr(BHT_GHR_SIZE-1,BTB_INDEX1_HI-1), hashin(BTB_INDEX1_HI,2) ^ ghr(BTB_INDEX1_HI-2,0))
     else hashin(BHT_GHR_SIZE+1,2) ^ ghr(BHT_GHR_SIZE-1,0)
 
-  def repl(b:Int, a:UInt) = VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
-
-  def Mux1H_LM(a:Seq[Bool], b:Seq[UInt]) = (0 until b.size).map(i=> repl(b(i).getWidth,a(i)) & b(i)).reduce(_|_)
-
+  ///////////////////////////////////////////////////////////////////
   def rveven_paritycheck(data_in:UInt, parity_in:UInt) : UInt =
     (data_in.xorR.asUInt) ^ parity_in
 

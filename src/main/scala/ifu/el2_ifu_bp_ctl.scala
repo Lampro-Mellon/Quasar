@@ -174,7 +174,6 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   // Making virtual banks, made bit 1 of the pc to check
   val btb_vbank0_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(1)->btb_bank0e_rd_data_f,
                                         io.ifc_fetch_addr_f(1)->btb_bank0o_rd_data_f))
-  io.test:=btb_vbank0_rd_data_f
   val btb_vbank1_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(1)->btb_bank0o_rd_data_f,
                                         io.ifc_fetch_addr_f(1)->btb_bank0e_rd_data_p1_f))
 
@@ -186,10 +185,9 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val fetch_wrindex_p1_dec = 1.U(LRU_SIZE) << btb_rd_addr_p1_f
 
   val mp_wrlru_b0 = mp_wrindex_dec & Fill(LRU_SIZE, exu_mp_valid)
-
   val vwayhit_f = Mux1H(Seq(~io.ifc_fetch_addr_f(0).asBool->wayhit_f,
     io.ifc_fetch_addr_f(0).asBool->Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
-
+  io.test := vwayhit_f
   val lru_update_valid_f = (vwayhit_f(0) | vwayhit_f(1)) & io.ifc_fetch_req_f & !leak_one_f
 
   val fetch_wrlru_b0 = fetch_wrindex_dec & Fill(fetch_wrindex_dec.getWidth, lru_update_valid_f)
