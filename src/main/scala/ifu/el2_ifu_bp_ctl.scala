@@ -183,7 +183,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val mp_wrindex_dec = 1.U << exu_mp_addr
 
   val fetch_wrindex_dec = 1.U << btb_rd_addr_f
-  io.test1 := fetch_wrindex_dec
+  //io.test1 := fetch_wrindex_dec
   val fetch_wrindex_p1_dec = 1.U << btb_rd_addr_p1_f
   io.test2 := fetch_wrindex_p1_dec
   val mp_wrlru_b0 = mp_wrindex_dec & Fill(LRU_SIZE, exu_mp_valid)
@@ -192,10 +192,11 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
   val lru_update_valid_f = (vwayhit_f(0) | vwayhit_f(1)) & io.ifc_fetch_req_f & !leak_one_f
 
-  val fetch_wrlru_b0 = fetch_wrindex_dec & Fill(fetch_wrindex_dec.getWidth, lru_update_valid_f)
-  val fetch_wrlru_p1_b0 = fetch_wrindex_p1_dec & Fill(fetch_wrindex_dec.getWidth, lru_update_valid_f)
+  val fetch_wrlru_b0 = fetch_wrindex_dec & Fill(LRU_SIZE, lru_update_valid_f)
+  val fetch_wrlru_p1_b0 = fetch_wrindex_p1_dec & Fill(LRU_SIZE, lru_update_valid_f)
 
-  val btb_lru_b0_hold = !mp_wrlru_b0 & !fetch_wrlru_b0
+  val btb_lru_b0_hold = ~mp_wrlru_b0 & ~fetch_wrlru_b0
+  io.test1 := btb_lru_b0_hold
   val use_mp_way = fetch_mp_collision_f
   val use_mp_way_p1 = fetch_mp_collision_p1_f
 
