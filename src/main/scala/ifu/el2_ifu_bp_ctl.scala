@@ -3,7 +3,9 @@ import include._
 import lib._
 import chisel3._
 import chisel3.util._
+import chisel3.experimental.chiselName
 
+@chiselName
 class el2_ifu_bp_ctl extends Module with el2_lib {
   val io = IO (new Bundle {
     val active_clk = Input(Clock())

@@ -1,17 +1,32 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test_1",
     "sources":[
-      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_wr_en",
-      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_way",
       "~EL2_IC_TAG|EL2_IC_TAG>io_ic_rw_addr",
       "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_addr",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_wr_en",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_way",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_rd_en",
       "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_wr_en",
-      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_tag_array",
       "~EL2_IC_TAG|EL2_IC_TAG>io_ic_rd_en",
       "~EL2_IC_TAG|EL2_IC_TAG>io_clk_override",
-      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_rd_en"
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_tag_array"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~EL2_IC_TAG|EL2_IC_TAG>io_test_0",
+    "sources":[
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_rw_addr",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_addr",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_wr_en",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_way",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_rd_en",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_wr_en",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_rd_en",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_clk_override",
+      "~EL2_IC_TAG|EL2_IC_TAG>io_ic_debug_tag_array"
     ]
   },
   {

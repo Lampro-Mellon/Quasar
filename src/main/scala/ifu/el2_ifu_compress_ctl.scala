@@ -1,15 +1,16 @@
 package ifu
-
+import lib._
 import chisel3._
 import chisel3.util._
 
-class el2_ifu_compress_ctl extends Module {
+class el2_ifu_compress_ctl extends Module with el2_lib{
   val io = IO(new Bundle{
     val din = Input(UInt(16.W))
     val dout = Output(UInt(32.W))
   })
 
   def pat(y : List[Int]) = (0 until y.size).map(i=> if(y(i)>=0) io.din(y(i)) else !io.din(y(i).abs)).reduce(_&_)
+
   val out = Wire(Vec(32, UInt(1.W)))
   out := (0 until 32).map(i=> 0.U.asBool)
 
@@ -125,14 +126,14 @@ class el2_ifu_compress_ctl extends Module {
   val uimm5d = Cat(io.din(12), io.din(6,2))
   val sjald_1 = Cat(io.din(12), io.din(8), io.din(10,9), io.din(6), io.din(7), io.din(2), io.din(11),
     io.din(5,4), io.din(3))
-  val sjald_12 = Fill(9, io.din(12))
+  val sjald_12 = repl(9, io.din(12))
   val sjald = Cat(sjald_12,sjald_1)
-  val sluimmd = Cat(Fill(15, io.din(12)), io.din(6,2))
+  val sluimmd = Cat(repl(15, io.din(12)), io.din(6,2))
 
   val l2_31 = l1(31,20) |
-    Mux1H(Seq(simm5_0.asBool->Cat(Fill(7, simm5d(5)), simm5d(4,0)),
+    Mux1H(Seq(simm5_0.asBool->Cat(repl(7, simm5d(5)), simm5d(4,0)),
               uimm9_2.asBool->Cat(0.U(2.W), uimm9d, 0.U(2.W)),
-              simm9_4.asBool->Cat(Fill(3, simm9d(5)), simm9d(4,0), 0.U(4.W)),
+              simm9_4.asBool->Cat(repl(3, simm9d(5)), simm9d(4,0), 0.U(4.W)),
               ulwimm6_2.asBool->Cat(0.U(5.W), ulwimm6d, 0.U(2.W)),
               ulwspimm7_2.asBool->Cat(0.U(4.W), ulwspimm7d, 0.U(2.W)),
               uimm5_0.asBool->Cat(0.U(6.W), uimm5d),
@@ -147,7 +148,7 @@ class el2_ifu_compress_ctl extends Module {
   val uswimm6d = Cat(io.din(5), io.din(12,10), io.din(6), 0.U(2.W))
   val uswspimm7d = Cat(io.din(8,7),io.din(12,9), 0.U(2.W))
 
-  val l3_31 = l2(31,25) | Mux1H(Seq(sbroffset8_1.asBool->Cat(Fill(4,sbr8d(8)),sbr8d(7,5)),
+  val l3_31 = l2(31,25) | Mux1H(Seq(sbroffset8_1.asBool->Cat(repl(4,sbr8d(8)),sbr8d(7,5)),
     uswimm6_2.asBool->Cat(0.U(5.W),uswimm6d(6,5)), uswspimm7_2.asBool->Cat(0.U(4.W),uswspimm7d(7,5))))
 
   val l3_24 = l2(24,12)
@@ -169,7 +170,7 @@ class el2_ifu_compress_ctl extends Module {
     pat(List(-14,-12,-1,0)) | (pat(List(15,-13,12,1))&(!io.din(0))) | (pat(List(-15,-13,-12,1))&(!io.din(0))) |
     pat(List(-15,-13,12,-1)) | (pat(List(14,-13))&(!io.din(0)))
 
-  io.dout:= l3 & Fill(32, legal)
+  io.dout:= l3 & repl(32, legal)
 }
 
 object ifu_compress extends App {
