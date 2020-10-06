@@ -41,6 +41,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
     val test1 = Output(UInt())
     val test2 = Output(UInt())
+   // val clk_enables = Output(UInt())
   })
 
   val TAG_START = 16+BTB_BTAG_SIZE
@@ -380,21 +381,17 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     Mux((bht_wr_en2(i)&(bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt)&(bht_wr_addr2(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1,NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt)|BHT_NO_ADDR_MATCH.B).asBool, bht_wr_data2, bht_wr_data0))))
 
   val bht_bank_sel = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>(0 until NUM_BHT_LOOP).map(j=>
-  bht_wr_en0(i) & (bht_wr_addr0(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & (bht_wr_addr0(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt) | BHT_NO_ADDR_MATCH.B | bht_wr_en2(i) &
-          (bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & (bht_wr_addr2(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt) | BHT_NO_ADDR_MATCH.B)))
+    bht_wr_en0(i) & (bht_wr_addr0(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & (bht_wr_addr0(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt) | BHT_NO_ADDR_MATCH.B | bht_wr_en2(i) &
+      (bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & (bht_wr_addr2(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt) | BHT_NO_ADDR_MATCH.B)))
 
   val bht_bank_rd_data_out = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH, UInt(2.W))))
-  val bht_bank_clken = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>
-    (bht_wr_en0(i) & ((bht_wr_addr0===k.U) |  BHT_NO_ADDR_MATCH.asBool)) |
-  (bht_wr_en2(i) & ((bht_wr_addr2===k.U) |  BHT_NO_ADDR_MATCH.asBool))))
-
   for(i<-0 until 2; k<-0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP; j<-0 until NUM_BHT_LOOP){
-    bht_bank_rd_data_out(i)((16*k)+j) := RegEnable(bht_bank_wr_data(i)(j)(k), 0.U, bht_bank_sel(i)(j)(k)&bht_bank_clken(i)(k))
+    bht_bank_rd_data_out(i)((16*k)+j) := RegEnable(bht_bank_wr_data(i)(j)(k), 0.U, bht_bank_sel(i)(j)(k))
   }
 
-  bht_bank0_rd_data_f := Mux1H((0 until NUM_BHT_LOOP).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(0)(i)))
-  bht_bank1_rd_data_f := Mux1H((0 until NUM_BHT_LOOP).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(1)(i)))
-  bht_bank0_rd_data_p1_f := Mux1H((0 until NUM_BHT_LOOP).map(i=>(bht_rd_addr_p1_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(1)(i)))
+  bht_bank0_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(0)(i)))
+  bht_bank1_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(1)(i)))
+  bht_bank0_rd_data_p1_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_p1_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(1)(i)))
 }
 
 object ifu_bp extends App {

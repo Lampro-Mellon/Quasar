@@ -259,17 +259,7 @@ trait el2_lib extends param{
   }
 
 
-  class rvecc_decode extends Module{  //Done for verification and testing
-    val io      =  IO(new Bundle{
-      val en      =  Input(UInt(1.W))
-      val din     =  Input(UInt(32.W))
-      val ecc_in  =  Input(UInt(7.W))
-      val sed_ded =  Input(UInt(1.W))
-      val ecc_out =  Output(UInt(7.W))
-      val dout    =  Output(UInt(32.W))
-      val single_ecc_error = Output(UInt(1.W))
-      val double_ecc_error = Output(UInt(1.W))
-    })
+  def rvecc_decode(en:UInt,din:UInt,ecc_in:UInt,sed_ded:UInt)= {
     val mask0 = Array(1,1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,1,0)
     val mask1 = Array(1,0,1,1,0,1,1,0,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,0,1)
     val mask2 = Array(0,1,1,1,0,0,0,1,1,1,1,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1)
@@ -289,29 +279,28 @@ trait el2_lib extends param{
 
     for(i <- 0 to 31)
     {
-      if(mask0(i)==1) {w0(j) := io.din(i); j = j +1 }
-      if(mask1(i)==1) {w1(k) := io.din(i); k = k +1 }
-      if(mask2(i)==1) {w2(m) := io.din(i); m = m +1 }
-      if(mask3(i)==1) {w3(n) := io.din(i); n = n +1 }
-      if(mask4(i)==1) {w4(x) := io.din(i); x = x +1 }
-      if(mask5(i)==1) {w5(y) := io.din(i); y = y +1 }
+      if(mask0(i)==1) {w0(j) := din(i); j = j +1 }
+      if(mask1(i)==1) {w1(k) := din(i); k = k +1 }
+      if(mask2(i)==1) {w2(m) := din(i); m = m +1 }
+      if(mask3(i)==1) {w3(n) := din(i); n = n +1 }
+      if(mask4(i)==1) {w4(x) := din(i); x = x +1 }
+      if(mask5(i)==1) {w5(y) := din(i); y = y +1 }
     }
 
-    val ecc_check = Cat((io.din.xorR ^ io.ecc_in.xorR) & ~io.sed_ded ,io.ecc_in(5)^(w5.asUInt.xorR),io.ecc_in(4)^(w4.asUInt.xorR),io.ecc_in(3)^(w3.asUInt.xorR),io.ecc_in(2)^(w2.asUInt.xorR),io.ecc_in(1)^(w1.asUInt.xorR),io.ecc_in(0)^(w0.asUInt.xorR))
-    io.ecc_out := ecc_check
-
-    io.single_ecc_error :=  io.en & (ecc_check!= 0.U) & ((io.din.xorR ^ io.ecc_in.xorR) & ~io.sed_ded)
-    io.double_ecc_error :=  io.en & (ecc_check!= 0.U) & ((io.din.xorR ^ io.ecc_in.xorR) & ~io.sed_ded)
+    val ecc_check = Cat((din.xorR ^ ecc_in.xorR) & ~sed_ded ,ecc_in(5)^(w5.asUInt.xorR),ecc_in(4)^(w4.asUInt.xorR),ecc_in(3)^(w3.asUInt.xorR),ecc_in(2)^(w2.asUInt.xorR),ecc_in(1)^(w1.asUInt.xorR),ecc_in(0)^(w0.asUInt.xorR))
+    val single_ecc_error =  en & (ecc_check=/= 0.U) & ecc_check(6)
+    val double_ecc_error =  en & (ecc_check=/= 0.U) & ~ecc_check(6)
     val error_mask = Wire(Vec(39,UInt(1.W)))
 
     for(i <- 1 until 40){
       error_mask(i-1) := ecc_check(5,0) === i.asUInt
     }
-    val din_plus_parity = Cat(io.ecc_in(6), io.din(31,26), io.ecc_in(5), io.din(25,11), io.ecc_in(4), io.din(10,4), io.ecc_in(3), io.din(3,1), io.ecc_in(2), io.din(0), io.ecc_in(1,0))
-    val dout_plus_parity = Mux(io.single_ecc_error.asBool, (error_mask.asUInt ^ din_plus_parity), din_plus_parity)
+    val din_plus_parity = Cat(ecc_in(6), din(31,26), ecc_in(5), din(25,11), ecc_in(4), din(10,4), ecc_in(3), din(3,1), ecc_in(2), din(0), ecc_in(1,0))
+    val dout_plus_parity = Mux(single_ecc_error.asBool, (error_mask.asUInt ^ din_plus_parity), din_plus_parity)
 
-    io.dout :=  Cat(dout_plus_parity(37,32),dout_plus_parity(30,16), dout_plus_parity(14,8), dout_plus_parity(6,4), dout_plus_parity(2))
-    io.ecc_out := Cat(dout_plus_parity(38) ^ (ecc_check(6,0) === "b1000000".U), dout_plus_parity(31), dout_plus_parity(15), dout_plus_parity(7), dout_plus_parity(3), dout_plus_parity(1,0))
+    val dout =  Cat(dout_plus_parity(37,32),dout_plus_parity(30,16), dout_plus_parity(14,8), dout_plus_parity(6,4), dout_plus_parity(2))
+    val ecc_out = Cat(dout_plus_parity(38) ^ (ecc_check(6,0) === "b1000000".U(7.W)), dout_plus_parity(31), dout_plus_parity(15), dout_plus_parity(7), dout_plus_parity(3), dout_plus_parity(1,0))
+    (ecc_out,dout,single_ecc_error,double_ecc_error)
   }
 
   def rvecc_encode_64(din:UInt):UInt = {

@@ -36,12 +36,12 @@ class el2_ifu_ic_mem extends Module with param{
   io.ictag_debug_rd_data := 0.U
   io.ic_debug_rd_data := 0.U
   io.ic_rd_data := 0.U
-  //val icache_tag = Module(new kncpa)
 }
 
 /////////// ICACHE TAG
 class EL2_IC_TAG extends Module with el2_lib with param {
   val io = IO(new Bundle{
+    val scan_mode                 = Input(Bool())
     val clk_override              = Input(Bool())
     val dec_tlu_core_ecc_disable  = Input(Bool())
     val ic_rw_addr                = Input(UInt(29.W)) // 32:3
@@ -57,16 +57,12 @@ class EL2_IC_TAG extends Module with el2_lib with param {
     val ic_debug_wr_data          = Input(UInt(71.W))
     val ic_rd_hit                 = Output(UInt(ICACHE_NUM_WAYS.W))
     val ic_tag_perr               = Output(Bool())
-    val scan_mode                 = Input(Bool())
-    val test                      = Output(Vec(2, UInt()))
   })
-
   io.ictag_debug_rd_data := 0.U
   io.ic_rd_hit := 0.U
   io.ic_tag_perr := 0.U
   val ic_debug_wr_way_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
   val ic_debug_rd_way_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
-
 
   val ic_tag_wren = io.ic_wr_en & Fill(ICACHE_NUM_WAYS, io.ic_rw_addr(ICACHE_BEAT_ADDR_HI-3,1)=== Fill(ICACHE_NUM_WAYS-1, 1.U))
   val ic_tag_clken = Fill(ICACHE_NUM_WAYS, io.ic_rd_en|io.clk_override) | io.ic_wr_en | ic_debug_wr_way_en | ic_debug_rd_way_en
@@ -96,29 +92,31 @@ class EL2_IC_TAG extends Module with el2_lib with param {
 
   val tag_mem = Mem(ICACHE_TAG_DEPTH, Vec(ICACHE_NUM_WAYS, UInt(Tag_Word.W)))
 
-
-  val mask = VecInit.tabulate(ICACHE_NUM_WAYS)(i=>ic_tag_wren_q(i)&ic_tag_clken(i))
-  tag_mem.write(ic_rw_addr_q, VecInit.tabulate(ICACHE_NUM_WAYS)(i=>ic_tag_wr_data), mask)
+  val write_vec = VecInit.tabulate(ICACHE_NUM_WAYS)(i=>ic_tag_wren_q(i)&ic_tag_clken(i))
+  tag_mem.write(ic_rw_addr_q, VecInit.tabulate(ICACHE_NUM_WAYS)(i=>ic_tag_wr_data), write_vec)
   val read_enable = VecInit.tabulate(ICACHE_NUM_WAYS)(i=>(!ic_tag_wren_q(i))&ic_tag_clken(i))
-  val ic_tag_data_raw = tag_mem.read(ic_rw_addr_q)
-
+  val ic_tag_data_raw = (0 until ICACHE_NUM_WAYS).map(i=>Fill(Tag_Word,read_enable(i))&tag_mem.read(ic_rw_addr_q)(i))
+  val w_tout = if(ICACHE_ECC) VecInit.tabulate(ICACHE_NUM_WAYS)(i=>Cat(ic_tag_data_raw(i)(25,21), ic_tag_data_raw(i)(31-ICACHE_TAG_LO,0)))
+  else VecInit.tabulate(ICACHE_NUM_WAYS)(i=>Cat(ic_tag_data_raw(i)(21), ic_tag_data_raw(i)(31-ICACHE_TAG_LO,0)))
+  val ic_tag_corrected_ecc_unc = Wire(Vec(ICACHE_NUM_WAYS, UInt(7.W)))
+  val ic_tag_corrected_data_unc = Wire(Vec(ICACHE_NUM_WAYS, UInt(32.W)))
+  val ic_tag_single_ecc_error = Wire(Vec(ICACHE_NUM_WAYS, UInt(1.W)))
+  val ic_tag_double_ecc_error = Wire(Vec(ICACHE_NUM_WAYS, UInt(1.W)))
   for(i<- 0 until ICACHE_NUM_WAYS){
-    io.test(i) := 0.U
-    when(read_enable(i)){
-      io.test(i) := ic_tag_data_raw(i)}
-    }
+    val decoded_ecc = if(ICACHE_ECC) rvecc_decode(~io.dec_tlu_core_ecc_disable & ic_rd_en_ff, Cat(0.U(11.W),ic_tag_data_raw(i)(20,0)), Cat(0.U(2.W),ic_tag_data_raw(i)(25,21)), 1.U)
+    else (0.U, 0.U, 0.U, 0.U)
+    ic_tag_corrected_ecc_unc(i) := decoded_ecc._1
+    ic_tag_corrected_data_unc(i) := decoded_ecc._2
+    ic_tag_single_ecc_error(i):= decoded_ecc._3
+    ic_tag_double_ecc_error(i) := decoded_ecc._4
+  }
 
-  //  for(i<-0 until ICACHE_NUM_WAYS; k<-0 until ICACHE_BANKS_WAY){
-//    wb_dout(i)(k) := 0.U
-//    val WE = if(ICACHE_WAYPACK) ic_b_sb_wren(k).orR else ic_b_sb_wren(k)(i)
-//    val ME = if(ICACHE_WAYPACK) ic_bank_way_clken(k).orR else ic_bank_way_clken(k)(i)
-//    when((ic_b_sb_wren(k)(i) & ic_bank_way_clken(k)(i)).asBool){
-//      data_mem(ic_rw_addr_bank_q(k))(k)(i) := ic_sb_wr_data(k)
-//    }.elsewhen((!ic_b_sb_wren(k)(i)&ic_bank_way_clken(k)(i)).asBool){
-//      wb_dout(i)(k) := data_mem(ic_rw_addr_bank_q(k))(k)(i)
-//    }
-//  }
+  val ic_tag_way_perr = if(ICACHE_ECC)ic_tag_single_ecc_error.reverse.reduce(Cat(_,_)) | ic_tag_double_ecc_error.reverse.reduce(Cat(_,_))
+  else (0 until ICACHE_NUM_WAYS).map(i=>rveven_paritycheck(ic_tag_data_raw(i)(31-ICACHE_TAG_LO,0), ic_tag_data_raw(i)(21))).reverse.reduce(Cat(_,_))
 
+  io.ictag_debug_rd_data := (0 until ICACHE_NUM_WAYS).map(i=> if(ICACHE_ECC) Fill(26, ic_debug_rd_way_en_ff(i))&ic_tag_data_raw(i) else Cat(0.U(4.W), Fill(22, ic_debug_rd_way_en_ff(i)),ic_tag_data_raw(i)(21,0))).reduce(_|_)
+  io.ic_rd_hit := (0 until ICACHE_NUM_WAYS).map(i=>((w_tout(i)(31-ICACHE_TAG_LO,0)===ic_rw_addr_ff)&io.ic_tag_valid(i)).asUInt()).reverse.reduce(Cat(_,_))
+  io.ic_tag_perr := (ic_tag_way_perr & io.ic_tag_valid).orR()
 }
 
 
