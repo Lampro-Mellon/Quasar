@@ -185,7 +185,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val fetch_wrindex_dec = 1.U << btb_rd_addr_f
   //io.test1 := fetch_wrindex_dec
   val fetch_wrindex_p1_dec = 1.U << btb_rd_addr_p1_f
-  io.test2 := fetch_wrindex_p1_dec
+  //io.test2 := fetch_wrindex_p1_dec
   val mp_wrlru_b0 = mp_wrindex_dec & Fill(LRU_SIZE, exu_mp_valid)
   val vwayhit_f = Mux1H(Seq(~io.ifc_fetch_addr_f(0).asBool->wayhit_f,
     io.ifc_fetch_addr_f(0).asBool->Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
@@ -214,10 +214,10 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val tag_match_vway1_expanded_f = Mux1H(Seq(~io.ifc_fetch_addr_f(0).asBool->tag_match_way1_expanded_f,
     io.ifc_fetch_addr_f(0).asBool->Cat(tag_match_way1_expanded_p1_f(0),tag_match_way1_expanded_f(1))))
 
-  val way_raw = tag_match_vway1_expanded_f | (!vwayhit_f & btb_vlru_rd_f)
+  val way_raw = tag_match_vway1_expanded_f | (~vwayhit_f & btb_vlru_rd_f)
 
   //io.test1 := tag_match_vway1_expanded_f
-  io.test2 := btb_vlru_rd_f
+  io.test2 := way_raw
 
   btb_lru_b0_f := RegEnable(btb_lru_b0_ns, init = 0.U, (io.ifc_fetch_req_f|exu_mp_valid).asBool)
 
