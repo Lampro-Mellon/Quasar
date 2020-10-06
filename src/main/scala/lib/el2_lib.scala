@@ -160,6 +160,7 @@ trait param {
 trait el2_lib extends param{
   def repl(b:Int, a:UInt) = VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
 
+
   // Configuration Methods
   def MEM_CAL : (Int, Int, Int, Int)=
     (ICACHE_WAYPACK, ICACHE_ECC) match{

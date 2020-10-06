@@ -94,10 +94,14 @@ class EL2_IC_TAG extends Module with el2_lib with param {
 
   val write_vec = VecInit.tabulate(ICACHE_NUM_WAYS)(i=>ic_tag_wren_q(i)&ic_tag_clken(i))
   tag_mem.write(ic_rw_addr_q, VecInit.tabulate(ICACHE_NUM_WAYS)(i=>ic_tag_wr_data), write_vec)
+
   val read_enable = VecInit.tabulate(ICACHE_NUM_WAYS)(i=>(!ic_tag_wren_q(i))&ic_tag_clken(i))
+
   val ic_tag_data_raw = (0 until ICACHE_NUM_WAYS).map(i=>Fill(Tag_Word,read_enable(i))&tag_mem.read(ic_rw_addr_q)(i))
+
   val w_tout = if(ICACHE_ECC) VecInit.tabulate(ICACHE_NUM_WAYS)(i=>Cat(ic_tag_data_raw(i)(25,21), ic_tag_data_raw(i)(31-ICACHE_TAG_LO,0)))
   else VecInit.tabulate(ICACHE_NUM_WAYS)(i=>Cat(ic_tag_data_raw(i)(21), ic_tag_data_raw(i)(31-ICACHE_TAG_LO,0)))
+
   val ic_tag_corrected_ecc_unc = Wire(Vec(ICACHE_NUM_WAYS, UInt(7.W)))
   val ic_tag_corrected_data_unc = Wire(Vec(ICACHE_NUM_WAYS, UInt(32.W)))
   val ic_tag_single_ecc_error = Wire(Vec(ICACHE_NUM_WAYS, UInt(1.W)))

@@ -1,0 +1,36 @@
+[
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_rd_data",
+    "sources":[
+      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_rw_addr",
+      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wren",
+      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wr_size"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_rd_data_ecc",
+    "sources":[
+      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_rw_addr",
+      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wren",
+      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wr_size"
+    ]
+  },
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.options.TargetDirAnnotation",
+    "directory":"."
+  },
+  {
+    "class":"firrtl.options.OutputAnnotationFileAnnotation",
+    "file":"el2_ifu_iccm_mem"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"."
+  }
+]
