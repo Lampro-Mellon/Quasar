@@ -38,10 +38,6 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     val ifu_bp_pc4_f = Output(UInt(2.W))
     val ifu_bp_valid_f = Output(UInt(2.W))
     val ifu_bp_poffset_f = Output(UInt(12.W))
-
-    val test1 = Output(UInt())
-    val test2 = Output(UInt())
-   // val clk_enables = Output(Vec(16, Bool()))
   })
 
   val TAG_START = 16+BTB_BTAG_SIZE
@@ -166,13 +162,13 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
   // Chopping off the ways that had a hitbtb_vbank0_rd_data_f
   val btb_bank0e_rd_data_f = Mux1H(Seq(tag_match_way0_expanded_f(0).asBool->btb_bank0_rd_data_way0_f,
-    tag_match_way1_expanded_f(0).asBool->btb_bank0_rd_data_way1_f))
+                                       tag_match_way1_expanded_f(0).asBool->btb_bank0_rd_data_way1_f))
 
   val btb_bank0o_rd_data_f = Mux1H(Seq(tag_match_way0_expanded_f(1).asBool->btb_bank0_rd_data_way0_f,
-    tag_match_way1_expanded_f(1).asBool->btb_bank0_rd_data_way1_f))
+                                       tag_match_way1_expanded_f(1).asBool->btb_bank0_rd_data_way1_f))
 
   val btb_bank0e_rd_data_p1_f = Mux1H(Seq(tag_match_way0_expanded_p1_f(0).asBool->btb_bank0_rd_data_way0_p1_f,
-    tag_match_way1_expanded_p1_f(1).asBool->btb_bank0_rd_data_way1_p1_f))
+                                          tag_match_way1_expanded_p1_f(0).asBool->btb_bank0_rd_data_way1_p1_f))
 
   // Making virtual banks, made bit 1 of the pc to check
   val btb_vbank0_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0)->btb_bank0e_rd_data_f,
@@ -197,7 +193,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val fetch_wrlru_p1_b0 = fetch_wrindex_p1_dec & Fill(LRU_SIZE, lru_update_valid_f)
 
   val btb_lru_b0_hold = ~mp_wrlru_b0 & ~fetch_wrlru_b0
-  io.test1 := btb_lru_b0_hold
+
   val use_mp_way = fetch_mp_collision_f
   val use_mp_way_p1 = fetch_mp_collision_p1_f
 
@@ -216,9 +212,6 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     io.ifc_fetch_addr_f(0).asBool->Cat(tag_match_way1_expanded_p1_f(0),tag_match_way1_expanded_f(1))))
 
   val way_raw = tag_match_vway1_expanded_f | (~vwayhit_f & btb_vlru_rd_f)
-
-  //io.test1 := tag_match_vway1_expanded_f
-  io.test2 := way_raw
 
   btb_lru_b0_f := RegEnable(btb_lru_b0_ns, init = 0.U, (io.ifc_fetch_req_f|exu_mp_valid).asBool)
 
@@ -382,7 +375,6 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     bht_bank_clken(i)(k) := (bht_wr_en0(i) & ((bht_wr_addr0===k.U) |  BHT_NO_ADDR_MATCH.B)) |
                             (bht_wr_en2(i) & ((bht_wr_addr2===k.U) |  BHT_NO_ADDR_MATCH.B))
   }
-  //io.clk_enables := bht_bank_clken(0)
 
   val bht_bank_wr_data = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>(0 until NUM_BHT_LOOP).map(j=>
     Mux((bht_wr_en2(i)&(bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt)&(bht_wr_addr2(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1,NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt)|BHT_NO_ADDR_MATCH.B).asBool, bht_wr_data2, bht_wr_data0))))
@@ -392,7 +384,6 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     bht_bank_sel(i)(k)(j) := (bht_wr_en0(i) & (bht_wr_addr0(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & ((bht_wr_addr0(BHT_ADDR_HI-BHT_ADDR_LO, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt) | BHT_NO_ADDR_MATCH.B)) |
       (bht_wr_en2(i) & (bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt) | BHT_NO_ADDR_MATCH.B))
   }
- // val bht_bank_sel = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>(0 until NUM_BHT_LOOP).map(j=>
 
 
   val bht_bank_rd_data_out = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH, UInt(2.W))))
