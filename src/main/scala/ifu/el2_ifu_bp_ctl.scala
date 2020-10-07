@@ -38,9 +38,19 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
     val ifu_bp_pc4_f = Output(UInt(2.W))
     val ifu_bp_valid_f = Output(UInt(2.W))
     val ifu_bp_poffset_f = Output(UInt(12.W))
-   // val test = Output(UInt())
   })
 
+  io.ifu_bp_hit_taken_f := 0.U
+  io.ifu_bp_btb_target_f := 0.U
+  io.ifu_bp_inst_mask_f := 0.U
+  io.ifu_bp_fghr_f := 0.U
+  io.ifu_bp_way_f := 0.U
+  io.ifu_bp_ret_f := 0.U
+  io.ifu_bp_hist1_f := 0.U
+  io.ifu_bp_hist0_f := 0.U
+  io.ifu_bp_pc4_f := 0.U
+  io.ifu_bp_valid_f := 0.U
+  io.ifu_bp_poffset_f := 0.U
   val TAG_START = 16+BTB_BTAG_SIZE
   val PC4 = 4
   val BOFF = 3
@@ -377,11 +387,9 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
                             (bht_wr_en2(i) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B))
   }
 
-
   val bht_bank_clk = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>
     rvclkhdr(clock, bht_bank_clken(i)(k), 1.U.asBool)))
-
-
+  
   val bht_bank_wr_data = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>(0 until NUM_BHT_LOOP).map(j=>
     Mux((bht_wr_en2(i)&(bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt)&(bht_wr_addr2(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1,NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt)|BHT_NO_ADDR_MATCH.B).asBool, bht_wr_data2, bht_wr_data0))))
   val bht_bank_sel = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH/NUM_BHT_LOOP, Vec(NUM_BHT_LOOP, Bool()))))
@@ -397,12 +405,9 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
     bht_bank_rd_data_out(i)((16*k)+j) := withClock(bht_bank_clk(i)(k)){RegEnable(bht_bank_wr_data(i)(k)(j), 0.U, bht_bank_sel(i)(k)(j))}
   }
 
-
-
   bht_bank0_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(0)(i)))
   bht_bank1_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(1)(i)))
   bht_bank0_rd_data_p1_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_p1_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(1)(i)))
-  //io.test := bht_rd_addr_f
 }
 
 object ifu_bp extends App {
