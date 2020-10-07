@@ -380,7 +380,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val bht_bank_clken = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH/NUM_BHT_LOOP, Bool())))
   for(i<-0 until 2; k<- 0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP){
     bht_bank_clken(i)(k) := (bht_wr_en0(i) & ((bht_wr_addr0===k.U) |  BHT_NO_ADDR_MATCH.B)) |
-    (bht_wr_en2(i) & ((bht_wr_addr2===k.U) |  BHT_NO_ADDR_MATCH.B))
+                            (bht_wr_en2(i) & ((bht_wr_addr2===k.U) |  BHT_NO_ADDR_MATCH.B))
   }
   //io.clk_enables := bht_bank_clken(0)
 
@@ -388,8 +388,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
     Mux((bht_wr_en2(i)&(bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt)&(bht_wr_addr2(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1,NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt)|BHT_NO_ADDR_MATCH.B).asBool, bht_wr_data2, bht_wr_data0))))
 
   val bht_bank_sel = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>(0 until NUM_BHT_LOOP).map(j=>
-    bht_wr_en0(i) & (bht_wr_addr0(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & (bht_wr_addr0(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt) | BHT_NO_ADDR_MATCH.B | bht_wr_en2(i) &
-      (bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & (bht_wr_addr2(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt) | BHT_NO_ADDR_MATCH.B)))
+    (bht_wr_en0(i) & (bht_wr_addr0(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & ((bht_wr_addr0(BHT_ADDR_HI-BHT_ADDR_LO, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO+1)===k.asUInt) | BHT_NO_ADDR_MATCH.B)) |
+      (bht_wr_en2(i) & (bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO+1)===k.asUInt) | BHT_NO_ADDR_MATCH.B)))))
 
   val bht_bank_rd_data_out = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH, UInt(2.W))))
   for(i<-0 until 2; k<-0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP; j<-0 until NUM_BHT_LOOP){
