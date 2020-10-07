@@ -121,10 +121,10 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   val fetch_mp_collision_f = (io.exu_mp_btag === fetch_rd_tag_f) & exu_mp_valid & io.ifc_fetch_req_f & (exu_mp_addr === btb_rd_addr_f)
   val fetch_mp_collision_p1_f = (io.exu_mp_btag === fetch_rd_tag_p1_f) & exu_mp_valid & io.ifc_fetch_req_f & (exu_mp_addr === btb_rd_addr_p1_f)
 
-  val leak_one_f_d1 = RegNext(leak_one_f, init = 0.U)
-  val dec_tlu_way_wb_f = RegNext(dec_tlu_way_wb, init = 0.U)
-  val exu_mp_way_f = RegNext(exu_mp_way, init = 0.U)
-  val exu_flush_final_d1 = RegNext(io.exu_flush_final, init = 0.U)
+  val leak_one_f_d1 = withClock(io.active_clk) {RegNext(leak_one_f, init = 0.U)}
+  val dec_tlu_way_wb_f = withClock(io.active_clk) {RegNext(dec_tlu_way_wb, init = 0.U)}
+  val exu_mp_way_f = withClock(io.active_clk) {RegNext(exu_mp_way, init = 0.U)}
+  val exu_flush_final_d1 = withClock(io.active_clk) {RegNext(io.exu_flush_final, init = 0.U)}
 
   // TODO
   leak_one_f := (io.dec_tlu_flush_leak_one_wb & io.dec_tlu_flush_lower_wb) | (leak_one_f_d1 & io.dec_tlu_flush_lower_wb)

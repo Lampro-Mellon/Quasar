@@ -1089,7 +1089,7 @@ module el2_ifu_bp_ctl(
   reg [31:0] _RAND_1038;
 `endif // RANDOMIZE_REG_INIT
   wire  _T_40 = io_dec_tlu_flush_leak_one_wb & io_dec_tlu_flush_lower_wb; // @[el2_ifu_bp_ctl.scala 130:47]
-  reg  leak_one_f_d1; // @[el2_ifu_bp_ctl.scala 124:30]
+  reg  leak_one_f_d1; // @[el2_ifu_bp_ctl.scala 124:56]
   wire  _T_41 = leak_one_f_d1 & io_dec_tlu_flush_lower_wb; // @[el2_ifu_bp_ctl.scala 130:93]
   wire  leak_one_f = _T_40 | _T_41; // @[el2_ifu_bp_ctl.scala 130:76]
   wire  _T = ~leak_one_f; // @[el2_ifu_bp_ctl.scala 69:46]
@@ -2129,7 +2129,7 @@ module el2_ifu_bp_ctl(
   wire [4:0] fetch_rd_tag_f = _T_25 ^ io_ifc_fetch_addr_f[23:19]; // @[el2_lib.scala 177:111]
   wire  _T_45 = btb_bank0_rd_data_way0_f[21:17] == fetch_rd_tag_f; // @[el2_ifu_bp_ctl.scala 133:97]
   wire  _T_46 = btb_bank0_rd_data_way0_f[0] & _T_45; // @[el2_ifu_bp_ctl.scala 133:55]
-  reg  dec_tlu_way_wb_f; // @[el2_ifu_bp_ctl.scala 125:33]
+  reg  dec_tlu_way_wb_f; // @[el2_ifu_bp_ctl.scala 125:59]
   wire [6:0] btb_error_addr_wb = io_exu_i0_br_index_r[6:0]; // @[el2_ifu_bp_ctl.scala 92:21]
   wire [7:0] _GEN_1034 = {{1'd0}, btb_error_addr_wb}; // @[el2_ifu_bp_ctl.scala 111:72]
   wire  _T_19 = _GEN_1034 == btb_rd_addr_f; // @[el2_ifu_bp_ctl.scala 111:72]
@@ -6839,8 +6839,8 @@ module el2_ifu_bp_ctl(
   wire  _T_38 = _T_37 & io_ifc_fetch_req_f; // @[el2_ifu_bp_ctl.scala 122:87]
   wire  _T_39 = io_exu_mp_index == btb_rd_addr_p1_f; // @[el2_ifu_bp_ctl.scala 122:123]
   wire  fetch_mp_collision_p1_f = _T_38 & _T_39; // @[el2_ifu_bp_ctl.scala 122:108]
-  reg  exu_mp_way_f; // @[el2_ifu_bp_ctl.scala 126:29]
-  reg  exu_flush_final_d1; // @[el2_ifu_bp_ctl.scala 127:35]
+  reg  exu_mp_way_f; // @[el2_ifu_bp_ctl.scala 126:55]
+  reg  exu_flush_final_d1; // @[el2_ifu_bp_ctl.scala 127:61]
   wire [255:0] mp_wrindex_dec = 256'h1 << io_exu_mp_index; // @[el2_ifu_bp_ctl.scala 180:28]
   wire [255:0] fetch_wrindex_dec = 256'h1 << btb_rd_addr_f; // @[el2_ifu_bp_ctl.scala 182:31]
   wire [255:0] fetch_wrindex_p1_dec = 256'h1 << btb_rd_addr_p1_f; // @[el2_ifu_bp_ctl.scala 184:34]
@@ -15918,7 +15918,7 @@ end // initial
 `FIRRTL_AFTER_INITIAL
 `endif
 `endif // SYNTHESIS
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       leak_one_f_d1 <= 1'h0;
     end else begin
@@ -17717,7 +17717,7 @@ end // initial
       btb_bank0_rd_data_way0_out_255 <= btb_wr_data;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       dec_tlu_way_wb_f <= 1'h0;
     end else begin
@@ -25155,14 +25155,14 @@ end // initial
       end
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       exu_mp_way_f <= 1'h0;
     end else begin
       exu_mp_way_f <= io_exu_mp_pkt_way;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       exu_flush_final_d1 <= 1'h0;
     end else begin
