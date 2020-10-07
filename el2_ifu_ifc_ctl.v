@@ -54,7 +54,7 @@ module el2_ifu_ifc_ctl(
   wire [30:0] _T_17 = io_exu_flush_final ? io_exu_flush_path_final : 31'h0; // @[Mux.scala 27:72]
   wire [30:0] _T_18 = sel_last_addr_bf ? io_ifc_fetch_addr_f : 31'h0; // @[Mux.scala 27:72]
   wire [30:0] _T_19 = sel_btb_addr_bf ? io_ifu_bp_btb_target_f : 31'h0; // @[Mux.scala 27:72]
-  wire [29:0] address_upper = io_ifc_fetch_addr_f[30:1] + 30'h1; // @[el2_ifu_ifc_ctl.scala 77:48]
+  wire [29:0] address_upper = {io_ifc_fetch_addr_f[30:1]} + 30'h1; // @[el2_ifu_ifc_ctl.scala 77:48]
   wire  _T_29 = address_upper[4] ^ io_ifc_fetch_addr_f[5]; // @[el2_ifu_ifc_ctl.scala 78:63]
   wire  _T_30 = ~_T_29; // @[el2_ifu_ifc_ctl.scala 78:24]
   wire  fetch_addr_next_0 = _T_30 & io_ifc_fetch_addr_f[0]; // @[el2_ifu_ifc_ctl.scala 78:109]
