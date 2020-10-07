@@ -6,7 +6,7 @@ import chisel3.util._
 import chisel3.experimental.chiselName
 
 @chiselName
-class el2_ifu_bp_ctl extends Module with el2_lib {
+class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   val io = IO (new Bundle {
     val active_clk = Input(Clock())
     val ic_hit_f = Input(Bool())
@@ -227,7 +227,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
   val btb_rd_ret_f = btb_sel_data_f(0)
 
   btb_sel_data_f := Mux1H(Seq(btb_sel_f(1).asBool-> btb_vbank1_rd_data_f(16,1),
-                              btb_sel_f(0).asBool-> btb_vbank1_rd_data_f(16,1)))
+                              btb_sel_f(0).asBool-> btb_vbank0_rd_data_f(16,1)))
 
   io.ifu_bp_hit_taken_f := (vwayhit_f & hist1_raw).orR & io.ifc_fetch_req_f & !leak_one_f_d1 & !io.dec_tlu_bpred_disable
 

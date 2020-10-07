@@ -375,4 +375,63 @@ trait el2_lib extends param{
     val ecc_error = en & (ecc_check(6,0) =/= 0.U)
     ecc_error
   }
+
+
+
+  class TEC_RV_ICG extends BlackBox with HasBlackBoxResource {
+    val io = IO(new Bundle {
+      val Q = Output(Clock())
+      val CK  = Input(Clock())
+      val EN  = Input(Bool())
+      val SE = Input(Bool())
+    })
+    addResource("/vsrc/TEC_RV_ICG.v")
+  }
+
+  class rvclkhdr extends Module {
+    val io = IO(new Bundle {
+      val l1clk = Output(Clock())
+      val clk  = Input(Clock())
+      val en  = Input(Bool())
+      val scan_mode = Input(Bool())
+    })
+    val clkhdr = { Module(new TEC_RV_ICG) }
+    io.l1clk := clkhdr.io.Q
+    clkhdr.io.CK := io.clk
+    clkhdr.io.EN := io.en
+    clkhdr.io.SE := io.scan_mode
+  }
+
+  object rvclkhdr {
+    def apply(clk: Clock, en: Bool, scan_mode: Bool): Clock = {
+      val cg = Module(new rvclkhdr)
+      cg.io.clk := clk
+      cg.io.en := en
+      cg.io.scan_mode := scan_mode
+      cg.io.l1clk
+    }
+  }
+
+  object rvdffe {
+    def apply(din: UInt, en: Bool, clk: Clock, scan_mode: Bool): UInt = {
+      val obj = Module(new rvclkhdr())
+      val l1clk = obj.io.l1clk
+      obj.io.clk := clk
+      obj.io.en := en
+      obj.io.scan_mode := scan_mode
+      withClock(l1clk) {
+        RegNext(din, 0.U)
+      }
+    }
+    def apply(din: Bundle, en: Bool, clk: Clock, scan_mode: Bool) = {
+      val obj = Module(new rvclkhdr())
+      val l1clk = obj.io.l1clk
+      obj.io.clk := clk
+      obj.io.en := en
+      obj.io.scan_mode := scan_mode
+      withClock(l1clk) {
+        RegNext(din,0.U.asTypeOf(din.cloneType))
+      }
+    }
+  }
 }

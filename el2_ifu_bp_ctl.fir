@@ -2,7 +2,7 @@
 circuit el2_ifu_bp_ctl : 
   module el2_ifu_bp_ctl : 
     input clock : Clock
-    input reset : UInt<1>
+    input reset : AsyncReset
     output io : {flip active_clk : Clock, flip ic_hit_f : UInt<1>, flip ifc_fetch_addr_f : UInt<31>, flip ifc_fetch_req_f : UInt<1>, flip dec_tlu_br0_r_pkt : {valid : UInt<1>, hist : UInt<2>, br_error : UInt<1>, br_start_error : UInt<1>, way : UInt<1>, middle : UInt<1>}, flip exu_i0_br_fghr_r : UInt<8>, flip exu_i0_br_index_r : UInt<8>, flip dec_tlu_flush_lower_wb : UInt<1>, flip dec_tlu_flush_leak_one_wb : UInt<1>, flip dec_tlu_bpred_disable : UInt<1>, flip exu_mp_pkt : {misp : UInt<1>, ataken : UInt<1>, boffset : UInt<1>, pc4 : UInt<1>, hist : UInt<2>, toffset : UInt<12>, valid : UInt<1>, br_error : UInt<1>, br_start_error : UInt<1>, prett : UInt<32>, pcall : UInt<1>, pret : UInt<1>, pja : UInt<1>, way : UInt<1>}, flip exu_mp_eghr : UInt<8>, flip exu_mp_fghr : UInt<8>, flip exu_mp_index : UInt<8>, flip exu_mp_btag : UInt<5>, flip exu_flush_final : UInt<1>, ifu_bp_hit_taken_f : UInt<1>, ifu_bp_btb_target_f : UInt<31>, ifu_bp_inst_mask_f : UInt<1>, ifu_bp_fghr_f : UInt<8>, ifu_bp_way_f : UInt<2>, ifu_bp_ret_f : UInt<2>, ifu_bp_hist1_f : UInt<2>, ifu_bp_hist0_f : UInt<2>, ifu_bp_pc4_f : UInt<2>, ifu_bp_valid_f : UInt<2>, ifu_bp_poffset_f : UInt<12>}
     
     wire leak_one_f : UInt<1>
@@ -195,8 +195,8 @@ circuit el2_ifu_bp_ctl :
     btb_bank0e_rd_data_f <= _T_121 @[Mux.scala 27:72]
     node _T_122 = bits(tag_match_way0_expanded_f, 1, 1) @[el2_ifu_bp_ctl.scala 167:65]
     node _T_123 = bits(_T_122, 0, 0) @[el2_ifu_bp_ctl.scala 167:69]
-    node _T_124 = bits(tag_match_way1_expanded_f, 1, 1) @[el2_ifu_bp_ctl.scala 168:30]
-    node _T_125 = bits(_T_124, 0, 0) @[el2_ifu_bp_ctl.scala 168:34]
+    node _T_124 = bits(tag_match_way1_expanded_f, 1, 1) @[el2_ifu_bp_ctl.scala 168:65]
+    node _T_125 = bits(_T_124, 0, 0) @[el2_ifu_bp_ctl.scala 168:69]
     node _T_126 = mux(_T_123, btb_bank0_rd_data_way0_f, UInt<1>("h00")) @[Mux.scala 27:72]
     node _T_127 = mux(_T_125, btb_bank0_rd_data_way1_f, UInt<1>("h00")) @[Mux.scala 27:72]
     node _T_128 = or(_T_126, _T_127) @[Mux.scala 27:72]
@@ -341,7 +341,7 @@ circuit el2_ifu_bp_ctl :
     node _T_226 = bits(btb_vbank1_rd_data_f, 16, 1) @[el2_ifu_bp_ctl.scala 229:73]
     node _T_227 = bits(btb_sel_f, 0, 0) @[el2_ifu_bp_ctl.scala 230:40]
     node _T_228 = bits(_T_227, 0, 0) @[el2_ifu_bp_ctl.scala 230:44]
-    node _T_229 = bits(btb_vbank1_rd_data_f, 16, 1) @[el2_ifu_bp_ctl.scala 230:73]
+    node _T_229 = bits(btb_vbank0_rd_data_f, 16, 1) @[el2_ifu_bp_ctl.scala 230:73]
     node _T_230 = mux(_T_225, _T_226, UInt<1>("h00")) @[Mux.scala 27:72]
     node _T_231 = mux(_T_228, _T_229, UInt<1>("h00")) @[Mux.scala 27:72]
     node _T_232 = or(_T_230, _T_231) @[Mux.scala 27:72]

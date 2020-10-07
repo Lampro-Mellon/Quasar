@@ -62,8 +62,8 @@ module el2_ifu_ifc_ctl(
   wire [30:0] _T_20 = sel_next_addr_bf ? fetch_addr_next : 31'h0; // @[Mux.scala 27:72]
   wire [30:0] _T_21 = _T_17 | _T_18; // @[Mux.scala 27:72]
   wire [30:0] _T_22 = _T_21 | _T_19; // @[Mux.scala 27:72]
-  reg [1:0] state; // @[el2_ifu_ifc_ctl.scala 102:19]
-  wire  idle = state == 2'h0; // @[el2_ifu_ifc_ctl.scala 121:17]
+  reg [1:0] state; // @[el2_ifu_ifc_ctl.scala 102:45]
+  wire  idle = state == 2'h0; // @[el2_ifu_ifc_ctl.scala 119:17]
   wire  _T_35 = io_ifu_fb_consume2 | io_ifu_fb_consume1; // @[el2_ifu_ifc_ctl.scala 84:91]
   wire  _T_36 = ~_T_35; // @[el2_ifu_ifc_ctl.scala 84:70]
   wire [3:0] _T_121 = io_exu_flush_final ? 4'h1 : 4'h0; // @[Mux.scala 27:72]
@@ -76,7 +76,7 @@ module el2_ifu_ifc_ctl(
   wire  _T_86 = io_ifu_fb_consume2 & io_ifc_fetch_req_f; // @[el2_ifu_ifc_ctl.scala 107:25]
   wire  fb_right = _T_85 | _T_86; // @[el2_ifu_ifc_ctl.scala 106:92]
   wire  _T_98 = _T_2 & fb_right; // @[el2_ifu_ifc_ctl.scala 113:16]
-  reg [3:0] fb_write_f; // @[el2_ifu_ifc_ctl.scala 126:24]
+  reg [3:0] fb_write_f; // @[el2_ifu_ifc_ctl.scala 124:50]
   wire [3:0] _T_101 = {1'h0,fb_write_f[3:1]}; // @[Cat.scala 29:58]
   wire [3:0] _T_122 = _T_98 ? _T_101 : 4'h0; // @[Mux.scala 27:72]
   wire [3:0] _T_126 = _T_121 | _T_122; // @[Mux.scala 27:72]
@@ -102,7 +102,7 @@ module el2_ifu_ifc_ctl(
   wire  _T_118 = _T_116 & _T_117; // @[el2_ifu_ifc_ctl.scala 116:41]
   wire [3:0] _T_125 = _T_118 ? fb_write_f : 4'h0; // @[Mux.scala 27:72]
   wire [3:0] fb_write_ns = _T_128 | _T_125; // @[Mux.scala 27:72]
-  wire  fb_full_f_ns = fb_write_ns[3]; // @[el2_ifu_ifc_ctl.scala 124:30]
+  wire  fb_full_f_ns = fb_write_ns[3]; // @[el2_ifu_ifc_ctl.scala 122:30]
   wire  _T_37 = fb_full_f_ns & _T_36; // @[el2_ifu_ifc_ctl.scala 84:68]
   wire  _T_38 = ~_T_37; // @[el2_ifu_ifc_ctl.scala 84:53]
   wire  _T_39 = io_ifc_fetch_req_bf_raw & _T_38; // @[el2_ifu_ifc_ctl.scala 84:51]
@@ -132,39 +132,39 @@ module el2_ifu_ifc_ctl(
   wire  _T_75 = _T_67 & leave_idle; // @[el2_ifu_ifc_ctl.scala 100:34]
   wire  _T_78 = state[0] & _T_67; // @[el2_ifu_ifc_ctl.scala 100:60]
   wire  next_state_0 = _T_75 | _T_78; // @[el2_ifu_ifc_ctl.scala 100:48]
-  wire  wfm = state == 2'h3; // @[el2_ifu_ifc_ctl.scala 122:16]
-  reg  fb_full_f; // @[el2_ifu_ifc_ctl.scala 125:26]
-  wire  _T_138 = _T_35 | io_exu_flush_final; // @[el2_ifu_ifc_ctl.scala 129:61]
-  wire  _T_139 = ~_T_138; // @[el2_ifu_ifc_ctl.scala 129:19]
-  wire  _T_140 = fb_full_f & _T_139; // @[el2_ifu_ifc_ctl.scala 129:17]
-  wire  _T_141 = _T_140 | dma_stall; // @[el2_ifu_ifc_ctl.scala 129:84]
-  wire  _T_142 = io_ifc_fetch_req_bf_raw & _T_141; // @[el2_ifu_ifc_ctl.scala 128:60]
-  wire [31:0] _T_144 = {io_ifc_fetch_addr_bf,1'h0}; // @[Cat.scala 29:58]
-  wire  iccm_acc_in_region_bf = _T_144[31:28] == 4'he; // @[el2_lib.scala 211:47]
-  wire  iccm_acc_in_range_bf = _T_144[31:16] == 16'hee00; // @[el2_lib.scala 214:29]
-  wire  _T_147 = ~io_ifc_iccm_access_bf; // @[el2_ifu_ifc_ctl.scala 135:30]
-  wire  _T_150 = fb_full_f & _T_36; // @[el2_ifu_ifc_ctl.scala 136:16]
-  wire  _T_151 = _T_147 | _T_150; // @[el2_ifu_ifc_ctl.scala 135:53]
-  wire  _T_152 = ~io_ifc_fetch_req_bf; // @[el2_ifu_ifc_ctl.scala 137:13]
-  wire  _T_153 = wfm & _T_152; // @[el2_ifu_ifc_ctl.scala 137:11]
-  wire  _T_154 = _T_151 | _T_153; // @[el2_ifu_ifc_ctl.scala 136:62]
-  wire  _T_155 = _T_154 | idle; // @[el2_ifu_ifc_ctl.scala 137:35]
-  wire  _T_157 = _T_155 & _T_2; // @[el2_ifu_ifc_ctl.scala 137:44]
-  wire  _T_159 = ~iccm_acc_in_range_bf; // @[el2_ifu_ifc_ctl.scala 139:33]
-  wire [4:0] _T_162 = {io_ifc_fetch_addr_bf[30:27],1'h0}; // @[Cat.scala 29:58]
-  wire [31:0] _T_163 = io_dec_tlu_mrac_ff >> _T_162; // @[el2_ifu_ifc_ctl.scala 140:53]
-  reg  _T_166; // @[el2_ifu_ifc_ctl.scala 142:32]
-  reg [30:0] _T_168; // @[Reg.scala 27:20]
-  assign io_ifc_fetch_addr_f = _T_168; // @[el2_ifu_ifc_ctl.scala 144:23]
+  wire  wfm = state == 2'h3; // @[el2_ifu_ifc_ctl.scala 120:16]
+  reg  fb_full_f; // @[el2_ifu_ifc_ctl.scala 123:52]
+  wire  _T_136 = _T_35 | io_exu_flush_final; // @[el2_ifu_ifc_ctl.scala 127:61]
+  wire  _T_137 = ~_T_136; // @[el2_ifu_ifc_ctl.scala 127:19]
+  wire  _T_138 = fb_full_f & _T_137; // @[el2_ifu_ifc_ctl.scala 127:17]
+  wire  _T_139 = _T_138 | dma_stall; // @[el2_ifu_ifc_ctl.scala 127:84]
+  wire  _T_140 = io_ifc_fetch_req_bf_raw & _T_139; // @[el2_ifu_ifc_ctl.scala 126:60]
+  wire [31:0] _T_142 = {io_ifc_fetch_addr_bf,1'h0}; // @[Cat.scala 29:58]
+  wire  iccm_acc_in_region_bf = _T_142[31:28] == 4'he; // @[el2_lib.scala 216:47]
+  wire  iccm_acc_in_range_bf = _T_142[31:16] == 16'hee00; // @[el2_lib.scala 219:29]
+  wire  _T_145 = ~io_ifc_iccm_access_bf; // @[el2_ifu_ifc_ctl.scala 133:30]
+  wire  _T_148 = fb_full_f & _T_36; // @[el2_ifu_ifc_ctl.scala 134:16]
+  wire  _T_149 = _T_145 | _T_148; // @[el2_ifu_ifc_ctl.scala 133:53]
+  wire  _T_150 = ~io_ifc_fetch_req_bf; // @[el2_ifu_ifc_ctl.scala 135:13]
+  wire  _T_151 = wfm & _T_150; // @[el2_ifu_ifc_ctl.scala 135:11]
+  wire  _T_152 = _T_149 | _T_151; // @[el2_ifu_ifc_ctl.scala 134:62]
+  wire  _T_153 = _T_152 | idle; // @[el2_ifu_ifc_ctl.scala 135:35]
+  wire  _T_155 = _T_153 & _T_2; // @[el2_ifu_ifc_ctl.scala 135:44]
+  wire  _T_157 = ~iccm_acc_in_range_bf; // @[el2_ifu_ifc_ctl.scala 137:33]
+  wire [4:0] _T_160 = {io_ifc_fetch_addr_bf[30:27],1'h0}; // @[Cat.scala 29:58]
+  wire [31:0] _T_161 = io_dec_tlu_mrac_ff >> _T_160; // @[el2_ifu_ifc_ctl.scala 138:53]
+  reg  _T_164; // @[el2_ifu_ifc_ctl.scala 140:57]
+  reg [30:0] _T_166; // @[Reg.scala 27:20]
+  assign io_ifc_fetch_addr_f = _T_166; // @[el2_ifu_ifc_ctl.scala 142:23]
   assign io_ifc_fetch_addr_bf = _T_22 | _T_20; // @[el2_ifu_ifc_ctl.scala 72:24]
-  assign io_ifc_fetch_req_f = _T_166; // @[el2_ifu_ifc_ctl.scala 142:22]
-  assign io_ifu_pmu_fetch_stall = wfm | _T_142; // @[el2_ifu_ifc_ctl.scala 128:26]
-  assign io_ifc_fetch_uncacheable_bf = ~_T_163[0]; // @[el2_ifu_ifc_ctl.scala 140:31]
+  assign io_ifc_fetch_req_f = _T_164; // @[el2_ifu_ifc_ctl.scala 140:22]
+  assign io_ifu_pmu_fetch_stall = wfm | _T_140; // @[el2_ifu_ifc_ctl.scala 126:26]
+  assign io_ifc_fetch_uncacheable_bf = ~_T_161[0]; // @[el2_ifu_ifc_ctl.scala 138:31]
   assign io_ifc_fetch_req_bf = _T_43 & _T_44; // @[el2_ifu_ifc_ctl.scala 84:23]
   assign io_ifc_fetch_req_bf_raw = ~idle; // @[el2_ifu_ifc_ctl.scala 82:27]
-  assign io_ifc_iccm_access_bf = _T_144[31:16] == 16'hee00; // @[el2_ifu_ifc_ctl.scala 134:25]
-  assign io_ifc_region_acc_fault_bf = _T_159 & iccm_acc_in_region_bf; // @[el2_ifu_ifc_ctl.scala 139:30]
-  assign io_ifc_dma_access_ok = _T_157 | dma_iccm_stall_any_f; // @[el2_ifu_ifc_ctl.scala 135:24]
+  assign io_ifc_iccm_access_bf = _T_142[31:16] == 16'hee00; // @[el2_ifu_ifc_ctl.scala 132:25]
+  assign io_ifc_region_acc_fault_bf = _T_157 & iccm_acc_in_region_bf; // @[el2_ifu_ifc_ctl.scala 137:30]
+  assign io_ifc_dma_access_ok = _T_155 | dma_iccm_stall_any_f; // @[el2_ifu_ifc_ctl.scala 133:24]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -211,9 +211,9 @@ initial begin
   _RAND_4 = {1{`RANDOM}};
   fb_full_f = _RAND_4[0:0];
   _RAND_5 = {1{`RANDOM}};
-  _T_166 = _RAND_5[0:0];
+  _T_164 = _RAND_5[0:0];
   _RAND_6 = {1{`RANDOM}};
-  _T_168 = _RAND_6[30:0];
+  _T_166 = _RAND_6[30:0];
 `endif // RANDOMIZE_REG_INIT
   if (reset) begin
     dma_iccm_stall_any_f = 1'h0;
@@ -231,10 +231,10 @@ initial begin
     fb_full_f = 1'h0;
   end
   if (reset) begin
-    _T_166 = 1'h0;
+    _T_164 = 1'h0;
   end
   if (reset) begin
-    _T_168 = 31'h0;
+    _T_166 = 31'h0;
   end
   `endif // RANDOMIZE
 end // initial
@@ -256,39 +256,39 @@ end // initial
       miss_a <= _T_48 & _T_2;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       state <= 2'h0;
     end else begin
       state <= {next_state_1,next_state_0};
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       fb_write_f <= 4'h0;
     end else begin
       fb_write_f <= _T_128 | _T_125;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       fb_full_f <= 1'h0;
     end else begin
       fb_full_f <= fb_write_ns[3];
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
-      _T_166 <= 1'h0;
+      _T_164 <= 1'h0;
     end else begin
-      _T_166 <= io_ifc_fetch_req_bf;
+      _T_164 <= io_ifc_fetch_req_bf;
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
-      _T_168 <= 31'h0;
+      _T_166 <= 31'h0;
     end else if (fetch_bf_en) begin
-      _T_168 <= io_ifc_fetch_addr_bf;
+      _T_166 <= io_ifc_fetch_addr_bf;
     end
   end
 endmodule

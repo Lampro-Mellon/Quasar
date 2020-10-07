@@ -6,7 +6,7 @@ import chisel3.util._
 class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
   val io = IO(new Bundle{
     val free_clk = Input(Clock())
-    val active_clk = Input(Bool())
+    val active_clk = Input(Clock())
     val scan_mode = Input(Bool())
     val ic_hit_f = Input(Bool())
     val ifu_ic_mb_empty = Input(Bool())
@@ -99,7 +99,7 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
 
   val next_state_0 = (!goto_idle & leave_idle) | (state(0) & !goto_idle)
 
-  state := RegNext(Cat(next_state_1, next_state_0), init = 0.U)
+  state := withClock(io.active_clk) {RegNext(Cat(next_state_1, next_state_0), init = 0.U)}
 
   flush_fb := io.exu_flush_final
 
@@ -116,14 +116,12 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
     (!flush_fb & !fb_right & !fb_right2 & !fb_left).asBool -> fb_write_f(3,0)
   ))
 
-  fb_full_f_ns := RegNext(fb_write_ns(3), init = 0.U)
-
   idle := state === 0.U(2.W)
   wfm := state === 3.U(2.W)
 
   fb_full_f_ns := fb_write_ns(3)
-  val fb_full_f = RegNext(fb_full_f_ns, init = 0.U)
-  fb_write_f := RegNext(fb_write_ns, 0.U)
+  val fb_full_f = withClock(io.active_clk) {RegNext(fb_full_f_ns, init = 0.U)}
+  fb_write_f := withClock(io.active_clk) {RegNext(fb_write_ns, 0.U)}
 
   io.ifu_pmu_fetch_stall := wfm | (io.ifc_fetch_req_bf_raw &
     ((fb_full_f & !(io.ifu_fb_consume2 | io.ifu_fb_consume1 | io.exu_flush_final)) | dma_stall))
@@ -139,9 +137,10 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
   io.ifc_region_acc_fault_bf := !iccm_acc_in_range_bf & iccm_acc_in_region_bf
   io.ifc_fetch_uncacheable_bf := ~io.dec_tlu_mrac_ff(Cat(io.ifc_fetch_addr_bf(30,27), 0.U))
 
-  io.ifc_fetch_req_f := RegNext(io.ifc_fetch_req_bf, init=0.U)
+  io.ifc_fetch_req_f := withClock(io.active_clk){RegNext(io.ifc_fetch_req_bf, init=0.U)}
 
   io.ifc_fetch_addr_f := RegEnable(io.ifc_fetch_addr_bf, init = 0.U, io.exu_flush_final|io.ifc_fetch_req_f)
+  //rvdffe(io.ifc_fetch_addr_bf,(io.exu_flush_final|io.ifc_fetch_req_f).asBool,clock,io.scan_mode)
 }
 
 object ifu_ifc extends App {
