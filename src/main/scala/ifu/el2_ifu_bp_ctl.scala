@@ -377,6 +377,11 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
                             (bht_wr_en2(i) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B))
   }
 
+
+  val bht_bank_clk = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>
+    rvclkhdr(clock, bht_bank_clken(i)(k), 1.U.asBool)))
+
+
   val bht_bank_wr_data = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>(0 until NUM_BHT_LOOP).map(j=>
     Mux((bht_wr_en2(i)&(bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt)&(bht_wr_addr2(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1,NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt)|BHT_NO_ADDR_MATCH.B).asBool, bht_wr_data2, bht_wr_data0))))
   val bht_bank_sel = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH/NUM_BHT_LOOP, Vec(NUM_BHT_LOOP, Bool()))))
@@ -389,8 +394,10 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
 // Blah blah
   val bht_bank_rd_data_out = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH, UInt(2.W))))
   for(i<-0 until 2; k<-0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP; j<-0 until NUM_BHT_LOOP){
-    bht_bank_rd_data_out(i)((16*k)+j) := RegEnable(bht_bank_wr_data(i)(k)(j), 0.U, bht_bank_sel(i)(k)(j)&bht_bank_clken(i)(k))
+    bht_bank_rd_data_out(i)((16*k)+j) := withClock(bht_bank_clk(i)(k)){RegEnable(bht_bank_wr_data(i)(k)(j), 0.U, bht_bank_sel(i)(k)(j))}
   }
+
+
 
   bht_bank0_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(0)(i)))
   bht_bank1_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(1)(i)))

@@ -412,6 +412,21 @@ trait el2_lib extends param{
     }
   }
 
+//  class rvclkhdr extends Module {
+//    val io = IO(new Bundle {
+//      val l1clk = Output(Clock())
+//      val clk  = Input(Clock())
+//      val en  = Input(Bool())
+//      val scan_mode = Input(Bool())
+//    })
+//    val clkhdr = { Module(new TEC_RV_ICG) }
+//    io.l1clk := clkhdr.io.Q
+//    clkhdr.io.CK := io.clk
+//    clkhdr.io.EN := io.en
+//    clkhdr.io.SE := io.scan_mode
+//  }
+
+
   object rvdffe {
     def apply(din: UInt, en: Bool, clk: Clock, scan_mode: Bool): UInt = {
       val obj = Module(new rvclkhdr())
@@ -434,4 +449,14 @@ trait el2_lib extends param{
       }
     }
   }
+
+//    def rvclkhdr_M(clk: Clock, en: Bool, scan_mode: Bool): Clock = {
+//      val cg = Module(new rvclkhdr)
+//      cg.io.clk := clk
+//      cg.io.en := en
+//      cg.io.scan_mode := scan_mode
+//      cg.io.l1clk
+//    }
+
+
 }
