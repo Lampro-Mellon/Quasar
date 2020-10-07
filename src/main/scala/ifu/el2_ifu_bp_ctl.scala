@@ -197,16 +197,16 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   val use_mp_way = fetch_mp_collision_f
   val use_mp_way_p1 = fetch_mp_collision_p1_f
 
-  val btb_lru_b0_ns = Mux(exu_mp_way.asBool, 0.U, (Mux1H(Seq(~exu_mp_way.asBool->mp_wrlru_b0,
+  val btb_lru_b0_ns = Mux1H(Seq(~exu_mp_way.asBool->mp_wrlru_b0,
                                  tag_match_way0_f.asBool->fetch_wrlru_b0,
-                                 tag_match_way0_p1_f.asBool->fetch_wrlru_p1_b0)) | btb_lru_b0_hold & btb_lru_b0_f))
+                                 tag_match_way0_p1_f.asBool->fetch_wrlru_p1_b0)) | btb_lru_b0_hold & btb_lru_b0_f
 
   val btb_lru_rd_f = Mux(use_mp_way.asBool, exu_mp_way_f, (fetch_wrindex_dec & btb_lru_b0_f).orR)
 
   val btb_lru_rd_p1_f = Mux(use_mp_way_p1.asBool, exu_mp_way_f, (fetch_wrindex_p1_dec & btb_lru_b0_f).orR)
 
-  val btb_vlru_rd_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> Cat(btb_lru_rd_f, btb_lru_rd_f),
-    io.ifc_fetch_addr_f(0).asBool -> Cat(btb_lru_rd_p1_f, btb_lru_rd_f)))
+  val btb_vlru_rd_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0)        -> Cat(btb_lru_rd_f, btb_lru_rd_f),
+                                 io.ifc_fetch_addr_f(0).asBool -> Cat(btb_lru_rd_p1_f, btb_lru_rd_f)))
 
   val tag_match_vway1_expanded_f = Mux1H(Seq(~io.ifc_fetch_addr_f(0).asBool->tag_match_way1_expanded_f,
     io.ifc_fetch_addr_f(0).asBool->Cat(tag_match_way1_expanded_p1_f(0),tag_match_way1_expanded_f(1))))
