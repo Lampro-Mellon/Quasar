@@ -373,8 +373,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
 
   val bht_bank_clken = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH/NUM_BHT_LOOP, Bool())))
   for(i<-0 until 2; k<- 0 until (BHT_ARRAY_DEPTH/NUM_BHT_LOOP)){
-    bht_bank_clken(i)(k) := (bht_wr_en0(i) & ((bht_wr_addr0(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-1)===k.U) |  BHT_NO_ADDR_MATCH.B)) |
-                            (bht_wr_en2(i) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-1)===k.U) |  BHT_NO_ADDR_MATCH.B))
+    bht_bank_clken(i)(k) := (bht_wr_en0(i) & ((bht_wr_addr0(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B)) |
+                            (bht_wr_en2(i) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B))
   }
 
   val bht_bank_wr_data = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>(0 until NUM_BHT_LOOP).map(j=>
