@@ -45,8 +45,7 @@ module el2_ifu_bp_ctl(
   output [1:0]  io_ifu_bp_hist0_f,
   output [1:0]  io_ifu_bp_pc4_f,
   output [1:0]  io_ifu_bp_valid_f,
-  output [11:0] io_ifu_bp_poffset_f,
-  output [7:0]  io_test
+  output [11:0] io_ifu_bp_poffset_f
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -10042,7 +10041,6 @@ module el2_ifu_bp_ctl(
   assign io_ifu_bp_pc4_f = {_T_284,_T_287}; // @[el2_ifu_bp_ctl.scala 290:19]
   assign io_ifu_bp_valid_f = vwayhit_f & _T_342; // @[el2_ifu_bp_ctl.scala 292:21]
   assign io_ifu_bp_poffset_f = btb_sel_data_f[15:4]; // @[el2_ifu_bp_ctl.scala 305:23]
-  assign io_test = _T_566[9:2] ^ fghr; // @[el2_ifu_bp_ctl.scala 398:11]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif

@@ -3,7 +3,7 @@ circuit el2_ifu_bp_ctl :
   module el2_ifu_bp_ctl : 
     input clock : Clock
     input reset : AsyncReset
-    output io : {flip active_clk : Clock, flip ic_hit_f : UInt<1>, flip ifc_fetch_addr_f : UInt<31>, flip ifc_fetch_req_f : UInt<1>, flip dec_tlu_br0_r_pkt : {valid : UInt<1>, hist : UInt<2>, br_error : UInt<1>, br_start_error : UInt<1>, way : UInt<1>, middle : UInt<1>}, flip exu_i0_br_fghr_r : UInt<8>, flip exu_i0_br_index_r : UInt<8>, flip dec_tlu_flush_lower_wb : UInt<1>, flip dec_tlu_flush_leak_one_wb : UInt<1>, flip dec_tlu_bpred_disable : UInt<1>, flip exu_mp_pkt : {misp : UInt<1>, ataken : UInt<1>, boffset : UInt<1>, pc4 : UInt<1>, hist : UInt<2>, toffset : UInt<12>, valid : UInt<1>, br_error : UInt<1>, br_start_error : UInt<1>, prett : UInt<32>, pcall : UInt<1>, pret : UInt<1>, pja : UInt<1>, way : UInt<1>}, flip exu_mp_eghr : UInt<8>, flip exu_mp_fghr : UInt<8>, flip exu_mp_index : UInt<8>, flip exu_mp_btag : UInt<5>, flip exu_flush_final : UInt<1>, ifu_bp_hit_taken_f : UInt<1>, ifu_bp_btb_target_f : UInt<31>, ifu_bp_inst_mask_f : UInt<1>, ifu_bp_fghr_f : UInt<8>, ifu_bp_way_f : UInt<2>, ifu_bp_ret_f : UInt<2>, ifu_bp_hist1_f : UInt<2>, ifu_bp_hist0_f : UInt<2>, ifu_bp_pc4_f : UInt<2>, ifu_bp_valid_f : UInt<2>, ifu_bp_poffset_f : UInt<12>, test : UInt}
+    output io : {flip active_clk : Clock, flip ic_hit_f : UInt<1>, flip ifc_fetch_addr_f : UInt<31>, flip ifc_fetch_req_f : UInt<1>, flip dec_tlu_br0_r_pkt : {valid : UInt<1>, hist : UInt<2>, br_error : UInt<1>, br_start_error : UInt<1>, way : UInt<1>, middle : UInt<1>}, flip exu_i0_br_fghr_r : UInt<8>, flip exu_i0_br_index_r : UInt<8>, flip dec_tlu_flush_lower_wb : UInt<1>, flip dec_tlu_flush_leak_one_wb : UInt<1>, flip dec_tlu_bpred_disable : UInt<1>, flip exu_mp_pkt : {misp : UInt<1>, ataken : UInt<1>, boffset : UInt<1>, pc4 : UInt<1>, hist : UInt<2>, toffset : UInt<12>, valid : UInt<1>, br_error : UInt<1>, br_start_error : UInt<1>, prett : UInt<32>, pcall : UInt<1>, pret : UInt<1>, pja : UInt<1>, way : UInt<1>}, flip exu_mp_eghr : UInt<8>, flip exu_mp_fghr : UInt<8>, flip exu_mp_index : UInt<8>, flip exu_mp_btag : UInt<5>, flip exu_flush_final : UInt<1>, ifu_bp_hit_taken_f : UInt<1>, ifu_bp_btb_target_f : UInt<31>, ifu_bp_inst_mask_f : UInt<1>, ifu_bp_fghr_f : UInt<8>, ifu_bp_way_f : UInt<2>, ifu_bp_ret_f : UInt<2>, ifu_bp_hist1_f : UInt<2>, ifu_bp_hist0_f : UInt<2>, ifu_bp_pc4_f : UInt<2>, ifu_bp_valid_f : UInt<2>, ifu_bp_poffset_f : UInt<12>}
     
     wire leak_one_f : UInt<1>
     leak_one_f <= UInt<1>("h00")
@@ -29568,5 +29568,4 @@ circuit el2_ifu_bp_ctl :
     wire _T_24155 : UInt<2> @[Mux.scala 27:72]
     _T_24155 <= _T_24154 @[Mux.scala 27:72]
     bht_bank0_rd_data_p1_f <= _T_24155 @[el2_ifu_bp_ctl.scala 397:26]
-    io.test <= bht_rd_addr_hashed_f @[el2_ifu_bp_ctl.scala 398:11]
     

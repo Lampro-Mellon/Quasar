@@ -38,7 +38,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
     val ifu_bp_pc4_f = Output(UInt(2.W))
     val ifu_bp_valid_f = Output(UInt(2.W))
     val ifu_bp_poffset_f = Output(UInt(12.W))
-    val test = Output(UInt())
+    //val test = Output(UInt())
   })
 
   val TAG_START = 16+BTB_BTAG_SIZE
@@ -395,7 +395,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   bht_bank0_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(0)(i)))
   bht_bank1_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(1)(i)))
   bht_bank0_rd_data_p1_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_p1_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(1)(i)))
-  io.test := bht_rd_addr_f
+ // io.test := bht_rd_addr_f
 }
 
 object ifu_bp extends App {

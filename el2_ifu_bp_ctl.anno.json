@@ -104,13 +104,6 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_test",
-    "sources":[
-      "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifc_fetch_addr_f"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifu_bp_ret_f",
     "sources":[
       "~el2_ifu_bp_ctl|el2_ifu_bp_ctl>io_ifc_fetch_addr_f",
