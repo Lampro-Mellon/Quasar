@@ -393,7 +393,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib {
 
   val bht_bank_rd_data_out = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH, UInt(2.W))))
   for(i<-0 until 2; k<-0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP; j<-0 until NUM_BHT_LOOP){
-    bht_bank_rd_data_out(i)((16*k)+j) := RegEnable(bht_bank_wr_data(i)(j)(k), 0.U, bht_bank_sel(i)(j)(k))
+    bht_bank_rd_data_out(i)((16*k)+j) := RegEnable(bht_bank_wr_data(i)(k)(j), 0.U, bht_bank_sel(i)(k)(j))
   }
 
   bht_bank0_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(0)(i)))
