@@ -53,7 +53,7 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
 
   for(i<-0 until ICCM_NUM_BANKS)  when(write_vec(i)) {iccm_mem(i)(addr_bank(i)) := iccm_bank_wr_data(i)}
 
-  for(i<-0 until ICCM_NUM_BANKS) {iccm_bank_dout(i) := iccm_mem(i).read(addr_bank(i),read_enable(i))}
+  for(i<-0 until ICCM_NUM_BANKS) {iccm_bank_dout(i) := RegEnable(iccm_mem(i)(addr_bank(i)),0.U,read_enable(i))}
    //(0 until ICCM_NUM_BANKS).map(i=> )
 
   // iccm_bank_dout(i) := RegNext(inter(i))
