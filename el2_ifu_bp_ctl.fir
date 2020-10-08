@@ -3,7 +3,7 @@ circuit el2_ifu_bp_ctl :
   module el2_ifu_bp_ctl : 
     input clock : Clock
     input reset : AsyncReset
-    output io : {flip active_clk : Clock, flip ic_hit_f : UInt<1>, flip ifc_fetch_addr_f : UInt<31>, flip ifc_fetch_req_f : UInt<1>, flip dec_tlu_br0_r_pkt : {valid : UInt<1>, hist : UInt<2>, br_error : UInt<1>, br_start_error : UInt<1>, way : UInt<1>, middle : UInt<1>}, flip exu_i0_br_fghr_r : UInt<8>, flip exu_i0_br_index_r : UInt<8>, flip dec_tlu_flush_lower_wb : UInt<1>, flip dec_tlu_flush_leak_one_wb : UInt<1>, flip dec_tlu_bpred_disable : UInt<1>, flip exu_mp_pkt : {misp : UInt<1>, ataken : UInt<1>, boffset : UInt<1>, pc4 : UInt<1>, hist : UInt<2>, toffset : UInt<12>, valid : UInt<1>, br_error : UInt<1>, br_start_error : UInt<1>, prett : UInt<32>, pcall : UInt<1>, pret : UInt<1>, pja : UInt<1>, way : UInt<1>}, flip exu_mp_eghr : UInt<8>, flip exu_mp_fghr : UInt<8>, flip exu_mp_index : UInt<8>, flip exu_mp_btag : UInt<5>, flip exu_flush_final : UInt<1>, ifu_bp_hit_taken_f : UInt<1>, ifu_bp_btb_target_f : UInt<31>, ifu_bp_inst_mask_f : UInt<1>, ifu_bp_fghr_f : UInt<8>, ifu_bp_way_f : UInt<2>, ifu_bp_ret_f : UInt<2>, ifu_bp_hist1_f : UInt<2>, ifu_bp_hist0_f : UInt<2>, ifu_bp_pc4_f : UInt<2>, ifu_bp_valid_f : UInt<2>, ifu_bp_poffset_f : UInt<12>}
+    output io : {flip active_clk : Clock, flip ic_hit_f : UInt<1>, flip ifc_fetch_addr_f : UInt<31>, flip ifc_fetch_req_f : UInt<1>, flip dec_tlu_br0_r_pkt : {valid : UInt<1>, hist : UInt<2>, br_error : UInt<1>, br_start_error : UInt<1>, way : UInt<1>, middle : UInt<1>}, flip exu_i0_br_fghr_r : UInt<8>, flip exu_i0_br_index_r : UInt<8>, flip dec_tlu_flush_lower_wb : UInt<1>, flip dec_tlu_flush_leak_one_wb : UInt<1>, flip dec_tlu_bpred_disable : UInt<1>, flip exu_mp_pkt : {misp : UInt<1>, ataken : UInt<1>, boffset : UInt<1>, pc4 : UInt<1>, hist : UInt<2>, toffset : UInt<12>, valid : UInt<1>, br_error : UInt<1>, br_start_error : UInt<1>, prett : UInt<31>, pcall : UInt<1>, pret : UInt<1>, pja : UInt<1>, way : UInt<1>}, flip exu_mp_eghr : UInt<8>, flip exu_mp_fghr : UInt<8>, flip exu_mp_index : UInt<8>, flip exu_mp_btag : UInt<5>, flip exu_flush_final : UInt<1>, ifu_bp_hit_taken_f : UInt<1>, ifu_bp_btb_target_f : UInt<31>, ifu_bp_inst_mask_f : UInt<1>, ifu_bp_fghr_f : UInt<8>, ifu_bp_way_f : UInt<2>, ifu_bp_ret_f : UInt<2>, ifu_bp_hist1_f : UInt<2>, ifu_bp_hist0_f : UInt<2>, ifu_bp_pc4_f : UInt<2>, ifu_bp_valid_f : UInt<2>, ifu_bp_poffset_f : UInt<12>}
     
     io.ifu_bp_hit_taken_f <= UInt<1>("h00") @[el2_ifu_bp_ctl.scala 43:25]
     io.ifu_bp_btb_target_f <= UInt<1>("h00") @[el2_ifu_bp_ctl.scala 44:26]
@@ -771,7 +771,7 @@ circuit el2_ifu_bp_ctl :
     node _T_527 = eq(dec_tlu_error_wb, UInt<1>("h00")) @[el2_ifu_bp_ctl.scala 346:35]
     node btb_valid = and(exu_mp_valid, _T_527) @[el2_ifu_bp_ctl.scala 346:32]
     node _T_528 = or(io.exu_mp_pkt.pcall, io.exu_mp_pkt.pja) @[el2_ifu_bp_ctl.scala 349:89]
-    node _T_529 = or(io.exu_mp_pkt.prett, io.exu_mp_pkt.pja) @[el2_ifu_bp_ctl.scala 349:113]
+    node _T_529 = or(io.exu_mp_pkt.pret, io.exu_mp_pkt.pja) @[el2_ifu_bp_ctl.scala 349:113]
     node _T_530 = cat(_T_528, _T_529) @[Cat.scala 29:58]
     node _T_531 = cat(_T_530, btb_valid) @[Cat.scala 29:58]
     node _T_532 = cat(io.exu_mp_pkt.pc4, io.exu_mp_pkt.boffset) @[Cat.scala 29:58]
@@ -796,7 +796,7 @@ circuit el2_ifu_bp_ctl :
     node middle_of_bank = xor(io.exu_mp_pkt.pc4, io.exu_mp_pkt.boffset) @[el2_ifu_bp_ctl.scala 356:35]
     node _T_546 = eq(io.exu_mp_pkt.pcall, UInt<1>("h00")) @[el2_ifu_bp_ctl.scala 357:43]
     node _T_547 = and(exu_mp_valid, _T_546) @[el2_ifu_bp_ctl.scala 357:41]
-    node _T_548 = eq(io.exu_mp_pkt.prett, UInt<1>("h00")) @[el2_ifu_bp_ctl.scala 357:58]
+    node _T_548 = eq(io.exu_mp_pkt.pret, UInt<1>("h00")) @[el2_ifu_bp_ctl.scala 357:58]
     node _T_549 = and(_T_547, _T_548) @[el2_ifu_bp_ctl.scala 357:56]
     node _T_550 = eq(io.exu_mp_pkt.pja, UInt<1>("h00")) @[el2_ifu_bp_ctl.scala 357:72]
     node _T_551 = and(_T_549, _T_550) @[el2_ifu_bp_ctl.scala 357:70]

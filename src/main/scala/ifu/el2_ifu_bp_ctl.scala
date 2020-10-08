@@ -81,7 +81,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   val exu_mp_boffset  = io.exu_mp_pkt.boffset
   val exu_mp_pc4      = io.exu_mp_pkt.pc4
   val exu_mp_call     = io.exu_mp_pkt.pcall
-  val exu_mp_ret      = io.exu_mp_pkt.prett
+  val exu_mp_ret      = io.exu_mp_pkt.pret
   val exu_mp_ja       = io.exu_mp_pkt.pja
   val exu_mp_way      = io.exu_mp_pkt.way
   val exu_mp_hist     = io.exu_mp_pkt.hist
