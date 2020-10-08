@@ -39,8 +39,8 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
   for(i<-0 until ICCM_NUM_BANKS) {addr_bank(i) := Mux(wren_bank(i).asBool, io.iccm_rw_addr(ICCM_BITS-2, ICCM_BANK_INDEX_LO-1),
     Mux((addr_bank_inc(ICCM_BANK_HI-1,1)===i.U),addr_bank_inc(ICCM_BITS-2,ICCM_BANK_INDEX_LO-1),io.iccm_rw_addr(ICCM_BITS-2,ICCM_BANK_INDEX_LO-1)))}
 
-  val iccm_mem = new Array[Mem[UInt]](ICCM_NUM_BANKS)
-  for(i<-0 until ICCM_NUM_BANKS) iccm_mem(i) = Mem(pow(2, ICCM_INDEX_BITS).intValue, UInt(39.W))
+  val iccm_mem = new Array[SyncReadMem[UInt]](ICCM_NUM_BANKS)
+  for(i<-0 until ICCM_NUM_BANKS) iccm_mem(i) = SyncReadMem(pow(2, ICCM_INDEX_BITS).intValue, UInt(39.W))
   //val iccm_mem = VecInit.tabulate(ICCM_NUM_BANKS)(i=>Mem(pow(2, ICCM_INDEX_BITS).intValue, UInt(39.W))))
   //val iccm_mem = Mem(pow(2, ICCM_INDEX_BITS).intValue, Vec(ICCM_NUM_BANKS, UInt(39.W)))
 
