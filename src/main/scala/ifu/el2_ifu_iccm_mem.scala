@@ -30,7 +30,7 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
     iccm_bank_wr_data_vec((2*i)+1) := io.iccm_wr_data(77,39)
   }
 
-  val wren_bank = (0 until ICCM_NUM_BANKS).map(i=> io.iccm_wren&(io.iccm_rw_addr(ICCM_BANK_HI-1,1)===i.U)|(addr_bank_inc(ICCM_BANK_HI-1,1)===i.U))
+  val wren_bank = (0 until ICCM_NUM_BANKS).map(i=> io.iccm_wren&((io.iccm_rw_addr(ICCM_BANK_HI-1,1)===i.U)|(addr_bank_inc(ICCM_BANK_HI-1,1)===i.U)))
   val iccm_bank_wr_data = iccm_bank_wr_data_vec
   io.iccm_bank_wr_data := iccm_bank_wr_data
   val rden_bank = (0 until ICCM_NUM_BANKS).map(i=> io.iccm_rden&(io.iccm_rw_addr(ICCM_BANK_HI-1,1)===i.U)|(addr_bank_inc(ICCM_BANK_HI-1,1)===i.U))
