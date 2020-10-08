@@ -17,7 +17,7 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
     val iccm_rd_data = Output(UInt(64.W))
     val iccm_rd_data_ecc = Output(UInt(78.W))
     val scan_mode = Input(Bool())
-    val iccm_bank_addr = Output(Vec(ICCM_NUM_BANKS, UInt()))
+   // val iccm_bank_addr = Output(Vec(ICCM_NUM_BANKS, UInt()))
   })
   io.iccm_rd_data := 0.U
   io.iccm_rd_data_ecc := 0.U
@@ -54,11 +54,6 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
   for(i<-0 until ICCM_NUM_BANKS)  when(write_vec(i)) {iccm_mem(i)(addr_bank(i)) := iccm_bank_wr_data(i)}
 
   for(i<-0 until ICCM_NUM_BANKS) {iccm_bank_dout(i) := RegEnable(iccm_mem(i)(addr_bank(i)),0.U,read_enable(i))}
-   //(0 until ICCM_NUM_BANKS).map(i=> )
-
-  // iccm_bank_dout(i) := RegNext(inter(i))
-
-  io.iccm_bank_addr := addr_bank
 
 
 
@@ -104,15 +99,18 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
     io.iccm_wr_data(77,39), io.iccm_wr_data(38,0))
   redundant_data(1) := RegEnable(redundant_data1_in, 0.U, redundant_data1_en.asBool)
 
-  val iccm_rd_addr_lo_q = RegNext(io.iccm_rw_addr(ICCM_BANK_HI-1,0), 0.U)
+  val iccm_rd_addr_lo_q = RegNext(io.iccm_rw_addr(ICCM_BANK_HI,1), 0.U)
   val iccm_rd_addr_hi_q = RegNext(addr_bank_inc(ICCM_BANK_HI-1,1), 0.U)
 
   val iccm_rd_data_pre = Cat(Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_hi_q===i.U)->iccm_bank_dout_fn(i)(31,0))),
   Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-2,0)===i.U)->iccm_bank_dout_fn(i)(31,0))))
+
   io.iccm_rd_data := Mux(iccm_rd_addr_lo_q(0).asBool(),Cat(Fill(16,0.U),iccm_rd_data_pre(63,16)) ,iccm_rd_data_pre)
   io.iccm_rd_data_ecc :=Cat(Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_hi_q===i.U)->iccm_bank_dout_fn(i))),
     Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-2,0)===i.U)->iccm_bank_dout_fn(i))))
 }
+
+
 object ifu_iccm extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_iccm_mem()))
 }
