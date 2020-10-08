@@ -17,7 +17,7 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
     val iccm_rd_data = Output(UInt(64.W))
     val iccm_rd_data_ecc = Output(UInt(78.W))
     val scan_mode = Input(Bool())
-
+    val iccm_bank_wr_data = Output(Vec(ICCM_NUM_BANKS, UInt(39.W)))
   })
   io.iccm_rd_data := 0.U
   io.iccm_rd_data_ecc := 0.U
@@ -32,20 +32,23 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
 
   val wren_bank = (0 until ICCM_NUM_BANKS).map(i=> io.iccm_wren&(io.iccm_rw_addr(ICCM_BANK_HI-1,1)===i.U)|(addr_bank_inc(ICCM_BANK_HI-1,1)===i.U))
   val iccm_bank_wr_data = iccm_bank_wr_data_vec
+  io.iccm_bank_wr_data := iccm_bank_wr_data
   val rden_bank = (0 until ICCM_NUM_BANKS).map(i=> io.iccm_rden&(io.iccm_rw_addr(ICCM_BANK_HI-1,1)===i.U)|(addr_bank_inc(ICCM_BANK_HI-1,1)===i.U))
   val iccm_clken = for(i<- 0 until ICCM_NUM_BANKS) yield  wren_bank(i) | rden_bank(i) | io.clk_override
   val addr_bank = (0 until ICCM_NUM_BANKS).map(i=> Mux(wren_bank(i).asBool, io.iccm_rw_addr(ICCM_BITS-2, ICCM_BANK_INDEX_LO-1),
     Mux((addr_bank_inc(ICCM_BANK_HI-1,1)===i.U),addr_bank_inc(ICCM_BITS-2,ICCM_BANK_INDEX_LO-1),io.iccm_rw_addr(ICCM_BITS-2,ICCM_BANK_INDEX_LO-1))))
-  println(pow(2, ICCM_INDEX_BITS).intValue)
+
   val iccm_mem = Mem(pow(2, ICCM_INDEX_BITS).intValue, Vec(ICCM_NUM_BANKS, UInt(39.W)))
 
   val write_vec = VecInit.tabulate(ICCM_NUM_BANKS)(i=>iccm_clken(i)&wren_bank(i))
   val read_enable = VecInit.tabulate(ICCM_NUM_BANKS)(i=>iccm_clken(i)&(!wren_bank(i)))
   //io.test := addr_bank
   val iccm_bank_dout = Wire(Vec(ICCM_NUM_BANKS, UInt(39.W)))
+  val inter = Wire(Vec(ICCM_NUM_BANKS, UInt(39.W)))
   for(i<-0 until ICCM_NUM_BANKS) iccm_mem.write(addr_bank(i), iccm_bank_wr_data, write_vec)
-  iccm_bank_dout := iccm_mem.read(addr_bank(0))
-  //io.test := iccm_bank_dout
+  inter := iccm_mem.read(addr_bank(0))
+  for(i<-0 until ICCM_NUM_BANKS) iccm_bank_dout(i) := RegNext(inter(i))
+
   val redundant_valid = WireInit(UInt(2.W), init = 0.U)
   val redundant_address = Wire(Vec(2, UInt((ICCM_BITS-2).W)))
   redundant_address := (0 until 2).map(i=>0.U)

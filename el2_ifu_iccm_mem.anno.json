@@ -1,20 +1,30 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_rd_data",
+    "sink":"~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_bank_wr_data_1",
     "sources":[
-      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_rw_addr",
-      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wren",
-      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wr_size"
+      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wr_data"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_rd_data_ecc",
+    "sink":"~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_bank_wr_data_0",
     "sources":[
-      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_rw_addr",
-      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wren",
-      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wr_size"
+      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wr_data"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_bank_wr_data_2",
+    "sources":[
+      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wr_data"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_bank_wr_data_3",
+    "sources":[
+      "~el2_ifu_iccm_mem|el2_ifu_iccm_mem>io_iccm_wr_data"
     ]
   },
   {
