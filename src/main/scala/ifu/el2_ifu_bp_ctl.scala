@@ -387,8 +387,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
                             (bht_wr_en2(i) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B))
   }
 
-  val bht_bank_clk = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>
-    rvclkhdr(clock, bht_bank_clken(i)(k), 1.U.asBool)))
+//  val bht_bank_clk = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>
+//    rvclkhdr(clock, bht_bank_clken(i)(k), 1.U.asBool)))
   
   val bht_bank_wr_data = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>(0 until NUM_BHT_LOOP).map(j=>
     Mux((bht_wr_en2(i)&(bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt)&(bht_wr_addr2(BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO+1,NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt)|BHT_NO_ADDR_MATCH.B).asBool, bht_wr_data2, bht_wr_data0))))

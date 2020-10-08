@@ -122,6 +122,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     val ifu_ic_debug_rd_data_valid = Output(Bool())
     val iccm_buf_correct_ecc = Output(Bool())
     val iccm_correction_state = Output(Bool())
+
+    val scan_mode = Input(Bool())
   })
   io.ic_debug_rd_en:=0.U
   io.ic_debug_wr_en:=0.U
@@ -197,8 +199,38 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   io.iccm_correction_state:=0.U
   io.ic_debug_way:=0.U
   io.ifu_axi_awregion:=0.U
-}
+  val idle_C :: crit_byp_ok_C :: hit_u_miss_C :: miss_wait_C :: crit_wrd_rdy_C :: scnd_miss_C :: stream_C :: stall_scnd_miss_C :: Nil = Enum(8)
+  val err_stop_idle_C :: err_fetch1_C :: err_fetch2_C :: err_stop_fetch_C :: Nil = Enum(4)
+  val err_idle_C :: ic_wff_C :: ecc_wff_C :: ecc_cor_C :: dma_sb_err_C :: Nil = Enum(5)
 
+
+  val iccm_single_ecc_error = WireInit(UInt(2.W), 0.U)
+  val ifc_fetch_req_f = WireInit(Bool(), 0.U)
+  val miss_pending = WireInit(Bool(), 0.U)
+  val scnd_miss_req = WireInit(Bool(), 0.U)
+  val dma_iccm_req_f = WireInit(Bool(), 0.U)
+  val iccm_correct_ecc = WireInit(Bool(), 0.U)
+  val perr_state = WireInit(UInt(3.W), 0.U)
+  val err_stop_state = WireInit(UInt(2.W), 0.U)
+  val err_stop_fetch = WireInit(Bool(), 0.U)
+  val miss_state = WireInit(UInt(3.W), 0.U)
+  val miss_nxtstate = WireInit(UInt(3.W), 0.U)
+  val ifu_bus_rsp_valid = WireInit(Bool(), 0.U)
+  val bus_ifu_bus_clk_en = WireInit(Bool(), 0.U)
+  val ifu_bus_rsp_ready = WireInit(Bool(), 0.U)
+  val uncacheable_miss_ff = WireInit(Bool(), 0.U)
+  val bus_new_data_beat_count = WireInit(UInt(ICACHE_BEAT_BITS.W), 0.U)
+
+  val fetch_bf_f_c1_clken = io.ifc_fetch_req_bf_raw | ifc_fetch_req_f | miss_pending | io.exu_flush_final | scnd_miss_req
+  val debug_c1_clken = io.ic_debug_rd_en | io.ic_debug_wr_en
+  val debug_c1_clk = rvclkhdr(clock, debug_c1_clken, io.scan_mode)
+  val fetch_bf_f_c1_clk = rvclkhdr(clock, fetch_bf_f_c1_clken.asBool, io.scan_mode)
+  io.iccm_dma_sb_error := iccm_single_ecc_error.orR() & dma_iccm_req_f.asBool()
+  io.ifu_async_error_start := io.iccm_rd_ecc_single_err | io.ic_error_start
+  io.ic_dma_active := iccm_correct_ecc | (perr_state === dma_sb_err_C) | (err_stop_state === err_stop_fetch_C) | err_stop_fetch | io.dec_tlu_flush_err_wb
+  val scnd_miss_req_in = ifu_bus_rsp_valid & bus_ifu_bus_clk_en & ifu_bus_rsp_ready & bus_new_data_beat_count.andR &
+    !uncacheable_miss_ff ((miss_state === scnd_miss_C)|(miss_nxtstate === scnd_miss_C)) & !io.exu_flush_final
+}
 object ifu_mem extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_mem_ctl()))
 }
