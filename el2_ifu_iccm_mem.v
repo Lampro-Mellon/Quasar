@@ -40,34 +40,34 @@ module el2_ifu_iccm_mem(
   reg [31:0] _RAND_17;
   reg [31:0] _RAND_18;
 `endif // RANDOMIZE_REG_INIT
-  reg [38:0] _T_81 [0:4095]; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [38:0] _T_81__T_101_data; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [11:0] _T_81__T_101_addr; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [38:0] _T_81__T_97_data; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [11:0] _T_81__T_97_addr; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire  _T_81__T_97_mask; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire  _T_81__T_97_en; // @[el2_ifu_iccm_mem.scala 42:51]
-  reg [38:0] _T_82 [0:4095]; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [38:0] _T_82__T_103_data; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [11:0] _T_82__T_103_addr; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [38:0] _T_82__T_98_data; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [11:0] _T_82__T_98_addr; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire  _T_82__T_98_mask; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire  _T_82__T_98_en; // @[el2_ifu_iccm_mem.scala 42:51]
-  reg [38:0] _T_83 [0:4095]; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [38:0] _T_83__T_105_data; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [11:0] _T_83__T_105_addr; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [38:0] _T_83__T_99_data; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [11:0] _T_83__T_99_addr; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire  _T_83__T_99_mask; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire  _T_83__T_99_en; // @[el2_ifu_iccm_mem.scala 42:51]
-  reg [38:0] _T_84 [0:4095]; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [38:0] _T_84__T_107_data; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [11:0] _T_84__T_107_addr; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [38:0] _T_84__T_100_data; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire [11:0] _T_84__T_100_addr; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire  _T_84__T_100_mask; // @[el2_ifu_iccm_mem.scala 42:51]
-  wire  _T_84__T_100_en; // @[el2_ifu_iccm_mem.scala 42:51]
+  reg [38:0] _T_85 [0:4095]; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [38:0] _T_85__T_105_data; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [11:0] _T_85__T_105_addr; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [38:0] _T_85__T_101_data; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [11:0] _T_85__T_101_addr; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire  _T_85__T_101_mask; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire  _T_85__T_101_en; // @[el2_ifu_iccm_mem.scala 43:51]
+  reg [38:0] _T_86 [0:4095]; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [38:0] _T_86__T_107_data; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [11:0] _T_86__T_107_addr; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [38:0] _T_86__T_102_data; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [11:0] _T_86__T_102_addr; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire  _T_86__T_102_mask; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire  _T_86__T_102_en; // @[el2_ifu_iccm_mem.scala 43:51]
+  reg [38:0] _T_87 [0:4095]; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [38:0] _T_87__T_109_data; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [11:0] _T_87__T_109_addr; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [38:0] _T_87__T_103_data; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [11:0] _T_87__T_103_addr; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire  _T_87__T_103_mask; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire  _T_87__T_103_en; // @[el2_ifu_iccm_mem.scala 43:51]
+  reg [38:0] _T_88 [0:4095]; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [38:0] _T_88__T_111_data; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [11:0] _T_88__T_111_addr; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [38:0] _T_88__T_104_data; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire [11:0] _T_88__T_104_addr; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire  _T_88__T_104_mask; // @[el2_ifu_iccm_mem.scala 43:51]
+  wire  _T_88__T_104_en; // @[el2_ifu_iccm_mem.scala 43:51]
   wire  _T_1 = io_iccm_wr_size[1:0] == 2'h3; // @[el2_ifu_iccm_mem.scala 24:43]
   wire [1:0] addr_inc = _T_1 ? 2'h2 : 2'h1; // @[el2_ifu_iccm_mem.scala 24:21]
   wire [14:0] _GEN_27 = {{13'd0}, addr_inc}; // @[el2_ifu_iccm_mem.scala 25:54]
@@ -106,193 +106,193 @@ module el2_ifu_iccm_mem(
   wire  iccm_clken_2 = _T_51 | io_clk_override; // @[el2_ifu_iccm_mem.scala 36:87]
   wire  _T_52 = wren_bank_3 | rden_bank_3; // @[el2_ifu_iccm_mem.scala 36:72]
   wire  iccm_clken_3 = _T_52 | io_clk_override; // @[el2_ifu_iccm_mem.scala 36:87]
-  wire [11:0] _T_59 = _T_12 ? addr_bank_inc[14:3] : io_iccm_rw_addr[14:3]; // @[el2_ifu_iccm_mem.scala 39:8]
-  wire [11:0] _T_66 = _T_17 ? addr_bank_inc[14:3] : io_iccm_rw_addr[14:3]; // @[el2_ifu_iccm_mem.scala 39:8]
-  wire [11:0] _T_73 = _T_22 ? addr_bank_inc[14:3] : io_iccm_rw_addr[14:3]; // @[el2_ifu_iccm_mem.scala 39:8]
-  wire [11:0] _T_80 = _T_27 ? addr_bank_inc[14:3] : io_iccm_rw_addr[14:3]; // @[el2_ifu_iccm_mem.scala 39:8]
-  reg [38:0] iccm_bank_dout_0; // @[el2_ifu_iccm_mem.scala 55:63]
-  reg [38:0] iccm_bank_dout_1; // @[el2_ifu_iccm_mem.scala 55:63]
-  reg [38:0] iccm_bank_dout_2; // @[el2_ifu_iccm_mem.scala 55:63]
-  reg [38:0] iccm_bank_dout_3; // @[el2_ifu_iccm_mem.scala 55:63]
-  reg  _T_309; // @[Reg.scala 27:20]
-  reg  _T_310; // @[Reg.scala 27:20]
-  wire [1:0] redundant_valid = {_T_309,_T_310}; // @[Cat.scala 29:58]
+  wire [11:0] _T_59 = _T_12 ? addr_bank_inc[14:3] : io_iccm_rw_addr[14:3]; // @[el2_ifu_iccm_mem.scala 40:8]
+  wire [11:0] _T_67 = _T_17 ? addr_bank_inc[14:3] : io_iccm_rw_addr[14:3]; // @[el2_ifu_iccm_mem.scala 40:8]
+  wire [11:0] _T_75 = _T_22 ? addr_bank_inc[14:3] : io_iccm_rw_addr[14:3]; // @[el2_ifu_iccm_mem.scala 40:8]
+  wire [11:0] _T_83 = _T_27 ? addr_bank_inc[14:3] : io_iccm_rw_addr[14:3]; // @[el2_ifu_iccm_mem.scala 40:8]
+  reg [38:0] iccm_bank_dout_0; // @[el2_ifu_iccm_mem.scala 56:63]
+  reg [38:0] iccm_bank_dout_1; // @[el2_ifu_iccm_mem.scala 56:63]
+  reg [38:0] iccm_bank_dout_2; // @[el2_ifu_iccm_mem.scala 56:63]
+  reg [38:0] iccm_bank_dout_3; // @[el2_ifu_iccm_mem.scala 56:63]
+  reg  _T_313; // @[Reg.scala 27:20]
+  reg  _T_314; // @[Reg.scala 27:20]
+  wire [1:0] redundant_valid = {_T_313,_T_314}; // @[Cat.scala 29:58]
   reg [13:0] redundant_address_1; // @[Reg.scala 27:20]
-  wire  _T_112 = io_iccm_rw_addr[14:1] == redundant_address_1; // @[el2_ifu_iccm_mem.scala 69:105]
-  wire  _T_115 = _T_112 & _T_10; // @[el2_ifu_iccm_mem.scala 69:145]
-  wire  _T_116 = redundant_valid[1] & _T_115; // @[el2_ifu_iccm_mem.scala 69:71]
-  wire  _T_119 = addr_bank_inc[14:1] == redundant_address_1; // @[el2_ifu_iccm_mem.scala 70:37]
-  wire  _T_122 = _T_119 & _T_12; // @[el2_ifu_iccm_mem.scala 70:77]
-  wire  _T_123 = _T_116 | _T_122; // @[el2_ifu_iccm_mem.scala 69:179]
-  wire  _T_130 = _T_112 & _T_15; // @[el2_ifu_iccm_mem.scala 69:145]
-  wire  _T_131 = redundant_valid[1] & _T_130; // @[el2_ifu_iccm_mem.scala 69:71]
-  wire  _T_137 = _T_119 & _T_17; // @[el2_ifu_iccm_mem.scala 70:77]
-  wire  _T_138 = _T_131 | _T_137; // @[el2_ifu_iccm_mem.scala 69:179]
-  wire  _T_145 = _T_112 & _T_20; // @[el2_ifu_iccm_mem.scala 69:145]
-  wire  _T_146 = redundant_valid[1] & _T_145; // @[el2_ifu_iccm_mem.scala 69:71]
-  wire  _T_152 = _T_119 & _T_22; // @[el2_ifu_iccm_mem.scala 70:77]
-  wire  _T_153 = _T_146 | _T_152; // @[el2_ifu_iccm_mem.scala 69:179]
-  wire  _T_160 = _T_112 & _T_25; // @[el2_ifu_iccm_mem.scala 69:145]
-  wire  _T_161 = redundant_valid[1] & _T_160; // @[el2_ifu_iccm_mem.scala 69:71]
-  wire  _T_167 = _T_119 & _T_27; // @[el2_ifu_iccm_mem.scala 70:77]
-  wire  _T_168 = _T_161 | _T_167; // @[el2_ifu_iccm_mem.scala 69:179]
-  wire [3:0] sel_red1 = {_T_168,_T_153,_T_138,_T_123}; // @[Cat.scala 29:58]
+  wire  _T_116 = io_iccm_rw_addr[14:1] == redundant_address_1; // @[el2_ifu_iccm_mem.scala 70:105]
+  wire  _T_119 = _T_116 & _T_10; // @[el2_ifu_iccm_mem.scala 70:145]
+  wire  _T_120 = redundant_valid[1] & _T_119; // @[el2_ifu_iccm_mem.scala 70:71]
+  wire  _T_123 = addr_bank_inc[14:1] == redundant_address_1; // @[el2_ifu_iccm_mem.scala 71:37]
+  wire  _T_126 = _T_123 & _T_12; // @[el2_ifu_iccm_mem.scala 71:77]
+  wire  _T_127 = _T_120 | _T_126; // @[el2_ifu_iccm_mem.scala 70:179]
+  wire  _T_134 = _T_116 & _T_15; // @[el2_ifu_iccm_mem.scala 70:145]
+  wire  _T_135 = redundant_valid[1] & _T_134; // @[el2_ifu_iccm_mem.scala 70:71]
+  wire  _T_141 = _T_123 & _T_17; // @[el2_ifu_iccm_mem.scala 71:77]
+  wire  _T_142 = _T_135 | _T_141; // @[el2_ifu_iccm_mem.scala 70:179]
+  wire  _T_149 = _T_116 & _T_20; // @[el2_ifu_iccm_mem.scala 70:145]
+  wire  _T_150 = redundant_valid[1] & _T_149; // @[el2_ifu_iccm_mem.scala 70:71]
+  wire  _T_156 = _T_123 & _T_22; // @[el2_ifu_iccm_mem.scala 71:77]
+  wire  _T_157 = _T_150 | _T_156; // @[el2_ifu_iccm_mem.scala 70:179]
+  wire  _T_164 = _T_116 & _T_25; // @[el2_ifu_iccm_mem.scala 70:145]
+  wire  _T_165 = redundant_valid[1] & _T_164; // @[el2_ifu_iccm_mem.scala 70:71]
+  wire  _T_171 = _T_123 & _T_27; // @[el2_ifu_iccm_mem.scala 71:77]
+  wire  _T_172 = _T_165 | _T_171; // @[el2_ifu_iccm_mem.scala 70:179]
+  wire [3:0] sel_red1 = {_T_172,_T_157,_T_142,_T_127}; // @[Cat.scala 29:58]
   reg [13:0] redundant_address_0; // @[Reg.scala 27:20]
-  wire  _T_174 = io_iccm_rw_addr[14:1] == redundant_address_0; // @[el2_ifu_iccm_mem.scala 71:105]
-  wire  _T_177 = _T_174 & _T_10; // @[el2_ifu_iccm_mem.scala 71:145]
-  wire  _T_178 = redundant_valid[0] & _T_177; // @[el2_ifu_iccm_mem.scala 71:71]
-  wire  _T_181 = addr_bank_inc[14:1] == redundant_address_0; // @[el2_ifu_iccm_mem.scala 72:37]
-  wire  _T_184 = _T_181 & _T_12; // @[el2_ifu_iccm_mem.scala 72:77]
-  wire  _T_185 = _T_178 | _T_184; // @[el2_ifu_iccm_mem.scala 71:179]
-  wire  _T_192 = _T_174 & _T_15; // @[el2_ifu_iccm_mem.scala 71:145]
-  wire  _T_193 = redundant_valid[0] & _T_192; // @[el2_ifu_iccm_mem.scala 71:71]
-  wire  _T_199 = _T_181 & _T_17; // @[el2_ifu_iccm_mem.scala 72:77]
-  wire  _T_200 = _T_193 | _T_199; // @[el2_ifu_iccm_mem.scala 71:179]
-  wire  _T_207 = _T_174 & _T_20; // @[el2_ifu_iccm_mem.scala 71:145]
-  wire  _T_208 = redundant_valid[0] & _T_207; // @[el2_ifu_iccm_mem.scala 71:71]
-  wire  _T_214 = _T_181 & _T_22; // @[el2_ifu_iccm_mem.scala 72:77]
-  wire  _T_215 = _T_208 | _T_214; // @[el2_ifu_iccm_mem.scala 71:179]
-  wire  _T_222 = _T_174 & _T_25; // @[el2_ifu_iccm_mem.scala 71:145]
-  wire  _T_223 = redundant_valid[0] & _T_222; // @[el2_ifu_iccm_mem.scala 71:71]
-  wire  _T_229 = _T_181 & _T_27; // @[el2_ifu_iccm_mem.scala 72:77]
-  wire  _T_230 = _T_223 | _T_229; // @[el2_ifu_iccm_mem.scala 71:179]
-  wire [3:0] sel_red0 = {_T_230,_T_215,_T_200,_T_185}; // @[Cat.scala 29:58]
-  reg [3:0] sel_red0_q; // @[el2_ifu_iccm_mem.scala 74:27]
-  reg [3:0] sel_red1_q; // @[el2_ifu_iccm_mem.scala 75:27]
-  wire  _T_238 = ~sel_red0_q[0]; // @[el2_ifu_iccm_mem.scala 81:36]
-  wire  _T_240 = ~sel_red1_q[0]; // @[el2_ifu_iccm_mem.scala 81:53]
-  wire  _T_241 = _T_238 & _T_240; // @[el2_ifu_iccm_mem.scala 81:51]
+  wire  _T_178 = io_iccm_rw_addr[14:1] == redundant_address_0; // @[el2_ifu_iccm_mem.scala 72:105]
+  wire  _T_181 = _T_178 & _T_10; // @[el2_ifu_iccm_mem.scala 72:145]
+  wire  _T_182 = redundant_valid[0] & _T_181; // @[el2_ifu_iccm_mem.scala 72:71]
+  wire  _T_185 = addr_bank_inc[14:1] == redundant_address_0; // @[el2_ifu_iccm_mem.scala 73:37]
+  wire  _T_188 = _T_185 & _T_12; // @[el2_ifu_iccm_mem.scala 73:77]
+  wire  _T_189 = _T_182 | _T_188; // @[el2_ifu_iccm_mem.scala 72:179]
+  wire  _T_196 = _T_178 & _T_15; // @[el2_ifu_iccm_mem.scala 72:145]
+  wire  _T_197 = redundant_valid[0] & _T_196; // @[el2_ifu_iccm_mem.scala 72:71]
+  wire  _T_203 = _T_185 & _T_17; // @[el2_ifu_iccm_mem.scala 73:77]
+  wire  _T_204 = _T_197 | _T_203; // @[el2_ifu_iccm_mem.scala 72:179]
+  wire  _T_211 = _T_178 & _T_20; // @[el2_ifu_iccm_mem.scala 72:145]
+  wire  _T_212 = redundant_valid[0] & _T_211; // @[el2_ifu_iccm_mem.scala 72:71]
+  wire  _T_218 = _T_185 & _T_22; // @[el2_ifu_iccm_mem.scala 73:77]
+  wire  _T_219 = _T_212 | _T_218; // @[el2_ifu_iccm_mem.scala 72:179]
+  wire  _T_226 = _T_178 & _T_25; // @[el2_ifu_iccm_mem.scala 72:145]
+  wire  _T_227 = redundant_valid[0] & _T_226; // @[el2_ifu_iccm_mem.scala 72:71]
+  wire  _T_233 = _T_185 & _T_27; // @[el2_ifu_iccm_mem.scala 73:77]
+  wire  _T_234 = _T_227 | _T_233; // @[el2_ifu_iccm_mem.scala 72:179]
+  wire [3:0] sel_red0 = {_T_234,_T_219,_T_204,_T_189}; // @[Cat.scala 29:58]
+  reg [3:0] sel_red0_q; // @[el2_ifu_iccm_mem.scala 75:27]
+  reg [3:0] sel_red1_q; // @[el2_ifu_iccm_mem.scala 76:27]
+  wire  _T_242 = ~sel_red0_q[0]; // @[el2_ifu_iccm_mem.scala 82:36]
+  wire  _T_244 = ~sel_red1_q[0]; // @[el2_ifu_iccm_mem.scala 82:53]
+  wire  _T_245 = _T_242 & _T_244; // @[el2_ifu_iccm_mem.scala 82:51]
   reg [38:0] redundant_data_1; // @[Reg.scala 27:20]
-  wire [38:0] _T_243 = sel_red1_q[0] ? redundant_data_1 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_247 = sel_red1_q[0] ? redundant_data_1 : 39'h0; // @[Mux.scala 27:72]
   reg [38:0] redundant_data_0; // @[Reg.scala 27:20]
-  wire [38:0] _T_244 = sel_red0_q[0] ? redundant_data_0 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_245 = _T_241 ? iccm_bank_dout_0 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_246 = _T_243 | _T_244; // @[Mux.scala 27:72]
-  wire [38:0] iccm_bank_dout_fn_0 = _T_246 | _T_245; // @[Mux.scala 27:72]
-  wire  _T_253 = ~sel_red0_q[1]; // @[el2_ifu_iccm_mem.scala 81:36]
-  wire  _T_255 = ~sel_red1_q[1]; // @[el2_ifu_iccm_mem.scala 81:53]
-  wire  _T_256 = _T_253 & _T_255; // @[el2_ifu_iccm_mem.scala 81:51]
-  wire [38:0] _T_258 = sel_red1_q[1] ? redundant_data_1 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_259 = sel_red0_q[1] ? redundant_data_0 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_260 = _T_256 ? iccm_bank_dout_1 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_261 = _T_258 | _T_259; // @[Mux.scala 27:72]
-  wire [38:0] iccm_bank_dout_fn_1 = _T_261 | _T_260; // @[Mux.scala 27:72]
-  wire  _T_268 = ~sel_red0_q[2]; // @[el2_ifu_iccm_mem.scala 81:36]
-  wire  _T_270 = ~sel_red1_q[2]; // @[el2_ifu_iccm_mem.scala 81:53]
-  wire  _T_271 = _T_268 & _T_270; // @[el2_ifu_iccm_mem.scala 81:51]
-  wire [38:0] _T_273 = sel_red1_q[2] ? redundant_data_1 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_274 = sel_red0_q[2] ? redundant_data_0 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_275 = _T_271 ? iccm_bank_dout_2 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_276 = _T_273 | _T_274; // @[Mux.scala 27:72]
-  wire [38:0] iccm_bank_dout_fn_2 = _T_276 | _T_275; // @[Mux.scala 27:72]
-  wire  _T_283 = ~sel_red0_q[3]; // @[el2_ifu_iccm_mem.scala 81:36]
-  wire  _T_285 = ~sel_red1_q[3]; // @[el2_ifu_iccm_mem.scala 81:53]
-  wire  _T_286 = _T_283 & _T_285; // @[el2_ifu_iccm_mem.scala 81:51]
-  wire [38:0] _T_288 = sel_red1_q[3] ? redundant_data_1 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_289 = sel_red0_q[3] ? redundant_data_0 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_290 = _T_286 ? iccm_bank_dout_3 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_291 = _T_288 | _T_289; // @[Mux.scala 27:72]
-  wire [38:0] iccm_bank_dout_fn_3 = _T_291 | _T_290; // @[Mux.scala 27:72]
+  wire [38:0] _T_248 = sel_red0_q[0] ? redundant_data_0 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_249 = _T_245 ? iccm_bank_dout_0 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_250 = _T_247 | _T_248; // @[Mux.scala 27:72]
+  wire [38:0] iccm_bank_dout_fn_0 = _T_250 | _T_249; // @[Mux.scala 27:72]
+  wire  _T_257 = ~sel_red0_q[1]; // @[el2_ifu_iccm_mem.scala 82:36]
+  wire  _T_259 = ~sel_red1_q[1]; // @[el2_ifu_iccm_mem.scala 82:53]
+  wire  _T_260 = _T_257 & _T_259; // @[el2_ifu_iccm_mem.scala 82:51]
+  wire [38:0] _T_262 = sel_red1_q[1] ? redundant_data_1 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_263 = sel_red0_q[1] ? redundant_data_0 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_264 = _T_260 ? iccm_bank_dout_1 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_265 = _T_262 | _T_263; // @[Mux.scala 27:72]
+  wire [38:0] iccm_bank_dout_fn_1 = _T_265 | _T_264; // @[Mux.scala 27:72]
+  wire  _T_272 = ~sel_red0_q[2]; // @[el2_ifu_iccm_mem.scala 82:36]
+  wire  _T_274 = ~sel_red1_q[2]; // @[el2_ifu_iccm_mem.scala 82:53]
+  wire  _T_275 = _T_272 & _T_274; // @[el2_ifu_iccm_mem.scala 82:51]
+  wire [38:0] _T_277 = sel_red1_q[2] ? redundant_data_1 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_278 = sel_red0_q[2] ? redundant_data_0 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_279 = _T_275 ? iccm_bank_dout_2 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_280 = _T_277 | _T_278; // @[Mux.scala 27:72]
+  wire [38:0] iccm_bank_dout_fn_2 = _T_280 | _T_279; // @[Mux.scala 27:72]
+  wire  _T_287 = ~sel_red0_q[3]; // @[el2_ifu_iccm_mem.scala 82:36]
+  wire  _T_289 = ~sel_red1_q[3]; // @[el2_ifu_iccm_mem.scala 82:53]
+  wire  _T_290 = _T_287 & _T_289; // @[el2_ifu_iccm_mem.scala 82:51]
+  wire [38:0] _T_292 = sel_red1_q[3] ? redundant_data_1 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_293 = sel_red0_q[3] ? redundant_data_0 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_294 = _T_290 ? iccm_bank_dout_3 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_295 = _T_292 | _T_293; // @[Mux.scala 27:72]
+  wire [38:0] iccm_bank_dout_fn_3 = _T_295 | _T_294; // @[Mux.scala 27:72]
   reg  redundant_lru; // @[Reg.scala 27:20]
-  wire  _T_293 = ~redundant_lru; // @[el2_ifu_iccm_mem.scala 83:20]
-  wire  r0_addr_en = _T_293 & io_iccm_buf_correct_ecc; // @[el2_ifu_iccm_mem.scala 83:35]
-  wire  r1_addr_en = redundant_lru & io_iccm_buf_correct_ecc; // @[el2_ifu_iccm_mem.scala 84:35]
-  wire  _T_294 = |sel_red0; // @[el2_ifu_iccm_mem.scala 85:63]
-  wire  _T_295 = |sel_red1; // @[el2_ifu_iccm_mem.scala 85:78]
-  wire  _T_296 = _T_294 | _T_295; // @[el2_ifu_iccm_mem.scala 85:67]
-  wire  _T_297 = _T_296 & io_iccm_rden; // @[el2_ifu_iccm_mem.scala 85:83]
-  wire  _T_298 = _T_297 & io_iccm_correction_state; // @[el2_ifu_iccm_mem.scala 85:98]
-  wire  redundant_lru_en = io_iccm_buf_correct_ecc | _T_298; // @[el2_ifu_iccm_mem.scala 85:50]
-  wire  _GEN_23 = r1_addr_en | _T_309; // @[Reg.scala 28:19]
-  wire  _GEN_24 = r0_addr_en | _T_310; // @[Reg.scala 28:19]
-  wire  _T_314 = io_iccm_rw_addr[14:2] == redundant_address_0[13:1]; // @[el2_ifu_iccm_mem.scala 92:61]
-  wire  _T_317 = io_iccm_rw_addr[1] & redundant_address_0[0]; // @[el2_ifu_iccm_mem.scala 93:26]
-  wire  _T_320 = _T_317 | _T_1; // @[el2_ifu_iccm_mem.scala 93:52]
-  wire  _T_321 = _T_314 & _T_320; // @[el2_ifu_iccm_mem.scala 92:102]
-  wire  _T_323 = _T_321 & redundant_valid[0]; // @[el2_ifu_iccm_mem.scala 93:84]
-  wire  _T_324 = _T_323 & io_iccm_wren; // @[el2_ifu_iccm_mem.scala 93:105]
-  wire  redundant_data0_en = _T_324 | r0_addr_en; // @[el2_ifu_iccm_mem.scala 93:121]
-  wire  _T_333 = redundant_address_0[0] & _T_1; // @[el2_ifu_iccm_mem.scala 95:104]
-  wire  _T_334 = _T_317 | _T_333; // @[el2_ifu_iccm_mem.scala 95:78]
-  wire  _T_342 = io_iccm_rw_addr[14:2] == redundant_address_1[13:1]; // @[el2_ifu_iccm_mem.scala 99:61]
-  wire  _T_345 = io_iccm_rw_addr[1] & redundant_address_1[0]; // @[el2_ifu_iccm_mem.scala 100:26]
-  wire  _T_348 = _T_345 | _T_1; // @[el2_ifu_iccm_mem.scala 100:52]
-  wire  _T_349 = _T_342 & _T_348; // @[el2_ifu_iccm_mem.scala 99:102]
-  wire  _T_351 = _T_349 & redundant_valid[1]; // @[el2_ifu_iccm_mem.scala 100:84]
-  wire  _T_352 = _T_351 & io_iccm_wren; // @[el2_ifu_iccm_mem.scala 100:105]
-  wire  redundant_data1_en = _T_352 | r0_addr_en; // @[el2_ifu_iccm_mem.scala 100:121]
-  wire  _T_361 = redundant_address_1[0] & _T_1; // @[el2_ifu_iccm_mem.scala 102:104]
-  wire  _T_362 = _T_345 | _T_361; // @[el2_ifu_iccm_mem.scala 102:78]
-  reg [2:0] iccm_rd_addr_lo_q; // @[el2_ifu_iccm_mem.scala 106:34]
-  reg [1:0] iccm_rd_addr_hi_q; // @[el2_ifu_iccm_mem.scala 107:34]
-  wire  _T_370 = iccm_rd_addr_hi_q == 2'h0; // @[el2_ifu_iccm_mem.scala 109:86]
-  wire  _T_372 = iccm_rd_addr_hi_q == 2'h1; // @[el2_ifu_iccm_mem.scala 109:86]
-  wire  _T_374 = iccm_rd_addr_hi_q == 2'h2; // @[el2_ifu_iccm_mem.scala 109:86]
-  wire  _T_376 = iccm_rd_addr_hi_q == 2'h3; // @[el2_ifu_iccm_mem.scala 109:86]
-  wire [31:0] _T_378 = _T_370 ? iccm_bank_dout_fn_0[31:0] : 32'h0; // @[Mux.scala 27:72]
-  wire [31:0] _T_379 = _T_372 ? iccm_bank_dout_fn_1[31:0] : 32'h0; // @[Mux.scala 27:72]
-  wire [31:0] _T_380 = _T_374 ? iccm_bank_dout_fn_2[31:0] : 32'h0; // @[Mux.scala 27:72]
-  wire [31:0] _T_381 = _T_376 ? iccm_bank_dout_fn_3[31:0] : 32'h0; // @[Mux.scala 27:72]
-  wire [31:0] _T_382 = _T_378 | _T_379; // @[Mux.scala 27:72]
-  wire [31:0] _T_383 = _T_382 | _T_380; // @[Mux.scala 27:72]
-  wire [31:0] _T_384 = _T_383 | _T_381; // @[Mux.scala 27:72]
-  wire  _T_387 = iccm_rd_addr_lo_q[1:0] == 2'h0; // @[el2_ifu_iccm_mem.scala 110:77]
-  wire  _T_390 = iccm_rd_addr_lo_q[1:0] == 2'h1; // @[el2_ifu_iccm_mem.scala 110:77]
-  wire  _T_393 = iccm_rd_addr_lo_q[1:0] == 2'h2; // @[el2_ifu_iccm_mem.scala 110:77]
-  wire  _T_396 = iccm_rd_addr_lo_q[1:0] == 2'h3; // @[el2_ifu_iccm_mem.scala 110:77]
-  wire [31:0] _T_398 = _T_387 ? iccm_bank_dout_fn_0[31:0] : 32'h0; // @[Mux.scala 27:72]
-  wire [31:0] _T_399 = _T_390 ? iccm_bank_dout_fn_1[31:0] : 32'h0; // @[Mux.scala 27:72]
-  wire [31:0] _T_400 = _T_393 ? iccm_bank_dout_fn_2[31:0] : 32'h0; // @[Mux.scala 27:72]
-  wire [31:0] _T_401 = _T_396 ? iccm_bank_dout_fn_3[31:0] : 32'h0; // @[Mux.scala 27:72]
-  wire [31:0] _T_402 = _T_398 | _T_399; // @[Mux.scala 27:72]
-  wire [31:0] _T_403 = _T_402 | _T_400; // @[Mux.scala 27:72]
-  wire [31:0] _T_404 = _T_403 | _T_401; // @[Mux.scala 27:72]
-  wire [63:0] iccm_rd_data_pre = {_T_384,_T_404}; // @[Cat.scala 29:58]
-  wire [63:0] _T_410 = {16'h0,iccm_rd_data_pre[63:16]}; // @[Cat.scala 29:58]
-  wire [38:0] _T_416 = _T_370 ? iccm_bank_dout_fn_0 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_417 = _T_372 ? iccm_bank_dout_fn_1 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_418 = _T_374 ? iccm_bank_dout_fn_2 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_419 = _T_376 ? iccm_bank_dout_fn_3 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_420 = _T_416 | _T_417; // @[Mux.scala 27:72]
-  wire [38:0] _T_421 = _T_420 | _T_418; // @[Mux.scala 27:72]
-  wire [38:0] _T_422 = _T_421 | _T_419; // @[Mux.scala 27:72]
-  wire [38:0] _T_432 = _T_387 ? iccm_bank_dout_fn_0 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_433 = _T_390 ? iccm_bank_dout_fn_1 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_434 = _T_393 ? iccm_bank_dout_fn_2 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_435 = _T_396 ? iccm_bank_dout_fn_3 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_436 = _T_432 | _T_433; // @[Mux.scala 27:72]
-  wire [38:0] _T_437 = _T_436 | _T_434; // @[Mux.scala 27:72]
-  wire [38:0] _T_438 = _T_437 | _T_435; // @[Mux.scala 27:72]
-  assign _T_81__T_101_addr = wren_bank_0 ? io_iccm_rw_addr[14:3] : _T_59;
-  assign _T_81__T_101_data = _T_81[_T_81__T_101_addr]; // @[el2_ifu_iccm_mem.scala 42:51]
-  assign _T_81__T_97_data = io_iccm_wr_data[38:0];
-  assign _T_81__T_97_addr = wren_bank_0 ? io_iccm_rw_addr[14:3] : _T_59;
-  assign _T_81__T_97_mask = 1'h1;
-  assign _T_81__T_97_en = iccm_clken_0 & wren_bank_0;
-  assign _T_82__T_103_addr = wren_bank_1 ? io_iccm_rw_addr[14:3] : _T_66;
-  assign _T_82__T_103_data = _T_82[_T_82__T_103_addr]; // @[el2_ifu_iccm_mem.scala 42:51]
-  assign _T_82__T_98_data = io_iccm_wr_data[77:39];
-  assign _T_82__T_98_addr = wren_bank_1 ? io_iccm_rw_addr[14:3] : _T_66;
-  assign _T_82__T_98_mask = 1'h1;
-  assign _T_82__T_98_en = iccm_clken_1 & wren_bank_1;
-  assign _T_83__T_105_addr = wren_bank_2 ? io_iccm_rw_addr[14:3] : _T_73;
-  assign _T_83__T_105_data = _T_83[_T_83__T_105_addr]; // @[el2_ifu_iccm_mem.scala 42:51]
-  assign _T_83__T_99_data = io_iccm_wr_data[38:0];
-  assign _T_83__T_99_addr = wren_bank_2 ? io_iccm_rw_addr[14:3] : _T_73;
-  assign _T_83__T_99_mask = 1'h1;
-  assign _T_83__T_99_en = iccm_clken_2 & wren_bank_2;
-  assign _T_84__T_107_addr = wren_bank_3 ? io_iccm_rw_addr[14:3] : _T_80;
-  assign _T_84__T_107_data = _T_84[_T_84__T_107_addr]; // @[el2_ifu_iccm_mem.scala 42:51]
-  assign _T_84__T_100_data = io_iccm_wr_data[77:39];
-  assign _T_84__T_100_addr = wren_bank_3 ? io_iccm_rw_addr[14:3] : _T_80;
-  assign _T_84__T_100_mask = 1'h1;
-  assign _T_84__T_100_en = iccm_clken_3 & wren_bank_3;
-  assign io_iccm_rd_data = iccm_rd_addr_lo_q[0] ? _T_410 : iccm_rd_data_pre; // @[el2_ifu_iccm_mem.scala 22:19 el2_ifu_iccm_mem.scala 111:19]
-  assign io_iccm_rd_data_ecc = {_T_422,_T_438}; // @[el2_ifu_iccm_mem.scala 23:23 el2_ifu_iccm_mem.scala 112:23]
-  assign io_iccm_bank_addr_0 = wren_bank_0 ? io_iccm_rw_addr[14:3] : _T_59; // @[el2_ifu_iccm_mem.scala 60:21]
-  assign io_iccm_bank_addr_1 = wren_bank_1 ? io_iccm_rw_addr[14:3] : _T_66; // @[el2_ifu_iccm_mem.scala 60:21]
-  assign io_iccm_bank_addr_2 = wren_bank_2 ? io_iccm_rw_addr[14:3] : _T_73; // @[el2_ifu_iccm_mem.scala 60:21]
-  assign io_iccm_bank_addr_3 = wren_bank_3 ? io_iccm_rw_addr[14:3] : _T_80; // @[el2_ifu_iccm_mem.scala 60:21]
+  wire  _T_297 = ~redundant_lru; // @[el2_ifu_iccm_mem.scala 84:20]
+  wire  r0_addr_en = _T_297 & io_iccm_buf_correct_ecc; // @[el2_ifu_iccm_mem.scala 84:35]
+  wire  r1_addr_en = redundant_lru & io_iccm_buf_correct_ecc; // @[el2_ifu_iccm_mem.scala 85:35]
+  wire  _T_298 = |sel_red0; // @[el2_ifu_iccm_mem.scala 86:63]
+  wire  _T_299 = |sel_red1; // @[el2_ifu_iccm_mem.scala 86:78]
+  wire  _T_300 = _T_298 | _T_299; // @[el2_ifu_iccm_mem.scala 86:67]
+  wire  _T_301 = _T_300 & io_iccm_rden; // @[el2_ifu_iccm_mem.scala 86:83]
+  wire  _T_302 = _T_301 & io_iccm_correction_state; // @[el2_ifu_iccm_mem.scala 86:98]
+  wire  redundant_lru_en = io_iccm_buf_correct_ecc | _T_302; // @[el2_ifu_iccm_mem.scala 86:50]
+  wire  _GEN_23 = r1_addr_en | _T_313; // @[Reg.scala 28:19]
+  wire  _GEN_24 = r0_addr_en | _T_314; // @[Reg.scala 28:19]
+  wire  _T_318 = io_iccm_rw_addr[14:2] == redundant_address_0[13:1]; // @[el2_ifu_iccm_mem.scala 93:61]
+  wire  _T_321 = io_iccm_rw_addr[1] & redundant_address_0[0]; // @[el2_ifu_iccm_mem.scala 94:26]
+  wire  _T_324 = _T_321 | _T_1; // @[el2_ifu_iccm_mem.scala 94:52]
+  wire  _T_325 = _T_318 & _T_324; // @[el2_ifu_iccm_mem.scala 93:102]
+  wire  _T_327 = _T_325 & redundant_valid[0]; // @[el2_ifu_iccm_mem.scala 94:84]
+  wire  _T_328 = _T_327 & io_iccm_wren; // @[el2_ifu_iccm_mem.scala 94:105]
+  wire  redundant_data0_en = _T_328 | r0_addr_en; // @[el2_ifu_iccm_mem.scala 94:121]
+  wire  _T_337 = redundant_address_0[0] & _T_1; // @[el2_ifu_iccm_mem.scala 96:104]
+  wire  _T_338 = _T_321 | _T_337; // @[el2_ifu_iccm_mem.scala 96:78]
+  wire  _T_346 = io_iccm_rw_addr[14:2] == redundant_address_1[13:1]; // @[el2_ifu_iccm_mem.scala 100:61]
+  wire  _T_349 = io_iccm_rw_addr[1] & redundant_address_1[0]; // @[el2_ifu_iccm_mem.scala 101:26]
+  wire  _T_352 = _T_349 | _T_1; // @[el2_ifu_iccm_mem.scala 101:52]
+  wire  _T_353 = _T_346 & _T_352; // @[el2_ifu_iccm_mem.scala 100:102]
+  wire  _T_355 = _T_353 & redundant_valid[1]; // @[el2_ifu_iccm_mem.scala 101:84]
+  wire  _T_356 = _T_355 & io_iccm_wren; // @[el2_ifu_iccm_mem.scala 101:105]
+  wire  redundant_data1_en = _T_356 | r0_addr_en; // @[el2_ifu_iccm_mem.scala 101:121]
+  wire  _T_365 = redundant_address_1[0] & _T_1; // @[el2_ifu_iccm_mem.scala 103:104]
+  wire  _T_366 = _T_349 | _T_365; // @[el2_ifu_iccm_mem.scala 103:78]
+  reg [2:0] iccm_rd_addr_lo_q; // @[el2_ifu_iccm_mem.scala 107:34]
+  reg [1:0] iccm_rd_addr_hi_q; // @[el2_ifu_iccm_mem.scala 108:34]
+  wire  _T_374 = iccm_rd_addr_hi_q == 2'h0; // @[el2_ifu_iccm_mem.scala 110:86]
+  wire  _T_376 = iccm_rd_addr_hi_q == 2'h1; // @[el2_ifu_iccm_mem.scala 110:86]
+  wire  _T_378 = iccm_rd_addr_hi_q == 2'h2; // @[el2_ifu_iccm_mem.scala 110:86]
+  wire  _T_380 = iccm_rd_addr_hi_q == 2'h3; // @[el2_ifu_iccm_mem.scala 110:86]
+  wire [31:0] _T_382 = _T_374 ? iccm_bank_dout_fn_0[31:0] : 32'h0; // @[Mux.scala 27:72]
+  wire [31:0] _T_383 = _T_376 ? iccm_bank_dout_fn_1[31:0] : 32'h0; // @[Mux.scala 27:72]
+  wire [31:0] _T_384 = _T_378 ? iccm_bank_dout_fn_2[31:0] : 32'h0; // @[Mux.scala 27:72]
+  wire [31:0] _T_385 = _T_380 ? iccm_bank_dout_fn_3[31:0] : 32'h0; // @[Mux.scala 27:72]
+  wire [31:0] _T_386 = _T_382 | _T_383; // @[Mux.scala 27:72]
+  wire [31:0] _T_387 = _T_386 | _T_384; // @[Mux.scala 27:72]
+  wire [31:0] _T_388 = _T_387 | _T_385; // @[Mux.scala 27:72]
+  wire  _T_391 = iccm_rd_addr_lo_q[1:0] == 2'h0; // @[el2_ifu_iccm_mem.scala 111:77]
+  wire  _T_394 = iccm_rd_addr_lo_q[1:0] == 2'h1; // @[el2_ifu_iccm_mem.scala 111:77]
+  wire  _T_397 = iccm_rd_addr_lo_q[1:0] == 2'h2; // @[el2_ifu_iccm_mem.scala 111:77]
+  wire  _T_400 = iccm_rd_addr_lo_q[1:0] == 2'h3; // @[el2_ifu_iccm_mem.scala 111:77]
+  wire [31:0] _T_402 = _T_391 ? iccm_bank_dout_fn_0[31:0] : 32'h0; // @[Mux.scala 27:72]
+  wire [31:0] _T_403 = _T_394 ? iccm_bank_dout_fn_1[31:0] : 32'h0; // @[Mux.scala 27:72]
+  wire [31:0] _T_404 = _T_397 ? iccm_bank_dout_fn_2[31:0] : 32'h0; // @[Mux.scala 27:72]
+  wire [31:0] _T_405 = _T_400 ? iccm_bank_dout_fn_3[31:0] : 32'h0; // @[Mux.scala 27:72]
+  wire [31:0] _T_406 = _T_402 | _T_403; // @[Mux.scala 27:72]
+  wire [31:0] _T_407 = _T_406 | _T_404; // @[Mux.scala 27:72]
+  wire [31:0] _T_408 = _T_407 | _T_405; // @[Mux.scala 27:72]
+  wire [63:0] iccm_rd_data_pre = {_T_388,_T_408}; // @[Cat.scala 29:58]
+  wire [63:0] _T_414 = {16'h0,iccm_rd_data_pre[63:16]}; // @[Cat.scala 29:58]
+  wire [38:0] _T_420 = _T_374 ? iccm_bank_dout_fn_0 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_421 = _T_376 ? iccm_bank_dout_fn_1 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_422 = _T_378 ? iccm_bank_dout_fn_2 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_423 = _T_380 ? iccm_bank_dout_fn_3 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_424 = _T_420 | _T_421; // @[Mux.scala 27:72]
+  wire [38:0] _T_425 = _T_424 | _T_422; // @[Mux.scala 27:72]
+  wire [38:0] _T_426 = _T_425 | _T_423; // @[Mux.scala 27:72]
+  wire [38:0] _T_436 = _T_391 ? iccm_bank_dout_fn_0 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_437 = _T_394 ? iccm_bank_dout_fn_1 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_438 = _T_397 ? iccm_bank_dout_fn_2 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_439 = _T_400 ? iccm_bank_dout_fn_3 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_440 = _T_436 | _T_437; // @[Mux.scala 27:72]
+  wire [38:0] _T_441 = _T_440 | _T_438; // @[Mux.scala 27:72]
+  wire [38:0] _T_442 = _T_441 | _T_439; // @[Mux.scala 27:72]
+  assign _T_85__T_105_addr = wren_bank_0 ? io_iccm_rw_addr[14:3] : _T_59;
+  assign _T_85__T_105_data = _T_85[_T_85__T_105_addr]; // @[el2_ifu_iccm_mem.scala 43:51]
+  assign _T_85__T_101_data = io_iccm_wr_data[38:0];
+  assign _T_85__T_101_addr = wren_bank_0 ? io_iccm_rw_addr[14:3] : _T_59;
+  assign _T_85__T_101_mask = 1'h1;
+  assign _T_85__T_101_en = iccm_clken_0 & wren_bank_0;
+  assign _T_86__T_107_addr = wren_bank_1 ? io_iccm_rw_addr[14:3] : _T_67;
+  assign _T_86__T_107_data = _T_86[_T_86__T_107_addr]; // @[el2_ifu_iccm_mem.scala 43:51]
+  assign _T_86__T_102_data = io_iccm_wr_data[77:39];
+  assign _T_86__T_102_addr = wren_bank_1 ? io_iccm_rw_addr[14:3] : _T_67;
+  assign _T_86__T_102_mask = 1'h1;
+  assign _T_86__T_102_en = iccm_clken_1 & wren_bank_1;
+  assign _T_87__T_109_addr = wren_bank_2 ? io_iccm_rw_addr[14:3] : _T_75;
+  assign _T_87__T_109_data = _T_87[_T_87__T_109_addr]; // @[el2_ifu_iccm_mem.scala 43:51]
+  assign _T_87__T_103_data = io_iccm_wr_data[38:0];
+  assign _T_87__T_103_addr = wren_bank_2 ? io_iccm_rw_addr[14:3] : _T_75;
+  assign _T_87__T_103_mask = 1'h1;
+  assign _T_87__T_103_en = iccm_clken_2 & wren_bank_2;
+  assign _T_88__T_111_addr = wren_bank_3 ? io_iccm_rw_addr[14:3] : _T_83;
+  assign _T_88__T_111_data = _T_88[_T_88__T_111_addr]; // @[el2_ifu_iccm_mem.scala 43:51]
+  assign _T_88__T_104_data = io_iccm_wr_data[77:39];
+  assign _T_88__T_104_addr = wren_bank_3 ? io_iccm_rw_addr[14:3] : _T_83;
+  assign _T_88__T_104_mask = 1'h1;
+  assign _T_88__T_104_en = iccm_clken_3 & wren_bank_3;
+  assign io_iccm_rd_data = iccm_rd_addr_lo_q[0] ? _T_414 : iccm_rd_data_pre; // @[el2_ifu_iccm_mem.scala 22:19 el2_ifu_iccm_mem.scala 112:19]
+  assign io_iccm_rd_data_ecc = {_T_426,_T_442}; // @[el2_ifu_iccm_mem.scala 23:23 el2_ifu_iccm_mem.scala 113:23]
+  assign io_iccm_bank_addr_0 = wren_bank_0 ? io_iccm_rw_addr[14:3] : _T_59; // @[el2_ifu_iccm_mem.scala 61:21]
+  assign io_iccm_bank_addr_1 = wren_bank_1 ? io_iccm_rw_addr[14:3] : _T_67; // @[el2_ifu_iccm_mem.scala 61:21]
+  assign io_iccm_bank_addr_2 = wren_bank_2 ? io_iccm_rw_addr[14:3] : _T_75; // @[el2_ifu_iccm_mem.scala 61:21]
+  assign io_iccm_bank_addr_3 = wren_bank_3 ? io_iccm_rw_addr[14:3] : _T_83; // @[el2_ifu_iccm_mem.scala 61:21]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -330,16 +330,16 @@ initial begin
 `ifdef RANDOMIZE_MEM_INIT
   _RAND_0 = {2{`RANDOM}};
   for (initvar = 0; initvar < 4096; initvar = initvar+1)
-    _T_81[initvar] = _RAND_0[38:0];
+    _T_85[initvar] = _RAND_0[38:0];
   _RAND_1 = {2{`RANDOM}};
   for (initvar = 0; initvar < 4096; initvar = initvar+1)
-    _T_82[initvar] = _RAND_1[38:0];
+    _T_86[initvar] = _RAND_1[38:0];
   _RAND_2 = {2{`RANDOM}};
   for (initvar = 0; initvar < 4096; initvar = initvar+1)
-    _T_83[initvar] = _RAND_2[38:0];
+    _T_87[initvar] = _RAND_2[38:0];
   _RAND_3 = {2{`RANDOM}};
   for (initvar = 0; initvar < 4096; initvar = initvar+1)
-    _T_84[initvar] = _RAND_3[38:0];
+    _T_88[initvar] = _RAND_3[38:0];
 `endif // RANDOMIZE_MEM_INIT
 `ifdef RANDOMIZE_REG_INIT
   _RAND_4 = {2{`RANDOM}};
@@ -351,9 +351,9 @@ initial begin
   _RAND_7 = {2{`RANDOM}};
   iccm_bank_dout_3 = _RAND_7[38:0];
   _RAND_8 = {1{`RANDOM}};
-  _T_309 = _RAND_8[0:0];
+  _T_313 = _RAND_8[0:0];
   _RAND_9 = {1{`RANDOM}};
-  _T_310 = _RAND_9[0:0];
+  _T_314 = _RAND_9[0:0];
   _RAND_10 = {1{`RANDOM}};
   redundant_address_1 = _RAND_10[13:0];
   _RAND_11 = {1{`RANDOM}};
@@ -380,31 +380,31 @@ end // initial
 `endif
 `endif // SYNTHESIS
   always @(posedge clock) begin
-    if(_T_81__T_97_en & _T_81__T_97_mask) begin
-      _T_81[_T_81__T_97_addr] <= _T_81__T_97_data; // @[el2_ifu_iccm_mem.scala 42:51]
+    if(_T_85__T_101_en & _T_85__T_101_mask) begin
+      _T_85[_T_85__T_101_addr] <= _T_85__T_101_data; // @[el2_ifu_iccm_mem.scala 43:51]
     end
-    if(_T_82__T_98_en & _T_82__T_98_mask) begin
-      _T_82[_T_82__T_98_addr] <= _T_82__T_98_data; // @[el2_ifu_iccm_mem.scala 42:51]
+    if(_T_86__T_102_en & _T_86__T_102_mask) begin
+      _T_86[_T_86__T_102_addr] <= _T_86__T_102_data; // @[el2_ifu_iccm_mem.scala 43:51]
     end
-    if(_T_83__T_99_en & _T_83__T_99_mask) begin
-      _T_83[_T_83__T_99_addr] <= _T_83__T_99_data; // @[el2_ifu_iccm_mem.scala 42:51]
+    if(_T_87__T_103_en & _T_87__T_103_mask) begin
+      _T_87[_T_87__T_103_addr] <= _T_87__T_103_data; // @[el2_ifu_iccm_mem.scala 43:51]
     end
-    if(_T_84__T_100_en & _T_84__T_100_mask) begin
-      _T_84[_T_84__T_100_addr] <= _T_84__T_100_data; // @[el2_ifu_iccm_mem.scala 42:51]
+    if(_T_88__T_104_en & _T_88__T_104_mask) begin
+      _T_88[_T_88__T_104_addr] <= _T_88__T_104_data; // @[el2_ifu_iccm_mem.scala 43:51]
     end
-    iccm_bank_dout_0 <= _T_81__T_101_data;
-    iccm_bank_dout_1 <= _T_82__T_103_data;
-    iccm_bank_dout_2 <= _T_83__T_105_data;
-    iccm_bank_dout_3 <= _T_84__T_107_data;
+    iccm_bank_dout_0 <= _T_85__T_105_data;
+    iccm_bank_dout_1 <= _T_86__T_107_data;
+    iccm_bank_dout_2 <= _T_87__T_109_data;
+    iccm_bank_dout_3 <= _T_88__T_111_data;
     if (reset) begin
-      _T_309 <= 1'h0;
+      _T_313 <= 1'h0;
     end else begin
-      _T_309 <= _GEN_23;
+      _T_313 <= _GEN_23;
     end
     if (reset) begin
-      _T_310 <= 1'h0;
+      _T_314 <= 1'h0;
     end else begin
-      _T_310 <= _GEN_24;
+      _T_314 <= _GEN_24;
     end
     if (reset) begin
       redundant_address_1 <= 14'h0;
@@ -429,7 +429,7 @@ end // initial
     if (reset) begin
       redundant_data_1 <= 39'h0;
     end else if (redundant_data1_en) begin
-      if (_T_362) begin
+      if (_T_366) begin
         redundant_data_1 <= iccm_bank_wr_data_1;
       end else begin
         redundant_data_1 <= iccm_bank_wr_data_0;
@@ -438,7 +438,7 @@ end // initial
     if (reset) begin
       redundant_data_0 <= 39'h0;
     end else if (redundant_data0_en) begin
-      if (_T_334) begin
+      if (_T_338) begin
         redundant_data_0 <= iccm_bank_wr_data_1;
       end else begin
         redundant_data_0 <= iccm_bank_wr_data_0;
@@ -448,9 +448,9 @@ end // initial
       redundant_lru <= 1'h0;
     end else if (redundant_lru_en) begin
       if (io_iccm_buf_correct_ecc) begin
-        redundant_lru <= _T_293;
+        redundant_lru <= _T_297;
       end else begin
-        redundant_lru <= _T_294;
+        redundant_lru <= _T_298;
       end
     end
     if (reset) begin

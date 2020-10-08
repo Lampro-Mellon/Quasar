@@ -35,8 +35,9 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
   val rden_bank = (0 until ICCM_NUM_BANKS).map(i=> io.iccm_rden&(io.iccm_rw_addr(ICCM_BANK_HI-1,1)===i.U)|(addr_bank_inc(ICCM_BANK_HI-1,1)===i.U))
   val iccm_clken = for(i<- 0 until ICCM_NUM_BANKS) yield  wren_bank(i) | rden_bank(i) | io.clk_override
 
-  val addr_bank = (0 until ICCM_NUM_BANKS).map(i=> Mux(wren_bank(i).asBool, io.iccm_rw_addr(ICCM_BITS-2, ICCM_BANK_INDEX_LO-1),
-    Mux((addr_bank_inc(ICCM_BANK_HI-1,1)===i.U),addr_bank_inc(ICCM_BITS-2,ICCM_BANK_INDEX_LO-1),io.iccm_rw_addr(ICCM_BITS-2,ICCM_BANK_INDEX_LO-1))))
+  val addr_bank = Wire(Vec(ICCM_NUM_BANKS, UInt((ICCM_BITS-ICCM_BANK_INDEX_LO).W)))
+  for(i<-0 until ICCM_NUM_BANKS) {addr_bank(i) := Mux(wren_bank(i).asBool, io.iccm_rw_addr(ICCM_BITS-2, ICCM_BANK_INDEX_LO-1),
+    Mux((addr_bank_inc(ICCM_BANK_HI-1,1)===i.U),addr_bank_inc(ICCM_BITS-2,ICCM_BANK_INDEX_LO-1),io.iccm_rw_addr(ICCM_BITS-2,ICCM_BANK_INDEX_LO-1)))}
 
   val iccm_mem = new Array[Mem[UInt]](ICCM_NUM_BANKS)
   for(i<-0 until ICCM_NUM_BANKS) iccm_mem(i) = Mem(pow(2, ICCM_INDEX_BITS).intValue, UInt(39.W))
