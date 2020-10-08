@@ -44,12 +44,14 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
   val read_enable = VecInit.tabulate(ICCM_NUM_BANKS)(i=>iccm_clken(i)&(!wren_bank(i)))
 
   val iccm_bank_dout = Wire(Vec(ICCM_NUM_BANKS, UInt(39.W)))
-  val inter = Wire(Vec(ICCM_NUM_BANKS, UInt(39.W)))
+  //val inter = Wire(Vec(ICCM_NUM_BANKS, UInt(39.W)))
 
   for(i<-0 until ICCM_NUM_BANKS)  when(write_vec(i).asBool){iccm_mem(addr_bank(i))(i) :=iccm_bank_wr_data(i)}
 
-  inter := (0 until ICCM_NUM_BANKS).map(i=>Fill(39,read_enable(i))& iccm_mem(i)(addr_bank(i)))
-  for(i<-0 until ICCM_NUM_BANKS) iccm_bank_dout(i) := RegNext(inter(i))
+  for(i<-0 until ICCM_NUM_BANKS) iccm_bank_dout := RegNext(iccm_mem(addr_bank(i)),VecInit.tabulate(ICCM_NUM_BANKS)(i=>0.U))
+   //(0 until ICCM_NUM_BANKS).map(i=> )
+
+  // iccm_bank_dout(i) := RegNext(inter(i))
 
   io.iccm_bank_addr := addr_bank
 
