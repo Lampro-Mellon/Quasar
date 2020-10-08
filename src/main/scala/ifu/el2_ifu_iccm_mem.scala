@@ -17,7 +17,7 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
     val iccm_rd_data = Output(UInt(64.W))
     val iccm_rd_data_ecc = Output(UInt(78.W))
     val scan_mode = Input(Bool())
-    val iccm_bank_wr_data = Output(Vec(ICCM_NUM_BANKS, UInt(39.W)))
+    val iccm_bank_addr = Output(Vec(ICCM_NUM_BANKS, UInt()))
   })
   io.iccm_rd_data := 0.U
   io.iccm_rd_data_ecc := 0.U
@@ -32,7 +32,7 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
 
   val wren_bank = (0 until ICCM_NUM_BANKS).map(i=> io.iccm_wren&((io.iccm_rw_addr(ICCM_BANK_HI-1,1)===i.U)|(addr_bank_inc(ICCM_BANK_HI-1,1)===i.U)))
   val iccm_bank_wr_data = iccm_bank_wr_data_vec
-  io.iccm_bank_wr_data := iccm_bank_wr_data
+  //io.iccm_bank_wr_data := iccm_bank_wr_data
   val rden_bank = (0 until ICCM_NUM_BANKS).map(i=> io.iccm_rden&(io.iccm_rw_addr(ICCM_BANK_HI-1,1)===i.U)|(addr_bank_inc(ICCM_BANK_HI-1,1)===i.U))
   val iccm_clken = for(i<- 0 until ICCM_NUM_BANKS) yield  wren_bank(i) | rden_bank(i) | io.clk_override
   val addr_bank = (0 until ICCM_NUM_BANKS).map(i=> Mux(wren_bank(i).asBool, io.iccm_rw_addr(ICCM_BITS-2, ICCM_BANK_INDEX_LO-1),
@@ -46,8 +46,13 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
   val iccm_bank_dout = Wire(Vec(ICCM_NUM_BANKS, UInt(39.W)))
   val inter = Wire(Vec(ICCM_NUM_BANKS, UInt(39.W)))
   for(i<-0 until ICCM_NUM_BANKS) iccm_mem.write(addr_bank(i), iccm_bank_wr_data, write_vec)
-  inter := iccm_mem.read(addr_bank(0))
+  inter := (0 until ICCM_NUM_BANKS).map(i=>Fill(39,read_enable(i))& iccm_mem(i)(addr_bank(i)))
   for(i<-0 until ICCM_NUM_BANKS) iccm_bank_dout(i) := RegNext(inter(i))
+
+  io.iccm_bank_addr := addr_bank
+
+
+
 
   val redundant_valid = WireInit(UInt(2.W), init = 0.U)
   val redundant_address = Wire(Vec(2, UInt((ICCM_BITS-2).W)))
