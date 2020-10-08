@@ -501,7 +501,7 @@ circuit el2_ifu_iccm_mem :
       _T_371 <= redundant_data1_in @[Reg.scala 28:23]
       skip @[Reg.scala 28:19]
     redundant_data[1] <= _T_371 @[el2_ifu_iccm_mem.scala 100:21]
-    node _T_372 = bits(io.iccm_rw_addr, 3, 1) @[el2_ifu_iccm_mem.scala 102:50]
+    node _T_372 = bits(io.iccm_rw_addr, 2, 0) @[el2_ifu_iccm_mem.scala 102:50]
     reg iccm_rd_addr_lo_q : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_iccm_mem.scala 102:34]
     iccm_rd_addr_lo_q <= _T_372 @[el2_ifu_iccm_mem.scala 102:34]
     node _T_373 = bits(addr_bank_inc, 2, 1) @[el2_ifu_iccm_mem.scala 103:48]

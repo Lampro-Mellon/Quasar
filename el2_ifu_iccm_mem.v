@@ -516,7 +516,7 @@ end // initial
     if (reset) begin
       iccm_rd_addr_lo_q <= 3'h0;
     end else begin
-      iccm_rd_addr_lo_q <= io_iccm_rw_addr[3:1];
+      iccm_rd_addr_lo_q <= io_iccm_rw_addr[2:0];
     end
     if (reset) begin
       iccm_rd_addr_hi_q <= 2'h0;
