@@ -99,7 +99,7 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
     io.iccm_wr_data(77,39), io.iccm_wr_data(38,0))
   redundant_data(1) := RegEnable(redundant_data1_in, 0.U, redundant_data1_en.asBool)
 
-  val iccm_rd_addr_lo_q = RegNext(io.iccm_rw_addr(ICCM_BANK_HI-1,0), 0.U)
+  val iccm_rd_addr_lo_q = RegNext(io.iccm_rw_addr(2,0), 0.U)
   val iccm_rd_addr_hi_q = RegNext(addr_bank_inc(ICCM_BANK_HI-1,1), 0.U)
 
   val iccm_rd_data_pre = Cat(Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_hi_q===i.U)->iccm_bank_dout_fn(i)(31,0))),
