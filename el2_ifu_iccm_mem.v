@@ -235,7 +235,7 @@ module el2_ifu_iccm_mem(
   wire  redundant_data1_en = _T_356 | r0_addr_en; // @[el2_ifu_iccm_mem.scala 96:121]
   wire  _T_365 = redundant_address_1[0] & _T_1; // @[el2_ifu_iccm_mem.scala 98:104]
   wire  _T_366 = _T_349 | _T_365; // @[el2_ifu_iccm_mem.scala 98:78]
-  reg [1:0] iccm_rd_addr_lo_q; // @[el2_ifu_iccm_mem.scala 102:34]
+  reg [2:0] iccm_rd_addr_lo_q; // @[el2_ifu_iccm_mem.scala 102:34]
   reg [1:0] iccm_rd_addr_hi_q; // @[el2_ifu_iccm_mem.scala 103:34]
   wire  _T_374 = iccm_rd_addr_hi_q == 2'h0; // @[el2_ifu_iccm_mem.scala 105:86]
   wire  _T_376 = iccm_rd_addr_hi_q == 2'h1; // @[el2_ifu_iccm_mem.scala 105:86]
@@ -248,10 +248,10 @@ module el2_ifu_iccm_mem(
   wire [31:0] _T_386 = _T_382 | _T_383; // @[Mux.scala 27:72]
   wire [31:0] _T_387 = _T_386 | _T_384; // @[Mux.scala 27:72]
   wire [31:0] _T_388 = _T_387 | _T_385; // @[Mux.scala 27:72]
-  wire  _T_391 = iccm_rd_addr_lo_q == 2'h0; // @[el2_ifu_iccm_mem.scala 106:77]
-  wire  _T_394 = iccm_rd_addr_lo_q == 2'h1; // @[el2_ifu_iccm_mem.scala 106:77]
-  wire  _T_397 = iccm_rd_addr_lo_q == 2'h2; // @[el2_ifu_iccm_mem.scala 106:77]
-  wire  _T_400 = iccm_rd_addr_lo_q == 2'h3; // @[el2_ifu_iccm_mem.scala 106:77]
+  wire  _T_391 = iccm_rd_addr_lo_q[1:0] == 2'h0; // @[el2_ifu_iccm_mem.scala 106:77]
+  wire  _T_394 = iccm_rd_addr_lo_q[1:0] == 2'h1; // @[el2_ifu_iccm_mem.scala 106:77]
+  wire  _T_397 = iccm_rd_addr_lo_q[1:0] == 2'h2; // @[el2_ifu_iccm_mem.scala 106:77]
+  wire  _T_400 = iccm_rd_addr_lo_q[1:0] == 2'h3; // @[el2_ifu_iccm_mem.scala 106:77]
   wire [31:0] _T_402 = _T_391 ? iccm_bank_dout_fn_0[31:0] : 32'h0; // @[Mux.scala 27:72]
   wire [31:0] _T_403 = _T_394 ? iccm_bank_dout_fn_1[31:0] : 32'h0; // @[Mux.scala 27:72]
   wire [31:0] _T_404 = _T_397 ? iccm_bank_dout_fn_2[31:0] : 32'h0; // @[Mux.scala 27:72]
@@ -385,7 +385,7 @@ initial begin
   _RAND_20 = {1{`RANDOM}};
   redundant_lru = _RAND_20[0:0];
   _RAND_21 = {1{`RANDOM}};
-  iccm_rd_addr_lo_q = _RAND_21[1:0];
+  iccm_rd_addr_lo_q = _RAND_21[2:0];
   _RAND_22 = {1{`RANDOM}};
   iccm_rd_addr_hi_q = _RAND_22[1:0];
 `endif // RANDOMIZE_REG_INIT
@@ -514,9 +514,9 @@ end // initial
       end
     end
     if (reset) begin
-      iccm_rd_addr_lo_q <= 2'h0;
+      iccm_rd_addr_lo_q <= 3'h0;
     end else begin
-      iccm_rd_addr_lo_q <= io_iccm_rw_addr[1:0];
+      iccm_rd_addr_lo_q <= io_iccm_rw_addr[2:0];
     end
     if (reset) begin
       iccm_rd_addr_hi_q <= 2'h0;
