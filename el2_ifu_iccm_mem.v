@@ -270,17 +270,10 @@ module el2_ifu_iccm_mem(
   wire [38:0] _T_425 = _T_421 | _T_422; // @[Mux.scala 27:72]
   wire [38:0] _T_426 = _T_425 | _T_423; // @[Mux.scala 27:72]
   wire [38:0] _T_427 = _T_426 | _T_424; // @[Mux.scala 27:72]
-  wire  _T_430 = iccm_rd_addr_lo_q[1:0] == 2'h0; // @[el2_ifu_iccm_mem.scala 110:79]
-  wire  _T_432 = iccm_rd_addr_lo_q[1:0] == 2'h1; // @[el2_ifu_iccm_mem.scala 110:79]
-  wire  _T_434 = iccm_rd_addr_lo_q[1:0] == 2'h2; // @[el2_ifu_iccm_mem.scala 110:79]
-  wire  _T_436 = iccm_rd_addr_lo_q[1:0] == 2'h3; // @[el2_ifu_iccm_mem.scala 110:79]
-  wire [38:0] _T_437 = _T_430 ? iccm_bank_dout_fn_0 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_438 = _T_432 ? iccm_bank_dout_fn_1 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_439 = _T_434 ? iccm_bank_dout_fn_2 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_440 = _T_436 ? iccm_bank_dout_fn_3 : 39'h0; // @[Mux.scala 27:72]
-  wire [38:0] _T_441 = _T_437 | _T_438; // @[Mux.scala 27:72]
-  wire [38:0] _T_442 = _T_441 | _T_439; // @[Mux.scala 27:72]
-  wire [38:0] _T_443 = _T_442 | _T_440; // @[Mux.scala 27:72]
+  wire  _T_430 = ~iccm_rd_addr_lo_q[1]; // @[el2_ifu_iccm_mem.scala 110:64]
+  wire [38:0] _T_433 = _T_430 ? iccm_bank_dout_fn_2 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_434 = iccm_rd_addr_lo_q[1] ? iccm_bank_dout_fn_3 : 39'h0; // @[Mux.scala 27:72]
+  wire [38:0] _T_435 = _T_433 | _T_434; // @[Mux.scala 27:72]
   assign _T_85__T_105_addr = _T_85__T_105_addr_pipe_0;
   assign _T_85__T_105_data = _T_85[_T_85__T_105_addr]; // @[el2_ifu_iccm_mem.scala 43:59]
   assign _T_85__T_101_data = io_iccm_wr_data[38:0];
@@ -306,7 +299,7 @@ module el2_ifu_iccm_mem(
   assign _T_88__T_104_mask = 1'h1;
   assign _T_88__T_104_en = iccm_clken_3 & wren_bank_3;
   assign io_iccm_rd_data = iccm_rd_addr_lo_q[0] ? _T_415 : iccm_rd_data_pre; // @[el2_ifu_iccm_mem.scala 22:19 el2_ifu_iccm_mem.scala 108:19]
-  assign io_iccm_rd_data_ecc = {_T_427,_T_443}; // @[el2_ifu_iccm_mem.scala 23:23 el2_ifu_iccm_mem.scala 109:23]
+  assign io_iccm_rd_data_ecc = {_T_427,_T_435}; // @[el2_ifu_iccm_mem.scala 23:23 el2_ifu_iccm_mem.scala 109:23]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
