@@ -2,7 +2,7 @@
 circuit el2_ifu_iccm_mem : 
   module el2_ifu_iccm_mem : 
     input clock : Clock
-    input reset : UInt<1>
+    input reset : AsyncReset
     output io : {flip clk_override : UInt<1>, flip iccm_wren : UInt<1>, flip iccm_rden : UInt<1>, flip iccm_rw_addr : UInt<15>, flip iccm_buf_correct_ecc : UInt<1>, flip iccm_correction_state : UInt<1>, flip iccm_wr_size : UInt<3>, flip iccm_wr_data : UInt<78>, iccm_rd_data : UInt<64>, iccm_rd_data_ecc : UInt<78>, flip scan_mode : UInt<1>}
     
     io.iccm_rd_data <= UInt<1>("h00") @[el2_ifu_iccm_mem.scala 22:19]

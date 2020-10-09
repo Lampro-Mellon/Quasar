@@ -148,6 +148,7 @@ module el2_ifu_iccm_mem(
   wire  _T_165 = redundant_valid[1] & _T_164; // @[el2_ifu_iccm_mem.scala 65:71]
   wire  _T_171 = _T_123 & _T_27; // @[el2_ifu_iccm_mem.scala 66:77]
   wire  _T_172 = _T_165 | _T_171; // @[el2_ifu_iccm_mem.scala 65:179]
+  wire [2:0] _T_174 = {_T_172,_T_157,_T_142}; // @[Cat.scala 29:58]
   wire [3:0] sel_red1 = {_T_172,_T_157,_T_142,_T_127}; // @[Cat.scala 29:58]
   reg [13:0] redundant_address_0; // @[Reg.scala 27:20]
   wire  _T_178 = io_iccm_rw_addr[14:1] == redundant_address_0; // @[el2_ifu_iccm_mem.scala 67:105]
@@ -168,6 +169,7 @@ module el2_ifu_iccm_mem(
   wire  _T_227 = redundant_valid[0] & _T_226; // @[el2_ifu_iccm_mem.scala 67:71]
   wire  _T_233 = _T_185 & _T_27; // @[el2_ifu_iccm_mem.scala 68:77]
   wire  _T_234 = _T_227 | _T_233; // @[el2_ifu_iccm_mem.scala 67:179]
+  wire [2:0] _T_236 = {_T_234,_T_219,_T_204}; // @[Cat.scala 29:58]
   wire [3:0] sel_red0 = {_T_234,_T_219,_T_204,_T_189}; // @[Cat.scala 29:58]
   reg [3:0] sel_red0_q; // @[el2_ifu_iccm_mem.scala 70:27]
   reg [3:0] sel_red1_q; // @[el2_ifu_iccm_mem.scala 71:27]
@@ -215,8 +217,6 @@ module el2_ifu_iccm_mem(
   wire  _T_301 = _T_300 & io_iccm_rden; // @[el2_ifu_iccm_mem.scala 81:83]
   wire  _T_302 = _T_301 & io_iccm_correction_state; // @[el2_ifu_iccm_mem.scala 81:98]
   wire  redundant_lru_en = io_iccm_buf_correct_ecc | _T_302; // @[el2_ifu_iccm_mem.scala 81:50]
-  wire  _GEN_27 = r1_addr_en | _T_313; // @[Reg.scala 28:19]
-  wire  _GEN_28 = r0_addr_en | _T_314; // @[Reg.scala 28:19]
   wire  _T_318 = io_iccm_rw_addr[14:2] == redundant_address_0[13:1]; // @[el2_ifu_iccm_mem.scala 88:61]
   wire  _T_321 = io_iccm_rw_addr[1] & redundant_address_0[0]; // @[el2_ifu_iccm_mem.scala 89:26]
   wire  _T_324 = _T_321 | _T_1; // @[el2_ifu_iccm_mem.scala 89:52]
@@ -385,6 +385,51 @@ initial begin
   _RAND_22 = {1{`RANDOM}};
   iccm_rd_addr_lo_q = _RAND_22[2:0];
 `endif // RANDOMIZE_REG_INIT
+  if (reset) begin
+    iccm_bank_dout_0 = 39'h0;
+  end
+  if (reset) begin
+    iccm_bank_dout_1 = 39'h0;
+  end
+  if (reset) begin
+    iccm_bank_dout_2 = 39'h0;
+  end
+  if (reset) begin
+    iccm_bank_dout_3 = 39'h0;
+  end
+  if (reset) begin
+    _T_313 = 1'h0;
+  end
+  if (reset) begin
+    _T_314 = 1'h0;
+  end
+  if (reset) begin
+    redundant_address_1 = 14'h0;
+  end
+  if (reset) begin
+    redundant_address_0 = 14'h0;
+  end
+  if (reset) begin
+    sel_red0_q = 4'h0;
+  end
+  if (reset) begin
+    sel_red1_q = 4'h0;
+  end
+  if (reset) begin
+    redundant_data_1 = 39'h0;
+  end
+  if (reset) begin
+    redundant_data_0 = 39'h0;
+  end
+  if (reset) begin
+    redundant_lru = 1'h0;
+  end
+  if (reset) begin
+    _T_373 = 3'h0;
+  end
+  if (reset) begin
+    iccm_rd_addr_lo_q = 3'h0;
+  end
   `endif // RANDOMIZE
 end // initial
 `ifdef FIRRTL_AFTER_INITIAL
@@ -432,56 +477,78 @@ end // initial
     end else begin
       _T_88__T_111_addr_pipe_0 <= io_iccm_rw_addr[14:3];
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       iccm_bank_dout_0 <= 39'h0;
     end else if (read_enable_0) begin
       iccm_bank_dout_0 <= _T_85__T_105_data;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       iccm_bank_dout_1 <= 39'h0;
     end else if (read_enable_1) begin
       iccm_bank_dout_1 <= _T_86__T_107_data;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       iccm_bank_dout_2 <= 39'h0;
     end else if (read_enable_2) begin
       iccm_bank_dout_2 <= _T_87__T_109_data;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       iccm_bank_dout_3 <= 39'h0;
     end else if (read_enable_3) begin
       iccm_bank_dout_3 <= _T_88__T_111_data;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       _T_313 <= 1'h0;
     end else begin
-      _T_313 <= _GEN_27;
+      _T_313 <= r1_addr_en | _T_313;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       _T_314 <= 1'h0;
     end else begin
-      _T_314 <= _GEN_28;
+      _T_314 <= r0_addr_en | _T_314;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       redundant_address_1 <= 14'h0;
     end else if (r1_addr_en) begin
       redundant_address_1 <= io_iccm_rw_addr[14:1];
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       redundant_address_0 <= 14'h0;
     end else if (r0_addr_en) begin
       redundant_address_0 <= io_iccm_rw_addr[14:1];
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       sel_red0_q <= 4'h0;
     end else begin
-      sel_red0_q <= sel_red0;
+      sel_red0_q <= {_T_236,_T_189};
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       sel_red1_q <= 4'h0;
     end else begin
-      sel_red1_q <= sel_red1;
+      sel_red1_q <= {_T_174,_T_127};
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       redundant_data_1 <= 39'h0;
     end else if (redundant_data1_en) begin
@@ -491,6 +558,8 @@ end // initial
         redundant_data_1 <= iccm_bank_wr_data_0;
       end
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       redundant_data_0 <= 39'h0;
     end else if (redundant_data0_en) begin
@@ -500,6 +569,8 @@ end // initial
         redundant_data_0 <= iccm_bank_wr_data_0;
       end
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       redundant_lru <= 1'h0;
     end else if (redundant_lru_en) begin
@@ -509,11 +580,15 @@ end // initial
         redundant_lru <= _T_298;
       end
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       _T_373 <= 3'h0;
     end else begin
       _T_373 <= io_iccm_rw_addr[2:0];
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       iccm_rd_addr_lo_q <= 3'h0;
     end else begin

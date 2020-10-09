@@ -4,7 +4,7 @@ import chisel3.util._
 import lib._
 import scala.math.pow
 
-class el2_ifu_iccm_mem extends Module with el2_lib {
+class el2_ifu_iccm_mem extends Module with el2_lib with RequireAsyncReset {
   val io = IO(new Bundle{
     val clk_override = Input(Bool())
     val iccm_wren = Input(Bool())
