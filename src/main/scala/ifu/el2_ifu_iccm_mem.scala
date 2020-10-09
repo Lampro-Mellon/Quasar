@@ -108,8 +108,8 @@ class el2_ifu_iccm_mem extends Module with el2_lib {
   io.iccm_rd_data := Mux(iccm_rd_addr_lo_q(0).asBool(),Cat(Fill(16,0.U),iccm_rd_data_pre(63,16)) ,iccm_rd_data_pre)
   io.iccm_rd_data_ecc :=Cat(Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_hi_q===i.U)->iccm_bank_dout_fn(i))),
     Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-2,0)===i.U)->iccm_bank_dout_fn(i))))
-  io.iccm_rd_data_ecc := Cat(Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-1,1)===i.U)->iccm_bank_dout_fn(if(i==3) 0 else i+1))),
-    Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-1,1)===i.U)->iccm_bank_dout_fn(i))))
+  io.iccm_rd_data_ecc := Cat(Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-1,1)===i.U)->iccm_bank_dout_fn(if(i==3) 0 else i+1)(38,0))),
+    Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-1,1)===i.U)->iccm_bank_dout_fn(i)(38,0))))
 }
 
 
