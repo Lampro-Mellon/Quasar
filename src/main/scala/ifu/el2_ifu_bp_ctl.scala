@@ -284,8 +284,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   io.ifu_bp_fghr_f := fghr
 
   io.ifu_bp_way_f := way_raw
-  io.ifu_bp_hist1_f := 1.U//hist1_raw
-  io.ifu_bp_hist0_f := 2.U//hist0_raw
+  io.ifu_bp_hist1_f := hist1_raw
+  io.ifu_bp_hist0_f := hist0_raw
   io.ifu_bp_pc4_f := pc4_raw
 
   io.ifu_bp_valid_f := vwayhit_f & ~Fill(2, io.dec_tlu_bpred_disable)
