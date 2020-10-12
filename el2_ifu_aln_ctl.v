@@ -529,7 +529,7 @@ module el2_ifu_aln_ctl(
   input         io_dec_i0_decode_d,
   input  [31:0] io_ifu_fetch_data_f,
   input  [1:0]  io_ifu_fetch_val,
-  input  [31:0] io_ifu_fetch_pc,
+  input  [30:0] io_ifu_fetch_pc,
   output        io_ifu_i0_valid,
   output        io_ifu_i0_icaf,
   output [1:0]  io_ifu_i0_icaf_type,
@@ -565,189 +565,287 @@ module el2_ifu_aln_ctl(
   reg [31:0] _RAND_6;
   reg [31:0] _RAND_7;
   reg [31:0] _RAND_8;
-  reg [63:0] _RAND_9;
-  reg [63:0] _RAND_10;
-  reg [63:0] _RAND_11;
+  reg [31:0] _RAND_9;
+  reg [31:0] _RAND_10;
+  reg [31:0] _RAND_11;
   reg [31:0] _RAND_12;
   reg [31:0] _RAND_13;
   reg [31:0] _RAND_14;
   reg [31:0] _RAND_15;
   reg [31:0] _RAND_16;
   reg [31:0] _RAND_17;
+  reg [63:0] _RAND_18;
+  reg [63:0] _RAND_19;
+  reg [63:0] _RAND_20;
 `endif // RANDOMIZE_REG_INIT
-  wire [15:0] decompressed_io_din; // @[el2_ifu_aln_ctl.scala 99:28]
-  wire [31:0] decompressed_io_dout; // @[el2_ifu_aln_ctl.scala 99:28]
-  reg  error_stall; // @[el2_ifu_aln_ctl.scala 89:54]
-  reg [1:0] f0val; // @[el2_ifu_aln_ctl.scala 90:48]
-  wire  _T = error_stall | io_ifu_async_error_start; // @[el2_ifu_aln_ctl.scala 91:34]
-  wire  _T_1 = ~io_exu_flush_final; // @[el2_ifu_aln_ctl.scala 91:64]
-  wire  error_stall_in = _T & _T_1; // @[el2_ifu_aln_ctl.scala 91:62]
-  wire  _T_3 = ~error_stall; // @[el2_ifu_aln_ctl.scala 93:39]
-  wire  i0_shift = io_dec_i0_decode_d & _T_3; // @[el2_ifu_aln_ctl.scala 93:37]
-  wire  _T_7 = ~f0val[1]; // @[el2_ifu_aln_ctl.scala 97:58]
-  wire  _T_9 = _T_7 & f0val[0]; // @[el2_ifu_aln_ctl.scala 97:68]
-  reg [1:0] rdptr; // @[el2_ifu_aln_ctl.scala 124:48]
-  wire  _T_252 = rdptr == 2'h0; // @[el2_ifu_aln_ctl.scala 178:32]
-  reg  q1off; // @[el2_ifu_aln_ctl.scala 131:48]
-  wire  _T_255 = _T_252 & q1off; // @[Mux.scala 27:72]
-  wire  _T_253 = rdptr == 2'h1; // @[el2_ifu_aln_ctl.scala 178:57]
-  reg  q2off; // @[el2_ifu_aln_ctl.scala 130:48]
-  wire  _T_256 = _T_253 & q2off; // @[Mux.scala 27:72]
-  wire  _T_258 = _T_255 | _T_256; // @[Mux.scala 27:72]
-  wire  _T_254 = rdptr == 2'h2; // @[el2_ifu_aln_ctl.scala 178:83]
-  reg  q0off; // @[el2_ifu_aln_ctl.scala 132:48]
-  wire  _T_257 = _T_254 & q0off; // @[Mux.scala 27:72]
-  wire  q1ptr = _T_258 | _T_257; // @[Mux.scala 27:72]
-  wire  _T_261 = ~q1ptr; // @[el2_ifu_aln_ctl.scala 182:26]
-  wire [1:0] q1sel = {q1ptr,_T_261}; // @[Cat.scala 29:58]
-  wire [2:0] qren = {_T_254,_T_253,_T_252}; // @[Cat.scala 29:58]
+  wire [15:0] decompressed_io_din; // @[el2_ifu_aln_ctl.scala 350:28]
+  wire [31:0] decompressed_io_dout; // @[el2_ifu_aln_ctl.scala 350:28]
+  reg  error_stall; // @[el2_ifu_aln_ctl.scala 112:51]
+  wire  _T = error_stall | io_ifu_async_error_start; // @[el2_ifu_aln_ctl.scala 110:34]
+  wire  _T_1 = ~io_exu_flush_final; // @[el2_ifu_aln_ctl.scala 110:64]
+  wire  error_stall_in = _T & _T_1; // @[el2_ifu_aln_ctl.scala 110:62]
+  reg [1:0] wrptr; // @[el2_ifu_aln_ctl.scala 113:48]
+  reg [1:0] rdptr; // @[el2_ifu_aln_ctl.scala 114:48]
+  reg [1:0] f2val; // @[el2_ifu_aln_ctl.scala 116:48]
+  reg [1:0] f1val; // @[el2_ifu_aln_ctl.scala 117:48]
+  reg [1:0] f0val; // @[el2_ifu_aln_ctl.scala 118:48]
+  reg  q2off; // @[el2_ifu_aln_ctl.scala 120:48]
+  reg  q1off; // @[el2_ifu_aln_ctl.scala 121:48]
+  reg  q0off; // @[el2_ifu_aln_ctl.scala 122:48]
+  wire  _T_784 = ~error_stall; // @[el2_ifu_aln_ctl.scala 392:39]
+  wire  i0_shift = io_dec_i0_decode_d & _T_784; // @[el2_ifu_aln_ctl.scala 392:37]
+  wire  _T_186 = rdptr == 2'h0; // @[el2_ifu_aln_ctl.scala 172:31]
+  wire  _T_189 = _T_186 & q0off; // @[Mux.scala 27:72]
+  wire  _T_187 = rdptr == 2'h1; // @[el2_ifu_aln_ctl.scala 173:11]
+  wire  _T_190 = _T_187 & q1off; // @[Mux.scala 27:72]
+  wire  _T_192 = _T_189 | _T_190; // @[Mux.scala 27:72]
+  wire  _T_188 = rdptr == 2'h2; // @[el2_ifu_aln_ctl.scala 174:11]
+  wire  _T_191 = _T_188 & q2off; // @[Mux.scala 27:72]
+  wire  q0ptr = _T_192 | _T_191; // @[Mux.scala 27:72]
+  wire  _T_202 = ~q0ptr; // @[el2_ifu_aln_ctl.scala 178:26]
+  wire [1:0] q0sel = {q0ptr,_T_202}; // @[Cat.scala 29:58]
+  wire [2:0] qren = {_T_188,_T_187,_T_186}; // @[Cat.scala 29:58]
   reg [31:0] q1; // @[Reg.scala 27:20]
   reg [31:0] q0; // @[Reg.scala 27:20]
-  wire [63:0] _T_321 = {q1,q0}; // @[Cat.scala 29:58]
-  wire [63:0] _T_328 = qren[0] ? _T_321 : 64'h0; // @[Mux.scala 27:72]
+  wire [63:0] _T_480 = {q1,q0}; // @[Cat.scala 29:58]
+  wire [63:0] _T_487 = qren[0] ? _T_480 : 64'h0; // @[Mux.scala 27:72]
   reg [31:0] q2; // @[Reg.scala 27:20]
-  wire [63:0] _T_324 = {q2,q1}; // @[Cat.scala 29:58]
-  wire [63:0] _T_329 = qren[1] ? _T_324 : 64'h0; // @[Mux.scala 27:72]
-  wire [63:0] _T_331 = _T_328 | _T_329; // @[Mux.scala 27:72]
-  wire [63:0] _T_327 = {q0,q2}; // @[Cat.scala 29:58]
-  wire [63:0] _T_330 = qren[2] ? _T_327 : 64'h0; // @[Mux.scala 27:72]
-  wire [63:0] qeff = _T_331 | _T_330; // @[Mux.scala 27:72]
-  wire [31:0] q1eff = qeff[63:32]; // @[el2_ifu_aln_ctl.scala 225:29]
-  wire [15:0] _T_527 = q1sel[0] ? q1eff[15:0] : 16'h0; // @[Mux.scala 27:72]
-  wire [15:0] _T_528 = q1sel[1] ? q1eff[31:16] : 16'h0; // @[Mux.scala 27:72]
-  wire [15:0] q1final = _T_527 | _T_528; // @[Mux.scala 27:72]
-  wire  _T_247 = _T_252 & q0off; // @[Mux.scala 27:72]
-  wire  _T_248 = _T_253 & q1off; // @[Mux.scala 27:72]
-  wire  _T_250 = _T_247 | _T_248; // @[Mux.scala 27:72]
-  wire  _T_249 = _T_254 & q2off; // @[Mux.scala 27:72]
-  wire  q0ptr = _T_250 | _T_249; // @[Mux.scala 27:72]
-  wire  _T_260 = ~q0ptr; // @[el2_ifu_aln_ctl.scala 180:26]
-  wire [1:0] q0sel = {q0ptr,_T_260}; // @[Cat.scala 29:58]
-  wire [31:0] q0eff = qeff[31:0]; // @[el2_ifu_aln_ctl.scala 225:42]
-  wire [31:0] _T_517 = q0sel[0] ? q0eff : 32'h0; // @[Mux.scala 27:72]
-  wire [15:0] _T_518 = q0sel[1] ? q0eff[31:16] : 16'h0; // @[Mux.scala 27:72]
-  wire [31:0] _GEN_12 = {{16'd0}, _T_518}; // @[Mux.scala 27:72]
-  wire [31:0] _T_519 = _T_517 | _GEN_12; // @[Mux.scala 27:72]
-  wire [15:0] q0final = _T_519[15:0]; // @[el2_ifu_aln_ctl.scala 294:11]
-  wire [31:0] _T_11 = {q1final,q0final}; // @[Cat.scala 29:58]
-  wire [15:0] _T_12 = f0val[0] ? q0final : 16'h0; // @[Mux.scala 27:72]
-  wire [31:0] _T_13 = _T_9 ? _T_11 : 32'h0; // @[Mux.scala 27:72]
-  wire [31:0] _GEN_13 = {{16'd0}, _T_12}; // @[Mux.scala 27:72]
-  wire [31:0] aligndata = _GEN_13 | _T_13; // @[Mux.scala 27:72]
-  reg [54:0] _T_768; // @[Reg.scala 27:20]
-  wire [53:0] misc1 = _T_768[53:0]; // @[el2_ifu_aln_ctl.scala 372:9]
-  reg [54:0] _T_770; // @[Reg.scala 27:20]
-  wire [53:0] misc0 = _T_770[53:0]; // @[el2_ifu_aln_ctl.scala 373:9]
-  wire [107:0] _T_269 = {misc1,misc0}; // @[Cat.scala 29:58]
-  wire [107:0] _T_276 = qren[0] ? _T_269 : 108'h0; // @[Mux.scala 27:72]
-  reg [54:0] _T_766; // @[Reg.scala 27:20]
-  wire [53:0] misc2 = _T_766[53:0]; // @[el2_ifu_aln_ctl.scala 371:9]
-  wire [107:0] _T_272 = {misc2,misc1}; // @[Cat.scala 29:58]
-  wire [107:0] _T_277 = qren[1] ? _T_272 : 108'h0; // @[Mux.scala 27:72]
-  wire [107:0] _T_279 = _T_276 | _T_277; // @[Mux.scala 27:72]
-  wire [107:0] _T_275 = {misc0,misc2}; // @[Cat.scala 29:58]
-  wire [107:0] _T_278 = qren[2] ? _T_275 : 108'h0; // @[Mux.scala 27:72]
-  wire [107:0] misceff = _T_279 | _T_278; // @[Mux.scala 27:72]
-  wire [52:0] misc1eff = misceff[107:55]; // @[el2_ifu_aln_ctl.scala 191:25]
-  wire  f1icaf = misc1eff[51]; // @[el2_ifu_aln_ctl.scala 195:21]
-  wire [54:0] misc0eff = misceff[54:0]; // @[el2_ifu_aln_ctl.scala 192:25]
-  wire  f0icaf = misc0eff[53]; // @[el2_ifu_aln_ctl.scala 202:21]
-  wire [1:0] _T_23 = {f1icaf,f0icaf}; // @[Cat.scala 29:58]
-  wire  _T_24 = f0val[1] & f0icaf; // @[Mux.scala 27:72]
-  wire [1:0] _T_25 = _T_9 ? _T_23 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _GEN_14 = {{1'd0}, _T_24}; // @[Mux.scala 27:72]
-  wire [1:0] alignicaf = _GEN_14 | _T_25; // @[Mux.scala 27:72]
-  wire [1:0] _T_539 = f0val[1] ? 2'h3 : 2'h0; // @[Mux.scala 27:72]
-  reg [1:0] f1val; // @[el2_ifu_aln_ctl.scala 127:48]
-  wire [1:0] _T_538 = {f1val[0],1'h1}; // @[Cat.scala 29:58]
-  wire [1:0] _T_540 = _T_9 ? _T_538 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] alignval = _T_539 | _T_540; // @[Mux.scala 27:72]
-  wire  f0_shift_2B = i0_shift & f0val[0]; // @[Mux.scala 27:72]
-  reg [1:0] wrptr; // @[el2_ifu_aln_ctl.scala 123:48]
-  reg [1:0] f2val; // @[el2_ifu_aln_ctl.scala 126:48]
-  wire  _T_58 = ~f1val[0]; // @[el2_ifu_aln_ctl.scala 134:42]
-  wire  f2_valid = f2val[0]; // @[el2_ifu_aln_ctl.scala 246:20]
-  wire  _T_60 = ~f2_valid; // @[el2_ifu_aln_ctl.scala 134:55]
-  wire  ifvalid = io_ifu_fetch_val[0]; // @[el2_ifu_aln_ctl.scala 256:30]
-  wire  _T_65 = _T_58 & f2_valid; // @[el2_ifu_aln_ctl.scala 135:53]
-  wire  _T_66 = _T_65 & ifvalid; // @[el2_ifu_aln_ctl.scala 135:65]
-  wire  _T_70 = f1val[0] & _T_60; // @[el2_ifu_aln_ctl.scala 136:53]
-  wire  _T_71 = _T_70 & ifvalid; // @[el2_ifu_aln_ctl.scala 136:65]
-  wire  fetch_to_f1 = _T_66 | _T_71; // @[el2_ifu_aln_ctl.scala 135:77]
-  wire  _T_80 = f1val[0] & f2_valid; // @[el2_ifu_aln_ctl.scala 139:53]
-  wire  f2_wr_en = _T_80 & ifvalid; // @[el2_ifu_aln_ctl.scala 139:65]
-  wire  _T_94 = wrptr == 2'h2; // @[el2_ifu_aln_ctl.scala 147:24]
-  wire  _T_95 = _T_94 & ifvalid; // @[el2_ifu_aln_ctl.scala 147:32]
-  wire  _T_96 = wrptr == 2'h1; // @[el2_ifu_aln_ctl.scala 147:49]
-  wire  _T_97 = _T_96 & ifvalid; // @[el2_ifu_aln_ctl.scala 147:57]
-  wire  _T_98 = wrptr == 2'h0; // @[el2_ifu_aln_ctl.scala 147:74]
-  wire  _T_99 = _T_98 & ifvalid; // @[el2_ifu_aln_ctl.scala 147:82]
-  wire [2:0] qwen = {_T_95,_T_97,_T_99}; // @[Cat.scala 29:58]
-  wire  _T_153 = qwen[0] & _T_1; // @[el2_ifu_aln_ctl.scala 157:34]
-  wire  _T_157 = qwen[1] & _T_1; // @[el2_ifu_aln_ctl.scala 158:34]
-  wire  _T_163 = ~ifvalid; // @[el2_ifu_aln_ctl.scala 160:26]
-  wire  _T_165 = _T_163 & _T_1; // @[el2_ifu_aln_ctl.scala 160:35]
-  wire [1:0] _T_168 = _T_157 ? 2'h2 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_170 = _T_165 ? wrptr : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _GEN_17 = {{1'd0}, _T_153}; // @[Mux.scala 27:72]
-  wire [1:0] _T_171 = _GEN_17 | _T_168; // @[Mux.scala 27:72]
-  wire [1:0] wrptr_in = _T_171 | _T_170; // @[Mux.scala 27:72]
-  wire  _T_176 = ~qwen[2]; // @[el2_ifu_aln_ctl.scala 162:26]
-  wire  _T_178 = _T_176 & _T_254; // @[el2_ifu_aln_ctl.scala 162:35]
-  wire  _T_180 = q2off | f0_shift_2B; // @[el2_ifu_aln_ctl.scala 162:74]
-  wire  _T_184 = _T_176 & _T_253; // @[el2_ifu_aln_ctl.scala 163:35]
-  wire  _T_190 = _T_176 & _T_252; // @[el2_ifu_aln_ctl.scala 164:35]
-  wire  _T_192 = _T_178 & _T_180; // @[Mux.scala 27:72]
-  wire  _T_193 = _T_184 & q2off; // @[Mux.scala 27:72]
-  wire  _T_194 = _T_190 & q2off; // @[Mux.scala 27:72]
-  wire  _T_195 = _T_192 | _T_193; // @[Mux.scala 27:72]
-  wire  q2off_in = _T_195 | _T_194; // @[Mux.scala 27:72]
-  wire  _T_199 = ~qwen[1]; // @[el2_ifu_aln_ctl.scala 166:26]
-  wire  _T_201 = _T_199 & _T_253; // @[el2_ifu_aln_ctl.scala 166:35]
-  wire  _T_203 = q1off | f0_shift_2B; // @[el2_ifu_aln_ctl.scala 166:74]
-  wire  _T_207 = _T_199 & _T_252; // @[el2_ifu_aln_ctl.scala 167:35]
-  wire  _T_213 = _T_199 & _T_254; // @[el2_ifu_aln_ctl.scala 168:35]
-  wire  _T_215 = _T_201 & _T_203; // @[Mux.scala 27:72]
-  wire  _T_216 = _T_207 & q1off; // @[Mux.scala 27:72]
-  wire  _T_217 = _T_213 & q1off; // @[Mux.scala 27:72]
-  wire  _T_218 = _T_215 | _T_216; // @[Mux.scala 27:72]
-  wire  q1off_in = _T_218 | _T_217; // @[Mux.scala 27:72]
-  wire  _T_222 = ~qwen[0]; // @[el2_ifu_aln_ctl.scala 170:26]
-  wire  _T_224 = _T_222 & _T_252; // @[el2_ifu_aln_ctl.scala 170:35]
-  wire  _T_226 = q0off | f0_shift_2B; // @[el2_ifu_aln_ctl.scala 170:76]
-  wire  _T_230 = _T_222 & _T_254; // @[el2_ifu_aln_ctl.scala 171:35]
-  wire  _T_236 = _T_222 & _T_253; // @[el2_ifu_aln_ctl.scala 172:35]
-  wire  _T_238 = _T_224 & _T_226; // @[Mux.scala 27:72]
-  wire  _T_239 = _T_230 & q0off; // @[Mux.scala 27:72]
-  wire  _T_240 = _T_236 & q0off; // @[Mux.scala 27:72]
-  wire  _T_241 = _T_238 | _T_239; // @[Mux.scala 27:72]
-  wire  q0off_in = _T_241 | _T_240; // @[Mux.scala 27:72]
-  wire [54:0] misc_data_in = {io_iccm_rd_ecc_double_err,io_ic_access_fault_f,io_ic_access_fault_type_f,io_ifu_bp_btb_target_f[31:1],io_ifu_bp_poffset_f,io_ifu_bp_fghr_f}; // @[Cat.scala 29:58]
-  wire  f1dbecc = misc1eff[52]; // @[el2_ifu_aln_ctl.scala 194:25]
-  wire  f0dbecc = misc0eff[54]; // @[el2_ifu_aln_ctl.scala 201:25]
-  wire [5:0] _T_299 = {io_ifu_bp_hist1_f[0],io_ifu_bp_hist0_f[0],io_ifu_bp_pc4_f[0],io_ifu_bp_way_f[0],io_ifu_bp_valid_f[0],io_ifu_bp_ret_f[0]}; // @[Cat.scala 29:58]
-  wire [11:0] brdata_in = {io_ifu_bp_hist1_f[1],io_ifu_bp_hist0_f[1],io_ifu_bp_pc4_f[1],io_ifu_bp_way_f[1],io_ifu_bp_valid_f[1],io_ifu_bp_ret_f[1],_T_299}; // @[Cat.scala 29:58]
+  wire [63:0] _T_483 = {q2,q1}; // @[Cat.scala 29:58]
+  wire [63:0] _T_488 = qren[1] ? _T_483 : 64'h0; // @[Mux.scala 27:72]
+  wire [63:0] _T_490 = _T_487 | _T_488; // @[Mux.scala 27:72]
+  wire [63:0] _T_486 = {q0,q2}; // @[Cat.scala 29:58]
+  wire [63:0] _T_489 = qren[2] ? _T_486 : 64'h0; // @[Mux.scala 27:72]
+  wire [63:0] qeff = _T_490 | _T_489; // @[Mux.scala 27:72]
+  wire [31:0] q0eff = qeff[31:0]; // @[el2_ifu_aln_ctl.scala 294:42]
+  wire [31:0] _T_497 = q0sel[0] ? q0eff : 32'h0; // @[Mux.scala 27:72]
+  wire [15:0] _T_498 = q0sel[1] ? q0eff[31:16] : 16'h0; // @[Mux.scala 27:72]
+  wire [31:0] _GEN_12 = {{16'd0}, _T_498}; // @[Mux.scala 27:72]
+  wire [31:0] _T_499 = _T_497 | _GEN_12; // @[Mux.scala 27:72]
+  wire [15:0] q0final = _T_499[15:0]; // @[el2_ifu_aln_ctl.scala 296:11]
+  wire [15:0] _T_519 = f0val[0] ? q0final : 16'h0; // @[Mux.scala 27:72]
+  wire  _T_514 = ~f0val[1]; // @[el2_ifu_aln_ctl.scala 300:58]
+  wire  _T_516 = _T_514 & f0val[0]; // @[el2_ifu_aln_ctl.scala 300:68]
+  wire  _T_197 = _T_186 & q1off; // @[Mux.scala 27:72]
+  wire  _T_198 = _T_187 & q2off; // @[Mux.scala 27:72]
+  wire  _T_200 = _T_197 | _T_198; // @[Mux.scala 27:72]
+  wire  _T_199 = _T_188 & q0off; // @[Mux.scala 27:72]
+  wire  q1ptr = _T_200 | _T_199; // @[Mux.scala 27:72]
+  wire  _T_203 = ~q1ptr; // @[el2_ifu_aln_ctl.scala 180:26]
+  wire [1:0] q1sel = {q1ptr,_T_203}; // @[Cat.scala 29:58]
+  wire [31:0] q1eff = qeff[63:32]; // @[el2_ifu_aln_ctl.scala 294:29]
+  wire [15:0] _T_507 = q1sel[0] ? q1eff[15:0] : 16'h0; // @[Mux.scala 27:72]
+  wire [15:0] _T_508 = q1sel[1] ? q1eff[31:16] : 16'h0; // @[Mux.scala 27:72]
+  wire [15:0] q1final = _T_507 | _T_508; // @[Mux.scala 27:72]
+  wire [31:0] _T_518 = {q1final,q0final}; // @[Cat.scala 29:58]
+  wire [31:0] _T_520 = _T_516 ? _T_518 : 32'h0; // @[Mux.scala 27:72]
+  wire [31:0] _GEN_13 = {{16'd0}, _T_519}; // @[Mux.scala 27:72]
+  wire [31:0] aligndata = _GEN_13 | _T_520; // @[Mux.scala 27:72]
+  wire  first4B = aligndata[1:0] == 2'h3; // @[el2_ifu_aln_ctl.scala 332:29]
+  wire  first2B = ~first4B; // @[el2_ifu_aln_ctl.scala 334:17]
+  wire  shift_2B = i0_shift & first2B; // @[el2_ifu_aln_ctl.scala 396:24]
+  wire [1:0] _T_444 = {1'h0,f0val[1]}; // @[Cat.scala 29:58]
+  wire [1:0] _T_449 = shift_2B ? _T_444 : 2'h0; // @[Mux.scala 27:72]
+  wire  _T_445 = ~shift_2B; // @[el2_ifu_aln_ctl.scala 284:6]
+  wire  shift_4B = i0_shift & first4B; // @[el2_ifu_aln_ctl.scala 397:24]
+  wire  _T_446 = ~shift_4B; // @[el2_ifu_aln_ctl.scala 284:18]
+  wire  _T_447 = _T_445 & _T_446; // @[el2_ifu_aln_ctl.scala 284:16]
+  wire [1:0] _T_450 = _T_447 ? f1val : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] sf0val = _T_449 | _T_450; // @[Mux.scala 27:72]
+  wire  sf0_valid = sf0val[0]; // @[el2_ifu_aln_ctl.scala 237:22]
+  wire  _T_352 = ~sf0_valid; // @[el2_ifu_aln_ctl.scala 256:26]
+  wire  _T_801 = f0val[0] & _T_514; // @[el2_ifu_aln_ctl.scala 400:28]
+  wire  f1_shift_2B = _T_801 & shift_4B; // @[el2_ifu_aln_ctl.scala 400:40]
+  wire  _T_418 = f1_shift_2B & f1val[1]; // @[Mux.scala 27:72]
+  wire  _T_417 = ~f1_shift_2B; // @[el2_ifu_aln_ctl.scala 277:53]
+  wire [1:0] _T_419 = _T_417 ? f1val : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _GEN_14 = {{1'd0}, _T_418}; // @[Mux.scala 27:72]
+  wire [1:0] sf1val = _GEN_14 | _T_419; // @[Mux.scala 27:72]
+  wire  sf1_valid = sf1val[0]; // @[el2_ifu_aln_ctl.scala 236:22]
+  wire  _T_353 = _T_352 & sf1_valid; // @[el2_ifu_aln_ctl.scala 256:37]
+  wire  f2_valid = f2val[0]; // @[el2_ifu_aln_ctl.scala 235:20]
+  wire  _T_354 = _T_353 & f2_valid; // @[el2_ifu_aln_ctl.scala 256:50]
+  wire  ifvalid = io_ifu_fetch_val[0]; // @[el2_ifu_aln_ctl.scala 245:30]
+  wire  _T_355 = _T_354 & ifvalid; // @[el2_ifu_aln_ctl.scala 256:62]
+  wire  _T_356 = sf0_valid & sf1_valid; // @[el2_ifu_aln_ctl.scala 257:17]
+  wire  _T_357 = ~f2_valid; // @[el2_ifu_aln_ctl.scala 257:32]
+  wire  _T_358 = _T_356 & _T_357; // @[el2_ifu_aln_ctl.scala 257:30]
+  wire  _T_359 = _T_358 & ifvalid; // @[el2_ifu_aln_ctl.scala 257:42]
+  wire  fetch_to_f2 = _T_355 | _T_359; // @[el2_ifu_aln_ctl.scala 256:74]
+  reg [30:0] f2pc; // @[Reg.scala 27:20]
+  wire  _T_336 = ~sf1_valid; // @[el2_ifu_aln_ctl.scala 252:39]
+  wire  _T_337 = _T_352 & _T_336; // @[el2_ifu_aln_ctl.scala 252:37]
+  wire  _T_338 = _T_337 & f2_valid; // @[el2_ifu_aln_ctl.scala 252:50]
+  wire  _T_339 = _T_338 & ifvalid; // @[el2_ifu_aln_ctl.scala 252:62]
+  wire  _T_343 = _T_353 & _T_357; // @[el2_ifu_aln_ctl.scala 253:30]
+  wire  _T_344 = _T_343 & ifvalid; // @[el2_ifu_aln_ctl.scala 253:42]
+  wire  _T_345 = _T_339 | _T_344; // @[el2_ifu_aln_ctl.scala 252:74]
+  wire  _T_347 = sf0_valid & _T_336; // @[el2_ifu_aln_ctl.scala 254:17]
+  wire  _T_349 = _T_347 & _T_357; // @[el2_ifu_aln_ctl.scala 254:30]
+  wire  _T_350 = _T_349 & ifvalid; // @[el2_ifu_aln_ctl.scala 254:42]
+  wire  fetch_to_f1 = _T_345 | _T_350; // @[el2_ifu_aln_ctl.scala 253:54]
+  wire  _T_25 = fetch_to_f1 | _T_354; // @[el2_ifu_aln_ctl.scala 141:33]
+  wire  f1_shift_wr_en = _T_25 | f1_shift_2B; // @[el2_ifu_aln_ctl.scala 141:47]
+  reg [30:0] f1pc; // @[Reg.scala 27:20]
+  wire [30:0] _T_376 = fetch_to_f1 ? io_ifu_fetch_pc : 31'h0; // @[Mux.scala 27:72]
+  wire [30:0] _T_377 = _T_354 ? f2pc : 31'h0; // @[Mux.scala 27:72]
+  wire [30:0] _T_379 = _T_376 | _T_377; // @[Mux.scala 27:72]
+  wire  _T_372 = ~fetch_to_f1; // @[el2_ifu_aln_ctl.scala 267:6]
+  wire  _T_373 = ~_T_354; // @[el2_ifu_aln_ctl.scala 267:21]
+  wire  _T_374 = _T_372 & _T_373; // @[el2_ifu_aln_ctl.scala 267:19]
+  wire [30:0] _T_364 = f1_shift_2B ? 31'h7fffffff : 31'h0; // @[Bitwise.scala 72:12]
+  reg [30:0] f0pc; // @[Reg.scala 27:20]
+  wire [30:0] f0pc_plus1 = f0pc + 31'h1; // @[el2_ifu_aln_ctl.scala 259:25]
+  wire [30:0] _T_365 = _T_364 & f0pc_plus1; // @[el2_ifu_aln_ctl.scala 263:38]
+  wire [30:0] _T_368 = _T_417 ? 31'h7fffffff : 31'h0; // @[Bitwise.scala 72:12]
+  wire [30:0] _T_369 = _T_368 & f0pc; // @[el2_ifu_aln_ctl.scala 263:78]
+  wire [30:0] sf1pc = _T_365 | _T_369; // @[el2_ifu_aln_ctl.scala 263:52]
+  wire [30:0] _T_378 = _T_374 ? sf1pc : 31'h0; // @[Mux.scala 27:72]
+  wire [30:0] f1pc_in = _T_379 | _T_378; // @[Mux.scala 27:72]
+  wire  _T_333 = _T_337 & _T_357; // @[el2_ifu_aln_ctl.scala 251:50]
+  wire  fetch_to_f0 = _T_333 & ifvalid; // @[el2_ifu_aln_ctl.scala 251:62]
+  wire  _T_27 = fetch_to_f0 | _T_338; // @[el2_ifu_aln_ctl.scala 142:33]
+  wire  _T_28 = _T_27 | _T_353; // @[el2_ifu_aln_ctl.scala 142:47]
+  wire  _T_29 = _T_28 | shift_2B; // @[el2_ifu_aln_ctl.scala 142:61]
+  wire  f0_shift_wr_en = _T_29 | shift_4B; // @[el2_ifu_aln_ctl.scala 142:72]
+  wire [30:0] _T_391 = fetch_to_f0 ? io_ifu_fetch_pc : 31'h0; // @[Mux.scala 27:72]
+  wire [30:0] _T_392 = _T_338 ? f2pc : 31'h0; // @[Mux.scala 27:72]
+  wire [30:0] _T_395 = _T_391 | _T_392; // @[Mux.scala 27:72]
+  wire [30:0] _T_393 = _T_353 ? sf1pc : 31'h0; // @[Mux.scala 27:72]
+  wire [30:0] _T_396 = _T_395 | _T_393; // @[Mux.scala 27:72]
+  wire  _T_385 = ~fetch_to_f0; // @[el2_ifu_aln_ctl.scala 272:24]
+  wire  _T_386 = ~_T_338; // @[el2_ifu_aln_ctl.scala 272:39]
+  wire  _T_387 = _T_385 & _T_386; // @[el2_ifu_aln_ctl.scala 272:37]
+  wire  _T_388 = ~_T_353; // @[el2_ifu_aln_ctl.scala 272:54]
+  wire  _T_389 = _T_387 & _T_388; // @[el2_ifu_aln_ctl.scala 272:52]
+  wire [30:0] _T_394 = _T_389 ? f0pc_plus1 : 31'h0; // @[Mux.scala 27:72]
+  wire [30:0] f0pc_in = _T_396 | _T_394; // @[Mux.scala 27:72]
+  wire  _T_35 = wrptr == 2'h2; // @[el2_ifu_aln_ctl.scala 145:21]
+  wire  _T_36 = _T_35 & ifvalid; // @[el2_ifu_aln_ctl.scala 145:29]
+  wire  _T_37 = wrptr == 2'h1; // @[el2_ifu_aln_ctl.scala 145:46]
+  wire  _T_38 = _T_37 & ifvalid; // @[el2_ifu_aln_ctl.scala 145:54]
+  wire  _T_39 = wrptr == 2'h0; // @[el2_ifu_aln_ctl.scala 145:71]
+  wire  _T_40 = _T_39 & ifvalid; // @[el2_ifu_aln_ctl.scala 145:79]
+  wire [2:0] qwen = {_T_36,_T_38,_T_40}; // @[Cat.scala 29:58]
+  reg [11:0] brdata2; // @[Reg.scala 27:20]
+  wire [5:0] _T_242 = {io_ifu_bp_hist1_f[0],io_ifu_bp_hist0_f[0],io_ifu_bp_pc4_f[0],io_ifu_bp_way_f[0],io_ifu_bp_valid_f[0],io_ifu_bp_ret_f[0]}; // @[Cat.scala 29:58]
+  wire [11:0] brdata_in = {io_ifu_bp_hist1_f[1],io_ifu_bp_hist0_f[1],io_ifu_bp_pc4_f[1],io_ifu_bp_way_f[1],io_ifu_bp_valid_f[1],io_ifu_bp_ret_f[1],_T_242}; // @[Cat.scala 29:58]
   reg [11:0] brdata1; // @[Reg.scala 27:20]
   reg [11:0] brdata0; // @[Reg.scala 27:20]
-  wire [23:0] _T_307 = {brdata1,brdata0}; // @[Cat.scala 29:58]
-  reg [11:0] brdata2; // @[Reg.scala 27:20]
-  wire [23:0] _T_310 = {brdata2,brdata1}; // @[Cat.scala 29:58]
-  wire [23:0] _T_313 = {brdata0,brdata2}; // @[Cat.scala 29:58]
-  wire [23:0] _T_314 = qren[0] ? _T_307 : 24'h0; // @[Mux.scala 27:72]
-  wire [23:0] _T_315 = qren[1] ? _T_310 : 24'h0; // @[Mux.scala 27:72]
-  wire [23:0] _T_316 = qren[2] ? _T_313 : 24'h0; // @[Mux.scala 27:72]
-  wire [23:0] _T_317 = _T_314 | _T_315; // @[Mux.scala 27:72]
-  wire [23:0] brdataeff = _T_317 | _T_316; // @[Mux.scala 27:72]
-  wire [11:0] brdata0eff = brdataeff[11:0]; // @[el2_ifu_aln_ctl.scala 216:43]
-  wire [11:0] brdata1eff = brdataeff[23:12]; // @[el2_ifu_aln_ctl.scala 216:61]
-  wire [11:0] _T_338 = q0sel[0] ? brdata0eff : 12'h0; // @[Mux.scala 27:72]
-  wire [5:0] _T_339 = q0sel[1] ? brdata0eff[11:6] : 6'h0; // @[Mux.scala 27:72]
-  wire [11:0] _GEN_18 = {{6'd0}, _T_339}; // @[Mux.scala 27:72]
-  wire [11:0] brdata0final = _T_338 | _GEN_18; // @[Mux.scala 27:72]
-  wire [11:0] _T_346 = q1sel[0] ? brdata1eff : 12'h0; // @[Mux.scala 27:72]
-  wire [5:0] _T_347 = q1sel[1] ? brdata1eff[11:6] : 6'h0; // @[Mux.scala 27:72]
-  wire [11:0] _GEN_19 = {{6'd0}, _T_347}; // @[Mux.scala 27:72]
-  wire [11:0] brdata1final = _T_346 | _GEN_19; // @[Mux.scala 27:72]
+  reg [54:0] _T_14; // @[Reg.scala 27:20]
+  wire [54:0] misc_data_in = {io_iccm_rd_ecc_double_err,io_ic_access_fault_f,io_ic_access_fault_type_f,io_ifu_bp_btb_target_f[31:1],io_ifu_bp_poffset_f,io_ifu_bp_fghr_f}; // @[Cat.scala 29:58]
+  reg [54:0] _T_16; // @[Reg.scala 27:20]
+  reg [54:0] _T_18; // @[Reg.scala 27:20]
+  wire  _T_44 = qren[0] & io_ifu_fb_consume1; // @[el2_ifu_aln_ctl.scala 147:34]
+  wire  _T_46 = _T_44 & _T_1; // @[el2_ifu_aln_ctl.scala 147:55]
+  wire  _T_49 = qren[1] & io_ifu_fb_consume1; // @[el2_ifu_aln_ctl.scala 148:14]
+  wire  _T_51 = _T_49 & _T_1; // @[el2_ifu_aln_ctl.scala 148:35]
+  wire  _T_59 = qren[0] & io_ifu_fb_consume2; // @[el2_ifu_aln_ctl.scala 150:14]
+  wire  _T_61 = _T_59 & _T_1; // @[el2_ifu_aln_ctl.scala 150:35]
+  wire  _T_69 = qren[2] & io_ifu_fb_consume2; // @[el2_ifu_aln_ctl.scala 152:14]
+  wire  _T_71 = _T_69 & _T_1; // @[el2_ifu_aln_ctl.scala 152:35]
+  wire  _T_73 = ~io_ifu_fb_consume1; // @[el2_ifu_aln_ctl.scala 153:6]
+  wire  _T_74 = ~io_ifu_fb_consume2; // @[el2_ifu_aln_ctl.scala 153:28]
+  wire  _T_75 = _T_73 & _T_74; // @[el2_ifu_aln_ctl.scala 153:26]
+  wire  _T_77 = _T_75 & _T_1; // @[el2_ifu_aln_ctl.scala 153:48]
+  wire [1:0] _T_80 = _T_51 ? 2'h2 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_82 = _T_61 ? 2'h2 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_85 = _T_77 ? rdptr : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _GEN_15 = {{1'd0}, _T_46}; // @[Mux.scala 27:72]
+  wire [1:0] _T_86 = _GEN_15 | _T_80; // @[Mux.scala 27:72]
+  wire [1:0] _T_88 = _T_86 | _T_82; // @[Mux.scala 27:72]
+  wire [1:0] _GEN_16 = {{1'd0}, _T_71}; // @[Mux.scala 27:72]
+  wire [1:0] _T_90 = _T_88 | _GEN_16; // @[Mux.scala 27:72]
+  wire [1:0] rdptr_in = _T_90 | _T_85; // @[Mux.scala 27:72]
+  wire  _T_95 = qwen[0] & _T_1; // @[el2_ifu_aln_ctl.scala 155:34]
+  wire  _T_99 = qwen[1] & _T_1; // @[el2_ifu_aln_ctl.scala 156:14]
+  wire  _T_105 = ~ifvalid; // @[el2_ifu_aln_ctl.scala 158:6]
+  wire  _T_107 = _T_105 & _T_1; // @[el2_ifu_aln_ctl.scala 158:15]
+  wire [1:0] _T_110 = _T_99 ? 2'h2 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_112 = _T_107 ? wrptr : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _GEN_17 = {{1'd0}, _T_95}; // @[Mux.scala 27:72]
+  wire [1:0] _T_113 = _GEN_17 | _T_110; // @[Mux.scala 27:72]
+  wire [1:0] wrptr_in = _T_113 | _T_112; // @[Mux.scala 27:72]
+  wire  _T_118 = ~qwen[2]; // @[el2_ifu_aln_ctl.scala 160:26]
+  wire  _T_120 = _T_118 & _T_188; // @[el2_ifu_aln_ctl.scala 160:35]
+  wire  _T_794 = shift_2B & f0val[0]; // @[Mux.scala 27:72]
+  wire  _T_791 = ~f0val[0]; // @[el2_ifu_aln_ctl.scala 399:77]
+  wire  _T_793 = _T_791 & f0val[0]; // @[el2_ifu_aln_ctl.scala 399:87]
+  wire  _T_795 = shift_4B & _T_793; // @[Mux.scala 27:72]
+  wire  f0_shift_2B = _T_794 | _T_795; // @[Mux.scala 27:72]
+  wire  _T_122 = q2off | f0_shift_2B; // @[el2_ifu_aln_ctl.scala 160:74]
+  wire  _T_126 = _T_118 & _T_187; // @[el2_ifu_aln_ctl.scala 161:15]
+  wire  _T_128 = q2off | f1_shift_2B; // @[el2_ifu_aln_ctl.scala 161:54]
+  wire  _T_132 = _T_118 & _T_186; // @[el2_ifu_aln_ctl.scala 162:15]
+  wire  _T_134 = _T_120 & _T_122; // @[Mux.scala 27:72]
+  wire  _T_135 = _T_126 & _T_128; // @[Mux.scala 27:72]
+  wire  _T_136 = _T_132 & q2off; // @[Mux.scala 27:72]
+  wire  _T_137 = _T_134 | _T_135; // @[Mux.scala 27:72]
+  wire  q2off_in = _T_137 | _T_136; // @[Mux.scala 27:72]
+  wire  _T_141 = ~qwen[1]; // @[el2_ifu_aln_ctl.scala 164:26]
+  wire  _T_143 = _T_141 & _T_187; // @[el2_ifu_aln_ctl.scala 164:35]
+  wire  _T_145 = q1off | f0_shift_2B; // @[el2_ifu_aln_ctl.scala 164:74]
+  wire  _T_149 = _T_141 & _T_186; // @[el2_ifu_aln_ctl.scala 165:15]
+  wire  _T_151 = q1off | f1_shift_2B; // @[el2_ifu_aln_ctl.scala 165:54]
+  wire  _T_155 = _T_141 & _T_188; // @[el2_ifu_aln_ctl.scala 166:15]
+  wire  _T_157 = _T_143 & _T_145; // @[Mux.scala 27:72]
+  wire  _T_158 = _T_149 & _T_151; // @[Mux.scala 27:72]
+  wire  _T_159 = _T_155 & q1off; // @[Mux.scala 27:72]
+  wire  _T_160 = _T_157 | _T_158; // @[Mux.scala 27:72]
+  wire  q1off_in = _T_160 | _T_159; // @[Mux.scala 27:72]
+  wire  _T_164 = ~qwen[0]; // @[el2_ifu_aln_ctl.scala 168:26]
+  wire  _T_166 = _T_164 & _T_186; // @[el2_ifu_aln_ctl.scala 168:35]
+  wire  _T_168 = q0off | f0_shift_2B; // @[el2_ifu_aln_ctl.scala 168:76]
+  wire  _T_172 = _T_164 & _T_188; // @[el2_ifu_aln_ctl.scala 169:15]
+  wire  _T_174 = q0off | f1_shift_2B; // @[el2_ifu_aln_ctl.scala 169:56]
+  wire  _T_178 = _T_164 & _T_187; // @[el2_ifu_aln_ctl.scala 170:15]
+  wire  _T_180 = _T_166 & _T_168; // @[Mux.scala 27:72]
+  wire  _T_181 = _T_172 & _T_174; // @[Mux.scala 27:72]
+  wire  _T_182 = _T_178 & q0off; // @[Mux.scala 27:72]
+  wire  _T_183 = _T_180 | _T_181; // @[Mux.scala 27:72]
+  wire  q0off_in = _T_183 | _T_182; // @[Mux.scala 27:72]
+  wire [53:0] misc1 = _T_16[53:0]; // @[el2_ifu_aln_ctl.scala 133:9]
+  wire [53:0] misc0 = _T_18[53:0]; // @[el2_ifu_aln_ctl.scala 134:9]
+  wire [107:0] _T_212 = {misc1,misc0}; // @[Cat.scala 29:58]
+  wire [53:0] misc2 = _T_14[53:0]; // @[el2_ifu_aln_ctl.scala 132:9]
+  wire [107:0] _T_215 = {misc2,misc1}; // @[Cat.scala 29:58]
+  wire [107:0] _T_218 = {misc0,misc2}; // @[Cat.scala 29:58]
+  wire [107:0] _T_219 = qren[0] ? _T_212 : 108'h0; // @[Mux.scala 27:72]
+  wire [107:0] _T_220 = qren[1] ? _T_215 : 108'h0; // @[Mux.scala 27:72]
+  wire [107:0] _T_221 = qren[2] ? _T_218 : 108'h0; // @[Mux.scala 27:72]
+  wire [107:0] _T_222 = _T_219 | _T_220; // @[Mux.scala 27:72]
+  wire [107:0] misceff = _T_222 | _T_221; // @[Mux.scala 27:72]
+  wire [52:0] misc1eff = misceff[107:55]; // @[el2_ifu_aln_ctl.scala 189:25]
+  wire [54:0] misc0eff = misceff[54:0]; // @[el2_ifu_aln_ctl.scala 190:25]
+  wire  f1dbecc = misc1eff[52]; // @[el2_ifu_aln_ctl.scala 193:25]
+  wire  f1icaf = misc1eff[51]; // @[el2_ifu_aln_ctl.scala 194:21]
+  wire [1:0] f1ictype = misc1eff[50:49]; // @[el2_ifu_aln_ctl.scala 195:26]
+  wire [30:0] f1prett = misc1eff[48:18]; // @[el2_ifu_aln_ctl.scala 196:25]
+  wire [11:0] f1poffset = misc1eff[19:8]; // @[el2_ifu_aln_ctl.scala 197:27]
+  wire [7:0] f1fghr = misc1eff[7:0]; // @[el2_ifu_aln_ctl.scala 198:24]
+  wire  f0dbecc = misc0eff[54]; // @[el2_ifu_aln_ctl.scala 200:25]
+  wire  f0icaf = misc0eff[53]; // @[el2_ifu_aln_ctl.scala 201:21]
+  wire [1:0] f0ictype = misc0eff[52:51]; // @[el2_ifu_aln_ctl.scala 202:26]
+  wire [30:0] f0prett = misc0eff[50:20]; // @[el2_ifu_aln_ctl.scala 203:25]
+  wire [11:0] f0poffset = misc0eff[19:8]; // @[el2_ifu_aln_ctl.scala 204:27]
+  wire [7:0] f0fghr = misc0eff[7:0]; // @[el2_ifu_aln_ctl.scala 205:24]
+  wire [23:0] _T_251 = {brdata1,brdata0}; // @[Cat.scala 29:58]
+  wire [23:0] _T_254 = {brdata2,brdata1}; // @[Cat.scala 29:58]
+  wire [23:0] _T_257 = {brdata0,brdata2}; // @[Cat.scala 29:58]
+  wire [23:0] _T_258 = qren[0] ? _T_251 : 24'h0; // @[Mux.scala 27:72]
+  wire [23:0] _T_259 = qren[1] ? _T_254 : 24'h0; // @[Mux.scala 27:72]
+  wire [23:0] _T_260 = qren[2] ? _T_257 : 24'h0; // @[Mux.scala 27:72]
+  wire [23:0] _T_261 = _T_258 | _T_259; // @[Mux.scala 27:72]
+  wire [23:0] brdataeff = _T_261 | _T_260; // @[Mux.scala 27:72]
+  wire [11:0] brdata0eff = brdataeff[11:0]; // @[el2_ifu_aln_ctl.scala 215:43]
+  wire [11:0] brdata1eff = brdataeff[23:12]; // @[el2_ifu_aln_ctl.scala 215:61]
+  wire [11:0] _T_268 = q0sel[0] ? brdata0eff : 12'h0; // @[Mux.scala 27:72]
+  wire [5:0] _T_269 = q0sel[1] ? brdata0eff[11:6] : 6'h0; // @[Mux.scala 27:72]
+  wire [11:0] _GEN_18 = {{6'd0}, _T_269}; // @[Mux.scala 27:72]
+  wire [11:0] brdata0final = _T_268 | _GEN_18; // @[Mux.scala 27:72]
+  wire [11:0] _T_276 = q1sel[0] ? brdata1eff : 12'h0; // @[Mux.scala 27:72]
+  wire [5:0] _T_277 = q1sel[1] ? brdata1eff[11:6] : 6'h0; // @[Mux.scala 27:72]
+  wire [11:0] _GEN_19 = {{6'd0}, _T_277}; // @[Mux.scala 27:72]
+  wire [11:0] brdata1final = _T_276 | _GEN_19; // @[Mux.scala 27:72]
   wire [1:0] f0ret = {brdata0final[6],brdata0final[0]}; // @[Cat.scala 29:58]
   wire [1:0] f0brend = {brdata0final[7],brdata0final[1]}; // @[Cat.scala 29:58]
   wire [1:0] f0way = {brdata0final[8],brdata0final[2]}; // @[Cat.scala 29:58]
@@ -760,95 +858,158 @@ module el2_ifu_aln_ctl(
   wire [1:0] f1pc4 = {brdata1final[9],brdata1final[3]}; // @[Cat.scala 29:58]
   wire [1:0] f1hist0 = {brdata1final[10],brdata1final[4]}; // @[Cat.scala 29:58]
   wire [1:0] f1hist1 = {brdata1final[11],brdata1final[5]}; // @[Cat.scala 29:58]
-  wire  consume_fb1 = _T_58 & f1val[0]; // @[el2_ifu_aln_ctl.scala 251:32]
-  wire  _T_382 = ~consume_fb1; // @[el2_ifu_aln_ctl.scala 253:39]
-  wire  _T_383 = f0val[0] & _T_382; // @[el2_ifu_aln_ctl.scala 253:37]
-  wire  _T_386 = f0val[0] & consume_fb1; // @[el2_ifu_aln_ctl.scala 254:37]
-  wire  _T_409 = ~fetch_to_f1; // @[el2_ifu_aln_ctl.scala 271:28]
-  wire  _T_410 = ~_T_80; // @[el2_ifu_aln_ctl.scala 271:43]
-  wire  _T_411 = _T_409 & _T_410; // @[el2_ifu_aln_ctl.scala 271:41]
-  wire  _T_422 = ~_T_65; // @[el2_ifu_aln_ctl.scala 276:43]
-  wire  _T_435 = f2_wr_en & _T_1; // @[el2_ifu_aln_ctl.scala 278:38]
-  wire  _T_437 = ~f2_wr_en; // @[el2_ifu_aln_ctl.scala 279:6]
-  wire  _T_439 = _T_437 & _T_410; // @[el2_ifu_aln_ctl.scala 279:19]
-  wire  _T_441 = _T_439 & _T_422; // @[el2_ifu_aln_ctl.scala 279:34]
-  wire  _T_443 = _T_441 & _T_1; // @[el2_ifu_aln_ctl.scala 279:49]
-  wire [1:0] _T_445 = _T_435 ? io_ifu_fetch_val : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_446 = _T_443 ? f2val : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] f2val_in = _T_445 | _T_446; // @[Mux.scala 27:72]
-  wire  _T_458 = fetch_to_f1 & _T_1; // @[el2_ifu_aln_ctl.scala 283:38]
-  wire  _T_461 = _T_80 & _T_1; // @[el2_ifu_aln_ctl.scala 284:38]
-  wire  _T_467 = _T_411 & _T_58; // @[el2_ifu_aln_ctl.scala 285:54]
-  wire  _T_469 = _T_467 & _T_1; // @[el2_ifu_aln_ctl.scala 285:69]
-  wire [1:0] _T_471 = _T_458 ? io_ifu_fetch_val : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_472 = _T_461 ? f2val : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_473 = _T_469 ? f1val : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_474 = _T_471 | _T_472; // @[Mux.scala 27:72]
-  wire [1:0] f1val_in = _T_474 | _T_473; // @[Mux.scala 27:72]
-  wire  _T_479 = ~i0_shift; // @[el2_ifu_aln_ctl.scala 287:52]
-  wire  _T_483 = i0_shift & f0val[1]; // @[Mux.scala 27:72]
-  wire [1:0] _T_484 = _T_479 ? f0val : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _GEN_23 = {{1'd0}, _T_483}; // @[Mux.scala 27:72]
-  wire [1:0] _T_485 = _GEN_23 | _T_484; // @[Mux.scala 27:72]
-  wire [1:0] _T_546 = f0dbecc ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
-  wire [1:0] _T_552 = {f1dbecc,f0dbecc}; // @[Cat.scala 29:58]
-  wire [1:0] _T_553 = f0val[1] ? _T_546 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_554 = _T_9 ? _T_552 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] aligndbecc = _T_553 | _T_554; // @[Mux.scala 27:72]
-  wire [1:0] _T_565 = {f1brend[0],f0brend[0]}; // @[Cat.scala 29:58]
-  wire [1:0] _T_566 = f0val[1] ? f0brend : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_567 = _T_9 ? _T_565 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] alignbrend = _T_566 | _T_567; // @[Mux.scala 27:72]
-  wire [1:0] _T_578 = {f1pc4[0],f0pc4[0]}; // @[Cat.scala 29:58]
-  wire [1:0] _T_579 = f0val[1] ? f0pc4 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_580 = _T_9 ? _T_578 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] alignpc4 = _T_579 | _T_580; // @[Mux.scala 27:72]
-  wire [1:0] _T_591 = {f1ret[0],f0ret[0]}; // @[Cat.scala 29:58]
-  wire [1:0] _T_592 = f0val[1] ? f0ret : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_593 = _T_9 ? _T_591 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] alignret = _T_592 | _T_593; // @[Mux.scala 27:72]
-  wire [1:0] _T_604 = {f1way[0],f0way[0]}; // @[Cat.scala 29:58]
-  wire [1:0] _T_605 = f0val[1] ? f0way : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_606 = _T_9 ? _T_604 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] alignway = _T_605 | _T_606; // @[Mux.scala 27:72]
-  wire [1:0] _T_617 = {f1hist1[0],f0hist1[0]}; // @[Cat.scala 29:58]
-  wire [1:0] _T_618 = f0val[1] ? f0hist1 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_619 = _T_9 ? _T_617 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] alignhist1 = _T_618 | _T_619; // @[Mux.scala 27:72]
-  wire [1:0] _T_630 = {f1hist0[0],f0hist0[0]}; // @[Cat.scala 29:58]
-  wire [1:0] _T_631 = f0val[1] ? f0hist0 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] _T_632 = _T_9 ? _T_630 : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] alignhist0 = _T_631 | _T_632; // @[Mux.scala 27:72]
-  wire  i0_brp_pc4 = alignpc4[0]; // @[el2_ifu_aln_ctl.scala 356:39]
-  el2_ifu_compress_ctl decompressed ( // @[el2_ifu_aln_ctl.scala 99:28]
+  wire  consume_fb0 = _T_352 & f0val[0]; // @[el2_ifu_aln_ctl.scala 239:32]
+  wire  consume_fb1 = _T_336 & f1val[0]; // @[el2_ifu_aln_ctl.scala 240:32]
+  wire  _T_312 = ~consume_fb1; // @[el2_ifu_aln_ctl.scala 242:39]
+  wire  _T_313 = consume_fb0 & _T_312; // @[el2_ifu_aln_ctl.scala 242:37]
+  wire  _T_316 = consume_fb0 & consume_fb1; // @[el2_ifu_aln_ctl.scala 243:37]
+  wire  _T_400 = fetch_to_f2 & _T_1; // @[el2_ifu_aln_ctl.scala 274:38]
+  wire  _T_402 = ~fetch_to_f2; // @[el2_ifu_aln_ctl.scala 275:6]
+  wire  _T_404 = _T_402 & _T_373; // @[el2_ifu_aln_ctl.scala 275:19]
+  wire  _T_406 = _T_404 & _T_386; // @[el2_ifu_aln_ctl.scala 275:34]
+  wire  _T_408 = _T_406 & _T_1; // @[el2_ifu_aln_ctl.scala 275:49]
+  wire [1:0] _T_410 = _T_400 ? io_ifu_fetch_val : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_411 = _T_408 ? f2val : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] f2val_in = _T_410 | _T_411; // @[Mux.scala 27:72]
+  wire  _T_423 = fetch_to_f1 & _T_1; // @[el2_ifu_aln_ctl.scala 279:38]
+  wire  _T_426 = _T_354 & _T_1; // @[el2_ifu_aln_ctl.scala 280:18]
+  wire  _T_432 = _T_374 & _T_388; // @[el2_ifu_aln_ctl.scala 281:34]
+  wire  _T_434 = _T_432 & _T_1; // @[el2_ifu_aln_ctl.scala 281:49]
+  wire [1:0] _T_436 = _T_423 ? io_ifu_fetch_val : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_437 = _T_426 ? f2val : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_438 = _T_434 ? sf1val : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_439 = _T_436 | _T_437; // @[Mux.scala 27:72]
+  wire [1:0] f1val_in = _T_439 | _T_438; // @[Mux.scala 27:72]
+  wire  _T_454 = fetch_to_f0 & _T_1; // @[el2_ifu_aln_ctl.scala 286:38]
+  wire  _T_457 = _T_338 & _T_1; // @[el2_ifu_aln_ctl.scala 287:18]
+  wire  _T_460 = _T_353 & _T_1; // @[el2_ifu_aln_ctl.scala 288:18]
+  wire  _T_468 = _T_389 & _T_1; // @[el2_ifu_aln_ctl.scala 289:49]
+  wire [1:0] _T_470 = _T_454 ? io_ifu_fetch_val : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_471 = _T_457 ? f2val : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_472 = _T_460 ? sf1val : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_473 = _T_468 ? sf0val : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_474 = _T_470 | _T_471; // @[Mux.scala 27:72]
+  wire [1:0] _T_475 = _T_474 | _T_472; // @[Mux.scala 27:72]
+  wire [1:0] f0val_in = _T_475 | _T_473; // @[Mux.scala 27:72]
+  wire [1:0] _T_529 = {f1val[0],1'h1}; // @[Cat.scala 29:58]
+  wire [1:0] _T_530 = f0val[1] ? 2'h3 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_531 = _T_516 ? _T_529 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] alignval = _T_530 | _T_531; // @[Mux.scala 27:72]
+  wire [1:0] _T_541 = {f1icaf,f0icaf}; // @[Cat.scala 29:58]
+  wire  _T_542 = f0val[1] & f0icaf; // @[Mux.scala 27:72]
+  wire [1:0] _T_543 = _T_516 ? _T_541 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _GEN_20 = {{1'd0}, _T_542}; // @[Mux.scala 27:72]
+  wire [1:0] alignicaf = _GEN_20 | _T_543; // @[Mux.scala 27:72]
+  wire [1:0] _T_548 = f0dbecc ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
+  wire [1:0] _T_554 = {f1dbecc,f0dbecc}; // @[Cat.scala 29:58]
+  wire [1:0] _T_555 = f0val[1] ? _T_548 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_556 = _T_516 ? _T_554 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] aligndbecc = _T_555 | _T_556; // @[Mux.scala 27:72]
+  wire [1:0] _T_567 = {f1brend[0],f0brend[0]}; // @[Cat.scala 29:58]
+  wire [1:0] _T_568 = f0val[1] ? f0brend : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_569 = _T_516 ? _T_567 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] alignbrend = _T_568 | _T_569; // @[Mux.scala 27:72]
+  wire [1:0] _T_580 = {f1pc4[0],f0pc4[0]}; // @[Cat.scala 29:58]
+  wire [1:0] _T_581 = f0val[1] ? f0pc4 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_582 = _T_516 ? _T_580 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] alignpc4 = _T_581 | _T_582; // @[Mux.scala 27:72]
+  wire [1:0] _T_593 = {f1ret[0],f0ret[0]}; // @[Cat.scala 29:58]
+  wire [1:0] _T_594 = f0val[1] ? f0ret : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_595 = _T_516 ? _T_593 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] alignret = _T_594 | _T_595; // @[Mux.scala 27:72]
+  wire [1:0] _T_606 = {f1way[0],f0way[0]}; // @[Cat.scala 29:58]
+  wire [1:0] _T_607 = f0val[1] ? f0way : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_608 = _T_516 ? _T_606 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] alignway = _T_607 | _T_608; // @[Mux.scala 27:72]
+  wire [1:0] _T_619 = {f1hist1[0],f0hist1[0]}; // @[Cat.scala 29:58]
+  wire [1:0] _T_620 = f0val[1] ? f0hist1 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_621 = _T_516 ? _T_619 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] alignhist1 = _T_620 | _T_621; // @[Mux.scala 27:72]
+  wire [1:0] _T_632 = {f1hist0[0],f0hist0[0]}; // @[Cat.scala 29:58]
+  wire [1:0] _T_633 = f0val[1] ? f0hist0 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] _T_634 = _T_516 ? _T_632 : 2'h0; // @[Mux.scala 27:72]
+  wire [1:0] alignhist0 = _T_633 | _T_634; // @[Mux.scala 27:72]
+  wire [30:0] _T_646 = f0val[1] ? f0pc_plus1 : 31'h0; // @[Mux.scala 27:72]
+  wire [30:0] _T_647 = _T_516 ? f1pc : 31'h0; // @[Mux.scala 27:72]
+  wire [30:0] secondpc = _T_646 | _T_647; // @[Mux.scala 27:72]
+  wire  _T_656 = first4B & alignval[1]; // @[Mux.scala 27:72]
+  wire  _T_657 = first2B & alignval[0]; // @[Mux.scala 27:72]
+  wire  _T_661 = |alignicaf; // @[el2_ifu_aln_ctl.scala 338:59]
+  wire  _T_664 = first4B & _T_661; // @[Mux.scala 27:72]
+  wire  _T_665 = first2B & alignicaf[0]; // @[Mux.scala 27:72]
+  wire  _T_670 = first4B & _T_514; // @[el2_ifu_aln_ctl.scala 340:39]
+  wire  _T_672 = _T_670 & f0val[0]; // @[el2_ifu_aln_ctl.scala 340:51]
+  wire  _T_674 = ~alignicaf[0]; // @[el2_ifu_aln_ctl.scala 340:64]
+  wire  _T_675 = _T_672 & _T_674; // @[el2_ifu_aln_ctl.scala 340:62]
+  wire  _T_677 = ~aligndbecc[0]; // @[el2_ifu_aln_ctl.scala 340:80]
+  wire  _T_678 = _T_675 & _T_677; // @[el2_ifu_aln_ctl.scala 340:78]
+  wire  icaf_eff = alignicaf[1] | aligndbecc[1]; // @[el2_ifu_aln_ctl.scala 342:31]
+  wire  _T_683 = first4B & icaf_eff; // @[el2_ifu_aln_ctl.scala 344:32]
+  wire  _T_686 = |aligndbecc; // @[el2_ifu_aln_ctl.scala 346:59]
+  wire  _T_689 = first4B & _T_686; // @[Mux.scala 27:72]
+  wire  _T_690 = first2B & aligndbecc[0]; // @[Mux.scala 27:72]
+  wire [31:0] _T_695 = first4B ? aligndata : 32'h0; // @[Mux.scala 27:72]
+  wire [31:0] _T_696 = first2B ? decompressed_io_dout : 32'h0; // @[Mux.scala 27:72]
+  wire [7:0] _T_701 = f0pc[8:1] ^ f0pc[16:9]; // @[el2_lib.scala 191:46]
+  wire [7:0] firstpc_hash = _T_701 ^ f0pc[24:17]; // @[el2_lib.scala 191:84]
+  wire [7:0] _T_705 = secondpc[8:1] ^ secondpc[16:9]; // @[el2_lib.scala 191:46]
+  wire [7:0] secondpc_hash = _T_705 ^ secondpc[24:17]; // @[el2_lib.scala 191:84]
+  wire [4:0] _T_711 = f0pc[13:9] ^ f0pc[18:14]; // @[el2_lib.scala 182:111]
+  wire [4:0] firstbrtag_hash = _T_711 ^ f0pc[23:19]; // @[el2_lib.scala 182:111]
+  wire [4:0] _T_716 = secondpc[13:9] ^ secondpc[18:14]; // @[el2_lib.scala 182:111]
+  wire [4:0] secondbrtag_hash = _T_716 ^ secondpc[23:19]; // @[el2_lib.scala 182:111]
+  wire  _T_718 = first2B & alignbrend[0]; // @[el2_ifu_aln_ctl.scala 362:30]
+  wire  _T_720 = first4B & alignbrend[1]; // @[el2_ifu_aln_ctl.scala 362:58]
+  wire  _T_721 = _T_718 | _T_720; // @[el2_ifu_aln_ctl.scala 362:47]
+  wire  _T_725 = _T_656 & alignbrend[0]; // @[el2_ifu_aln_ctl.scala 362:100]
+  wire  _T_728 = first2B & alignret[0]; // @[el2_ifu_aln_ctl.scala 364:29]
+  wire  _T_730 = first4B & alignret[1]; // @[el2_ifu_aln_ctl.scala 364:55]
+  wire  _T_733 = first2B & alignpc4[0]; // @[el2_ifu_aln_ctl.scala 366:29]
+  wire  _T_735 = first4B & alignpc4[1]; // @[el2_ifu_aln_ctl.scala 366:55]
+  wire  i0_brp_pc4 = _T_733 | _T_735; // @[el2_ifu_aln_ctl.scala 366:44]
+  wire  _T_737 = first2B | alignbrend[0]; // @[el2_ifu_aln_ctl.scala 368:33]
+  wire  _T_743 = first2B & alignhist1[0]; // @[el2_ifu_aln_ctl.scala 370:34]
+  wire  _T_745 = first4B & alignhist1[1]; // @[el2_ifu_aln_ctl.scala 370:62]
+  wire  _T_746 = _T_743 | _T_745; // @[el2_ifu_aln_ctl.scala 370:51]
+  wire  _T_748 = first2B & alignhist0[0]; // @[el2_ifu_aln_ctl.scala 371:14]
+  wire  _T_750 = first4B & alignhist0[1]; // @[el2_ifu_aln_ctl.scala 371:42]
+  wire  _T_751 = _T_748 | _T_750; // @[el2_ifu_aln_ctl.scala 371:31]
+  wire  i0_ends_f1 = first4B & _T_516; // @[el2_ifu_aln_ctl.scala 373:28]
+  wire  _T_767 = io_i0_brp_valid & i0_brp_pc4; // @[el2_ifu_aln_ctl.scala 382:42]
+  wire  _T_768 = _T_767 & first2B; // @[el2_ifu_aln_ctl.scala 382:56]
+  wire  _T_769 = ~i0_brp_pc4; // @[el2_ifu_aln_ctl.scala 382:89]
+  wire  _T_770 = io_i0_brp_valid & _T_769; // @[el2_ifu_aln_ctl.scala 382:87]
+  wire  _T_771 = _T_770 & first4B; // @[el2_ifu_aln_ctl.scala 382:101]
+  wire [7:0] _T_776 = _T_737 ? firstpc_hash : secondpc_hash; // @[el2_ifu_aln_ctl.scala 384:28]
+  el2_ifu_compress_ctl decompressed ( // @[el2_ifu_aln_ctl.scala 350:28]
     .io_din(decompressed_io_din),
     .io_dout(decompressed_io_dout)
   );
-  assign io_ifu_i0_valid = alignval[0]; // @[el2_ifu_aln_ctl.scala 115:19]
-  assign io_ifu_i0_icaf = alignicaf[0]; // @[el2_ifu_aln_ctl.scala 114:18]
-  assign io_ifu_i0_icaf_type = misc0eff[52:51]; // @[el2_ifu_aln_ctl.scala 324:23]
-  assign io_ifu_i0_icaf_f1 = 1'h0; // @[el2_ifu_aln_ctl.scala 328:21]
-  assign io_ifu_i0_dbecc = aligndbecc[0]; // @[el2_ifu_aln_ctl.scala 330:19]
-  assign io_ifu_i0_instr = decompressed_io_dout; // @[el2_ifu_aln_ctl.scala 103:20]
-  assign io_ifu_i0_pc = 32'h0; // @[el2_ifu_aln_ctl.scala 320:16]
-  assign io_ifu_i0_pc4 = 1'h0; // @[el2_ifu_aln_ctl.scala 116:17]
-  assign io_ifu_fb_consume1 = _T_383 & _T_1; // @[el2_ifu_aln_ctl.scala 253:22]
-  assign io_ifu_fb_consume2 = _T_386 & _T_1; // @[el2_ifu_aln_ctl.scala 254:22]
-  assign io_ifu_i0_bp_index = 7'h0; // @[el2_ifu_aln_ctl.scala 361:22]
-  assign io_ifu_i0_bp_fghr = misc0eff[7:0]; // @[el2_ifu_aln_ctl.scala 363:21]
-  assign io_ifu_i0_bp_btag = 5'h0; // @[el2_ifu_aln_ctl.scala 365:21]
-  assign io_ifu_pmu_instr_aligned = io_dec_i0_decode_d & _T_3; // @[el2_ifu_aln_ctl.scala 95:28]
-  assign io_ifu_i0_cinst = aligndata[15:0]; // @[el2_ifu_aln_ctl.scala 106:19]
-  assign io_i0_brp_valid = alignbrend[0]; // @[el2_ifu_aln_ctl.scala 340:19]
-  assign io_i0_brp_toffset = misc0eff[19:8]; // @[el2_ifu_aln_ctl.scala 348:21]
-  assign io_i0_brp_hist = {alignhist1[0],alignhist0[0]}; // @[el2_ifu_aln_ctl.scala 345:18]
-  assign io_i0_brp_br_error = io_i0_brp_valid & i0_brp_pc4; // @[el2_ifu_aln_ctl.scala 358:22]
-  assign io_i0_brp_br_start_error = 1'h0; // @[el2_ifu_aln_ctl.scala 352:29]
-  assign io_i0_brp_bank = 1'h0; // @[el2_ifu_aln_ctl.scala 354:29]
-  assign io_i0_brp_prett = misc0eff[50:20]; // @[el2_ifu_aln_ctl.scala 350:19]
-  assign io_i0_brp_way = alignway[0]; // @[el2_ifu_aln_ctl.scala 344:17]
-  assign io_i0_brp_ret = alignret[0]; // @[el2_ifu_aln_ctl.scala 342:17]
-  assign decompressed_io_din = aligndata[15:0]; // @[el2_ifu_aln_ctl.scala 101:23]
+  assign io_ifu_i0_valid = _T_656 | _T_657; // @[el2_ifu_aln_ctl.scala 336:19]
+  assign io_ifu_i0_icaf = _T_664 | _T_665; // @[el2_ifu_aln_ctl.scala 338:18]
+  assign io_ifu_i0_icaf_type = _T_678 ? f1ictype : f0ictype; // @[el2_ifu_aln_ctl.scala 340:23]
+  assign io_ifu_i0_icaf_f1 = _T_683 & _T_516; // @[el2_ifu_aln_ctl.scala 344:21]
+  assign io_ifu_i0_dbecc = _T_689 | _T_690; // @[el2_ifu_aln_ctl.scala 346:19]
+  assign io_ifu_i0_instr = _T_695 | _T_696; // @[el2_ifu_aln_ctl.scala 352:19]
+  assign io_ifu_i0_pc = {{1'd0}, f0pc}; // @[el2_ifu_aln_ctl.scala 324:16]
+  assign io_ifu_i0_pc4 = aligndata[1:0] == 2'h3; // @[el2_ifu_aln_ctl.scala 328:17]
+  assign io_ifu_fb_consume1 = _T_313 & _T_1; // @[el2_ifu_aln_ctl.scala 242:22]
+  assign io_ifu_fb_consume2 = _T_316 & _T_1; // @[el2_ifu_aln_ctl.scala 243:22]
+  assign io_ifu_i0_bp_index = _T_776[6:0]; // @[el2_ifu_aln_ctl.scala 384:22]
+  assign io_ifu_i0_bp_fghr = i0_ends_f1 ? f1fghr : f0fghr; // @[el2_ifu_aln_ctl.scala 386:21]
+  assign io_ifu_i0_bp_btag = _T_737 ? firstbrtag_hash : secondbrtag_hash; // @[el2_ifu_aln_ctl.scala 388:21]
+  assign io_ifu_pmu_instr_aligned = io_dec_i0_decode_d & _T_784; // @[el2_ifu_aln_ctl.scala 394:28]
+  assign io_ifu_i0_cinst = aligndata[15:0]; // @[el2_ifu_aln_ctl.scala 330:19]
+  assign io_i0_brp_valid = _T_721 | _T_725; // @[el2_ifu_aln_ctl.scala 362:19]
+  assign io_i0_brp_toffset = i0_ends_f1 ? f1poffset : f0poffset; // @[el2_ifu_aln_ctl.scala 374:21]
+  assign io_i0_brp_hist = {_T_746,_T_751}; // @[el2_ifu_aln_ctl.scala 370:18]
+  assign io_i0_brp_br_error = _T_768 | _T_771; // @[el2_ifu_aln_ctl.scala 382:22]
+  assign io_i0_brp_br_start_error = _T_656 & alignbrend[0]; // @[el2_ifu_aln_ctl.scala 378:29]
+  assign io_i0_brp_bank = _T_737 ? f0pc[1] : secondpc[1]; // @[el2_ifu_aln_ctl.scala 380:29]
+  assign io_i0_brp_prett = i0_ends_f1 ? f1prett : f0prett; // @[el2_ifu_aln_ctl.scala 376:19]
+  assign io_i0_brp_way = _T_737 ? alignway[0] : alignway[1]; // @[el2_ifu_aln_ctl.scala 368:17]
+  assign io_i0_brp_ret = _T_728 | _T_730; // @[el2_ifu_aln_ctl.scala 364:17]
+  assign decompressed_io_din = aligndata[15:0]; // @[el2_ifu_aln_ctl.scala 390:23]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -887,39 +1048,45 @@ initial begin
   _RAND_0 = {1{`RANDOM}};
   error_stall = _RAND_0[0:0];
   _RAND_1 = {1{`RANDOM}};
-  f0val = _RAND_1[1:0];
+  wrptr = _RAND_1[1:0];
   _RAND_2 = {1{`RANDOM}};
   rdptr = _RAND_2[1:0];
   _RAND_3 = {1{`RANDOM}};
-  q1off = _RAND_3[0:0];
+  f2val = _RAND_3[1:0];
   _RAND_4 = {1{`RANDOM}};
-  q2off = _RAND_4[0:0];
+  f1val = _RAND_4[1:0];
   _RAND_5 = {1{`RANDOM}};
-  q0off = _RAND_5[0:0];
+  f0val = _RAND_5[1:0];
   _RAND_6 = {1{`RANDOM}};
-  q1 = _RAND_6[31:0];
+  q2off = _RAND_6[0:0];
   _RAND_7 = {1{`RANDOM}};
-  q0 = _RAND_7[31:0];
+  q1off = _RAND_7[0:0];
   _RAND_8 = {1{`RANDOM}};
-  q2 = _RAND_8[31:0];
-  _RAND_9 = {2{`RANDOM}};
-  _T_768 = _RAND_9[54:0];
-  _RAND_10 = {2{`RANDOM}};
-  _T_770 = _RAND_10[54:0];
-  _RAND_11 = {2{`RANDOM}};
-  _T_766 = _RAND_11[54:0];
+  q0off = _RAND_8[0:0];
+  _RAND_9 = {1{`RANDOM}};
+  q1 = _RAND_9[31:0];
+  _RAND_10 = {1{`RANDOM}};
+  q0 = _RAND_10[31:0];
+  _RAND_11 = {1{`RANDOM}};
+  q2 = _RAND_11[31:0];
   _RAND_12 = {1{`RANDOM}};
-  f1val = _RAND_12[1:0];
+  f2pc = _RAND_12[30:0];
   _RAND_13 = {1{`RANDOM}};
-  wrptr = _RAND_13[1:0];
+  f1pc = _RAND_13[30:0];
   _RAND_14 = {1{`RANDOM}};
-  f2val = _RAND_14[1:0];
+  f0pc = _RAND_14[30:0];
   _RAND_15 = {1{`RANDOM}};
-  brdata1 = _RAND_15[11:0];
+  brdata2 = _RAND_15[11:0];
   _RAND_16 = {1{`RANDOM}};
-  brdata0 = _RAND_16[11:0];
+  brdata1 = _RAND_16[11:0];
   _RAND_17 = {1{`RANDOM}};
-  brdata2 = _RAND_17[11:0];
+  brdata0 = _RAND_17[11:0];
+  _RAND_18 = {2{`RANDOM}};
+  _T_14 = _RAND_18[54:0];
+  _RAND_19 = {2{`RANDOM}};
+  _T_16 = _RAND_19[54:0];
+  _RAND_20 = {2{`RANDOM}};
+  _T_18 = _RAND_20[54:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -934,29 +1101,19 @@ end // initial
       error_stall <= error_stall_in;
     end
     if (reset) begin
-      f0val <= 2'h0;
+      wrptr <= 2'h0;
     end else begin
-      f0val <= _T_485;
+      wrptr <= wrptr_in;
     end
     if (reset) begin
       rdptr <= 2'h0;
     end else begin
-      rdptr <= wrptr_in;
+      rdptr <= rdptr_in;
     end
     if (reset) begin
-      q1off <= 1'h0;
+      f2val <= 2'h0;
     end else begin
-      q1off <= q1off_in;
-    end
-    if (reset) begin
-      q2off <= 1'h0;
-    end else begin
-      q2off <= q2off_in;
-    end
-    if (reset) begin
-      q0off <= 1'h0;
-    end else begin
-      q0off <= q0off_in;
+      f2val <= f2val_in;
     end
     if (reset) begin
       f1val <= 2'h0;
@@ -964,14 +1121,24 @@ end // initial
       f1val <= f1val_in;
     end
     if (reset) begin
-      wrptr <= 2'h0;
+      f0val <= 2'h0;
     end else begin
-      wrptr <= wrptr_in;
+      f0val <= f0val_in;
     end
     if (reset) begin
-      f2val <= 2'h0;
+      q2off <= 1'h0;
     end else begin
-      f2val <= f2val_in;
+      q2off <= q2off_in;
+    end
+    if (reset) begin
+      q1off <= 1'h0;
+    end else begin
+      q1off <= q1off_in;
+    end
+    if (reset) begin
+      q0off <= 1'h0;
+    end else begin
+      q0off <= q0off_in;
     end
   end
   always @(posedge clock) begin
@@ -991,19 +1158,24 @@ end // initial
       q2 <= io_ifu_fetch_data_f;
     end
     if (reset) begin
-      _T_768 <= 55'h0;
-    end else if (qwen[1]) begin
-      _T_768 <= misc_data_in;
+      f2pc <= 31'h0;
+    end else if (fetch_to_f2) begin
+      f2pc <= io_ifu_fetch_pc;
     end
     if (reset) begin
-      _T_770 <= 55'h0;
-    end else if (qwen[0]) begin
-      _T_770 <= misc_data_in;
+      f1pc <= 31'h0;
+    end else if (f1_shift_wr_en) begin
+      f1pc <= f1pc_in;
     end
     if (reset) begin
-      _T_766 <= 55'h0;
+      f0pc <= 31'h0;
+    end else if (f0_shift_wr_en) begin
+      f0pc <= f0pc_in;
+    end
+    if (reset) begin
+      brdata2 <= 12'h0;
     end else if (qwen[2]) begin
-      _T_766 <= misc_data_in;
+      brdata2 <= brdata_in;
     end
     if (reset) begin
       brdata1 <= 12'h0;
@@ -1016,9 +1188,19 @@ end // initial
       brdata0 <= brdata_in;
     end
     if (reset) begin
-      brdata2 <= 12'h0;
+      _T_14 <= 55'h0;
     end else if (qwen[2]) begin
-      brdata2 <= brdata_in;
+      _T_14 <= misc_data_in;
+    end
+    if (reset) begin
+      _T_16 <= 55'h0;
+    end else if (qwen[1]) begin
+      _T_16 <= misc_data_in;
+    end
+    if (reset) begin
+      _T_18 <= 55'h0;
+    end else if (qwen[0]) begin
+      _T_18 <= misc_data_in;
     end
   end
 endmodule
