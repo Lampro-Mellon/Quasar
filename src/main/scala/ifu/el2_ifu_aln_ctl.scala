@@ -48,7 +48,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
   val BRDATA_SIZE = 12
   val error_stall_in = WireInit(Bool(),0.U)
   val alignval = WireInit(UInt(2.W), 0.U)
-  val q0final = WireInit(UInt(16.W), 0.U)
+  val q0final = WireInit(UInt(32.W), 0.U)
   val q1final = WireInit(UInt(16.W), 0.U)
   val wrptr_in = WireInit(UInt(2.W), init = 0.U)
   val rdptr_in = WireInit(UInt(2.W), init = 0.U)

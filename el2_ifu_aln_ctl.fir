@@ -2002,7 +2002,7 @@ circuit el2_ifu_aln_ctl :
     error_stall_in <= UInt<1>("h00")
     wire alignval : UInt<2>
     alignval <= UInt<1>("h00")
-    wire q0final : UInt<16>
+    wire q0final : UInt<32>
     q0final <= UInt<1>("h00")
     wire q1final : UInt<16>
     q1final <= UInt<1>("h00")
@@ -2783,7 +2783,7 @@ circuit el2_ifu_aln_ctl :
     node _T_519 = mux(_T_512, q0final, UInt<1>("h00")) @[Mux.scala 27:72]
     node _T_520 = mux(_T_517, _T_518, UInt<1>("h00")) @[Mux.scala 27:72]
     node _T_521 = or(_T_519, _T_520) @[Mux.scala 27:72]
-    wire aligndata : UInt<32> @[Mux.scala 27:72]
+    wire aligndata : UInt<48> @[Mux.scala 27:72]
     aligndata <= _T_521 @[Mux.scala 27:72]
     node _T_522 = bits(f0val, 1, 1) @[el2_ifu_aln_ctl.scala 302:30]
     node _T_523 = bits(_T_522, 0, 0) @[el2_ifu_aln_ctl.scala 302:34]
@@ -2999,7 +2999,7 @@ circuit el2_ifu_aln_ctl :
     node _T_695 = mux(_T_693, aligndata, UInt<1>("h00")) @[Mux.scala 27:72]
     node _T_696 = mux(_T_694, decompressed.io.dout, UInt<1>("h00")) @[Mux.scala 27:72]
     node _T_697 = or(_T_695, _T_696) @[Mux.scala 27:72]
-    wire _T_698 : UInt<32> @[Mux.scala 27:72]
+    wire _T_698 : UInt<48> @[Mux.scala 27:72]
     _T_698 <= _T_697 @[Mux.scala 27:72]
     io.ifu_i0_instr <= _T_698 @[el2_ifu_aln_ctl.scala 352:19]
     node _T_699 = bits(f0pc, 8, 1) @[el2_lib.scala 191:12]
