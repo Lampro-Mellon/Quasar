@@ -25,7 +25,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
     val dec_i0_decode_d         = Input(Bool())
     val ifu_fetch_data_f        = Input(UInt(32.W))
     val ifu_fetch_val           = Input(UInt(2.W))
-    val ifu_fetch_pc            = Input(UInt(32.W))
+    val ifu_fetch_pc            = Input(UInt(31.W))
     val ifu_i0_valid            = Output(Bool())
     val ifu_i0_icaf             = Output(Bool())
     val ifu_i0_icaf_type        = Output(UInt(2.W))
@@ -84,11 +84,36 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
   val brdata0 = WireInit(UInt(12.W), init = 0.U)
   val brdata2 = WireInit(UInt(12.W), init = 0.U)
 
+  val f1pc_in = WireInit(UInt(31.W), 0.U)
+  val f0pc_in = WireInit(UInt(31.W), 0.U)
+  val error_stall = WireInit(Bool(), 0.U)
 
-
-  val error_stall = withClock(io.active_clk) {RegNext(error_stall_in, init = 0.U)}
-  val f0val = withClock(io.active_clk) {RegNext(f0val_in, init = 0.U)}
   error_stall_in := (error_stall | io.ifu_async_error_start) & !io.exu_flush_final
+
+  error_stall := withClock(io.active_clk) {RegNext(error_stall_in, init = 0.U)}
+  val wrptr = withClock(io.active_clk) {RegNext(wrptr_in, init = 0.U)}
+  val rdptr = withClock(io.active_clk) {RegNext(wrptr_in, init = 0.U)}
+
+  val f2val = withClock(io.active_clk) {RegNext(f2val_in, init = 0.U)}
+  val f1val = withClock(io.active_clk) {RegNext(f1val_in, init = 0.U)}
+  val f0val = withClock(io.active_clk) {RegNext(f0val_in, init = 0.U)}
+
+  val q2off = withClock(io.active_clk) {RegNext(q2off_in, init = 0.U)}
+  val q1off = withClock(io.active_clk) {RegNext(q1off_in, init = 0.U)}
+  val q0off = withClock(io.active_clk) {RegNext(q0off_in, init = 0.U)}
+
+  val f2pc = RegEnable(io.ifu_fetch_pc, 0.U, f2_wr_en.asBool)
+  val f1pc = RegEnable(f1pc_in, 0.U, f1_shift_wr_en.asBool)
+  val f0pc = RegEnable(f0pc_in, 0.U, f0_shift_wr_en.asBool)
+
+  brdata2 := RegEnable(brdata_in, 0.U, qwen(2))
+  brdata1 := RegEnable(brdata_in, 0.U, qwen(1))
+  brdata0 := RegEnable(brdata_in, 0.U, qwen(0))
+
+  misc2 := RegEnable(misc_data_in, 0.U, qwen(2))
+  misc1 := RegEnable(misc_data_in, 0.U, qwen(1))
+  misc0 := RegEnable(misc_data_in, 0.U, qwen(0))
+
 
   val i0_shift = io.dec_i0_decode_d & ~error_stall
 
@@ -120,16 +145,10 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
   val f0_shift_2B = Mux1H(Seq(shift_2B.asBool -> f0val(0), shift_4B.asBool -> (!f0val(0) & f0val(0))))
   val f1_shift_2B =  f0val(0) & !f0val(1) & shift_4B
 
-  val wrptr = withClock(io.active_clk) {RegNext(wrptr_in, init = 0.U)}
-  val rdptr = withClock(io.active_clk) {RegNext(wrptr_in, init = 0.U)}
-
-  val f2val = withClock(io.active_clk) {RegNext(f2val_in, init = 0.U)}
-  val f1val = withClock(io.active_clk) {RegNext(f1val_in, init = 0.U)}
 
 
-  val q2off = withClock(io.active_clk) {RegNext(q2off_in, init = 0.U)}
-  val q1off = withClock(io.active_clk) {RegNext(q1off_in, init = 0.U)}
-  val q0off = withClock(io.active_clk) {RegNext(q0off_in, init = 0.U)}
+
+
 
   val fetch_to_f0        =  !sf0_valid & !sf1_valid & !f2_valid & ifvalid
   val fetch_to_f1        = (!sf0_valid & !sf1_valid &  f2_valid & ifvalid)  |
@@ -259,18 +278,18 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
   shift_f2_f0 := !sf0_valid & !sf1_valid &  f2_valid
   shift_f2_f1 := !sf0_valid &  sf1_valid &  f2_valid
 
-  val f0pc = WireInit(UInt(31.W), 0.U)
-  val f2pc = WireInit(UInt(31.W), 0.U)
+  //val f0pc = WireInit(UInt(31.W), 0.U)
+ // val f2pc = WireInit(UInt(31.W), 0.U)
 
   val f0pc_plus1 = f0pc + 1.U
 
   val sf1pc = (Fill(31, f1_shift_2B) & f0pc_plus1) | (Fill(31, !f1_shift_2B) & f0pc)
 
-  val f1pc_in = Mux1H(Seq(fetch_to_f1.asBool->io.ifu_fetch_pc,
+  f1pc_in := Mux1H(Seq(fetch_to_f1.asBool->io.ifu_fetch_pc,
                           shift_f2_f1.asBool->f2pc,
                           (!fetch_to_f1 & !shift_f2_f1).asBool -> sf1pc))
 
-  val f0pc_in = Mux1H(Seq(fetch_to_f0.asBool->io.ifu_fetch_pc,
+  f0pc_in := Mux1H(Seq(fetch_to_f0.asBool->io.ifu_fetch_pc,
                           shift_f2_f0.asBool->f2pc,
                           shift_f1_f0.asBool->sf1pc,
                           (!fetch_to_f0 & !shift_f2_f0 & !shift_f1_f0).asBool->f0pc_plus1))
@@ -313,7 +332,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
 
   val alignfromf1 = !f0val(1) & f0val(0)
 
-  val f1pc = WireInit(UInt(31.W), init = 0.U)
+  //val f1pc = WireInit(UInt(31.W), init = 0.U)
 
   val secondpc = Mux1H(Seq(f0val(1).asBool()->f0pc_plus1 , (!f0val(1) & f0val(0)).asBool->f1pc))
 
@@ -364,21 +383,13 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
 
   io.ifu_i0_bp_btag := Mux((first2B | alignbrend(0)).asBool, firstbrtag_hash, secondbrtag_hash)
 
-  brdata2 := RegEnable(brdata_in, 0.U, qwen(2))
-  brdata1 := RegEnable(brdata_in, 0.U, qwen(1))
-  brdata0 := RegEnable(brdata_in, 0.U, qwen(0))
 
-  misc2 := RegEnable(misc_data_in, 0.U, qwen(2))
-  misc1 := RegEnable(misc_data_in, 0.U, qwen(1))
-  misc0 := RegEnable(misc_data_in, 0.U, qwen(0))
 
   q2 := RegEnable(io.ifu_fetch_data_f, 0.U, qwen(2))
   q1 := RegEnable(io.ifu_fetch_data_f, 0.U, qwen(1))
   q0 := RegEnable(io.ifu_fetch_data_f, 0.U, qwen(0))
 
-  f2pc := RegEnable(io.ifu_fetch_pc, 0.U, f2_wr_en.asBool)
-  f2pc := RegEnable(f1pc_in, 0.U, f1_shift_wr_en.asBool)
-  f2pc := RegEnable(f0pc_in, 0.U, f0_shift_wr_en.asBool)
+
 }
 object ifu_aln extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_aln_ctl()))

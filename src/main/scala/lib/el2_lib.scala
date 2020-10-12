@@ -101,7 +101,7 @@ trait param {
   val ICCM_ICACHE            = true   //.U(1.W)
   val ICCM_INDEX_BITS        = 0xC   //.U(4.W)
   val ICCM_NUM_BANKS         = 0x04  //.U(5.W)
-  val ICCM_ONLY              = 0x0   //.U(1.W)
+  val ICCM_ONLY              = false   //.U(1.W)
   val ICCM_REGION            = 0xE   //.U(4.W)
   val ICCM_SADR              = 0xEE000000L //.U(32.W)
   val ICCM_SIZE              = 0x040 //.U(10.W)
@@ -141,7 +141,7 @@ trait param {
   val LSU_NUM_NBLOAD_WIDTH   = 0x2  //.U(3.W)
   val LSU_SB_BITS            = 0x10 //.U(5.W)
   val LSU_STBUF_DEPTH        = 0x4  //.U(4.W)
-  val NO_ICCM_NO_ICACHE      = 0x0  //.U(1.W)
+  val NO_ICCM_NO_ICACHE      = false  //.U(1.W)
   val PIC_2CYCLE             = 0x0  //.U(1.W)
   val PIC_BASE_ADDR          = 0xF00C0000 //.U(32.W)
   val PIC_BITS               = 0x0F  //.U(5.W)
@@ -160,6 +160,11 @@ trait param {
 trait el2_lib extends param{
   def repl(b:Int, a:UInt) = VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
 
+  // IMC
+//  def IMC =
+//    (ICCM_ICACHE, ICCM_ONLY, ICACHE_ONLY, NO_ICCM_NO_ICACHE) match {
+//      case ()
+//    }
 
   // Configuration Methods
   def MEM_CAL : (Int, Int, Int, Int)=
@@ -325,7 +330,7 @@ trait el2_lib extends param{
     var j = 0;var k = 0;var m = 0; var n =0;
     var x = 0;var y = 0;var z = 0
 
-    for(i <- 63 to 0)
+    for(i <- 0 to 63)
     {
       if(mask0(i)==1) {w0(j) := din(i); j = j +1 }
       if(mask1(i)==1) {w1(k) := din(i); k = k +1 }

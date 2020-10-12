@@ -551,7 +551,7 @@ module el2_ifu_aln_ctl(
   output        io_i0_brp_br_error,
   output        io_i0_brp_br_start_error,
   output        io_i0_brp_bank,
-  output [31:0] io_i0_brp_prett,
+  output [30:0] io_i0_brp_prett,
   output        io_i0_brp_way,
   output        io_i0_brp_ret
 );
@@ -725,7 +725,6 @@ module el2_ifu_aln_ctl(
   wire [54:0] misc_data_in = {io_iccm_rd_ecc_double_err,io_ic_access_fault_f,io_ic_access_fault_type_f,io_ifu_bp_btb_target_f[31:1],io_ifu_bp_poffset_f,io_ifu_bp_fghr_f}; // @[Cat.scala 29:58]
   wire  f1dbecc = misc1eff[52]; // @[el2_ifu_aln_ctl.scala 194:25]
   wire  f0dbecc = misc0eff[54]; // @[el2_ifu_aln_ctl.scala 201:25]
-  wire [30:0] f0prett = misc0eff[50:20]; // @[el2_ifu_aln_ctl.scala 204:25]
   wire [5:0] _T_299 = {io_ifu_bp_hist1_f[0],io_ifu_bp_hist0_f[0],io_ifu_bp_pc4_f[0],io_ifu_bp_way_f[0],io_ifu_bp_valid_f[0],io_ifu_bp_ret_f[0]}; // @[Cat.scala 29:58]
   wire [11:0] brdata_in = {io_ifu_bp_hist1_f[1],io_ifu_bp_hist0_f[1],io_ifu_bp_pc4_f[1],io_ifu_bp_way_f[1],io_ifu_bp_valid_f[1],io_ifu_bp_ret_f[1],_T_299}; // @[Cat.scala 29:58]
   reg [11:0] brdata1; // @[Reg.scala 27:20]
@@ -846,7 +845,7 @@ module el2_ifu_aln_ctl(
   assign io_i0_brp_br_error = io_i0_brp_valid & i0_brp_pc4; // @[el2_ifu_aln_ctl.scala 358:22]
   assign io_i0_brp_br_start_error = 1'h0; // @[el2_ifu_aln_ctl.scala 352:29]
   assign io_i0_brp_bank = 1'h0; // @[el2_ifu_aln_ctl.scala 354:29]
-  assign io_i0_brp_prett = {{1'd0}, f0prett}; // @[el2_ifu_aln_ctl.scala 350:19]
+  assign io_i0_brp_prett = misc0eff[50:20]; // @[el2_ifu_aln_ctl.scala 350:19]
   assign io_i0_brp_way = alignway[0]; // @[el2_ifu_aln_ctl.scala 344:17]
   assign io_i0_brp_ret = alignret[0]; // @[el2_ifu_aln_ctl.scala 342:17]
   assign decompressed_io_din = aligndata[15:0]; // @[el2_ifu_aln_ctl.scala 101:23]
