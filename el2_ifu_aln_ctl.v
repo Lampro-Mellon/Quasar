@@ -536,11 +536,11 @@ module el2_ifu_aln_ctl(
   output        io_ifu_i0_icaf_f1,
   output        io_ifu_i0_dbecc,
   output [31:0] io_ifu_i0_instr,
-  output [31:0] io_ifu_i0_pc,
+  output [30:0] io_ifu_i0_pc,
   output        io_ifu_i0_pc4,
   output        io_ifu_fb_consume1,
   output        io_ifu_fb_consume2,
-  output [6:0]  io_ifu_i0_bp_index,
+  output [7:0]  io_ifu_i0_bp_index,
   output [7:0]  io_ifu_i0_bp_fghr,
   output [4:0]  io_ifu_i0_bp_btag,
   output        io_ifu_pmu_instr_aligned,
@@ -981,7 +981,6 @@ module el2_ifu_aln_ctl(
   wire  _T_769 = ~i0_brp_pc4; // @[el2_ifu_aln_ctl.scala 398:89]
   wire  _T_770 = io_i0_brp_valid & _T_769; // @[el2_ifu_aln_ctl.scala 398:87]
   wire  _T_771 = _T_770 & first4B; // @[el2_ifu_aln_ctl.scala 398:101]
-  wire [7:0] _T_776 = _T_737 ? firstpc_hash : secondpc_hash; // @[el2_ifu_aln_ctl.scala 400:28]
   el2_ifu_compress_ctl decompressed ( // @[el2_ifu_aln_ctl.scala 366:28]
     .io_din(decompressed_io_din),
     .io_dout(decompressed_io_dout)
@@ -992,11 +991,11 @@ module el2_ifu_aln_ctl(
   assign io_ifu_i0_icaf_f1 = _T_683 & _T_516; // @[el2_ifu_aln_ctl.scala 50:21 el2_ifu_aln_ctl.scala 360:21]
   assign io_ifu_i0_dbecc = _T_689 | _T_690; // @[el2_ifu_aln_ctl.scala 51:19 el2_ifu_aln_ctl.scala 362:19]
   assign io_ifu_i0_instr = _T_697[31:0]; // @[el2_ifu_aln_ctl.scala 52:19 el2_ifu_aln_ctl.scala 368:19]
-  assign io_ifu_i0_pc = {{1'd0}, f0pc}; // @[el2_ifu_aln_ctl.scala 53:16 el2_ifu_aln_ctl.scala 340:16]
+  assign io_ifu_i0_pc = f0pc; // @[el2_ifu_aln_ctl.scala 53:16 el2_ifu_aln_ctl.scala 340:16]
   assign io_ifu_i0_pc4 = aligndata[1:0] == 2'h3; // @[el2_ifu_aln_ctl.scala 54:17 el2_ifu_aln_ctl.scala 344:17]
   assign io_ifu_fb_consume1 = _T_313 & _T_1; // @[el2_ifu_aln_ctl.scala 55:22 el2_ifu_aln_ctl.scala 258:22]
   assign io_ifu_fb_consume2 = _T_316 & _T_1; // @[el2_ifu_aln_ctl.scala 56:22 el2_ifu_aln_ctl.scala 259:22]
-  assign io_ifu_i0_bp_index = _T_776[6:0]; // @[el2_ifu_aln_ctl.scala 57:22 el2_ifu_aln_ctl.scala 400:22]
+  assign io_ifu_i0_bp_index = _T_737 ? firstpc_hash : secondpc_hash; // @[el2_ifu_aln_ctl.scala 57:22 el2_ifu_aln_ctl.scala 400:22]
   assign io_ifu_i0_bp_fghr = i0_ends_f1 ? f1fghr : f0fghr; // @[el2_ifu_aln_ctl.scala 58:21 el2_ifu_aln_ctl.scala 402:21]
   assign io_ifu_i0_bp_btag = _T_737 ? firstbrtag_hash : secondbrtag_hash; // @[el2_ifu_aln_ctl.scala 59:21 el2_ifu_aln_ctl.scala 404:21]
   assign io_ifu_pmu_instr_aligned = io_dec_i0_decode_d & _T_784; // @[el2_ifu_aln_ctl.scala 60:28 el2_ifu_aln_ctl.scala 410:28]
