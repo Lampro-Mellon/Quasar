@@ -13,7 +13,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
     val ic_access_fault_f       = Input(Bool())
     val ic_access_fault_type_f  = Input(UInt(2.W))
     val ifu_bp_fghr_f           = Input(UInt(BHT_GHR_SIZE.W))
-    val ifu_bp_btb_target_f     = Input(UInt(32.W))
+    val ifu_bp_btb_target_f     = Input(UInt(31.W))
     val ifu_bp_poffset_f        = Input(UInt(12.W))
     val ifu_bp_hist0_f          = Input(UInt(2.W))
     val ifu_bp_hist1_f          = Input(UInt(2.W))
@@ -196,7 +196,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
   val q1sel = Cat(q1ptr, !q1ptr)
 
   misc_data_in := Cat(io.iccm_rd_ecc_double_err, io.ic_access_fault_f, io.ic_access_fault_type_f,
-    io.ifu_bp_btb_target_f(31,1), io.ifu_bp_poffset_f, io.ifu_bp_fghr_f)
+    io.ifu_bp_btb_target_f, io.ifu_bp_poffset_f, io.ifu_bp_fghr_f)
 
   val misceff = Mux1H(Seq(qren(0).asBool() -> Cat(misc1, misc0),
     qren(1).asBool()->Cat(misc2, misc1),
