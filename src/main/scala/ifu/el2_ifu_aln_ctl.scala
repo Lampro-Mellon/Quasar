@@ -276,7 +276,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
 
   val f1pc_plus1 = f1pc + 1.U
 
-  val sf1pc = (Fill(31, f1_shift_2B) & f0pc_plus1) | (Fill(31, !f1_shift_2B) & f0pc)
+  val sf1pc = (Fill(31, f1_shift_2B) & f1pc_plus1) | (Fill(31, !f1_shift_2B) & f1pc)
 
   f1pc_in := Mux1H(Seq(fetch_to_f1.asBool->io.ifu_fetch_pc,
     shift_f2_f1.asBool->f2pc,
