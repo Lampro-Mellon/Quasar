@@ -313,7 +313,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
 
   q1final := Mux1H(Seq(q1sel(0).asBool->q1eff(15,0), q1sel(1).asBool->q1eff(31,16)))
 
-  val aligndata = Mux1H(Seq(f0val(0).asBool -> q0final, (~f0val(1) & f0val(0)).asBool -> Cat(q1final(15,0),q0final(15,0))))
+  val aligndata = Mux1H(Seq(f0val(1).asBool -> q0final, (~f0val(1) & f0val(0)).asBool -> Cat(q1final(15,0),q0final(15,0))))
 
   alignval := Mux1H(Seq(f0val(1).asBool->3.U, (!f0val(1) & f0val(0)) -> Cat(f1val(0),1.U)))
 
