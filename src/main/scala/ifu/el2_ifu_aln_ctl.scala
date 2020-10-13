@@ -26,6 +26,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
     val ifu_fetch_data_f        = Input(UInt(32.W))
     val ifu_fetch_val           = Input(UInt(2.W))
     val ifu_fetch_pc            = Input(UInt(31.W))
+   /////////////////////////////////////////////////
     val ifu_i0_valid            = Output(Bool())
     val ifu_i0_icaf             = Output(Bool())
     val ifu_i0_icaf_type        = Output(UInt(2.W))
@@ -43,6 +44,21 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
     val ifu_i0_cinst            = Output(UInt(16.W))
     val i0_brp                  = Output(new el2_br_pkt_t)
   })
+  io.ifu_i0_valid := 0.U
+  io.ifu_i0_icaf := 0.U
+  io.ifu_i0_icaf_type := 0.U
+  io.ifu_i0_icaf_f1 := 0.U
+  io.ifu_i0_dbecc := 0.U
+  io.ifu_i0_instr := 0.U
+  io.ifu_i0_pc := 0.U
+  io.ifu_i0_pc4 := 0.U
+  io.ifu_fb_consume1 := 0.U
+  io.ifu_fb_consume2 := 0.U
+  io.ifu_i0_bp_index := 0.U
+  io.ifu_i0_bp_fghr := 0.U
+  io.ifu_i0_bp_btag := 0.U
+  io.ifu_pmu_instr_aligned := 0.U
+  io.ifu_i0_cinst := 0.U
   val MHI = 46+BHT_GHR_SIZE // 54
   val MSIZE = 47+BHT_GHR_SIZE // 55
   val BRDATA_SIZE = 12
