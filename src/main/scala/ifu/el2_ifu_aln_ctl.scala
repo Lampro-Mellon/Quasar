@@ -92,9 +92,9 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
   val sf0val = WireInit(UInt(2.W), 0.U)
   val sf1val = WireInit(UInt(2.W), 0.U)
 
-  val misc0 = WireInit(UInt(MHI.W), 0.U)
-  val misc1 = WireInit(UInt(MHI.W), 0.U)
-  val misc2 = WireInit(UInt(MHI.W), 0.U)
+  val misc0 = WireInit(UInt((MHI+1).W), 0.U)
+  val misc1 = WireInit(UInt((MHI+1).W), 0.U)
+  val misc2 = WireInit(UInt((MHI+1).W), 0.U)
 
   val brdata1 = WireInit(UInt(12.W), init = 0.U)
   val brdata0 = WireInit(UInt(12.W), init = 0.U)

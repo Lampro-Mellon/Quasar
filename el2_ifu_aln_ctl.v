@@ -730,10 +730,10 @@ module el2_ifu_aln_ctl(
   wire [11:0] brdata_in = {io_ifu_bp_hist1_f[1],io_ifu_bp_hist0_f[1],io_ifu_bp_pc4_f[1],io_ifu_bp_way_f[1],io_ifu_bp_valid_f[1],io_ifu_bp_ret_f[1],_T_241}; // @[Cat.scala 29:58]
   reg [11:0] brdata1; // @[Reg.scala 27:20]
   reg [11:0] brdata0; // @[Reg.scala 27:20]
-  reg [54:0] _T_14; // @[Reg.scala 27:20]
+  reg [54:0] misc2; // @[Reg.scala 27:20]
   wire [54:0] misc_data_in = {io_iccm_rd_ecc_double_err,io_ic_access_fault_f,io_ic_access_fault_type_f,io_ifu_bp_btb_target_f,io_ifu_bp_poffset_f,io_ifu_bp_fghr_f}; // @[Cat.scala 29:58]
-  reg [54:0] _T_16; // @[Reg.scala 27:20]
-  reg [54:0] _T_18; // @[Reg.scala 27:20]
+  reg [54:0] misc1; // @[Reg.scala 27:20]
+  reg [54:0] misc0; // @[Reg.scala 27:20]
   wire  _T_44 = qren[0] & io_ifu_fb_consume1; // @[el2_ifu_aln_ctl.scala 163:34]
   wire  _T_46 = _T_44 & _T_1; // @[el2_ifu_aln_ctl.scala 163:55]
   wire  _T_49 = qren[1] & io_ifu_fb_consume1; // @[el2_ifu_aln_ctl.scala 164:14]
@@ -802,23 +802,20 @@ module el2_ifu_aln_ctl(
   wire  _T_182 = _T_178 & q0off; // @[Mux.scala 27:72]
   wire  _T_183 = _T_180 | _T_181; // @[Mux.scala 27:72]
   wire  q0off_in = _T_183 | _T_182; // @[Mux.scala 27:72]
-  wire [53:0] misc1 = _T_16[53:0]; // @[el2_ifu_aln_ctl.scala 149:9]
-  wire [53:0] misc0 = _T_18[53:0]; // @[el2_ifu_aln_ctl.scala 150:9]
-  wire [107:0] _T_211 = {misc1,misc0}; // @[Cat.scala 29:58]
-  wire [53:0] misc2 = _T_14[53:0]; // @[el2_ifu_aln_ctl.scala 148:9]
-  wire [107:0] _T_214 = {misc2,misc1}; // @[Cat.scala 29:58]
-  wire [107:0] _T_217 = {misc0,misc2}; // @[Cat.scala 29:58]
-  wire [107:0] _T_218 = qren[0] ? _T_211 : 108'h0; // @[Mux.scala 27:72]
-  wire [107:0] _T_219 = qren[1] ? _T_214 : 108'h0; // @[Mux.scala 27:72]
-  wire [107:0] _T_220 = qren[2] ? _T_217 : 108'h0; // @[Mux.scala 27:72]
-  wire [107:0] _T_221 = _T_218 | _T_219; // @[Mux.scala 27:72]
-  wire [107:0] misceff = _T_221 | _T_220; // @[Mux.scala 27:72]
-  wire [52:0] misc1eff = misceff[107:55]; // @[el2_ifu_aln_ctl.scala 205:25]
+  wire [109:0] _T_211 = {misc1,misc0}; // @[Cat.scala 29:58]
+  wire [109:0] _T_214 = {misc2,misc1}; // @[Cat.scala 29:58]
+  wire [109:0] _T_217 = {misc0,misc2}; // @[Cat.scala 29:58]
+  wire [109:0] _T_218 = qren[0] ? _T_211 : 110'h0; // @[Mux.scala 27:72]
+  wire [109:0] _T_219 = qren[1] ? _T_214 : 110'h0; // @[Mux.scala 27:72]
+  wire [109:0] _T_220 = qren[2] ? _T_217 : 110'h0; // @[Mux.scala 27:72]
+  wire [109:0] _T_221 = _T_218 | _T_219; // @[Mux.scala 27:72]
+  wire [109:0] misceff = _T_221 | _T_220; // @[Mux.scala 27:72]
+  wire [54:0] misc1eff = misceff[109:55]; // @[el2_ifu_aln_ctl.scala 205:25]
   wire [54:0] misc0eff = misceff[54:0]; // @[el2_ifu_aln_ctl.scala 206:25]
-  wire  f1dbecc = misc1eff[52]; // @[el2_ifu_aln_ctl.scala 209:25]
-  wire  f1icaf = misc1eff[51]; // @[el2_ifu_aln_ctl.scala 210:21]
-  wire [1:0] f1ictype = misc1eff[50:49]; // @[el2_ifu_aln_ctl.scala 211:26]
-  wire [30:0] f1prett = misc1eff[48:18]; // @[el2_ifu_aln_ctl.scala 212:25]
+  wire  f1dbecc = misc1eff[54]; // @[el2_ifu_aln_ctl.scala 209:25]
+  wire  f1icaf = misc1eff[53]; // @[el2_ifu_aln_ctl.scala 210:21]
+  wire [1:0] f1ictype = misc1eff[52:51]; // @[el2_ifu_aln_ctl.scala 211:26]
+  wire [30:0] f1prett = misc1eff[50:20]; // @[el2_ifu_aln_ctl.scala 212:25]
   wire [11:0] f1poffset = misc1eff[19:8]; // @[el2_ifu_aln_ctl.scala 213:27]
   wire [7:0] f1fghr = misc1eff[7:0]; // @[el2_ifu_aln_ctl.scala 214:24]
   wire  f0dbecc = misc0eff[54]; // @[el2_ifu_aln_ctl.scala 216:25]
@@ -1082,11 +1079,11 @@ initial begin
   _RAND_17 = {1{`RANDOM}};
   brdata0 = _RAND_17[11:0];
   _RAND_18 = {2{`RANDOM}};
-  _T_14 = _RAND_18[54:0];
+  misc2 = _RAND_18[54:0];
   _RAND_19 = {2{`RANDOM}};
-  _T_16 = _RAND_19[54:0];
+  misc1 = _RAND_19[54:0];
   _RAND_20 = {2{`RANDOM}};
-  _T_18 = _RAND_20[54:0];
+  misc0 = _RAND_20[54:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -1188,19 +1185,19 @@ end // initial
       brdata0 <= brdata_in;
     end
     if (reset) begin
-      _T_14 <= 55'h0;
+      misc2 <= 55'h0;
     end else if (qwen[2]) begin
-      _T_14 <= misc_data_in;
+      misc2 <= misc_data_in;
     end
     if (reset) begin
-      _T_16 <= 55'h0;
+      misc1 <= 55'h0;
     end else if (qwen[1]) begin
-      _T_16 <= misc_data_in;
+      misc1 <= misc_data_in;
     end
     if (reset) begin
-      _T_18 <= 55'h0;
+      misc0 <= 55'h0;
     end else if (qwen[0]) begin
-      _T_18 <= misc_data_in;
+      misc0 <= misc_data_in;
     end
   end
 endmodule

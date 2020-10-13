@@ -2059,11 +2059,11 @@ circuit el2_ifu_aln_ctl :
     sf0val <= UInt<1>("h00")
     wire sf1val : UInt<2>
     sf1val <= UInt<1>("h00")
-    wire misc0 : UInt<54>
+    wire misc0 : UInt<55>
     misc0 <= UInt<1>("h00")
-    wire misc1 : UInt<54>
+    wire misc1 : UInt<55>
     misc1 <= UInt<1>("h00")
-    wire misc2 : UInt<54>
+    wire misc2 : UInt<55>
     misc2 <= UInt<1>("h00")
     wire brdata1 : UInt<12>
     brdata1 <= UInt<1>("h00")
@@ -2423,15 +2423,15 @@ circuit el2_ifu_aln_ctl :
     node _T_220 = mux(_T_216, _T_217, UInt<1>("h00")) @[Mux.scala 27:72]
     node _T_221 = or(_T_218, _T_219) @[Mux.scala 27:72]
     node _T_222 = or(_T_221, _T_220) @[Mux.scala 27:72]
-    wire misceff : UInt<108> @[Mux.scala 27:72]
+    wire misceff : UInt<110> @[Mux.scala 27:72]
     misceff <= _T_222 @[Mux.scala 27:72]
-    node misc1eff = bits(misceff, 107, 55) @[el2_ifu_aln_ctl.scala 205:25]
+    node misc1eff = bits(misceff, 109, 55) @[el2_ifu_aln_ctl.scala 205:25]
     node misc0eff = bits(misceff, 54, 0) @[el2_ifu_aln_ctl.scala 206:25]
-    node f1dbecc = bits(misc1eff, 52, 52) @[el2_ifu_aln_ctl.scala 209:25]
-    node _T_223 = bits(misc1eff, 51, 51) @[el2_ifu_aln_ctl.scala 210:21]
+    node f1dbecc = bits(misc1eff, 54, 54) @[el2_ifu_aln_ctl.scala 209:25]
+    node _T_223 = bits(misc1eff, 53, 53) @[el2_ifu_aln_ctl.scala 210:21]
     f1icaf <= _T_223 @[el2_ifu_aln_ctl.scala 210:10]
-    node f1ictype = bits(misc1eff, 50, 49) @[el2_ifu_aln_ctl.scala 211:26]
-    node f1prett = bits(misc1eff, 48, 18) @[el2_ifu_aln_ctl.scala 212:25]
+    node f1ictype = bits(misc1eff, 52, 51) @[el2_ifu_aln_ctl.scala 211:26]
+    node f1prett = bits(misc1eff, 50, 20) @[el2_ifu_aln_ctl.scala 212:25]
     node f1poffset = bits(misc1eff, 19, 8) @[el2_ifu_aln_ctl.scala 213:27]
     node f1fghr = bits(misc1eff, 7, 0) @[el2_ifu_aln_ctl.scala 214:24]
     node f0dbecc = bits(misc0eff, 54, 54) @[el2_ifu_aln_ctl.scala 216:25]
