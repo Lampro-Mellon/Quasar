@@ -583,7 +583,6 @@ module el2_ifu_aln_ctl(
   reg  error_stall; // @[el2_ifu_aln_ctl.scala 128:51]
   wire  _T = error_stall | io_ifu_async_error_start; // @[el2_ifu_aln_ctl.scala 126:34]
   wire  _T_1 = ~io_exu_flush_final; // @[el2_ifu_aln_ctl.scala 126:64]
-  wire  error_stall_in = _T & _T_1; // @[el2_ifu_aln_ctl.scala 126:62]
   reg [1:0] wrptr; // @[el2_ifu_aln_ctl.scala 129:48]
   reg [1:0] rdptr; // @[el2_ifu_aln_ctl.scala 130:48]
   reg [1:0] f2val; // @[el2_ifu_aln_ctl.scala 132:48]
@@ -754,7 +753,6 @@ module el2_ifu_aln_ctl(
   wire [1:0] _T_88 = _T_86 | _T_82; // @[Mux.scala 27:72]
   wire [1:0] _GEN_15 = {{1'd0}, _T_71}; // @[Mux.scala 27:72]
   wire [1:0] _T_90 = _T_88 | _GEN_15; // @[Mux.scala 27:72]
-  wire [1:0] rdptr_in = _T_90 | _T_85; // @[Mux.scala 27:72]
   wire  _T_95 = qwen[0] & _T_1; // @[el2_ifu_aln_ctl.scala 171:34]
   wire  _T_99 = qwen[1] & _T_1; // @[el2_ifu_aln_ctl.scala 172:14]
   wire  _T_105 = ~ifvalid; // @[el2_ifu_aln_ctl.scala 174:6]
@@ -763,7 +761,6 @@ module el2_ifu_aln_ctl(
   wire [1:0] _T_112 = _T_107 ? wrptr : 2'h0; // @[Mux.scala 27:72]
   wire [1:0] _GEN_16 = {{1'd0}, _T_95}; // @[Mux.scala 27:72]
   wire [1:0] _T_113 = _GEN_16 | _T_110; // @[Mux.scala 27:72]
-  wire [1:0] wrptr_in = _T_113 | _T_112; // @[Mux.scala 27:72]
   wire  _T_118 = ~qwen[2]; // @[el2_ifu_aln_ctl.scala 176:26]
   wire  _T_120 = _T_118 & _T_188; // @[el2_ifu_aln_ctl.scala 176:35]
   wire  _T_795 = shift_2B & f0val[0]; // @[Mux.scala 27:72]
@@ -779,7 +776,6 @@ module el2_ifu_aln_ctl(
   wire  _T_135 = _T_126 & _T_128; // @[Mux.scala 27:72]
   wire  _T_136 = _T_132 & q2off; // @[Mux.scala 27:72]
   wire  _T_137 = _T_134 | _T_135; // @[Mux.scala 27:72]
-  wire  q2off_in = _T_137 | _T_136; // @[Mux.scala 27:72]
   wire  _T_141 = ~qwen[1]; // @[el2_ifu_aln_ctl.scala 180:26]
   wire  _T_143 = _T_141 & _T_187; // @[el2_ifu_aln_ctl.scala 180:35]
   wire  _T_145 = q1off | f0_shift_2B; // @[el2_ifu_aln_ctl.scala 180:74]
@@ -790,7 +786,6 @@ module el2_ifu_aln_ctl(
   wire  _T_158 = _T_149 & _T_151; // @[Mux.scala 27:72]
   wire  _T_159 = _T_155 & q1off; // @[Mux.scala 27:72]
   wire  _T_160 = _T_157 | _T_158; // @[Mux.scala 27:72]
-  wire  q1off_in = _T_160 | _T_159; // @[Mux.scala 27:72]
   wire  _T_164 = ~qwen[0]; // @[el2_ifu_aln_ctl.scala 184:26]
   wire  _T_166 = _T_164 & _T_186; // @[el2_ifu_aln_ctl.scala 184:35]
   wire  _T_168 = q0off | f0_shift_2B; // @[el2_ifu_aln_ctl.scala 184:76]
@@ -801,7 +796,6 @@ module el2_ifu_aln_ctl(
   wire  _T_181 = _T_172 & _T_174; // @[Mux.scala 27:72]
   wire  _T_182 = _T_178 & q0off; // @[Mux.scala 27:72]
   wire  _T_183 = _T_180 | _T_181; // @[Mux.scala 27:72]
-  wire  q0off_in = _T_183 | _T_182; // @[Mux.scala 27:72]
   wire [109:0] _T_211 = {misc1,misc0}; // @[Cat.scala 29:58]
   wire [109:0] _T_214 = {misc2,misc1}; // @[Cat.scala 29:58]
   wire [109:0] _T_217 = {misc0,misc2}; // @[Cat.scala 29:58]
@@ -866,7 +860,6 @@ module el2_ifu_aln_ctl(
   wire  _T_407 = _T_405 & _T_1; // @[el2_ifu_aln_ctl.scala 291:68]
   wire [1:0] _T_409 = _T_399 ? io_ifu_fetch_val : 2'h0; // @[Mux.scala 27:72]
   wire [1:0] _T_410 = _T_407 ? f2val : 2'h0; // @[Mux.scala 27:72]
-  wire [1:0] f2val_in = _T_409 | _T_410; // @[Mux.scala 27:72]
   wire  _T_422 = fetch_to_f1 & _T_1; // @[el2_ifu_aln_ctl.scala 295:39]
   wire  _T_425 = _T_353 & _T_1; // @[el2_ifu_aln_ctl.scala 296:54]
   wire  _T_431 = _T_373 & _T_387; // @[el2_ifu_aln_ctl.scala 297:54]
@@ -875,7 +868,6 @@ module el2_ifu_aln_ctl(
   wire [1:0] _T_436 = _T_425 ? f2val : 2'h0; // @[Mux.scala 27:72]
   wire [1:0] _T_437 = _T_433 ? sf1val : 2'h0; // @[Mux.scala 27:72]
   wire [1:0] _T_438 = _T_435 | _T_436; // @[Mux.scala 27:72]
-  wire [1:0] f1val_in = _T_438 | _T_437; // @[Mux.scala 27:72]
   wire  _T_453 = fetch_to_f0 & _T_1; // @[el2_ifu_aln_ctl.scala 302:38]
   wire  _T_456 = _T_337 & _T_1; // @[el2_ifu_aln_ctl.scala 303:54]
   wire  _T_459 = _T_352 & _T_1; // @[el2_ifu_aln_ctl.scala 304:69]
@@ -886,7 +878,6 @@ module el2_ifu_aln_ctl(
   wire [1:0] _T_472 = _T_467 ? sf0val : 2'h0; // @[Mux.scala 27:72]
   wire [1:0] _T_473 = _T_469 | _T_470; // @[Mux.scala 27:72]
   wire [1:0] _T_474 = _T_473 | _T_471; // @[Mux.scala 27:72]
-  wire [1:0] f0val_in = _T_474 | _T_472; // @[Mux.scala 27:72]
   wire [1:0] _T_530 = {f1val[0],1'h1}; // @[Cat.scala 29:58]
   wire [1:0] _T_531 = f0val[1] ? 2'h3 : 2'h0; // @[Mux.scala 27:72]
   wire [1:0] _T_532 = _T_515 ? _T_530 : 2'h0; // @[Mux.scala 27:72]
@@ -1085,115 +1076,216 @@ initial begin
   _RAND_20 = {2{`RANDOM}};
   misc0 = _RAND_20[54:0];
 `endif // RANDOMIZE_REG_INIT
+  if (reset) begin
+    error_stall = 1'h0;
+  end
+  if (reset) begin
+    wrptr = 2'h0;
+  end
+  if (reset) begin
+    rdptr = 2'h0;
+  end
+  if (reset) begin
+    f2val = 2'h0;
+  end
+  if (reset) begin
+    f1val = 2'h0;
+  end
+  if (reset) begin
+    f0val = 2'h0;
+  end
+  if (reset) begin
+    q2off = 1'h0;
+  end
+  if (reset) begin
+    q1off = 1'h0;
+  end
+  if (reset) begin
+    q0off = 1'h0;
+  end
+  if (reset) begin
+    q1 = 32'h0;
+  end
+  if (reset) begin
+    q0 = 32'h0;
+  end
+  if (reset) begin
+    q2 = 32'h0;
+  end
+  if (reset) begin
+    f2pc = 31'h0;
+  end
+  if (reset) begin
+    f1pc = 31'h0;
+  end
+  if (reset) begin
+    f0pc = 31'h0;
+  end
+  if (reset) begin
+    brdata2 = 12'h0;
+  end
+  if (reset) begin
+    brdata1 = 12'h0;
+  end
+  if (reset) begin
+    brdata0 = 12'h0;
+  end
+  if (reset) begin
+    misc2 = 55'h0;
+  end
+  if (reset) begin
+    misc1 = 55'h0;
+  end
+  if (reset) begin
+    misc0 = 55'h0;
+  end
   `endif // RANDOMIZE
 end // initial
 `ifdef FIRRTL_AFTER_INITIAL
 `FIRRTL_AFTER_INITIAL
 `endif
 `endif // SYNTHESIS
-  always @(posedge io_active_clk) begin
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       error_stall <= 1'h0;
     end else begin
-      error_stall <= error_stall_in;
+      error_stall <= _T & _T_1;
     end
+  end
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       wrptr <= 2'h0;
     end else begin
-      wrptr <= wrptr_in;
+      wrptr <= _T_113 | _T_112;
     end
+  end
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       rdptr <= 2'h0;
     end else begin
-      rdptr <= rdptr_in;
+      rdptr <= _T_90 | _T_85;
     end
+  end
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       f2val <= 2'h0;
     end else begin
-      f2val <= f2val_in;
+      f2val <= _T_409 | _T_410;
     end
+  end
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       f1val <= 2'h0;
     end else begin
-      f1val <= f1val_in;
+      f1val <= _T_438 | _T_437;
     end
+  end
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       f0val <= 2'h0;
     end else begin
-      f0val <= f0val_in;
+      f0val <= _T_474 | _T_472;
     end
+  end
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       q2off <= 1'h0;
     end else begin
-      q2off <= q2off_in;
+      q2off <= _T_137 | _T_136;
     end
+  end
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       q1off <= 1'h0;
     end else begin
-      q1off <= q1off_in;
+      q1off <= _T_160 | _T_159;
     end
+  end
+  always @(posedge io_active_clk or posedge reset) begin
     if (reset) begin
       q0off <= 1'h0;
     end else begin
-      q0off <= q0off_in;
+      q0off <= _T_183 | _T_182;
     end
   end
-  always @(posedge clock) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       q1 <= 32'h0;
     end else if (qwen[1]) begin
       q1 <= io_ifu_fetch_data_f;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       q0 <= 32'h0;
     end else if (qwen[0]) begin
       q0 <= io_ifu_fetch_data_f;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       q2 <= 32'h0;
     end else if (qwen[2]) begin
       q2 <= io_ifu_fetch_data_f;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       f2pc <= 31'h0;
     end else if (fetch_to_f2) begin
       f2pc <= io_ifu_fetch_pc;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       f1pc <= 31'h0;
     end else if (f1_shift_wr_en) begin
       f1pc <= f1pc_in;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       f0pc <= 31'h0;
     end else if (f0_shift_wr_en) begin
       f0pc <= f0pc_in;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       brdata2 <= 12'h0;
     end else if (qwen[2]) begin
       brdata2 <= brdata_in;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       brdata1 <= 12'h0;
     end else if (qwen[1]) begin
       brdata1 <= brdata_in;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       brdata0 <= 12'h0;
     end else if (qwen[0]) begin
       brdata0 <= brdata_in;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       misc2 <= 55'h0;
     end else if (qwen[2]) begin
       misc2 <= misc_data_in;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       misc1 <= 55'h0;
     end else if (qwen[1]) begin
       misc1 <= misc_data_in;
     end
+  end
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       misc0 <= 55'h0;
     end else if (qwen[0]) begin
