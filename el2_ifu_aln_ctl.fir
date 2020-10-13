@@ -2786,7 +2786,7 @@ circuit el2_ifu_aln_ctl :
     wire _T_509 : UInt<16> @[Mux.scala 27:72]
     _T_509 <= _T_508 @[Mux.scala 27:72]
     q1final <= _T_509 @[el2_ifu_aln_ctl.scala 314:11]
-    node _T_510 = bits(f0val, 0, 0) @[el2_ifu_aln_ctl.scala 316:34]
+    node _T_510 = bits(f0val, 1, 1) @[el2_ifu_aln_ctl.scala 316:34]
     node _T_511 = bits(_T_510, 0, 0) @[el2_ifu_aln_ctl.scala 316:38]
     node _T_512 = bits(f0val, 1, 1) @[el2_ifu_aln_ctl.scala 316:64]
     node _T_513 = not(_T_512) @[el2_ifu_aln_ctl.scala 316:58]

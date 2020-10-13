@@ -620,7 +620,7 @@ module el2_ifu_aln_ctl(
   wire [15:0] _T_497 = q0sel[1] ? q0eff[31:16] : 16'h0; // @[Mux.scala 27:72]
   wire [31:0] _GEN_12 = {{16'd0}, _T_497}; // @[Mux.scala 27:72]
   wire [31:0] q0final = _T_496 | _GEN_12; // @[Mux.scala 27:72]
-  wire [31:0] _T_520 = f0val[0] ? q0final : 32'h0; // @[Mux.scala 27:72]
+  wire [31:0] _T_520 = f0val[1] ? q0final : 32'h0; // @[Mux.scala 27:72]
   wire  _T_513 = ~f0val[1]; // @[el2_ifu_aln_ctl.scala 316:58]
   wire  _T_515 = _T_513 & f0val[0]; // @[el2_ifu_aln_ctl.scala 316:68]
   wire  _T_197 = _T_186 & q1off; // @[Mux.scala 27:72]
