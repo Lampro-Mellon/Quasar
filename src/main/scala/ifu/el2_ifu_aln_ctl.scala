@@ -37,8 +37,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
     val ifu_i0_pc4              = Output(Bool())
     val ifu_fb_consume1         = Output(Bool())
     val ifu_fb_consume2         = Output(Bool())
-    val ifu_i0_bp_index         = Output(UInt((BTB_ADDR_HI-BTB_ADDR_LO+1
-      ).W))
+    val ifu_i0_bp_index         = Output(UInt((BTB_ADDR_HI-BTB_ADDR_LO+1).W))
     val ifu_i0_bp_fghr          = Output(UInt(BHT_GHR_SIZE.W))
     val ifu_i0_bp_btag          = Output(UInt(BTB_BTAG_SIZE.W))
     val ifu_pmu_instr_aligned   = Output(Bool())
@@ -267,11 +266,11 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
 
   fetch_to_f0        :=  !sf0_valid & !sf1_valid & !f2_valid & ifvalid
   fetch_to_f1        := (!sf0_valid & !sf1_valid &  f2_valid & ifvalid)  |
-    (!sf0_valid &  sf1_valid & !f2_valid & ifvalid)  |
-    ( sf0_valid & !sf1_valid & !f2_valid & ifvalid)
+                        (!sf0_valid &  sf1_valid & !f2_valid & ifvalid)  |
+                        ( sf0_valid & !sf1_valid & !f2_valid & ifvalid)
 
   fetch_to_f2        := (!sf0_valid &  sf1_valid &  f2_valid & ifvalid)  |
-    ( sf0_valid &  sf1_valid & !f2_valid & ifvalid)
+                        ( sf0_valid &  sf1_valid & !f2_valid & ifvalid)
 
   val f0pc_plus1 = f0pc + 1.U
 
@@ -289,21 +288,21 @@ class el2_ifu_aln_ctl extends Module with el2_lib {
                       (!fetch_to_f0 & !shift_f2_f0 & !shift_f1_f0).asBool->f0pc_plus1))
 
   f2val_in := Mux1H(Seq((fetch_to_f2 & !io.exu_flush_final).asBool->io.ifu_fetch_val,
-    (!fetch_to_f2 & !shift_f2_f1 & !shift_f2_f0 & !io.exu_flush_final).asBool->f2val))
+                       (!fetch_to_f2 & !shift_f2_f1 & !shift_f2_f0 & !io.exu_flush_final).asBool->f2val))
 
   sf1val := Mux1H(Seq(f1_shift_2B.asBool->f1val(1), !f1_shift_2B.asBool->f1val))
 
-  f1val_in := Mux1H(Seq((fetch_to_f1 & !io.exu_flush_final).asBool -> io.ifu_fetch_val,
-    (shift_f2_f1 & !io.exu_flush_final).asBool->f2val,
-    (!fetch_to_f1 & !shift_f2_f1 & !shift_f1_f0 & !io.exu_flush_final).asBool->sf1val))
+  f1val_in := Mux1H(Seq(( fetch_to_f1 &                               !io.exu_flush_final).asBool -> io.ifu_fetch_val,
+                        (                shift_f2_f1 &                !io.exu_flush_final).asBool->f2val,
+                        (!fetch_to_f1 & !shift_f2_f1 & !shift_f1_f0 & !io.exu_flush_final).asBool->sf1val))
 
   sf0val := Mux1H(Seq(shift_2B.asBool->Cat(0.U, f0val(1)),
-    (!shift_2B & !shift_4B).asBool->f1val))
+                (!shift_2B & !shift_4B).asBool->f0val))
 
-  f0val_in := Mux1H(Seq((fetch_to_f0 & !io.exu_flush_final).asBool->io.ifu_fetch_val,
-    (shift_f2_f0 & !io.exu_flush_final).asBool->f2val,
-    (shift_f1_f0 & !io.exu_flush_final).asBool()->sf1val,
-    (!fetch_to_f0 & !shift_f2_f0 & !shift_f1_f0 & !io.exu_flush_final).asBool->sf0val))
+  f0val_in := Mux1H(Seq((fetch_to_f0 &                                !io.exu_flush_final).asBool->io.ifu_fetch_val,
+                        (                shift_f2_f0 &                !io.exu_flush_final).asBool->f2val,
+                        (                               shift_f1_f0 & !io.exu_flush_final).asBool->sf1val,
+                        (!fetch_to_f0 & !shift_f2_f0 & !shift_f1_f0 & !io.exu_flush_final).asBool->sf0val))
 
   val qeff = Mux1H(Seq(qren(0).asBool->Cat(q1,q0),
     qren(1).asBool->Cat(q2,q1),
