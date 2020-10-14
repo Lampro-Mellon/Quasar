@@ -2440,7 +2440,7 @@ circuit el2_ifu_aln_ctl :
     node f0ictype = bits(misc0eff, 52, 51) @[el2_ifu_aln_ctl.scala 218:26]
     node f0prett = bits(misc0eff, 50, 18) @[el2_ifu_aln_ctl.scala 219:25]
     node f0poffset = bits(misc0eff, 17, 5) @[el2_ifu_aln_ctl.scala 220:27]
-    node f0fghr = bits(misc0eff, 4, 0) @[el2_ifu_aln_ctl.scala 221:24]
+    node f0fghr = bits(misc0eff, 7, 0) @[el2_ifu_aln_ctl.scala 221:24]
     node _T_225 = bits(io.ifu_bp_hist1_f, 1, 1) @[el2_ifu_aln_ctl.scala 223:37]
     node _T_226 = bits(io.ifu_bp_hist0_f, 1, 1) @[el2_ifu_aln_ctl.scala 223:58]
     node _T_227 = bits(io.ifu_bp_pc4_f, 1, 1) @[el2_ifu_aln_ctl.scala 223:77]
