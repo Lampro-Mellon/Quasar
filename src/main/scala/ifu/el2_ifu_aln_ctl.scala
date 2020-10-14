@@ -182,8 +182,8 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
     (!qwen(1) & (rdptr===2.U)).asBool->q1off))
 
   q0off_in := Mux1H(Seq((!qwen(0) & (rdptr===0.U)).asBool -> (q0off.asUInt | f0_shift_2B),
-    (!qwen(0) & (rdptr===2.U)).asBool -> (q0off.asUInt | f1_shift_2B),
-    (!qwen(0) & (rdptr===1.U)).asBool ->  q0off))
+                        (!qwen(0) & (rdptr===2.U)).asBool -> (q0off.asUInt | f1_shift_2B),
+                        (!qwen(0) & (rdptr===1.U)).asBool ->  q0off))
 
   val q0ptr = Mux1H(Seq((rdptr===0.U)->q0off,
     (rdptr===1.U)->q1off,
@@ -412,7 +412,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
   shift_2B := i0_shift & first2B
   shift_4B := i0_shift & first4B
 
-  f0_shift_2B := Mux1H(Seq(shift_2B.asBool -> f0val(0), shift_4B.asBool -> (!f0val(0) & f0val(0))))
+  f0_shift_2B := Mux1H(Seq(shift_2B.asBool -> f0val(0), shift_4B.asBool -> (f0val(0) & !f0val(1))))
   f1_shift_2B :=  f0val(0) & !f0val(1) & shift_4B
 
 }
