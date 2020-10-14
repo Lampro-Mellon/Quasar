@@ -213,11 +213,11 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
   val f1poffset = misc1eff(BHT_GHR_SIZE+11, BHT_GHR_SIZE)
   val f1fghr = misc1eff(BHT_GHR_SIZE-1, 0)
 
-  val f0dbecc = misc0eff(MHI)
-  f0icaf := misc0eff(MHI-1)
-  val f0ictype = misc0eff(MHI-2, MHI-3)
-  val f0prett = misc0eff(MHI-4,MHI-36)
-  val f0poffset = misc0eff(MHI-37, MHI-49)
+  val f0dbecc = misc0eff(misc1eff.getWidth-1)
+  f0icaf := misc0eff(misc1eff.getWidth-2)
+  val f0ictype = misc0eff(misc1eff.getWidth-3,misc1eff.getWidth-4)
+  val f0prett = misc0eff(misc1eff.getWidth-5,misc1eff.getWidth-35)
+  val f0poffset = misc0eff(BHT_GHR_SIZE+11, BHT_GHR_SIZE)
   val f0fghr = misc0eff(BHT_GHR_SIZE-1, 0)
 
   brdata_in := Cat(io.ifu_bp_hist1_f(1),io.ifu_bp_hist0_f(1),io.ifu_bp_pc4_f(1),io.ifu_bp_way_f(1),io.ifu_bp_valid_f(1),
