@@ -1,40 +1,6 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_data",
-    "sources":[
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_premux_data",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_sel_premux_data",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_hit",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_wr_en",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_way",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_clk_override",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rw_addr",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_wr_en",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_addr",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_tag_array",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_rd_en",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_en"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_rd_data",
-    "sources":[
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_hit",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_wr_en",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_way",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_clk_override",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rw_addr",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_wr_en",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_addr",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_tag_array",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_rd_en",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_en"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_eccerr",
     "sources":[
       "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_hit",
@@ -46,7 +12,56 @@
       "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_addr",
       "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_tag_array",
       "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_rd_en",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_en"
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_tag_valid"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ictag_debug_rd_data",
+    "sources":[
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rw_addr",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_addr",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_wr_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_wr_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_way",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_clk_override",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_tag_array"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_tag_perr",
+    "sources":[
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_tag_valid",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_dec_tlu_core_ecc_disable",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rw_addr",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_addr",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_wr_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_wr_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_way",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_clk_override",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_tag_array"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_hit",
+    "sources":[
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_tag_valid",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rw_addr",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_addr",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_wr_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_wr_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_way",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_clk_override",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_tag_array"
     ]
   },
   {
@@ -62,7 +77,44 @@
       "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_addr",
       "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_tag_array",
       "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_rd_en",
-      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_en"
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_tag_valid"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_data",
+    "sources":[
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_premux_data",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_sel_premux_data",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_hit",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_wr_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_way",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_clk_override",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rw_addr",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_wr_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_addr",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_tag_array",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_tag_valid"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_rd_data",
+    "sources":[
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_hit",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_wr_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_way",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_clk_override",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rw_addr",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_wr_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_addr",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_tag_array",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_debug_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_rd_en",
+      "~el2_ifu_ic_mem|el2_ifu_ic_mem>io_ic_tag_valid"
     ]
   },
   {
