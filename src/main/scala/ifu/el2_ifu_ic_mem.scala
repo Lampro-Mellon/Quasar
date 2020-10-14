@@ -5,6 +5,7 @@ import chisel3.util._
 
 class el2_ifu_ic_mem extends Module with param{
   val io = IO(new Bundle{
+    val scan_mode = Input(Bool())
     val clk_override = Input(Bool())
     val dec_tlu_core_ecc_disable = Input(Bool())
     val ic_rw_addr = Input(UInt(31.W))
@@ -17,17 +18,18 @@ class el2_ifu_ic_mem extends Module with param{
     val ic_debug_way = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_premux_data = Input(UInt(64.W))
     val ic_sel_premux_data = Input(Bool())
+    val ic_tag_valid = Input(UInt(ICACHE_NUM_WAYS.W))
+    val ic_debug_wr_data = Input(UInt(71.W))
     val ic_wr_data = Input(Vec(ICACHE_BANKS_WAY, Input(UInt(71.W))))
+
     val ic_rd_data = Output(UInt(64.W))
     val ic_debug_rd_data = Output(UInt(71.W))
     val ictag_debug_rd_data = Output(UInt(26.W))
-    val ic_debug_wr_data = Input(UInt(71.W))
     val ic_eccerr = Output(UInt(ICACHE_BANKS_WAY.W))
     val ic_parerr = Output(UInt(ICACHE_BANKS_WAY.W))
-    val ic_tag_valid = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_rd_hit = Output(UInt(ICACHE_NUM_WAYS.W))
     val ic_tag_perr = Output(Bool())
-    val scan_mode = Input(Bool())
+
   })
   io.ic_tag_perr := 0.U
   io.ic_rd_hit := 0.U
@@ -36,6 +38,47 @@ class el2_ifu_ic_mem extends Module with param{
   io.ictag_debug_rd_data := 0.U
   io.ic_debug_rd_data := 0.U
   io.ic_rd_data := 0.U
+  val ic_tag_inst = Module(new EL2_IC_TAG())
+  //ic_tag_inst.io <> io
+  ic_tag_inst.io.ic_tag_valid := io.ic_tag_valid
+  ic_tag_inst.io.dec_tlu_core_ecc_disable := io.dec_tlu_core_ecc_disable
+  ic_tag_inst.io.clk_override := io.clk_override
+  ic_tag_inst.io.ic_rw_addr := io.ic_rw_addr
+  ic_tag_inst.io.ic_wr_en := io.ic_wr_en
+  ic_tag_inst.io.ic_rd_en := io.ic_rd_en
+  ic_tag_inst.io.ic_debug_addr := io.ic_debug_addr
+  ic_tag_inst.io.ic_debug_rd_en := io.ic_debug_rd_en
+  ic_tag_inst.io.ic_debug_wr_en := io.ic_debug_wr_en
+  ic_tag_inst.io.ic_debug_tag_array := io.ic_debug_tag_array
+  ic_tag_inst.io.ic_debug_way := io.ic_debug_way
+  io.ictag_debug_rd_data := ic_tag_inst.io.ictag_debug_rd_data // Output
+  ic_tag_inst.io.ic_debug_wr_data := io.ic_debug_wr_data
+  io.ic_rd_hit := ic_tag_inst.io.ic_rd_hit // Output
+  io.ic_tag_perr := ic_tag_inst.io.ic_tag_perr // Output
+  ic_tag_inst.io.scan_mode := io.scan_mode
+  val ic_data_inst = Module(new EL2_IC_DATA())
+  ic_data_inst.io.clk_override := io.clk_override
+
+  ic_data_inst.io.ic_rw_addr :=io.ic_rw_addr
+  ic_data_inst.io.ic_wr_en :=io.ic_wr_en
+  ic_data_inst.io.ic_rd_en :=io.ic_rd_en
+
+  ic_data_inst.io.ic_wr_data :=io.ic_wr_data
+  io.ic_rd_data := ic_data_inst.io.ic_rd_data
+  ic_data_inst.io.ic_debug_wr_data :=io.ic_debug_wr_data
+  io.ic_debug_rd_data := ic_data_inst.io.ic_debug_rd_data
+  io.ic_parerr := ic_data_inst.io.ic_parerr
+  io.ic_eccerr := ic_data_inst.io.ic_eccerr
+  ic_data_inst.io.ic_debug_addr := io.ic_debug_addr
+  ic_data_inst.io.ic_debug_rd_en := io.ic_debug_rd_en
+  ic_data_inst.io.ic_debug_wr_en := io.ic_debug_wr_en
+  ic_data_inst.io.ic_debug_tag_array := io.ic_debug_tag_array
+  ic_data_inst.io.ic_debug_way := io.ic_debug_way
+  ic_data_inst.io.ic_premux_data := io.ic_premux_data
+  ic_data_inst.io.ic_sel_premux_data := io.ic_sel_premux_data
+
+  ic_data_inst.io.ic_rd_hit :=io.ic_rd_hit
+  ic_data_inst.io.scan_mode :=io.scan_mode
 }
 
 /////////// ICACHE TAG
