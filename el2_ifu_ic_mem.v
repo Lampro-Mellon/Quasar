@@ -1,8 +1,6 @@
 module el2_ifu_ic_mem(
   input         clock,
   input         reset,
-  input         io_clk,
-  input         io_rst_l,
   input         io_clk_override,
   input         io_dec_tlu_core_ecc_disable,
   input  [30:0] io_ic_rw_addr,
@@ -28,11 +26,11 @@ module el2_ifu_ic_mem(
   output        io_ic_tag_perr,
   input         io_scan_mode
 );
-  assign io_ic_rd_data = 64'h0; // @[el2_ifu_ic_mem.scala 40:17]
-  assign io_ic_debug_rd_data = 71'h0; // @[el2_ifu_ic_mem.scala 39:23]
-  assign io_ictag_debug_rd_data = 26'h0; // @[el2_ifu_ic_mem.scala 38:26]
-  assign io_ic_eccerr = 2'h0; // @[el2_ifu_ic_mem.scala 37:16]
-  assign io_ic_parerr = 2'h0; // @[el2_ifu_ic_mem.scala 36:16]
-  assign io_ic_rd_hit = 2'h0; // @[el2_ifu_ic_mem.scala 35:16]
-  assign io_ic_tag_perr = 1'h0; // @[el2_ifu_ic_mem.scala 34:18]
+  assign io_ic_rd_data = 64'h0; // @[el2_ifu_ic_mem.scala 38:17]
+  assign io_ic_debug_rd_data = 71'h0; // @[el2_ifu_ic_mem.scala 37:23]
+  assign io_ictag_debug_rd_data = 26'h0; // @[el2_ifu_ic_mem.scala 36:26]
+  assign io_ic_eccerr = 2'h0; // @[el2_ifu_ic_mem.scala 35:16]
+  assign io_ic_parerr = 2'h0; // @[el2_ifu_ic_mem.scala 34:16]
+  assign io_ic_rd_hit = 2'h0; // @[el2_ifu_ic_mem.scala 33:16]
+  assign io_ic_tag_perr = 1'h0; // @[el2_ifu_ic_mem.scala 32:18]
 endmodule

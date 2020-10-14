@@ -17,7 +17,7 @@ class el2_ifu_ic_mem extends Module with param{
     val ic_debug_way = Input(UInt(ICACHE_NUM_WAYS.W))
     val ic_premux_data = Input(UInt(64.W))
     val ic_sel_premux_data = Input(Bool())
-    val ic_wr_data = Vec(ICACHE_BANKS_WAY, Input(UInt(71.W)))
+    val ic_wr_data = Input(Vec(ICACHE_BANKS_WAY, Input(UInt(71.W))))
     val ic_rd_data = Output(UInt(64.W))
     val ic_debug_rd_data = Output(UInt(71.W))
     val ictag_debug_rd_data = Output(UInt(26.W))
@@ -230,5 +230,5 @@ class EL2_IC_DATA extends Module with el2_lib {
 }
 
 object ifu_ic extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new EL2_IC_TAG()))
+  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_ic_mem()))
 }
