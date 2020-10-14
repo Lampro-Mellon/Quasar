@@ -393,7 +393,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
 
   io.i0_brp.br_start_error  := (first4B & alignval(1) & alignbrend(0))
 
-  io.i0_brp.bank            := Mux((first2B | alignbrend(0)).asBool, firstpc(1), secondpc(1))
+  io.i0_brp.bank            := Mux((first2B | alignbrend(0)).asBool, firstpc(0), secondpc(0))
 
   io.i0_brp.br_error := (io.i0_brp.valid &  i0_brp_pc4 &  first2B) | (io.i0_brp.valid & !i0_brp_pc4 &  first4B)
 

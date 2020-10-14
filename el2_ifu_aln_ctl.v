@@ -991,7 +991,7 @@ module el2_ifu_aln_ctl(
   assign io_i0_brp_hist = {_T_747,_T_752}; // @[el2_ifu_aln_ctl.scala 386:18]
   assign io_i0_brp_br_error = _T_769 | _T_772; // @[el2_ifu_aln_ctl.scala 398:22]
   assign io_i0_brp_br_start_error = _T_657 & alignbrend[0]; // @[el2_ifu_aln_ctl.scala 394:29]
-  assign io_i0_brp_bank = _T_738 ? f0pc[1] : secondpc[1]; // @[el2_ifu_aln_ctl.scala 396:29]
+  assign io_i0_brp_bank = _T_738 ? f0pc[0] : secondpc[0]; // @[el2_ifu_aln_ctl.scala 396:29]
   assign io_i0_brp_prett = i0_ends_f1 ? f1prett : f0prett; // @[el2_ifu_aln_ctl.scala 392:19]
   assign io_i0_brp_way = _T_738 ? alignway[0] : alignway[1]; // @[el2_ifu_aln_ctl.scala 384:17]
   assign io_i0_brp_ret = _T_729 | _T_731; // @[el2_ifu_aln_ctl.scala 380:17]
