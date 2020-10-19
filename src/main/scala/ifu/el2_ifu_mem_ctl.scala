@@ -122,7 +122,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     val ifu_ic_debug_rd_data_valid = Output(Bool())
     val iccm_buf_correct_ecc = Output(Bool())
     val iccm_correction_state = Output(Bool())
-
+    val test = Output(UInt())
     val scan_mode = Input(Bool())
   })
   io.ic_debug_rd_en:=0.U
@@ -206,30 +206,30 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
 
   val iccm_single_ecc_error = WireInit(UInt(2.W), 0.U)
   val ifc_fetch_req_f = WireInit(Bool(), 0.U)
-  val miss_pending = WireInit(Bool(), 0.U)
-  val scnd_miss_req = WireInit(Bool(), 0.U)
-  val dma_iccm_req_f = WireInit(Bool(), 0.U)
-  val iccm_correct_ecc = WireInit(Bool(), 0.U)
+  val miss_pending = WireInit(Bool(), false.B)
+  val scnd_miss_req = WireInit(Bool(), false.B)
+  val dma_iccm_req_f = WireInit(Bool(), false.B)
+  val iccm_correct_ecc = WireInit(Bool(), false.B)
   val perr_state = WireInit(UInt(3.W), 0.U)
   val err_stop_state = WireInit(UInt(2.W), 0.U)
-  val err_stop_fetch = WireInit(Bool(), 0.U)
+  val err_stop_fetch = WireInit(Bool(), false.B)
   val miss_state = WireInit(UInt(3.W), 0.U)
   val miss_nxtstate = WireInit(UInt(3.W), 0.U)
-  val miss_state_en = WireInit(Bool(), 0.U)
-  val ifu_bus_rsp_valid = WireInit(Bool(), 0.U)
-  val bus_ifu_bus_clk_en = WireInit(Bool(), 0.U)
-  val ifu_bus_rsp_ready = WireInit(Bool(), 0.U)
-  val uncacheable_miss_ff = WireInit(Bool(), 0.U)
-  val ic_act_miss_f = WireInit(Bool(), 0.U)
-  val ic_byp_hit_f = WireInit(Bool(), 0.U)
+  val miss_state_en = WireInit(Bool(), false.B)
+  val ifu_bus_rsp_valid = WireInit(Bool(), false.B)
+  val bus_ifu_bus_clk_en = WireInit(Bool(), false.B)
+  val ifu_bus_rsp_ready = WireInit(Bool(), false.B)
+  val uncacheable_miss_ff = WireInit(Bool(), false.B)
+  val ic_act_miss_f = WireInit(Bool(), false.B)
+  val ic_byp_hit_f = WireInit(Bool(), false.B)
   val bus_new_data_beat_count = WireInit(UInt(ICACHE_BEAT_BITS.W), 0.U)
-  val bus_ifu_wr_en_ff = WireInit(Bool(), 0.U)
-  val last_beat = WireInit(Bool(), 0.U)
-  val last_data_recieved_ff = WireInit(Bool(), 0.U)
+  val bus_ifu_wr_en_ff = WireInit(Bool(), false.B)
+  val last_beat = WireInit(Bool(), false.B)
+  val last_data_recieved_ff = WireInit(Bool(), false.B)
   //val flush_final_f = WireInit(Bool(), 0.U)
-  val stream_eol_f = WireInit(Bool(), 0.U)
-  val ic_miss_under_miss_f = WireInit(Bool(), 0.U)
-  val ic_ignore_2nd_miss_f = WireInit(Bool(), 0.U)
+  val stream_eol_f = WireInit(Bool(), false.B)
+  val ic_miss_under_miss_f = WireInit(Bool(), false.B)
+  val ic_ignore_2nd_miss_f = WireInit(Bool(), false.B)
 
   val flush_final_f = RegNext(io.exu_flush_final, 0.U)
   val fetch_bf_f_c1_clken = io.ifc_fetch_req_bf_raw | ifc_fetch_req_f | miss_pending | io.exu_flush_final | scnd_miss_req
@@ -243,7 +243,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     !uncacheable_miss_ff ((miss_state === scnd_miss_C)|(miss_nxtstate === scnd_miss_C)) & !io.exu_flush_final
 
   val ifu_bp_hit_taken_q_f = io.ifu_bp_hit_taken_f & io.ic_hit_f
-
+  ///////////////////////////////// MISS FSM /////////////////////////////////
   switch(miss_state){
     is (idle_C){
       miss_nxtstate := Mux((ic_act_miss_f & !io.exu_flush_final).asBool, crit_byp_ok_C, hit_u_miss_C)
@@ -347,8 +347,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val tagv_mb_ff = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
   val tagv_mb_in = Mux(scnd_miss_req.asBool, tagv_mb_scnd_ff | (Fill(ICACHE_NUM_WAYS, scnd_miss_index_match) & replace_way_mb_any),
   Mux(miss_pending.asBool, tagv_mb_ff, ic_tag_valid & Fill(ICACHE_NUM_WAYS, !reset_all_tags)))
-  val scnd_miss_req_q = WireInit(Bool(), 0.U)
-  val reset_ic_ff = WireInit(Bool(), 0.U)
+  val scnd_miss_req_q = WireInit(Bool(), false.B)
+  val reset_ic_ff = WireInit(Bool(), false.B)
   val reset_ic_in = miss_pending & !scnd_miss_req_q &  (reset_all_tags |  reset_ic_ff)
   reset_ic_ff := RegNext(reset_ic_in)
   val fetch_uncacheable_ff = RegNext(io.ifc_fetch_uncacheable_bf, 0.U)
@@ -373,11 +373,14 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ifu_ic_req_addr_f = Cat(miss_addr, ic_req_addr_bits_hi_3)
   val ifu_ic_mb_empty = (((miss_state===hit_u_miss_C) | (miss_state===stream_C)) & !(bus_ifu_wr_en_ff & last_beat)) | !miss_pending
   val ifu_miss_state_idle = miss_state === idle_C
-  val write_ic_16_bytes = WireInit(Bool(), 0.U)
-  val reset_tag_valid_for_miss = WireInit(Bool(), 0.U)
+  val write_ic_16_bytes = WireInit(Bool(), false.B)
+  val reset_tag_valid_for_miss = WireInit(Bool(), false.B)
   val sel_mb_addr = (miss_pending & write_ic_16_bytes & !uncacheable_miss_ff) | reset_tag_valid_for_miss
   val ifu_ic_rw_int_addr = Mux1H(Seq(sel_mb_addr.asBool->Cat(imb_ff(30,ICACHE_BEAT_ADDR_HI) , ic_wr_addr_bits_hi_3 , imb_ff(1,0)),
                                     !sel_mb_addr.asBool->ifu_fetch_addr_int_f))
+  val bus_ifu_wr_en_ff_q = WireInit(Bool(), false.B)
+  val sel_mb_status_addr = miss_pending & write_ic_16_bytes & !uncacheable_miss_ff & last_beat & bus_ifu_wr_en_ff_q
+  val ifu_status_wr_addr = Mux(sel_mb_status_addr, Cat(imb_ff(30, ICACHE_BEAT_ADDR_HI),ic_wr_addr_bits_hi_3, imb_ff(1,0)), ifu_fetch_addr_int_f)
   val ic_rw_addr = ifu_ic_rw_int_addr
   sel_mb_addr_ff := withClock(io.free_clk){RegNext(sel_mb_addr, 0.U)}
   val ifu_bus_rdata_ff = WireInit(UInt(64.W), 0.U)
@@ -432,6 +435,294 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   io.ic_fetch_val_f := Cat(fetch_req_f_qual & ifu_bp_inst_mask_f & !(vaddr_f===Fill(ICACHE_BEAT_ADDR_HI,1.U)) & (err_stop_state=/=err_fetch2_C), fetch_req_f_qual)
   val two_byte_instr = ic_data_f(1,0) =/= 3.U
   //// Creating full buffer
+  val ifu_bus_rsp_rdata = WireInit(UInt(64.W), 0.U)
+  val ic_miss_buff_data_in = ifu_bus_rsp_rdata
+  val ifu_bus_rsp_tag = WireInit(UInt(IFU_BUS_TAG.W), 0.U)
+  val bus_ifu_wr_en = WireInit(Bool(), 0.U)
+  val write_fill_data = (0 until ICACHE_NUM_BEATS).map(i=>bus_ifu_wr_en & (ifu_bus_rsp_tag===i.U))
+  val ic_miss_buff_data = Wire(Vec(2*ICACHE_NUM_BEATS, UInt(32.W)))
+  for(i<- 0 until ICACHE_NUM_BEATS){
+  ic_miss_buff_data(2*i) := RegEnable(ic_miss_buff_data_in, 0.U, write_fill_data(i).asBool())
+  ic_miss_buff_data(2*i+1) := RegEnable(ic_miss_buff_data_in, 0.U, write_fill_data(i).asBool())}
+  val ic_miss_buff_data_valid = WireInit(UInt(ICACHE_NUM_BEATS.W), 0.U)
+  val ic_miss_buff_data_valid_in = (0 until ICACHE_NUM_BEATS).map(i=>write_fill_data(i)|(ic_miss_buff_data_valid(i)&(!ic_act_miss_f)))
+  ic_miss_buff_data_valid := withClock(io.free_clk){RegNext(ic_miss_buff_data_valid_in.reverse.reduce(Cat(_,_)), 0.U)}
+  val bus_ifu_wr_data_error = WireInit(Bool(), 0.U)
+  val ic_miss_buff_data_error = WireInit(UInt(ICACHE_NUM_BEATS.W), 0.U)
+  val ic_miss_buff_data_error_in =(0 until ICACHE_NUM_BEATS).map(i=>Mux(write_fill_data(i).asBool,bus_ifu_wr_data_error,
+    ic_miss_buff_data_error(i) & !ic_act_miss_f))
+  ic_miss_buff_data_error := withClock(io.free_clk){RegNext(ic_miss_buff_data_error_in.reverse.reduce(Cat(_,_)), 0.U)}
+
+  // New Bypass ready
+  val bypass_index = imb_ff(ICACHE_BEAT_ADDR_HI-1, 0)
+  val bypass_index_5_3_inc = bypass_index(bypass_index.getWidth-1,2) + 1.U
+  val bypass_valid_value_check = Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(bypass_index(bypass_index.getWidth-1,2)===i.U).asBool->ic_miss_buff_data_valid_in(i)))
+  val bypass_data_ready_in = (bypass_valid_value_check & !bypass_index(1) & !bypass_index(0)) |
+                             (bypass_valid_value_check & !bypass_index(1) & bypass_index(0)) |
+                             (bypass_valid_value_check & bypass_index(1) & !bypass_index(0)) |
+      (bypass_valid_value_check & bypass_index(1) & bypass_index(0) & Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(bypass_index_5_3_inc===i.U).asBool->ic_miss_buff_data_valid_in(i)))) |
+                             (bypass_valid_value_check & bypass_index(ICACHE_BEAT_ADDR_HI-1,2)===Fill(ICACHE_BEAT_ADDR_HI,1.U))
+
+  io.test := bypass_data_ready_in
+  val ic_crit_wd_rdy_new_ff = WireInit(Bool(), 0.U)
+  val ic_crit_wd_rdy_new_in = (bypass_data_ready_in & crit_wd_byp_ok_ff &  uncacheable_miss_ff & !io.exu_flush_final & !ifu_bp_hit_taken_q_f) |
+                              (                       crit_wd_byp_ok_ff & !uncacheable_miss_ff & !io.exu_flush_final & !ifu_bp_hit_taken_q_f) |
+                              (ic_crit_wd_rdy_new_ff & crit_wd_byp_ok_ff & !fetch_req_icache_f & !io.exu_flush_final)
+  ic_crit_wd_rdy_new_ff := withClock(io.free_clk){RegNext(ic_crit_wd_rdy_new_in, 0.U)}
+  val byp_fetch_index = ifu_fetch_addr_int_f(ICACHE_BEAT_ADDR_HI-1,0)
+  val byp_fetch_index_0 = Cat(ifu_fetch_addr_int_f(ICACHE_BEAT_ADDR_HI-1,2), 0.U)
+  val byp_fetch_index_1 = Cat(ifu_fetch_addr_int_f(ICACHE_BEAT_ADDR_HI-1,2), 1.U)
+  val byp_fetch_index_inc = ifu_fetch_addr_int_f(ICACHE_BEAT_ADDR_HI-1,2) + 1.U
+  val byp_fetch_index_inc_0 = Cat(byp_fetch_index_inc, 0.U)
+  val byp_fetch_index_inc_1 = Cat(byp_fetch_index_inc, 1.U)
+  val ic_miss_buff_data_error_bypass = Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(bypass_index(ICACHE_BEAT_ADDR_HI-1,2)===i.U).asBool->ic_miss_buff_data_error(i)))
+  val ic_miss_buff_data_error_bypass_inc = Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_inc===i.U).asBool->ic_miss_buff_data_error(i)))
+
+
+  when(ifu_fetch_addr_int_f(1)&ifu_fetch_addr_int_f(0)){
+    ifu_byp_data_err_new := ic_miss_buff_data_error_bypass
+  } otherwise{ifu_byp_data_err_new := ic_miss_buff_data_error_bypass | ic_miss_buff_data_error_bypass_inc}
+
+  val ic_byp_data_only_pre_new = Mux(!ifu_fetch_addr_int_f(0).asBool,
+    Cat(Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_inc_0===i.U).asBool->ic_miss_buff_data(i)(15,0))), Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_1===i.U).asBool->ic_miss_buff_data(i)(31,0))), Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_0===i.U).asBool->ic_miss_buff_data(i)(31,0)))),
+    Cat(Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_inc_1===i.U).asBool->ic_miss_buff_data(i)(15,0))), Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_inc_0===i.U).asBool->ic_miss_buff_data(i)(31,0))), Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_1===i.U).asBool->ic_miss_buff_data(i)(31,0)))))
+
+  ic_byp_data_only_new := Mux(!ifu_fetch_addr_int_f(0).asBool(),ic_byp_data_only_pre_new,Cat(0.U(16.W),ic_byp_data_only_pre_new(79,16)))
+
+  val miss_wrap_f = imb_ff(ICACHE_TAG_INDEX_LO-1) =/= ifu_fetch_addr_int_f(ICACHE_TAG_INDEX_LO)
+  val ic_miss_buff_data_valid_bypass_index = Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(byp_fetch_index(ICACHE_BEAT_ADDR_HI-1,2)===i.U).asBool->ic_miss_buff_data_valid(i)))
+  val ic_miss_buff_data_valid_inc_bypass_index = Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_inc===i.U).asBool->ic_miss_buff_data_valid(i)))
+  val miss_buff_hit_unq_f = (ic_miss_buff_data_valid_bypass_index & !byp_fetch_index(1) & !byp_fetch_index(0)) |
+    (ic_miss_buff_data_valid_bypass_index & !byp_fetch_index(1) &  byp_fetch_index(0)) |
+    (ic_miss_buff_data_valid_bypass_index &  byp_fetch_index(1) & !byp_fetch_index(0)) |
+    (ic_miss_buff_data_valid_bypass_index &  byp_fetch_index(1) &  byp_fetch_index(0) & ic_miss_buff_data_valid_inc_bypass_index) |
+    (ic_miss_buff_data_valid_bypass_index & !byp_fetch_index(1) & !byp_fetch_index(0) & (byp_fetch_index(ICACHE_BEAT_ADDR_HI-1,2) === Fill(ICACHE_BEAT_BITS,1.U)))
+
+  stream_hit_f := (miss_state===stream_C) & (miss_buff_hit_unq_f & !miss_wrap_f)
+  stream_miss_f := (miss_state===stream_C) & (miss_buff_hit_unq_f & !miss_wrap_f) & ifc_fetch_req_f
+  stream_eol_f := (byp_fetch_index(ICACHE_BEAT_ADDR_HI-1,1)===Fill(ICACHE_BEAT_BITS, 1.U)) & ifc_fetch_req_f & stream_hit_f
+  crit_byp_hit_f := miss_buff_hit_unq_f & ((miss_state===crit_wrd_rdy_C) | (miss_state===crit_byp_ok_C))
+
+
+  val other_tag = Cat(ifu_bus_rid_ff(IFU_BUS_TAG-1,1),!ifu_bus_rid_ff(0))
+  val second_half_available = Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(other_tag===i.U).asBool->ic_miss_buff_data_valid(i)))
+  write_ic_16_bytes := second_half_available & bus_ifu_wr_en_ff
+  ic_miss_buff_half := Cat(Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(Cat(other_tag,1.U)===i.U).asBool->ic_miss_buff_data(i))),
+    Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(Cat(other_tag,0.U)===i.U).asBool->ic_miss_buff_data(i))))
+
+  ic_rd_parity_final_err := io.ic_tag_perr & sel_ic_data & !(ifc_region_acc_fault_final_f | ifc_bus_acc_fault_f)
+  val ifu_ic_rw_int_addr_ff = WireInit(UInt((ICACHE_INDEX_HI-ICACHE_TAG_INDEX_LO-1).W), 0.U)
+
+  val perr_sb_write_status = WireInit(Bool(), false.B)
+  val perr_ic_index_ff = RegEnable(ifu_ic_rw_int_addr_ff, 0.U, perr_sb_write_status)
+  val perr_sel_invalidate = WireInit(Bool(), false.B)
+  val perr_err_inv_way = Fill(ICACHE_NUM_WAYS, perr_sel_invalidate)
+  iccm_correct_ecc := perr_state === ecc_cor_C
+  val dma_sb_err_state = perr_state === dma_sb_err_C
+  val dma_sb_err_state_ff = withClock(io.active_clk){RegNext(dma_sb_err_state, 0.U)}
+
+  ///////////////////////////////// ERROR FSM /////////////////////////////////
+  val perr_nxtstate = WireInit(UInt(3.W), 0.U)
+  val perr_state_en = WireInit(Bool(), false.B)
+  val iccm_error_start = WireInit(Bool(), false.B)
+  switch(perr_state){
+    is(err_idle_C){
+      perr_nxtstate := Mux(io.iccm_dma_sb_error, dma_sb_err_C, Mux((io.ic_error_start & !io.exu_flush_final).asBool, ic_wff_C, ecc_wff_C))
+      perr_state_en := (((iccm_error_start | io.ic_error_start) & !io.exu_flush_final) | io.iccm_dma_sb_error) & !io.dec_tlu_force_halt
+      perr_sb_write_status := perr_state_en
+    }
+    is(ic_wff_C){
+      perr_nxtstate := err_idle_C
+      perr_state_en := io.dec_tlu_flush_lower_wb | io.dec_tlu_force_halt
+      perr_sel_invalidate := io.dec_tlu_flush_lower_wb & io.dec_tlu_force_halt
+    }
+    is(ecc_wff_C){
+      perr_nxtstate := Mux(((io.dec_tlu_flush_err_wb & io.dec_tlu_flush_lower_wb ) | io.dec_tlu_force_halt).asBool(), err_idle_C, ecc_cor_C)
+      perr_state_en := io.dec_tlu_flush_lower_wb | io.dec_tlu_force_halt
+    }
+    is(dma_sb_err_C){
+      perr_nxtstate := Mux(io.dec_tlu_force_halt, err_idle_C, ecc_cor_C)
+      perr_state_en := true.B
+    }
+    is(ecc_cor_C){
+      perr_nxtstate := err_idle_C
+      perr_state_en := true.B
+    }
+  }
+  perr_state := withClock(io.free_clk){RegEnable(perr_nxtstate, 0.U, perr_state_en)}
+  ///////////////////////////////// STOP FETCH FSM /////////////////////////////////
+  val err_stop_nxtstate = WireInit(UInt(2.W), 0.U)
+  val err_stop_state_en = WireInit(Bool(), false.B)
+//  val err_stop_fetch := WireInit(Bool(), false.B)
+  val iccm_correction_state = WireInit(Bool(), false.B)
+  switch(err_stop_state){
+    is(err_stop_idle_C){
+      err_stop_nxtstate := err_fetch1_C
+      err_stop_state_en := io.dec_tlu_flush_err_wb & (perr_state === ecc_wff_C) & !io.dec_tlu_force_halt
+    }
+    is(err_fetch1_C){
+      err_stop_nxtstate := Mux((io.dec_tlu_flush_lower_wb | io.dec_tlu_i0_commit_cmt | io.dec_tlu_force_halt).asBool(), err_stop_idle_C,
+        Mux(((io.ifu_fetch_val===3.U)|(io.ifu_fetch_val(0)&two_byte_instr)).asBool(), err_stop_fetch_C,
+          Mux(io.ifu_fetch_val(0).asBool(), err_fetch2_C, err_fetch1_C)))
+      err_stop_state_en := io.dec_tlu_flush_lower_wb | io.dec_tlu_i0_commit_cmt | io.ifu_fetch_val(0) | ifu_bp_hit_taken_q_f | io.dec_tlu_force_halt
+      err_stop_fetch := ((io.ifu_fetch_val(1,0)===3.U) | (io.ifu_fetch_val(0) & two_byte_instr))  & !(io.exu_flush_final | io.dec_tlu_i0_commit_cmt)
+      iccm_correction_state := true.B
+    }
+    is(err_fetch2_C){
+      err_stop_nxtstate := Mux((io.dec_tlu_flush_lower_wb | io.dec_tlu_i0_commit_cmt | io.dec_tlu_force_halt).asBool,
+        err_stop_idle_C, Mux(io.ifu_fetch_val(0).asBool, err_stop_fetch_C, err_fetch2_C))
+      err_stop_state_en := io.dec_tlu_flush_lower_wb | io.dec_tlu_i0_commit_cmt | io.ifu_fetch_val(0) | io.dec_tlu_force_halt
+      err_stop_fetch := io.ifu_fetch_val(0) & !io.exu_flush_final & !io.dec_tlu_i0_commit_cmt
+      iccm_correction_state := true.B
+    }
+    is(err_stop_fetch_C){
+      err_stop_nxtstate := Mux(((io.dec_tlu_flush_lower_wb & !io.dec_tlu_flush_err_wb) | io.dec_tlu_i0_commit_cmt | io.dec_tlu_force_halt).asBool,
+        err_stop_idle_C, Mux(io.dec_tlu_flush_err_wb.asBool(), err_fetch1_C, err_stop_fetch_C))
+      err_stop_state_en := io.dec_tlu_flush_lower_wb | io.dec_tlu_i0_commit_cmt | io.dec_tlu_force_halt
+      err_stop_fetch := true.B
+      iccm_correction_state := true.B
+    }
+  }
+  err_stop_state := withClock(io.free_clk){RegEnable(err_stop_nxtstate, 0.U, err_stop_state_en)}
+  bus_ifu_bus_clk_en := io.ifu_bus_clk_en
+  val bus_ifu_bus_clk_en_ff = withClock(io.free_clk){RegNext(bus_ifu_bus_clk_en, 0.U)}
+  scnd_miss_req_q := withClock(io.free_clk){RegNext(scnd_miss_req_in, 0.U)}
+  val scnd_miss_req_ff2 = withClock(io.free_clk){RegNext(scnd_miss_req, 0.U)}
+  val bus_cmd_req_hold = WireInit(Bool(), false.B)
+  val ifu_bus_cmd_valid = WireInit(Bool(), false.B)
+  val bus_cmd_beat_count = WireInit(UInt(ICACHE_BEAT_BITS.W), 0.U)
+  val ifu_bus_cmd_ready = WireInit(Bool(), false.B)
+  val ifc_bus_ic_req_ff_in = (ic_act_miss_f | bus_cmd_req_hold | ifu_bus_cmd_valid) & !io.dec_tlu_force_halt & !((bus_cmd_beat_count===Fill(ICACHE_BEAT_BITS,1.U)) & ifu_bus_cmd_valid & ifu_bus_cmd_ready & miss_pending)
+  ifu_bus_cmd_valid := RegEnable(ifc_bus_ic_req_ff_in, 0.U, bus_ifu_bus_clk_en | io.dec_tlu_force_halt)
+  val bus_cmd_sent = WireInit(Bool(), false.B)
+  val bus_cmd_req_in = (ic_act_miss_f | bus_cmd_req_hold) & !bus_cmd_sent & !io.dec_tlu_force_halt
+  bus_cmd_sent := withClock(io.free_clk){RegNext(bus_cmd_req_in, false.B)}
+  // AXI Read-Channel
+  io.ifu_axi_arvalid := ifu_bus_cmd_valid
+  io.ifu_axi_arid := bus_rd_addr_count & Fill(IFU_BUS_TAG, ifu_bus_cmd_valid)
+  io.ifu_axi_araddr := Cat(ifu_ic_req_addr_f, 0.U(3.W)) & Fill(32, ifu_bus_cmd_valid)
+  io.ifu_axi_arsize := 3.U(3.W)
+  io.ifu_axi_arcache := 15.U
+  io.ifu_axi_arregion := ifu_ic_req_addr_f(28,25)
+  io.ifu_axi_arburst := 1.U
+  io.ifu_axi_rready := true.B
+
+  val ifu_bus_arready_unq = io.ifu_axi_arready
+  val ifu_bus_rvalid_unq = io.ifu_axi_rvalid
+  val ifu_bus_arvalid = io.ifu_axi_arvalid
+  bus_ifu_bus_clk_en
+  val ifu_bus_arready_unq_ff = RegEnable(ifu_bus_arready_unq, false.B, bus_ifu_bus_clk_en)
+  val ifu_bus_rvalid_unq_ff = RegEnable(ifu_bus_rvalid_unq, false.B, bus_ifu_bus_clk_en)
+  val ifu_bus_arvalid_ff = RegEnable(ifu_bus_arvalid, false.B, bus_ifu_bus_clk_en)
+  val ifu_bus_rresp_ff = RegEnable(io.ifu_axi_rresp, 0.U, bus_ifu_bus_clk_en)
+  ifu_bus_rdata_ff := RegEnable(io.ifu_axi_rdata, 0.U, bus_ifu_bus_clk_en)
+  ifu_bus_rid_ff := RegEnable(io.ifu_axi_rid, 0.U, bus_ifu_bus_clk_en)
+  ifu_bus_cmd_ready := io.ifu_axi_arready
+  ifu_bus_rsp_valid := io.ifu_axi_rvalid
+  ifu_bus_rsp_ready := io.ifu_axi_rready
+  ifu_bus_rsp_tag := io.ifu_axi_rid
+  ifu_bus_rsp_rdata := io.ifu_axi_rdata
+  val ifu_bus_rsp_opc = io.ifu_axi_rresp
+  val ifu_bus_rvalid = ifu_bus_rsp_valid & bus_ifu_bus_clk_en
+  val ifu_bus_arready = ifu_bus_arready_unq & bus_ifu_bus_clk_en
+  val ifu_bus_arready_ff = ifu_bus_arready_unq_ff & bus_ifu_bus_clk_en_ff
+  val ifu_bus_rvalid_ff = ifu_bus_rvalid_unq_ff & bus_ifu_bus_clk_en_ff
+  bus_cmd_sent := ifu_bus_arvalid & ifu_bus_arready & miss_pending & !io.dec_tlu_force_halt
+  val bus_last_data_beat = WireInit(Bool(), false.B)
+  val bus_inc_data_beat_cnt = bus_ifu_wr_en_ff & !bus_last_data_beat & !io.dec_tlu_force_halt
+  val bus_reset_data_beat_cnt =  ic_act_miss_f | (bus_ifu_wr_en_ff &  bus_last_data_beat) | io.dec_tlu_force_halt
+  val bus_hold_data_beat_cnt = !bus_inc_data_beat_cnt & !bus_reset_data_beat_cnt
+  val bus_data_beat_count = WireInit(UInt(ICACHE_BEAT_BITS.W), 0.U)
+  bus_new_data_beat_count := Mux1H(Seq(bus_reset_data_beat_cnt->0.U, bus_inc_data_beat_cnt-> (bus_data_beat_count + 1.U), bus_hold_data_beat_cnt->bus_data_beat_count))
+  bus_data_beat_count := withClock(io.free_clk){RegNext(bus_new_data_beat_count, 0.U)}
+  val last_data_recieved_in = (bus_ifu_wr_en_ff &  bus_last_data_beat & !scnd_miss_req) | (last_data_recieved_ff & !ic_act_miss_f)
+  last_data_recieved_ff := withClock(io.free_clk){RegNext(last_data_recieved_in, 0.U)}
+  // Request Address Count
+  val bus_new_rd_addr_count = Mux(!miss_pending, imb_ff(ICACHE_BEAT_ADDR_HI-1, 2),
+      Mux(scnd_miss_req_q, imb_scnd_ff(ICACHE_BEAT_ADDR_HI-1, 2),
+        Mux(bus_cmd_sent, bus_rd_addr_count + 1.U, bus_rd_addr_count)))
+  bus_rd_addr_count := RegEnable(bus_new_rd_addr_count, 0.U, bus_ifu_bus_clk_en | ic_act_miss_f | io.dec_tlu_force_halt)
+  // Command beat Count
+  val bus_inc_cmd_beat_cnt = ifu_bus_cmd_valid & ifu_bus_cmd_ready & miss_pending & !io.dec_tlu_force_halt
+  val bus_reset_cmd_beat_cnt_0 = (ic_act_miss_f & !uncacheable_miss_in) | io.dec_tlu_force_halt
+  val bus_reset_cmd_beat_cnt_secondlast = ic_act_miss_f & uncacheable_miss_in
+  val bus_hold_cmd_beat_cnt = !bus_inc_cmd_beat_cnt & !(ic_act_miss_f | scnd_miss_req | io.dec_tlu_force_halt)
+  val bus_cmd_beat_en = bus_inc_cmd_beat_cnt | ic_act_miss_f | io.dec_tlu_force_halt
+  val bus_new_cmd_beat_count = Mux1H(Seq(bus_reset_cmd_beat_cnt_0->0.U, bus_reset_cmd_beat_cnt_secondlast.asBool->ICACHE_SCND_LAST.U,
+    bus_inc_cmd_beat_cnt->(bus_cmd_beat_count+1.U), bus_hold_cmd_beat_cnt->bus_cmd_beat_count))
+  bus_cmd_beat_count := RegEnable(bus_new_cmd_beat_count, 0.U, (bus_ifu_bus_clk_en | ic_act_miss_f | io.dec_tlu_force_halt) & bus_cmd_beat_en)
+  bus_last_data_beat := Mux(uncacheable_miss_ff, bus_data_beat_count===1.U, bus_data_beat_count.andR())
+  bus_ifu_wr_en := ifu_bus_rvalid & miss_pending
+  bus_ifu_wr_en_ff := ifu_bus_rvalid_ff & miss_pending
+  bus_ifu_wr_en_ff_q := ifu_bus_rvalid_ff  & miss_pending & !uncacheable_miss_ff & !(ifu_bus_rresp_ff.orR) & write_ic_16_bytes
+  val bus_ifu_wr_en_ff_wo_err = ifu_bus_rvalid_ff & miss_pending & !uncacheable_miss_ff
+  val ic_act_miss_f_delayed = withClock(io.free_clk){RegNext(ic_act_miss_f, false.B)}
+  reset_tag_valid_for_miss := ic_act_miss_f_delayed & (miss_state===crit_byp_ok_C) & !uncacheable_miss_ff
+  bus_ifu_wr_data_error := ifu_bus_rsp_opc.orR() & ifu_bus_rvalid  & miss_pending
+  bus_ifu_wr_data_error_ff := ifu_bus_rresp_ff.orR & ifu_bus_rvalid_ff  & miss_pending
+  val ifc_dma_access_ok_d = WireInit(Bool(), false.B)
+  val ifc_dma_access_ok_prev = withClock(io.free_clk){RegNext(ifc_dma_access_ok_d, false.B)}
+  ic_crit_wd_rdy := ic_crit_wd_rdy_new_in | ic_crit_wd_rdy_new_ff
+  last_beat := bus_last_data_beat & bus_ifu_wr_en_ff
+  reset_beat_cnt := bus_reset_data_beat_cnt
+  // DMA
+  ifc_dma_access_ok_d := io.ifc_dma_access_ok &  !iccm_correct_ecc & !io.iccm_dma_sb_error
+  val ifc_dma_access_q_ok  = io.ifc_dma_access_ok &  !iccm_correct_ecc & ifc_dma_access_ok_prev &  (perr_state===err_idle_C)  & !io.iccm_dma_sb_error
+  val iccm_ready = ifc_dma_access_q_ok
+  dma_iccm_req_f := withClock(io.free_clk){RegNext(io.dma_iccm_req, false.B)}
+  io.iccm_wren := (ifc_dma_access_q_ok & io.dma_iccm_req &  io.dma_mem_write) | iccm_correct_ecc
+  io.iccm_rden := (ifc_dma_access_q_ok & io.dma_iccm_req & !io.dma_mem_write) | (io.ifc_iccm_access_bf & io.ifc_fetch_req_bf)
+  val iccm_dma_rden = ifc_dma_access_q_ok & io.dma_iccm_req & !io.dma_mem_write
+  io.iccm_wr_size := Fill(3, io.dma_iccm_req) & io.dma_mem_sz
+  val dma_mem_ecc = Cat(rvecc_encode(io.dma_mem_wdata(63,32)), rvecc_encode(io.dma_mem_wdata(31,0)))
+  val iccm_ecc_corr_data_ff = WireInit(UInt(39.W), 0.U)
+  io.iccm_wr_data := Mux(iccm_correct_ecc & !(ifc_dma_access_q_ok & io.dma_iccm_req), Fill(2,iccm_ecc_corr_data_ff),
+    Cat(dma_mem_ecc(13,7),io.dma_mem_wdata(63,32), dma_mem_ecc(6,0), io.dma_mem_wdata(31,0)))
+  val iccm_corrected_data = Wire(Vec(2, UInt(32.W)))
+  iccm_corrected_data(0) := 0.U
+  iccm_corrected_data(1) := 0.U
+  val dma_mem_addr_ff = WireInit(UInt(2.W), 0.U)
+  val iccm_dma_rdata_1_muxed = Mux(dma_mem_addr_ff(0).asBool, iccm_corrected_data(0), iccm_corrected_data(1))
+  val iccm_double_ecc_error = WireInit(UInt(2.W), 0.U)
+  val iccm_dma_ecc_error_in = iccm_double_ecc_error.orR
+  val iccm_dma_rdata_in = Mux(iccm_dma_ecc_error_in, Fill(2, io.dma_mem_addr), Cat(iccm_dma_rdata_1_muxed, iccm_corrected_data(0)))
+  val dma_mem_tag_ff = withClock(io.free_clk){RegNext(io.dma_mem_tag, 0.U)}
+  val iccm_dma_rtag = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(dma_mem_tag_ff, 0.U)} else 0.U
+  io.iccm_dma_rtag := iccm_dma_rtag
+
+  dma_mem_addr_ff := withClock(io.free_clk) {RegNext(io.dma_mem_addr(3,2), 0.U)}
+  val iccm_dma_rvalid_in = withClock(io.free_clk) {RegNext(iccm_dma_rden, false.B)}
+  val iccm_dma_rvalid = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(iccm_dma_rvalid_in, false.B)} else 0.U
+  io.iccm_dma_rvalid := iccm_dma_rvalid
+  val iccm_dma_ecc_error = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(iccm_dma_ecc_error_in, false.B)} else 0.U
+  io.iccm_dma_ecc_error := iccm_dma_ecc_error_in
+  val iccm_dma_rdata = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(iccm_dma_rdata_in, 0.U)} else 0.U
+  io.iccm_dma_rdata := iccm_dma_rdata
+  val iccm_ecc_corr_index_ff = WireInit(UInt((ICCM_BITS-2).W), 0.U)
+  io.iccm_rw_addr := Mux(ifc_dma_access_q_ok & io.dma_iccm_req  & !iccm_correct_ecc, io.dma_mem_addr,
+    Mux(!(ifc_dma_access_q_ok & io.dma_iccm_req) & iccm_correct_ecc, Cat(iccm_ecc_corr_index_ff, 0.U), io.ifc_fetch_addr_bf(ICCM_BITS-1,0)))
+  val ic_fetch_val_int_f = Cat(0.U(2.W), io.ic_fetch_val_f)
+  val ic_fetch_val_shift_right = ic_fetch_val_int_f << ifu_fetch_addr_int_f(0)
+  val iccm_rdmux_data = io.iccm_rd_data_ecc
+
+  val iccm_ecc_word_enable = (0 until 2).map(i=>((ic_fetch_val_shift_right((2*i+1),(2*i)) & !io.exu_flush_final & sel_iccm_data) | iccm_dma_rvalid_in) & !io.dec_tlu_core_ecc_disable).reverse.reduce(Cat(_,_))
+  val ecc_decoded = (0 until 2).map(i=>rvecc_decode(iccm_ecc_word_enable(i), iccm_rdmux_data((39*i+31),(39*i)), iccm_rdmux_data((39*i+38),(39*i+32)), 0.U))
+  val iccm_corrected_ecc = Wire(Vec(2, UInt(7.W)))
+  iccm_corrected_ecc := VecInit(ecc_decoded(0)._1,ecc_decoded(1)._1)
+  iccm_corrected_data := VecInit(ecc_decoded(0)._2,ecc_decoded(1)._2)
+  iccm_single_ecc_error := Cat(ecc_decoded(0)._3,ecc_decoded(1)._3)
+  iccm_double_ecc_error := Cat(ecc_decoded(0)._4,ecc_decoded(1)._4)
+  io.iccm_rd_ecc_single_err := iccm_single_ecc_error.orR & ifc_iccm_access_f & ifc_fetch_req_f
+  io.iccm_rd_ecc_double_err := iccm_double_ecc_error.orR & ifc_iccm_access_f
+  val iccm_corrected_data_f_mux = Mux(iccm_single_ecc_error(0).asBool, iccm_corrected_data(0), iccm_corrected_data(1))
+  val iccm_corrected_ecc_f_mux = Mux(iccm_single_ecc_error(0).asBool, iccm_corrected_ecc(0), iccm_corrected_ecc(1))
+  val iccm_rd_ecc_single_err_ff = WireInit(Bool(), false.B)
+  val iccm_ecc_write_status = ((io.iccm_rd_ecc_single_err & !iccm_rd_ecc_single_err_ff) & !io.exu_flush_final) | io.iccm_dma_sb_error
+  val iccm_rd_ecc_single_err_hold_in = (io.iccm_rd_ecc_single_err | iccm_rd_ecc_single_err_ff) & !io.exu_flush_final
+  iccm_error_start := io.iccm_rd_ecc_single_err
+  val iccm_rw_addr_f = WireInit(UInt((ICCM_BITS-2).W), 0.U)
+  val iccm_ecc_corr_index_in = Mux(iccm_single_ecc_error(0).asBool(), iccm_rw_addr_f, iccm_rw_addr_f + 1.U)
+  io.test := iccm_corrected_ecc(0)
 }
 object ifu_mem extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_mem_ctl()))
