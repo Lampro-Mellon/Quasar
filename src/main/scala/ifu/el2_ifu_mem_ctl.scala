@@ -124,85 +124,29 @@ class mem_ctl_bundle extends Bundle with el2_lib{
 }
 class el2_ifu_mem_ctl extends Module with el2_lib {
   val io = IO(new mem_ctl_bundle)
-
-  io.ic_debug_rd_en:=0.U
-  io.ic_debug_wr_en:=0.U
-  io.ic_debug_tag_array:=0.U
-  io.ifu_miss_state_idle:=0.U
-  io.ifu_ic_mb_empty:=0.U
-  io.ic_dma_active:=0.U
-  io.ic_write_stall:=0.U
-  io.ifu_pmu_ic_miss:=0.U
-  io.ifu_pmu_ic_hit:=0.U
-  io.ifu_pmu_bus_error:=0.U
-  io.ifu_pmu_bus_busy:=0.U
-  io.ifu_pmu_bus_trxn:=0.U
-  io.ifu_axi_awvalid:=0.U
-  io.ifu_axi_awid:=0.U
-  io.ifu_axi_awaddr:=0.U
-  io.ifu_axi_awlen:=0.U
-  io.ifu_axi_awsize:=0.U
-  io.ifu_axi_awburst:=0.U
-  io.ifu_axi_awlock:=0.U
-  io.ifu_axi_awcache:=0.U
-  io.ifu_axi_awprot:=0.U
-  io.ifu_axi_awqos:=0.U
-  io.ifu_axi_wvalid:=0.U
-  io.ifu_axi_wdata:=0.U
-  io.ifu_axi_wstrb:=0.U
-  io.ifu_axi_wlast:=0.U
-  io.ifu_axi_bready:=0.U
-  io.ifu_axi_arvalid:=0.U
-  io.ic_debug_addr:=0.U
-  io.ifu_axi_arid:=0.U
-  io.ifu_axi_araddr:=0.U
-  io.ifu_axi_arregion:=0.U
-  io.ifu_axi_arlen:=0.U
-  io.ifu_axi_arsize:=0.U
-  io.ifu_axi_arburst:=0.U
-  io.ifu_axi_arlock:=0.U
-  io.ifu_axi_arcache:=0.U
-  io.ifu_axi_arprot:=0.U
-  io.ifu_axi_arqos:=0.U
-  io.ifu_axi_rready:=0.U
-  io.iccm_dma_ecc_error:=0.U
-  io.iccm_dma_rvalid:=0.U
-  io.iccm_dma_rdata:=0.U
-  io.iccm_dma_rtag:=0.U
-  io.iccm_ready:=0.U
-  io.ic_rw_addr:=0.U
-  io.ic_wr_en:=0.U
-  io.ic_rd_en:=0.U
-  io.ic_wr_data:=(0 until ICACHE_BANKS_WAY).map(i=>0.U) // TODO
-  io.ic_debug_wr_data:=0.U
-  io.ifu_ic_debug_rd_data:=0.U
-  io.ic_tag_valid:=0.U
-  io.iccm_rw_addr:=0.U
-  io.iccm_wren:=0.U
-  io.iccm_rden:=0.U
-  io.iccm_wr_data:=0.U
-  io.iccm_wr_size:=0.U
-  io.ic_hit_f:=0.U
-  io.ic_access_fault_f:=0.U
-  io.ic_access_fault_type_f:=0.U
-  io.iccm_rd_ecc_single_err:=0.U
-  io.iccm_rd_ecc_double_err:=0.U
-  io.ic_error_start:=0.U
-  io.ifu_async_error_start:=0.U
-  io.iccm_dma_sb_error:=0.U
-  io.ic_fetch_val_f:=0.U
-  io.ic_data_f:=0.U
-  io.ic_premux_data:=0.U
-  io.ic_sel_premux_data:=0.U
-  io.ifu_ic_debug_rd_data_valid:=0.U
-  io.iccm_buf_correct_ecc:=0.U
-  io.iccm_correction_state:=0.U
-  io.ic_debug_way:=0.U
-  io.ifu_axi_awregion:=0.U
+  io.ifu_axi_wvalid := 0.U
+  io.ifu_axi_wdata := 0.U
+  io.ifu_axi_awqos := 0.U
+  io.ifu_axi_awaddr := 0.U
+  io.ifu_axi_awprot := 0.U
+  io.ifu_axi_awlen := 0.U
+  io.ifu_axi_arlock := 0.U
+  io.ifu_axi_awregion := 0.U
+  io.ifu_axi_awid := 0.U
+  io.ifu_axi_awvalid := 0.U
+  io.ifu_axi_wstrb := 0.U
+  io.ifu_axi_awcache := 0.U
+  io.ifu_axi_arqos := 0.U
+  io.ifu_axi_awlock := 0.U
+  io.ifu_axi_bready := 0.U
+  io.ifu_axi_arlen := 0.U
+  io.ifu_axi_awsize := 0.U
+  io.ifu_axi_arprot := 0.U
+  io.ifu_axi_awburst := 0.U
+  io.ifu_axi_wlast := 0.U
   val idle_C :: crit_byp_ok_C :: hit_u_miss_C :: miss_wait_C :: crit_wrd_rdy_C :: scnd_miss_C :: stream_C :: stall_scnd_miss_C :: Nil = Enum(8)
   val err_stop_idle_C :: err_fetch1_C :: err_fetch2_C :: err_stop_fetch_C :: Nil = Enum(4)
   val err_idle_C :: ic_wff_C :: ecc_wff_C :: ecc_cor_C :: dma_sb_err_C :: Nil = Enum(5)
-
 
   val iccm_single_ecc_error = WireInit(UInt(2.W), 0.U)
   val ifc_fetch_req_f = WireInit(Bool(), 0.U)
@@ -371,8 +315,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   ifc_region_acc_fault_final_f := RegNext(ifc_region_acc_fault_final_bf, 0.U)
   val ifc_region_acc_fault_f = RegNext(io.ifc_region_acc_fault_bf, 0.U)
   val ifu_ic_req_addr_f = Cat(miss_addr, ic_req_addr_bits_hi_3)
-  val ifu_ic_mb_empty = (((miss_state===hit_u_miss_C) | (miss_state===stream_C)) & !(bus_ifu_wr_en_ff & last_beat)) | !miss_pending
-  val ifu_miss_state_idle = miss_state === idle_C
+  io.ifu_ic_mb_empty := (((miss_state===hit_u_miss_C) | (miss_state===stream_C)) & !(bus_ifu_wr_en_ff & last_beat)) | !miss_pending
+  io.ifu_miss_state_idle := miss_state === idle_C
   val write_ic_16_bytes = WireInit(Bool(), false.B)
   val reset_tag_valid_for_miss = WireInit(Bool(), false.B)
   val sel_mb_addr = (miss_pending & write_ic_16_bytes & !uncacheable_miss_ff) | reset_tag_valid_for_miss
@@ -381,7 +325,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val bus_ifu_wr_en_ff_q = WireInit(Bool(), false.B)
   val sel_mb_status_addr = miss_pending & write_ic_16_bytes & !uncacheable_miss_ff & last_beat & bus_ifu_wr_en_ff_q
   val ifu_status_wr_addr = Mux(sel_mb_status_addr, Cat(imb_ff(30, ICACHE_BEAT_ADDR_HI),ic_wr_addr_bits_hi_3, imb_ff(1,0)), ifu_fetch_addr_int_f)
-  val ic_rw_addr = ifu_ic_rw_int_addr
+  io.ic_rw_addr := ifu_ic_rw_int_addr
   sel_mb_addr_ff := withClock(io.free_clk){RegNext(sel_mb_addr, 0.U)}
   val ifu_bus_rdata_ff = WireInit(UInt(64.W), 0.U)
   val ic_miss_buff_half = WireInit(UInt(64.W), 0.U)
@@ -422,9 +366,10 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ic_premux_data = if(ICCM_ICACHE) (Fill(64,sel_iccm_data) & io.iccm_rd_data) | (Fill(64, sel_byp_data) & ic_byp_data_only_new)
   else if(ICACHE_ONLY) Fill(64, sel_byp_data) & ic_byp_data_only_new else 0.U
   val ic_sel_premux_data = if(ICCM_ICACHE) sel_iccm_data | sel_byp_data else if(ICACHE_ONLY) sel_byp_data else 0.U
-
+  io.ic_premux_data := ic_premux_data
+  io.ic_sel_premux_data := ic_sel_premux_data
   val ifc_bus_acc_fault_f = ic_byp_hit_f & ifu_byp_data_err_new
-  val ic_data_f = ic_final_data
+  io.ic_data_f := ic_final_data
   val fetch_req_f_qual = io.ic_hit_f & !io.exu_flush_final
   val ifc_region_acc_fault_memory_f = WireInit(Bool(), 0.U)
   io.ic_access_fault_f := (ifc_region_acc_fault_final_f | ifc_bus_acc_fault_f) & !io.exu_flush_final
@@ -433,7 +378,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
       Mux(ifc_region_acc_fault_memory_f.asBool(), 3.U, 0.U)))
   val ifu_bp_inst_mask_f = WireInit(Bool(), 0.U)
   io.ic_fetch_val_f := Cat(fetch_req_f_qual & ifu_bp_inst_mask_f & !(vaddr_f===Fill(ICACHE_BEAT_ADDR_HI,1.U)) & (err_stop_state=/=err_fetch2_C), fetch_req_f_qual)
-  val two_byte_instr = ic_data_f(1,0) =/= 3.U
+  val two_byte_instr = io.ic_data_f(1,0) =/= 3.U
   //// Creating full buffer
   val ifu_bus_rsp_rdata = WireInit(UInt(64.W), 0.U)
   val ic_miss_buff_data_in = ifu_bus_rsp_rdata
@@ -519,7 +464,9 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val perr_err_inv_way = Fill(ICACHE_NUM_WAYS, perr_sel_invalidate)
   iccm_correct_ecc := perr_state === ecc_cor_C
   val dma_sb_err_state = perr_state === dma_sb_err_C
-  val dma_sb_err_state_ff = withClock(io.active_clk){RegNext(dma_sb_err_state, 0.U)}
+  val dma_sb_err_state_ff = Wire(Bool())
+  io.iccm_buf_correct_ecc := iccm_correct_ecc & !dma_sb_err_state_ff
+  dma_sb_err_state_ff := withClock(io.active_clk){RegNext(dma_sb_err_state, false.B)}
 
   ///////////////////////////////// ERROR FSM /////////////////////////////////
   val perr_nxtstate = WireInit(UInt(3.W), 0.U)
@@ -553,8 +500,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   ///////////////////////////////// STOP FETCH FSM /////////////////////////////////
   val err_stop_nxtstate = WireInit(UInt(2.W), 0.U)
   val err_stop_state_en = WireInit(Bool(), false.B)
+  io.iccm_correction_state := false.B
 //  val err_stop_fetch := WireInit(Bool(), false.B)
-  val iccm_correction_state = WireInit(Bool(), false.B)
   switch(err_stop_state){
     is(err_stop_idle_C){
       err_stop_nxtstate := err_fetch1_C
@@ -566,21 +513,21 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
           Mux(io.ifu_fetch_val(0).asBool(), err_fetch2_C, err_fetch1_C)))
       err_stop_state_en := io.dec_tlu_flush_lower_wb | io.dec_tlu_i0_commit_cmt | io.ifu_fetch_val(0) | ifu_bp_hit_taken_q_f | io.dec_tlu_force_halt
       err_stop_fetch := ((io.ifu_fetch_val(1,0)===3.U) | (io.ifu_fetch_val(0) & two_byte_instr))  & !(io.exu_flush_final | io.dec_tlu_i0_commit_cmt)
-      iccm_correction_state := true.B
+      io.iccm_correction_state := true.B
     }
     is(err_fetch2_C){
       err_stop_nxtstate := Mux((io.dec_tlu_flush_lower_wb | io.dec_tlu_i0_commit_cmt | io.dec_tlu_force_halt).asBool,
         err_stop_idle_C, Mux(io.ifu_fetch_val(0).asBool, err_stop_fetch_C, err_fetch2_C))
       err_stop_state_en := io.dec_tlu_flush_lower_wb | io.dec_tlu_i0_commit_cmt | io.ifu_fetch_val(0) | io.dec_tlu_force_halt
       err_stop_fetch := io.ifu_fetch_val(0) & !io.exu_flush_final & !io.dec_tlu_i0_commit_cmt
-      iccm_correction_state := true.B
+      io.iccm_correction_state := true.B
     }
     is(err_stop_fetch_C){
       err_stop_nxtstate := Mux(((io.dec_tlu_flush_lower_wb & !io.dec_tlu_flush_err_wb) | io.dec_tlu_i0_commit_cmt | io.dec_tlu_force_halt).asBool,
         err_stop_idle_C, Mux(io.dec_tlu_flush_err_wb.asBool(), err_fetch1_C, err_stop_fetch_C))
       err_stop_state_en := io.dec_tlu_flush_lower_wb | io.dec_tlu_i0_commit_cmt | io.dec_tlu_force_halt
       err_stop_fetch := true.B
-      iccm_correction_state := true.B
+      io.iccm_correction_state := true.B
     }
   }
   err_stop_state := withClock(io.free_clk){RegEnable(err_stop_nxtstate, 0.U, err_stop_state_en)}
@@ -668,7 +615,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   // DMA
   ifc_dma_access_ok_d := io.ifc_dma_access_ok &  !iccm_correct_ecc & !io.iccm_dma_sb_error
   val ifc_dma_access_q_ok  = io.ifc_dma_access_ok &  !iccm_correct_ecc & ifc_dma_access_ok_prev &  (perr_state===err_idle_C)  & !io.iccm_dma_sb_error
-  val iccm_ready = ifc_dma_access_q_ok
+  io.iccm_ready := ifc_dma_access_q_ok
   dma_iccm_req_f := withClock(io.free_clk){RegNext(io.dma_iccm_req, false.B)}
   io.iccm_wren := (ifc_dma_access_q_ok & io.dma_iccm_req &  io.dma_mem_write) | iccm_correct_ecc
   io.iccm_rden := (ifc_dma_access_q_ok & io.dma_iccm_req & !io.dma_mem_write) | (io.ifc_iccm_access_bf & io.ifc_fetch_req_bf)
