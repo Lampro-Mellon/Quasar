@@ -139,7 +139,7 @@ module el2_ifu_mem_ctl(
   output        io_ifu_ic_debug_rd_data_valid,
   output        io_iccm_buf_correct_ecc,
   output        io_iccm_correction_state,
-  output [6:0]  io_test,
+  output        io_test,
   input         io_scan_mode
 );
 `ifdef RANDOMIZE_REG_INIT
@@ -167,10 +167,10 @@ module el2_ifu_mem_ctl(
   reg [31:0] _RAND_21;
   reg [31:0] _RAND_22;
   reg [31:0] _RAND_23;
-  reg [63:0] _RAND_24;
-  reg [63:0] _RAND_25;
-  reg [63:0] _RAND_26;
-  reg [63:0] _RAND_27;
+  reg [31:0] _RAND_24;
+  reg [31:0] _RAND_25;
+  reg [31:0] _RAND_26;
+  reg [31:0] _RAND_27;
   reg [63:0] _RAND_28;
   reg [63:0] _RAND_29;
   reg [63:0] _RAND_30;
@@ -184,17 +184,27 @@ module el2_ifu_mem_ctl(
   reg [63:0] _RAND_38;
   reg [63:0] _RAND_39;
   reg [63:0] _RAND_40;
-  reg [31:0] _RAND_41;
-  reg [31:0] _RAND_42;
-  reg [95:0] _RAND_43;
-  reg [31:0] _RAND_44;
+  reg [63:0] _RAND_41;
+  reg [63:0] _RAND_42;
+  reg [63:0] _RAND_43;
+  reg [63:0] _RAND_44;
   reg [31:0] _RAND_45;
   reg [31:0] _RAND_46;
-  reg [31:0] _RAND_47;
+  reg [95:0] _RAND_47;
   reg [31:0] _RAND_48;
   reg [31:0] _RAND_49;
   reg [31:0] _RAND_50;
   reg [63:0] _RAND_51;
+  reg [31:0] _RAND_52;
+  reg [31:0] _RAND_53;
+  reg [31:0] _RAND_54;
+  reg [31:0] _RAND_55;
+  reg [63:0] _RAND_56;
+  reg [31:0] _RAND_57;
+  reg [31:0] _RAND_58;
+  reg [31:0] _RAND_59;
+  reg [31:0] _RAND_60;
+  reg [31:0] _RAND_61;
 `endif // RANDOMIZE_REG_INIT
   wire  rvclkhdr_io_clk; // @[el2_lib.scala 412:22]
   wire  rvclkhdr_io_en; // @[el2_lib.scala 412:22]
@@ -202,6 +212,54 @@ module el2_ifu_mem_ctl(
   wire  rvclkhdr_1_io_clk; // @[el2_lib.scala 412:22]
   wire  rvclkhdr_1_io_en; // @[el2_lib.scala 412:22]
   wire  rvclkhdr_1_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_2_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_2_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_2_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_3_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_3_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_3_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_4_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_4_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_4_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_5_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_5_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_5_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_6_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_6_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_6_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_7_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_7_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_7_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_8_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_8_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_8_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_9_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_9_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_9_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_10_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_10_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_10_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_11_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_11_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_11_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_12_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_12_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_12_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_13_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_13_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_13_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_14_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_14_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_14_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_15_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_15_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_15_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_16_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_16_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_16_io_scan_mode; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_17_io_clk; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_17_io_en; // @[el2_lib.scala 412:22]
+  wire  rvclkhdr_17_io_scan_mode; // @[el2_lib.scala 412:22]
   reg  flush_final_f; // @[el2_ifu_mem_ctl.scala 234:30]
   reg  ifc_fetch_req_f_raw; // @[el2_ifu_mem_ctl.scala 367:36]
   wire  _T_308 = ~io_exu_flush_final; // @[el2_ifu_mem_ctl.scala 368:44]
@@ -210,26 +268,27 @@ module el2_ifu_mem_ctl(
   reg [2:0] miss_state; // @[Reg.scala 27:20]
   wire  miss_pending = miss_state != 3'h0; // @[el2_ifu_mem_ctl.scala 300:30]
   wire  _T_1 = _T | miss_pending; // @[el2_ifu_mem_ctl.scala 235:71]
+  wire  debug_c1_clken = io_ic_debug_rd_en | io_ic_debug_wr_en; // @[el2_ifu_mem_ctl.scala 236:42]
   wire [3:0] ic_fetch_val_int_f = {2'h0,io_ic_fetch_val_f}; // @[Cat.scala 29:58]
   reg [30:0] ifu_fetch_addr_int_f; // @[el2_ifu_mem_ctl.scala 355:34]
-  wire [4:0] _GEN_74 = {{1'd0}, ic_fetch_val_int_f}; // @[el2_ifu_mem_ctl.scala 705:53]
-  wire [4:0] ic_fetch_val_shift_right = _GEN_74 << ifu_fetch_addr_int_f[0]; // @[el2_ifu_mem_ctl.scala 705:53]
-  wire [1:0] _GEN_75 = {{1'd0}, _T_308}; // @[el2_ifu_mem_ctl.scala 708:91]
-  wire [1:0] _T_3058 = ic_fetch_val_shift_right[3:2] & _GEN_75; // @[el2_ifu_mem_ctl.scala 708:91]
+  wire [4:0] _GEN_204 = {{1'd0}, ic_fetch_val_int_f}; // @[el2_ifu_mem_ctl.scala 705:53]
+  wire [4:0] ic_fetch_val_shift_right = _GEN_204 << ifu_fetch_addr_int_f[0]; // @[el2_ifu_mem_ctl.scala 705:53]
+  wire [1:0] _GEN_205 = {{1'd0}, _T_308}; // @[el2_ifu_mem_ctl.scala 708:91]
+  wire [1:0] _T_3058 = ic_fetch_val_shift_right[3:2] & _GEN_205; // @[el2_ifu_mem_ctl.scala 708:91]
   reg  ifc_iccm_access_f; // @[el2_ifu_mem_ctl.scala 369:31]
   wire  fetch_req_iccm_f = ifc_fetch_req_f & ifc_iccm_access_f; // @[el2_ifu_mem_ctl.scala 322:46]
-  wire [1:0] _GEN_76 = {{1'd0}, fetch_req_iccm_f}; // @[el2_ifu_mem_ctl.scala 708:113]
-  wire [1:0] _T_3059 = _T_3058 & _GEN_76; // @[el2_ifu_mem_ctl.scala 708:113]
+  wire [1:0] _GEN_206 = {{1'd0}, fetch_req_iccm_f}; // @[el2_ifu_mem_ctl.scala 708:113]
+  wire [1:0] _T_3059 = _T_3058 & _GEN_206; // @[el2_ifu_mem_ctl.scala 708:113]
   reg  iccm_dma_rvalid_in; // @[el2_ifu_mem_ctl.scala 694:59]
-  wire [1:0] _GEN_77 = {{1'd0}, iccm_dma_rvalid_in}; // @[el2_ifu_mem_ctl.scala 708:130]
-  wire [1:0] _T_3060 = _T_3059 | _GEN_77; // @[el2_ifu_mem_ctl.scala 708:130]
+  wire [1:0] _GEN_207 = {{1'd0}, iccm_dma_rvalid_in}; // @[el2_ifu_mem_ctl.scala 708:130]
+  wire [1:0] _T_3060 = _T_3059 | _GEN_207; // @[el2_ifu_mem_ctl.scala 708:130]
   wire  _T_3061 = ~io_dec_tlu_core_ecc_disable; // @[el2_ifu_mem_ctl.scala 708:154]
-  wire [1:0] _GEN_78 = {{1'd0}, _T_3061}; // @[el2_ifu_mem_ctl.scala 708:152]
-  wire [1:0] _T_3062 = _T_3060 & _GEN_78; // @[el2_ifu_mem_ctl.scala 708:152]
-  wire [1:0] _T_3051 = ic_fetch_val_shift_right[1:0] & _GEN_75; // @[el2_ifu_mem_ctl.scala 708:91]
-  wire [1:0] _T_3052 = _T_3051 & _GEN_76; // @[el2_ifu_mem_ctl.scala 708:113]
-  wire [1:0] _T_3053 = _T_3052 | _GEN_77; // @[el2_ifu_mem_ctl.scala 708:130]
-  wire [1:0] _T_3055 = _T_3053 & _GEN_78; // @[el2_ifu_mem_ctl.scala 708:152]
+  wire [1:0] _GEN_208 = {{1'd0}, _T_3061}; // @[el2_ifu_mem_ctl.scala 708:152]
+  wire [1:0] _T_3062 = _T_3060 & _GEN_208; // @[el2_ifu_mem_ctl.scala 708:152]
+  wire [1:0] _T_3051 = ic_fetch_val_shift_right[1:0] & _GEN_205; // @[el2_ifu_mem_ctl.scala 708:91]
+  wire [1:0] _T_3052 = _T_3051 & _GEN_206; // @[el2_ifu_mem_ctl.scala 708:113]
+  wire [1:0] _T_3053 = _T_3052 | _GEN_207; // @[el2_ifu_mem_ctl.scala 708:130]
+  wire [1:0] _T_3055 = _T_3053 & _GEN_208; // @[el2_ifu_mem_ctl.scala 708:152]
   wire [3:0] iccm_ecc_word_enable = {_T_3062,_T_3055}; // @[Cat.scala 29:58]
   wire  _T_3162 = ^io_iccm_rd_data_ecc[31:0]; // @[el2_lib.scala 296:30]
   wire  _T_3163 = ^io_iccm_rd_data_ecc[38:32]; // @[el2_lib.scala 296:44]
@@ -324,9 +383,11 @@ module el2_ifu_mem_ctl(
   wire  _T_15 = _T_14 & io_ifu_axi_rready; // @[el2_ifu_mem_ctl.scala 242:65]
   wire  _T_219 = |io_ic_rd_hit; // @[el2_ifu_mem_ctl.scala 330:37]
   wire  _T_220 = ~_T_219; // @[el2_ifu_mem_ctl.scala 330:23]
+  reg  reset_all_tags; // @[el2_ifu_mem_ctl.scala 740:53]
+  wire  _T_221 = _T_220 | reset_all_tags; // @[el2_ifu_mem_ctl.scala 330:41]
   wire  _T_199 = ~ifc_iccm_access_f; // @[el2_ifu_mem_ctl.scala 321:48]
   wire  fetch_req_icache_f = ifc_fetch_req_f & _T_199; // @[el2_ifu_mem_ctl.scala 321:46]
-  wire  _T_222 = _T_220 & fetch_req_icache_f; // @[el2_ifu_mem_ctl.scala 330:59]
+  wire  _T_222 = _T_221 & fetch_req_icache_f; // @[el2_ifu_mem_ctl.scala 330:59]
   wire  _T_223 = ~miss_pending; // @[el2_ifu_mem_ctl.scala 330:82]
   wire  ic_act_miss_f = _T_222 & _T_223; // @[el2_ifu_mem_ctl.scala 330:80]
   reg  ifu_bus_rvalid_unq_ff; // @[Reg.scala 27:20]
@@ -484,7 +545,8 @@ module el2_ifu_mem_ctl(
   wire [2:0] _T_120 = _T_118 ? 3'h2 : 3'h0; // @[el2_ifu_mem_ctl.scala 270:27]
   wire  _T_124 = 3'h2 == miss_state; // @[Conditional.scala 37:30]
   wire  _T_228 = io_ic_rd_hit == 2'h0; // @[el2_ifu_mem_ctl.scala 331:28]
-  wire  _T_230 = _T_228 & fetch_req_icache_f; // @[el2_ifu_mem_ctl.scala 331:60]
+  wire  _T_229 = _T_228 | reset_all_tags; // @[el2_ifu_mem_ctl.scala 331:42]
+  wire  _T_230 = _T_229 & fetch_req_icache_f; // @[el2_ifu_mem_ctl.scala 331:60]
   wire  _T_231 = miss_state == 3'h2; // @[el2_ifu_mem_ctl.scala 331:94]
   wire  _T_232 = _T_230 & _T_231; // @[el2_ifu_mem_ctl.scala 331:81]
   wire  _T_235 = imb_ff[30:5] != ifu_fetch_addr_int_f[30:5]; // @[el2_ifu_mem_ctl.scala 332:39]
@@ -567,17 +629,33 @@ module el2_ifu_mem_ctl(
   wire  sel_hold_imb = _T_179 | _T_181; // @[el2_ifu_mem_ctl.scala 303:93]
   wire  _T_183 = _T_18 | ic_miss_under_miss_f; // @[el2_ifu_mem_ctl.scala 306:57]
   wire  sel_hold_imb_scnd = _T_183 & _T_166; // @[el2_ifu_mem_ctl.scala 306:81]
+  wire  _T_187 = ~reset_all_tags; // @[el2_ifu_mem_ctl.scala 309:96]
   reg [30:0] imb_scnd_ff; // @[el2_ifu_mem_ctl.scala 313:25]
+  wire [2:0] _T_198 = bus_ifu_wr_en_ff ? 3'h7 : 3'h0; // @[Bitwise.scala 72:12]
   reg [2:0] ifu_bus_rid_ff; // @[Reg.scala 27:20]
+  wire [2:0] ic_wr_addr_bits_hi_3 = ifu_bus_rid_ff & _T_198; // @[el2_ifu_mem_ctl.scala 318:45]
   wire  _T_204 = _T_223 | _T_231; // @[el2_ifu_mem_ctl.scala 323:59]
   wire  _T_206 = _T_204 | _T_2216; // @[el2_ifu_mem_ctl.scala 323:91]
   wire  ic_iccm_hit_f = fetch_req_iccm_f & _T_206; // @[el2_ifu_mem_ctl.scala 323:41]
   wire  _T_211 = _T_219 & fetch_req_icache_f; // @[el2_ifu_mem_ctl.scala 329:39]
-  wire  _T_217 = _T_211 & _T_204; // @[el2_ifu_mem_ctl.scala 329:78]
+  wire  _T_213 = _T_211 & _T_187; // @[el2_ifu_mem_ctl.scala 329:60]
+  wire  _T_217 = _T_213 & _T_204; // @[el2_ifu_mem_ctl.scala 329:78]
   wire  ic_act_hit_f = _T_217 & _T_239; // @[el2_ifu_mem_ctl.scala 329:126]
   wire  _T_254 = ic_act_hit_f | ic_byp_hit_f; // @[el2_ifu_mem_ctl.scala 336:31]
   wire  uncacheable_miss_in = sel_hold_imb ? uncacheable_miss_ff : io_ifc_fetch_uncacheable_bf; // @[el2_ifu_mem_ctl.scala 337:84]
+  reg [1:0] ifu_bus_rresp_ff; // @[Reg.scala 27:20]
+  wire  _T_2599 = |ifu_bus_rresp_ff; // @[el2_ifu_mem_ctl.scala 662:48]
+  wire  _T_2600 = _T_2599 & ifu_bus_rvalid_ff; // @[el2_ifu_mem_ctl.scala 662:52]
+  wire  bus_ifu_wr_data_error_ff = _T_2600 & miss_pending; // @[el2_ifu_mem_ctl.scala 662:73]
+  reg  ifu_wr_data_comb_err_ff; // @[el2_ifu_mem_ctl.scala 412:61]
+  wire  ifu_wr_cumulative_err_data = bus_ifu_wr_data_error_ff | ifu_wr_data_comb_err_ff; // @[el2_ifu_mem_ctl.scala 411:55]
+  wire  _T_268 = ~ifu_wr_cumulative_err_data; // @[el2_ifu_mem_ctl.scala 340:145]
   reg  scnd_miss_req_q; // @[el2_ifu_mem_ctl.scala 589:52]
+  wire  _T_288 = ~scnd_miss_req_q; // @[el2_ifu_mem_ctl.scala 352:36]
+  wire  _T_289 = miss_pending & _T_288; // @[el2_ifu_mem_ctl.scala 352:34]
+  reg  reset_ic_ff; // @[el2_ifu_mem_ctl.scala 353:25]
+  wire  _T_290 = reset_all_tags | reset_ic_ff; // @[el2_ifu_mem_ctl.scala 352:72]
+  wire  reset_ic_in = _T_289 & _T_290; // @[el2_ifu_mem_ctl.scala 352:53]
   reg [25:0] miss_addr; // @[el2_ifu_mem_ctl.scala 362:23]
   wire  _T_304 = _T_2230 & flush_final_f; // @[el2_ifu_mem_ctl.scala 366:87]
   wire  _T_305 = ~_T_304; // @[el2_ifu_mem_ctl.scala 366:55]
@@ -620,6 +698,13 @@ module el2_ifu_mem_ctl(
   wire  _T_2593 = ic_act_miss_f_delayed & _T_2231; // @[el2_ifu_mem_ctl.scala 660:53]
   wire  reset_tag_valid_for_miss = _T_2593 & _T_52; // @[el2_ifu_mem_ctl.scala 660:84]
   wire  sel_mb_addr = _T_321 | reset_tag_valid_for_miss; // @[el2_ifu_mem_ctl.scala 378:79]
+  wire [30:0] _T_326 = {imb_ff[30:5],ic_wr_addr_bits_hi_3,imb_ff[1:0]}; // @[Cat.scala 29:58]
+  wire  _T_335 = _T_321 & last_beat; // @[el2_ifu_mem_ctl.scala 382:84]
+  wire  _T_2587 = ~_T_2599; // @[el2_ifu_mem_ctl.scala 657:84]
+  wire  _T_2588 = _T_92 & _T_2587; // @[el2_ifu_mem_ctl.scala 657:82]
+  wire  bus_ifu_wr_en_ff_q = _T_2588 & write_ic_16_bytes; // @[el2_ifu_mem_ctl.scala 657:108]
+  wire  sel_mb_status_addr = _T_335 & bus_ifu_wr_en_ff_q; // @[el2_ifu_mem_ctl.scala 382:96]
+  wire [30:0] ifu_status_wr_addr = sel_mb_status_addr ? _T_326 : ifu_fetch_addr_int_f; // @[el2_ifu_mem_ctl.scala 383:31]
   reg [63:0] ifu_bus_rdata_ff; // @[Reg.scala 27:20]
   wire [7:0] _T_559 = {ifu_bus_rdata_ff[11],ifu_bus_rdata_ff[10],ifu_bus_rdata_ff[8],ifu_bus_rdata_ff[6],ifu_bus_rdata_ff[4],ifu_bus_rdata_ff[3],ifu_bus_rdata_ff[1],ifu_bus_rdata_ff[0]}; // @[el2_lib.scala 343:27]
   wire [16:0] _T_568 = {ifu_bus_rdata_ff[28],ifu_bus_rdata_ff[26],ifu_bus_rdata_ff[25],ifu_bus_rdata_ff[23],ifu_bus_rdata_ff[21],ifu_bus_rdata_ff[19],ifu_bus_rdata_ff[17],ifu_bus_rdata_ff[15],ifu_bus_rdata_ff[13],_T_559}; // @[el2_lib.scala 343:27]
@@ -895,8 +980,8 @@ module el2_ifu_mem_ctl(
   wire  _T_1480 = _T_1479 | _T_1473; // @[Mux.scala 27:72]
   wire  _T_1482 = _T_1449 & _T_1480; // @[el2_ifu_mem_ctl.scala 463:69]
   wire  _T_1483 = _T_1445 | _T_1482; // @[el2_ifu_mem_ctl.scala 462:94]
-  wire [4:0] _GEN_83 = {{2'd0}, bypass_index[4:2]}; // @[el2_ifu_mem_ctl.scala 464:95]
-  wire  _T_1486 = _GEN_83 == 5'h1f; // @[el2_ifu_mem_ctl.scala 464:95]
+  wire [4:0] _GEN_437 = {{2'd0}, bypass_index[4:2]}; // @[el2_ifu_mem_ctl.scala 464:95]
+  wire  _T_1486 = _GEN_437 == 5'h1f; // @[el2_ifu_mem_ctl.scala 464:95]
   wire  _T_1487 = bypass_valid_value_check & _T_1486; // @[el2_ifu_mem_ctl.scala 464:56]
   wire  bypass_data_ready_in = _T_1483 | _T_1487; // @[el2_ifu_mem_ctl.scala 463:181]
   wire  _T_1488 = bypass_data_ready_in & crit_wd_byp_ok_ff; // @[el2_ifu_mem_ctl.scala 468:53]
@@ -958,6 +1043,7 @@ module el2_ifu_mem_ctl(
   wire  _T_2400 = ~ifc_bus_acc_fault_f; // @[el2_ifu_mem_ctl.scala 513:60]
   wire  ic_rd_parity_final_err = _T_2398 & _T_2400; // @[el2_ifu_mem_ctl.scala 513:58]
   reg [70:0] _T_1200; // @[el2_ifu_mem_ctl.scala 400:37]
+  wire  ifu_wr_cumulative_err = ifu_wr_cumulative_err_data & _T_2528; // @[el2_ifu_mem_ctl.scala 410:80]
   wire  fetch_req_f_qual = io_ic_hit_f & _T_308; // @[el2_ifu_mem_ctl.scala 428:38]
   wire [1:0] _T_1264 = ifc_region_acc_fault_f ? 2'h2 : 2'h0; // @[el2_ifu_mem_ctl.scala 432:8]
   wire [7:0] _T_1345 = {ic_miss_buff_data_valid_in_7,ic_miss_buff_data_valid_in_6,ic_miss_buff_data_valid_in_5,ic_miss_buff_data_valid_in_4,ic_miss_buff_data_valid_in_3,ic_miss_buff_data_valid_in_2,ic_miss_buff_data_valid_in_1,ic_miss_buff_data_valid_in_0}; // @[Cat.scala 29:58]
@@ -1113,6 +1199,8 @@ module el2_ifu_mem_ctl(
   wire [13:0] dma_mem_ecc = {_T_2822,_T_2742,_T_2760,_T_2778,_T_2793,_T_2808,_T_2814,_T_3019}; // @[Cat.scala 29:58]
   wire  _T_3021 = ~_T_2615; // @[el2_ifu_mem_ctl.scala 679:45]
   wire  _T_3022 = iccm_correct_ecc & _T_3021; // @[el2_ifu_mem_ctl.scala 679:43]
+  reg [38:0] iccm_ecc_corr_data_ff; // @[Reg.scala 27:20]
+  wire [77:0] _T_3023 = {iccm_ecc_corr_data_ff,iccm_ecc_corr_data_ff}; // @[Cat.scala 29:58]
   wire [77:0] _T_3030 = {dma_mem_ecc[13:7],io_dma_mem_wdata[63:32],dma_mem_ecc[6:0],io_dma_mem_wdata[31:0]}; // @[Cat.scala 29:58]
   reg [1:0] dma_mem_addr_ff; // @[el2_ifu_mem_ctl.scala 693:53]
   wire  _T_3362 = _T_3274[5:0] == 6'h27; // @[el2_lib.scala 302:41]
@@ -1228,13 +1316,69 @@ module el2_ifu_mem_ctl(
   reg [63:0] iccm_dma_rdata; // @[el2_ifu_mem_ctl.scala 699:70]
   wire  _T_3040 = _T_2615 & _T_2604; // @[el2_ifu_mem_ctl.scala 702:65]
   wire  _T_3043 = _T_3021 & iccm_correct_ecc; // @[el2_ifu_mem_ctl.scala 703:50]
-  wire [15:0] _T_3046 = _T_3043 ? 16'h0 : io_ifc_fetch_addr_bf[15:0]; // @[el2_ifu_mem_ctl.scala 703:8]
+  reg [13:0] iccm_ecc_corr_index_ff; // @[Reg.scala 27:20]
+  wire [14:0] _T_3044 = {iccm_ecc_corr_index_ff,1'h0}; // @[Cat.scala 29:58]
+  wire [15:0] _T_3046 = _T_3043 ? {{1'd0}, _T_3044} : io_ifc_fetch_addr_bf[15:0]; // @[el2_ifu_mem_ctl.scala 703:8]
   wire [31:0] _T_3047 = _T_3040 ? io_dma_mem_addr : {{16'd0}, _T_3046}; // @[el2_ifu_mem_ctl.scala 702:25]
   wire  _T_3436 = _T_3274 == 7'h40; // @[el2_lib.scala 308:62]
   wire  _T_3437 = _T_3424[38] ^ _T_3436; // @[el2_lib.scala 308:44]
-  wire [3:0] _T_3444 = {_T_3424[7],_T_3424[3],_T_3424[1:0]}; // @[Cat.scala 29:58]
-  wire [2:0] _T_3446 = {_T_3437,_T_3424[31],_T_3424[15]}; // @[Cat.scala 29:58]
+  wire [6:0] iccm_corrected_ecc_0 = {_T_3437,_T_3424[31],_T_3424[15],_T_3424[7],_T_3424[3],_T_3424[1:0]}; // @[Cat.scala 29:58]
+  wire  _T_3821 = _T_3659 == 7'h40; // @[el2_lib.scala 308:62]
+  wire  _T_3822 = _T_3809[38] ^ _T_3821; // @[el2_lib.scala 308:44]
+  wire [6:0] iccm_corrected_ecc_1 = {_T_3822,_T_3809[31],_T_3809[15],_T_3809[7],_T_3809[3],_T_3809[1:0]}; // @[Cat.scala 29:58]
   wire  _T_3838 = _T_4 & ifc_iccm_access_f; // @[el2_ifu_mem_ctl.scala 715:58]
+  wire [31:0] iccm_corrected_data_f_mux = iccm_single_ecc_error[0] ? iccm_corrected_data_0 : iccm_corrected_data_1; // @[el2_ifu_mem_ctl.scala 717:38]
+  wire [6:0] iccm_corrected_ecc_f_mux = iccm_single_ecc_error[0] ? iccm_corrected_ecc_0 : iccm_corrected_ecc_1; // @[el2_ifu_mem_ctl.scala 718:37]
+  reg  iccm_rd_ecc_single_err_ff; // @[el2_ifu_mem_ctl.scala 726:62]
+  wire  _T_3846 = ~iccm_rd_ecc_single_err_ff; // @[el2_ifu_mem_ctl.scala 720:76]
+  wire  _T_3847 = io_iccm_rd_ecc_single_err & _T_3846; // @[el2_ifu_mem_ctl.scala 720:74]
+  wire  _T_3849 = _T_3847 & _T_308; // @[el2_ifu_mem_ctl.scala 720:104]
+  wire  iccm_ecc_write_status = _T_3849 | io_iccm_dma_sb_error; // @[el2_ifu_mem_ctl.scala 720:127]
+  wire  _T_3850 = io_iccm_rd_ecc_single_err | iccm_rd_ecc_single_err_ff; // @[el2_ifu_mem_ctl.scala 721:67]
+  wire  iccm_rd_ecc_single_err_hold_in = _T_3850 & _T_308; // @[el2_ifu_mem_ctl.scala 721:96]
+  reg [13:0] iccm_rw_addr_f; // @[el2_ifu_mem_ctl.scala 725:51]
+  wire [13:0] _T_3855 = iccm_rw_addr_f + 14'h1; // @[el2_ifu_mem_ctl.scala 724:102]
+  wire [38:0] _T_3859 = {iccm_corrected_ecc_f_mux,iccm_corrected_data_f_mux}; // @[Cat.scala 29:58]
+  wire  _T_3864 = ~io_ifc_fetch_uncacheable_bf; // @[el2_ifu_mem_ctl.scala 729:41]
+  wire  _T_3865 = io_ifc_fetch_req_bf & _T_3864; // @[el2_ifu_mem_ctl.scala 729:39]
+  wire  _T_3866 = ~io_ifc_iccm_access_bf; // @[el2_ifu_mem_ctl.scala 729:72]
+  wire  _T_3867 = _T_3865 & _T_3866; // @[el2_ifu_mem_ctl.scala 729:70]
+  wire  _T_3869 = ~miss_state_en; // @[el2_ifu_mem_ctl.scala 730:34]
+  wire  _T_3870 = _T_2216 & _T_3869; // @[el2_ifu_mem_ctl.scala 730:32]
+  wire  _T_3873 = _T_2231 & _T_3869; // @[el2_ifu_mem_ctl.scala 731:37]
+  wire  _T_3874 = _T_3870 | _T_3873; // @[el2_ifu_mem_ctl.scala 730:88]
+  wire  _T_3875 = miss_state == 3'h7; // @[el2_ifu_mem_ctl.scala 732:19]
+  wire  _T_3877 = _T_3875 & _T_3869; // @[el2_ifu_mem_ctl.scala 732:41]
+  wire  _T_3878 = _T_3874 | _T_3877; // @[el2_ifu_mem_ctl.scala 731:88]
+  wire  _T_3879 = miss_state == 3'h3; // @[el2_ifu_mem_ctl.scala 733:19]
+  wire  _T_3881 = _T_3879 & _T_3869; // @[el2_ifu_mem_ctl.scala 733:35]
+  wire  _T_3882 = _T_3878 | _T_3881; // @[el2_ifu_mem_ctl.scala 732:88]
+  wire  _T_3885 = _T_2230 & _T_3869; // @[el2_ifu_mem_ctl.scala 734:38]
+  wire  _T_3886 = _T_3882 | _T_3885; // @[el2_ifu_mem_ctl.scala 733:88]
+  wire  _T_3888 = _T_2231 & miss_state_en; // @[el2_ifu_mem_ctl.scala 735:37]
+  wire  _T_3889 = miss_nxtstate == 3'h3; // @[el2_ifu_mem_ctl.scala 735:71]
+  wire  _T_3890 = _T_3888 & _T_3889; // @[el2_ifu_mem_ctl.scala 735:54]
+  wire  _T_3891 = _T_3886 | _T_3890; // @[el2_ifu_mem_ctl.scala 734:57]
+  wire  _T_3892 = ~_T_3891; // @[el2_ifu_mem_ctl.scala 730:5]
+  wire  _T_3893 = _T_3867 & _T_3892; // @[el2_ifu_mem_ctl.scala 729:96]
+  wire  _T_3894 = io_ifc_fetch_req_bf & io_exu_flush_final; // @[el2_ifu_mem_ctl.scala 736:28]
+  wire  _T_3896 = _T_3894 & _T_3864; // @[el2_ifu_mem_ctl.scala 736:50]
+  wire  _T_3898 = _T_3896 & _T_3866; // @[el2_ifu_mem_ctl.scala 736:81]
+  wire  _T_3907 = ~_T_100; // @[el2_ifu_mem_ctl.scala 739:106]
+  wire  _T_3908 = _T_2216 & _T_3907; // @[el2_ifu_mem_ctl.scala 739:104]
+  wire  _T_3909 = _T_2231 | _T_3908; // @[el2_ifu_mem_ctl.scala 739:77]
+  wire  _T_3913 = ~_T_53; // @[el2_ifu_mem_ctl.scala 739:172]
+  wire  _T_3914 = _T_3909 & _T_3913; // @[el2_ifu_mem_ctl.scala 739:170]
+  wire  _T_3915 = ~_T_3914; // @[el2_ifu_mem_ctl.scala 739:44]
+  wire  _T_3919 = reset_ic_in | reset_ic_ff; // @[el2_ifu_mem_ctl.scala 741:62]
+  wire  _T_3920 = ~_T_3919; // @[el2_ifu_mem_ctl.scala 741:48]
+  wire  _T_3921 = _T_268 & _T_3920; // @[el2_ifu_mem_ctl.scala 741:46]
+  wire  _T_3922 = ~reset_tag_valid_for_miss; // @[el2_ifu_mem_ctl.scala 741:79]
+  wire  ic_valid = _T_3921 & _T_3922; // @[el2_ifu_mem_ctl.scala 741:77]
+  wire  _T_3924 = debug_c1_clken & io_ic_debug_tag_array; // @[el2_ifu_mem_ctl.scala 742:81]
+  reg [6:0] ifu_status_wr_addr_ff; // @[el2_ifu_mem_ctl.scala 744:61]
+  wire  way_status_wr_en_w_debug = io_ic_debug_wr_en & io_ic_debug_tag_array; // @[el2_ifu_mem_ctl.scala 746:73]
+  reg  ic_valid_ff; // @[el2_ifu_mem_ctl.scala 766:51]
   rvclkhdr rvclkhdr ( // @[el2_lib.scala 412:22]
     .io_clk(rvclkhdr_io_clk),
     .io_en(rvclkhdr_io_en),
@@ -1245,10 +1389,90 @@ module el2_ifu_mem_ctl(
     .io_en(rvclkhdr_1_io_en),
     .io_scan_mode(rvclkhdr_1_io_scan_mode)
   );
+  rvclkhdr rvclkhdr_2 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_2_io_clk),
+    .io_en(rvclkhdr_2_io_en),
+    .io_scan_mode(rvclkhdr_2_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_3 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_3_io_clk),
+    .io_en(rvclkhdr_3_io_en),
+    .io_scan_mode(rvclkhdr_3_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_4 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_4_io_clk),
+    .io_en(rvclkhdr_4_io_en),
+    .io_scan_mode(rvclkhdr_4_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_5 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_5_io_clk),
+    .io_en(rvclkhdr_5_io_en),
+    .io_scan_mode(rvclkhdr_5_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_6 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_6_io_clk),
+    .io_en(rvclkhdr_6_io_en),
+    .io_scan_mode(rvclkhdr_6_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_7 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_7_io_clk),
+    .io_en(rvclkhdr_7_io_en),
+    .io_scan_mode(rvclkhdr_7_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_8 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_8_io_clk),
+    .io_en(rvclkhdr_8_io_en),
+    .io_scan_mode(rvclkhdr_8_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_9 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_9_io_clk),
+    .io_en(rvclkhdr_9_io_en),
+    .io_scan_mode(rvclkhdr_9_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_10 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_10_io_clk),
+    .io_en(rvclkhdr_10_io_en),
+    .io_scan_mode(rvclkhdr_10_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_11 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_11_io_clk),
+    .io_en(rvclkhdr_11_io_en),
+    .io_scan_mode(rvclkhdr_11_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_12 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_12_io_clk),
+    .io_en(rvclkhdr_12_io_en),
+    .io_scan_mode(rvclkhdr_12_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_13 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_13_io_clk),
+    .io_en(rvclkhdr_13_io_en),
+    .io_scan_mode(rvclkhdr_13_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_14 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_14_io_clk),
+    .io_en(rvclkhdr_14_io_en),
+    .io_scan_mode(rvclkhdr_14_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_15 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_15_io_clk),
+    .io_en(rvclkhdr_15_io_en),
+    .io_scan_mode(rvclkhdr_15_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_16 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_16_io_clk),
+    .io_en(rvclkhdr_16_io_en),
+    .io_scan_mode(rvclkhdr_16_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_17 ( // @[el2_lib.scala 412:22]
+    .io_clk(rvclkhdr_17_io_clk),
+    .io_en(rvclkhdr_17_io_en),
+    .io_scan_mode(rvclkhdr_17_io_scan_mode)
+  );
   assign io_ifu_miss_state_idle = 1'h0; // @[el2_ifu_mem_ctl.scala 131:25]
   assign io_ifu_ic_mb_empty = 1'h0; // @[el2_ifu_mem_ctl.scala 132:21]
   assign io_ic_dma_active = _T_12 | io_dec_tlu_flush_err_wb; // @[el2_ifu_mem_ctl.scala 133:19 el2_ifu_mem_ctl.scala 241:20]
-  assign io_ic_write_stall = 1'h0; // @[el2_ifu_mem_ctl.scala 134:20]
+  assign io_ic_write_stall = write_ic_16_bytes & _T_3915; // @[el2_ifu_mem_ctl.scala 134:20 el2_ifu_mem_ctl.scala 739:21]
   assign io_ifu_pmu_ic_miss = 1'h0; // @[el2_ifu_mem_ctl.scala 135:21]
   assign io_ifu_pmu_ic_hit = 1'h0; // @[el2_ifu_mem_ctl.scala 136:20]
   assign io_ifu_pmu_bus_error = 1'h0; // @[el2_ifu_mem_ctl.scala 137:23]
@@ -1288,8 +1512,8 @@ module el2_ifu_mem_ctl(
   assign io_iccm_dma_rtag = iccm_dma_rtag; // @[el2_ifu_mem_ctl.scala 171:19 el2_ifu_mem_ctl.scala 691:20]
   assign io_iccm_ready = 1'h0; // @[el2_ifu_mem_ctl.scala 172:16]
   assign io_ic_rw_addr = 31'h0; // @[el2_ifu_mem_ctl.scala 173:16]
-  assign io_ic_wr_en = 2'h0; // @[el2_ifu_mem_ctl.scala 174:14]
-  assign io_ic_rd_en = 1'h0; // @[el2_ifu_mem_ctl.scala 175:14]
+  assign io_ic_wr_en = 2'h0; // @[el2_ifu_mem_ctl.scala 174:14 el2_ifu_mem_ctl.scala 738:15]
+  assign io_ic_rd_en = _T_3893 | _T_3898; // @[el2_ifu_mem_ctl.scala 175:14 el2_ifu_mem_ctl.scala 729:15]
   assign io_ic_wr_data_0 = ic_wr_16bytes_data[70:0]; // @[el2_ifu_mem_ctl.scala 176:16 el2_ifu_mem_ctl.scala 391:17]
   assign io_ic_wr_data_1 = ic_wr_16bytes_data[141:71]; // @[el2_ifu_mem_ctl.scala 176:16 el2_ifu_mem_ctl.scala 391:17]
   assign io_ic_debug_wr_data = io_dec_tlu_ic_diag_pkt_icache_wrdata; // @[el2_ifu_mem_ctl.scala 177:22 el2_ifu_mem_ctl.scala 392:23]
@@ -1303,7 +1527,7 @@ module el2_ifu_mem_ctl(
   assign io_iccm_rw_addr = _T_3047[14:0]; // @[el2_ifu_mem_ctl.scala 180:18 el2_ifu_mem_ctl.scala 702:19]
   assign io_iccm_wren = _T_2616 | iccm_correct_ecc; // @[el2_ifu_mem_ctl.scala 181:15 el2_ifu_mem_ctl.scala 673:16]
   assign io_iccm_rden = _T_2620 | _T_2621; // @[el2_ifu_mem_ctl.scala 182:15 el2_ifu_mem_ctl.scala 674:16]
-  assign io_iccm_wr_data = _T_3022 ? 78'h0 : _T_3030; // @[el2_ifu_mem_ctl.scala 183:18 el2_ifu_mem_ctl.scala 679:19]
+  assign io_iccm_wr_data = _T_3022 ? _T_3023 : _T_3030; // @[el2_ifu_mem_ctl.scala 183:18 el2_ifu_mem_ctl.scala 679:19]
   assign io_iccm_wr_size = _T_2626 & io_dma_mem_sz; // @[el2_ifu_mem_ctl.scala 184:18 el2_ifu_mem_ctl.scala 676:19]
   assign io_ic_hit_f = _T_254 | ic_iccm_hit_f; // @[el2_ifu_mem_ctl.scala 185:14 el2_ifu_mem_ctl.scala 336:15]
   assign io_ic_access_fault_f = ifc_bus_acc_fault_f & _T_308; // @[el2_ifu_mem_ctl.scala 186:23 el2_ifu_mem_ctl.scala 430:24]
@@ -1320,13 +1544,61 @@ module el2_ifu_mem_ctl(
   assign io_ifu_ic_debug_rd_data_valid = 1'h0; // @[el2_ifu_mem_ctl.scala 197:32]
   assign io_iccm_buf_correct_ecc = 1'h0; // @[el2_ifu_mem_ctl.scala 198:26]
   assign io_iccm_correction_state = 1'h0; // @[el2_ifu_mem_ctl.scala 199:27]
-  assign io_test = {_T_3446,_T_3444}; // @[el2_ifu_mem_ctl.scala 466:11 el2_ifu_mem_ctl.scala 725:11]
+  assign io_test = ic_valid_ff; // @[el2_ifu_mem_ctl.scala 466:11 el2_ifu_mem_ctl.scala 767:11]
   assign rvclkhdr_io_clk = clock; // @[el2_lib.scala 413:17]
   assign rvclkhdr_io_en = io_ic_debug_rd_en | io_ic_debug_wr_en; // @[el2_lib.scala 414:16]
   assign rvclkhdr_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
   assign rvclkhdr_1_io_clk = clock; // @[el2_lib.scala 413:17]
   assign rvclkhdr_1_io_en = _T_1 | io_exu_flush_final; // @[el2_lib.scala 414:16]
   assign rvclkhdr_1_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_2_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_2_io_en = ifu_status_wr_addr_ff[6:3] == 4'h0; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_2_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_3_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_3_io_en = ifu_status_wr_addr_ff[6:3] == 4'h1; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_3_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_4_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_4_io_en = ifu_status_wr_addr_ff[6:3] == 4'h2; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_4_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_5_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_5_io_en = ifu_status_wr_addr_ff[6:3] == 4'h3; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_5_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_6_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_6_io_en = ifu_status_wr_addr_ff[6:3] == 4'h4; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_6_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_7_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_7_io_en = ifu_status_wr_addr_ff[6:3] == 4'h5; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_7_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_8_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_8_io_en = ifu_status_wr_addr_ff[6:3] == 4'h6; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_8_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_9_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_9_io_en = ifu_status_wr_addr_ff[6:3] == 4'h7; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_9_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_10_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_10_io_en = ifu_status_wr_addr_ff[6:3] == 4'h8; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_10_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_11_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_11_io_en = ifu_status_wr_addr_ff[6:3] == 4'h9; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_11_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_12_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_12_io_en = ifu_status_wr_addr_ff[6:3] == 4'ha; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_12_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_13_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_13_io_en = ifu_status_wr_addr_ff[6:3] == 4'hb; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_13_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_14_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_14_io_en = ifu_status_wr_addr_ff[6:3] == 4'hc; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_14_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_15_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_15_io_en = ifu_status_wr_addr_ff[6:3] == 4'hd; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_15_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_16_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_16_io_en = ifu_status_wr_addr_ff[6:3] == 4'he; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_16_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
+  assign rvclkhdr_17_io_clk = clock; // @[el2_lib.scala 413:17]
+  assign rvclkhdr_17_io_en = ifu_status_wr_addr_ff[6:3] == 4'hf; // @[el2_lib.scala 414:16]
+  assign rvclkhdr_17_io_scan_mode = io_scan_mode; // @[el2_lib.scala 415:23]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -1381,91 +1653,111 @@ initial begin
   _RAND_8 = {1{`RANDOM}};
   err_stop_state = _RAND_8[1:0];
   _RAND_9 = {1{`RANDOM}};
-  ifu_bus_rvalid_unq_ff = _RAND_9[0:0];
+  reset_all_tags = _RAND_9[0:0];
   _RAND_10 = {1{`RANDOM}};
-  bus_ifu_bus_clk_en_ff = _RAND_10[0:0];
+  ifu_bus_rvalid_unq_ff = _RAND_10[0:0];
   _RAND_11 = {1{`RANDOM}};
-  uncacheable_miss_ff = _RAND_11[0:0];
+  bus_ifu_bus_clk_en_ff = _RAND_11[0:0];
   _RAND_12 = {1{`RANDOM}};
-  bus_data_beat_count = _RAND_12[2:0];
+  uncacheable_miss_ff = _RAND_12[0:0];
   _RAND_13 = {1{`RANDOM}};
-  ic_miss_buff_data_valid = _RAND_13[7:0];
+  bus_data_beat_count = _RAND_13[2:0];
   _RAND_14 = {1{`RANDOM}};
-  imb_ff = _RAND_14[30:0];
+  ic_miss_buff_data_valid = _RAND_14[7:0];
   _RAND_15 = {1{`RANDOM}};
-  last_data_recieved_ff = _RAND_15[0:0];
+  imb_ff = _RAND_15[30:0];
   _RAND_16 = {1{`RANDOM}};
-  sel_mb_addr_ff = _RAND_16[0:0];
+  last_data_recieved_ff = _RAND_16[0:0];
   _RAND_17 = {1{`RANDOM}};
-  imb_scnd_ff = _RAND_17[30:0];
+  sel_mb_addr_ff = _RAND_17[0:0];
   _RAND_18 = {1{`RANDOM}};
-  ifu_bus_rid_ff = _RAND_18[2:0];
+  imb_scnd_ff = _RAND_18[30:0];
   _RAND_19 = {1{`RANDOM}};
-  scnd_miss_req_q = _RAND_19[0:0];
+  ifu_bus_rid_ff = _RAND_19[2:0];
   _RAND_20 = {1{`RANDOM}};
-  miss_addr = _RAND_20[25:0];
+  ifu_bus_rresp_ff = _RAND_20[1:0];
   _RAND_21 = {1{`RANDOM}};
-  ifc_region_acc_fault_f = _RAND_21[0:0];
+  ifu_wr_data_comb_err_ff = _RAND_21[0:0];
   _RAND_22 = {1{`RANDOM}};
-  bus_rd_addr_count = _RAND_22[2:0];
+  scnd_miss_req_q = _RAND_22[0:0];
   _RAND_23 = {1{`RANDOM}};
-  ic_act_miss_f_delayed = _RAND_23[0:0];
-  _RAND_24 = {2{`RANDOM}};
-  ifu_bus_rdata_ff = _RAND_24[63:0];
-  _RAND_25 = {2{`RANDOM}};
-  _T_1284 = _RAND_25[63:0];
-  _RAND_26 = {2{`RANDOM}};
-  _T_1286 = _RAND_26[63:0];
-  _RAND_27 = {2{`RANDOM}};
-  _T_1288 = _RAND_27[63:0];
+  reset_ic_ff = _RAND_23[0:0];
+  _RAND_24 = {1{`RANDOM}};
+  miss_addr = _RAND_24[25:0];
+  _RAND_25 = {1{`RANDOM}};
+  ifc_region_acc_fault_f = _RAND_25[0:0];
+  _RAND_26 = {1{`RANDOM}};
+  bus_rd_addr_count = _RAND_26[2:0];
+  _RAND_27 = {1{`RANDOM}};
+  ic_act_miss_f_delayed = _RAND_27[0:0];
   _RAND_28 = {2{`RANDOM}};
-  _T_1290 = _RAND_28[63:0];
+  ifu_bus_rdata_ff = _RAND_28[63:0];
   _RAND_29 = {2{`RANDOM}};
-  _T_1292 = _RAND_29[63:0];
+  _T_1284 = _RAND_29[63:0];
   _RAND_30 = {2{`RANDOM}};
-  _T_1294 = _RAND_30[63:0];
+  _T_1286 = _RAND_30[63:0];
   _RAND_31 = {2{`RANDOM}};
-  _T_1296 = _RAND_31[63:0];
+  _T_1288 = _RAND_31[63:0];
   _RAND_32 = {2{`RANDOM}};
-  _T_1298 = _RAND_32[63:0];
+  _T_1290 = _RAND_32[63:0];
   _RAND_33 = {2{`RANDOM}};
-  _T_1300 = _RAND_33[63:0];
+  _T_1292 = _RAND_33[63:0];
   _RAND_34 = {2{`RANDOM}};
-  _T_1302 = _RAND_34[63:0];
+  _T_1294 = _RAND_34[63:0];
   _RAND_35 = {2{`RANDOM}};
-  _T_1304 = _RAND_35[63:0];
+  _T_1296 = _RAND_35[63:0];
   _RAND_36 = {2{`RANDOM}};
-  _T_1306 = _RAND_36[63:0];
+  _T_1298 = _RAND_36[63:0];
   _RAND_37 = {2{`RANDOM}};
-  _T_1308 = _RAND_37[63:0];
+  _T_1300 = _RAND_37[63:0];
   _RAND_38 = {2{`RANDOM}};
-  _T_1310 = _RAND_38[63:0];
+  _T_1302 = _RAND_38[63:0];
   _RAND_39 = {2{`RANDOM}};
-  _T_1312 = _RAND_39[63:0];
+  _T_1304 = _RAND_39[63:0];
   _RAND_40 = {2{`RANDOM}};
-  _T_1314 = _RAND_40[63:0];
-  _RAND_41 = {1{`RANDOM}};
-  ic_crit_wd_rdy_new_ff = _RAND_41[0:0];
-  _RAND_42 = {1{`RANDOM}};
-  ic_miss_buff_data_error = _RAND_42[7:0];
-  _RAND_43 = {3{`RANDOM}};
-  _T_1200 = _RAND_43[70:0];
-  _RAND_44 = {1{`RANDOM}};
-  ifu_bus_cmd_valid = _RAND_44[0:0];
+  _T_1306 = _RAND_40[63:0];
+  _RAND_41 = {2{`RANDOM}};
+  _T_1308 = _RAND_41[63:0];
+  _RAND_42 = {2{`RANDOM}};
+  _T_1310 = _RAND_42[63:0];
+  _RAND_43 = {2{`RANDOM}};
+  _T_1312 = _RAND_43[63:0];
+  _RAND_44 = {2{`RANDOM}};
+  _T_1314 = _RAND_44[63:0];
   _RAND_45 = {1{`RANDOM}};
-  bus_cmd_beat_count = _RAND_45[2:0];
+  ic_crit_wd_rdy_new_ff = _RAND_45[0:0];
   _RAND_46 = {1{`RANDOM}};
-  ifc_dma_access_ok_prev = _RAND_46[0:0];
-  _RAND_47 = {1{`RANDOM}};
-  dma_mem_addr_ff = _RAND_47[1:0];
+  ic_miss_buff_data_error = _RAND_46[7:0];
+  _RAND_47 = {3{`RANDOM}};
+  _T_1200 = _RAND_47[70:0];
   _RAND_48 = {1{`RANDOM}};
-  dma_mem_tag_ff = _RAND_48[2:0];
+  ifu_bus_cmd_valid = _RAND_48[0:0];
   _RAND_49 = {1{`RANDOM}};
-  iccm_dma_rtag = _RAND_49[2:0];
+  bus_cmd_beat_count = _RAND_49[2:0];
   _RAND_50 = {1{`RANDOM}};
-  iccm_dma_rvalid = _RAND_50[0:0];
+  ifc_dma_access_ok_prev = _RAND_50[0:0];
   _RAND_51 = {2{`RANDOM}};
-  iccm_dma_rdata = _RAND_51[63:0];
+  iccm_ecc_corr_data_ff = _RAND_51[38:0];
+  _RAND_52 = {1{`RANDOM}};
+  dma_mem_addr_ff = _RAND_52[1:0];
+  _RAND_53 = {1{`RANDOM}};
+  dma_mem_tag_ff = _RAND_53[2:0];
+  _RAND_54 = {1{`RANDOM}};
+  iccm_dma_rtag = _RAND_54[2:0];
+  _RAND_55 = {1{`RANDOM}};
+  iccm_dma_rvalid = _RAND_55[0:0];
+  _RAND_56 = {2{`RANDOM}};
+  iccm_dma_rdata = _RAND_56[63:0];
+  _RAND_57 = {1{`RANDOM}};
+  iccm_ecc_corr_index_ff = _RAND_57[13:0];
+  _RAND_58 = {1{`RANDOM}};
+  iccm_rd_ecc_single_err_ff = _RAND_58[0:0];
+  _RAND_59 = {1{`RANDOM}};
+  iccm_rw_addr_f = _RAND_59[13:0];
+  _RAND_60 = {1{`RANDOM}};
+  ifu_status_wr_addr_ff = _RAND_60[6:0];
+  _RAND_61 = {1{`RANDOM}};
+  ic_valid_ff = _RAND_61[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -1594,6 +1886,12 @@ end // initial
     end else if (io_ifu_bus_clk_en) begin
       ifu_bus_rid_ff <= io_ifu_axi_rid;
     end
+    if (reset) begin
+      ifu_bus_rresp_ff <= 2'h0;
+    end else if (io_ifu_bus_clk_en) begin
+      ifu_bus_rresp_ff <= io_ifu_axi_rresp;
+    end
+    reset_ic_ff <= _T_289 & _T_290;
     if (reset) begin
       miss_addr <= 26'h0;
     end else if (_T_223) begin
@@ -1819,6 +2117,11 @@ end // initial
       sel_mb_addr_ff <= sel_mb_addr;
     end
     if (reset) begin
+      ifu_wr_data_comb_err_ff <= 1'h0;
+    end else begin
+      ifu_wr_data_comb_err_ff <= ifu_wr_cumulative_err;
+    end
+    if (reset) begin
       scnd_miss_req_q <= 1'h0;
     end else begin
       scnd_miss_req_q <= scnd_miss_req_in;
@@ -1842,6 +2145,11 @@ end // initial
       ifc_dma_access_ok_prev <= 1'h0;
     end else begin
       ifc_dma_access_ok_prev <= ifc_dma_access_ok_d;
+    end
+    if (reset) begin
+      iccm_ecc_corr_data_ff <= 39'h0;
+    end else if (iccm_ecc_write_status) begin
+      iccm_ecc_corr_data_ff <= _T_3859;
     end
     if (reset) begin
       dma_mem_addr_ff <= 2'h0;
@@ -1869,6 +2177,46 @@ end // initial
       iccm_dma_rdata <= _T_3034;
     end else begin
       iccm_dma_rdata <= _T_3035;
+    end
+    if (reset) begin
+      iccm_ecc_corr_index_ff <= 14'h0;
+    end else if (iccm_ecc_write_status) begin
+      if (iccm_single_ecc_error[0]) begin
+        iccm_ecc_corr_index_ff <= iccm_rw_addr_f;
+      end else begin
+        iccm_ecc_corr_index_ff <= _T_3855;
+      end
+    end
+    if (reset) begin
+      iccm_rd_ecc_single_err_ff <= 1'h0;
+    end else begin
+      iccm_rd_ecc_single_err_ff <= iccm_rd_ecc_single_err_hold_in;
+    end
+    if (reset) begin
+      iccm_rw_addr_f <= 14'h0;
+    end else begin
+      iccm_rw_addr_f <= io_iccm_rw_addr[14:1];
+    end
+    if (reset) begin
+      ifu_status_wr_addr_ff <= 7'h0;
+    end else if (_T_3924) begin
+      ifu_status_wr_addr_ff <= io_ic_debug_addr[9:3];
+    end else begin
+      ifu_status_wr_addr_ff <= ifu_status_wr_addr[11:5];
+    end
+    if (reset) begin
+      ic_valid_ff <= 1'h0;
+    end else if (way_status_wr_en_w_debug) begin
+      ic_valid_ff <= io_ic_debug_wr_data[0];
+    end else begin
+      ic_valid_ff <= ic_valid;
+    end
+  end
+  always @(posedge io_active_clk) begin
+    if (reset) begin
+      reset_all_tags <= 1'h0;
+    end else begin
+      reset_all_tags <= io_dec_tlu_fence_i_wb;
     end
   end
 endmodule
