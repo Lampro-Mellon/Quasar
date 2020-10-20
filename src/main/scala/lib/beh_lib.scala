@@ -346,6 +346,11 @@ class rvecc_decode_64 extends Module{     //Done for verification and testing
 
   val ecc_check = Cat((io.ecc_in(6) ^ w5.asUInt.xorR) ,io.ecc_in(5)^(w5.asUInt.xorR),io.ecc_in(4)^(w4.asUInt.xorR),io.ecc_in(3)^(w3.asUInt.xorR),io.ecc_in(2)^(w2.asUInt.xorR),io.ecc_in(1)^(w1.asUInt.xorR),io.ecc_in(0)^(w0.asUInt.xorR))
   io.ecc_error := io.en & (ecc_check(6,0) != 0.U)
+
+
+  object rvsyncss {
+    def apply(din:UInt,clk:Clock) =withClock(clk){RegNext(withClock(clk){RegNext(din,0.U)},0.U)}
+  }
 }
 
 

@@ -108,14 +108,14 @@ trait param {
   val IFU_BUS_ID             = 0x1   //.U(1.W)
   val IFU_BUS_PRTY           = 0x2   //.U(2.W)
   val IFU_BUS_TAG            = 0x3   //.U(4.W)
-  val INST_ACCESS_ADDR0      = 0x00000000 //.U(32.W)
-  val INST_ACCESS_ADDR1      = 0xC0000000 //.U(32.W)
-  val INST_ACCESS_ADDR2      = 0xA0000000 //.U(32.W)
-  val INST_ACCESS_ADDR3      = 0x80000000 //.U(32.W)
-  val INST_ACCESS_ADDR4      = 0x00000000 //.U(32.W)
-  val INST_ACCESS_ADDR5      = 0x00000000 //.U(32.W)
-  val INST_ACCESS_ADDR6      = 0x00000000 //.U(32.W)
-  val INST_ACCESS_ADDR7      = 0x00000000 //.U(32.W)
+  val INST_ACCESS_ADDR0      = 0x00000000L //.U(32.W)
+  val INST_ACCESS_ADDR1      = 0xC0000000L //.U(32.W)
+  val INST_ACCESS_ADDR2      = 0xA0000000L //.U(32.W)
+  val INST_ACCESS_ADDR3      = 0x80000000L //.U(32.W)
+  val INST_ACCESS_ADDR4      = 0x00000000L //.U(32.W)
+  val INST_ACCESS_ADDR5      = 0x00000000L //.U(32.W)
+  val INST_ACCESS_ADDR6      = 0x00000000L //.U(32.W)
+  val INST_ACCESS_ADDR7      = 0x00000000L //.U(32.W)
   val INST_ACCESS_ENABLE0    = 0x1 //.U(1.W)
   val INST_ACCESS_ENABLE1    = 0x1 //.U(1.W)
   val INST_ACCESS_ENABLE2    = 0x1 //.U(1.W)
@@ -124,14 +124,14 @@ trait param {
   val INST_ACCESS_ENABLE5    = 0x0 //.U(1.W)
   val INST_ACCESS_ENABLE6    = 0x0 //.U(1.W)
   val INST_ACCESS_ENABLE7    = 0x0 //.U(1.W)
-  val INST_ACCESS_MASK0      = 0x7FFFFFFF //.U(32.W)
-  val INST_ACCESS_MASK1      = 0x3FFFFFFF //.U(32.W)
-  val INST_ACCESS_MASK2      = 0x1FFFFFFF //.U(32.W)
-  val INST_ACCESS_MASK3      = 0x0FFFFFFF //.U(32.W)
-  val INST_ACCESS_MASK4      = 0xFFFFFFFF //.U(32.W)
-  val INST_ACCESS_MASK5      = 0xFFFFFFFF //.U(32.W)
-  val INST_ACCESS_MASK6      = 0xFFFFFFFF //.U(32.W)
-  val INST_ACCESS_MASK7      = 0xFFFFFFFF //.U(32.W)
+  val INST_ACCESS_MASK0      = 0x7FFFFFFFL //.U(32.W)
+  val INST_ACCESS_MASK1      = 0x3FFFFFFFL //.U(32.W)
+  val INST_ACCESS_MASK2      = 0x1FFFFFFFL //.U(32.W)
+  val INST_ACCESS_MASK3      = 0x0FFFFFFFL //.U(32.W)
+  val INST_ACCESS_MASK4      = 0xFFFFFFFFL //.U(32.W)
+  val INST_ACCESS_MASK5      = 0xFFFFFFFFL //.U(32.W)
+  val INST_ACCESS_MASK6      = 0xFFFFFFFFL //.U(32.W)
+  val INST_ACCESS_MASK7      = 0xFFFFFFFFL //.U(32.W)
   val LOAD_TO_USE_PLUS1      = 0x0 //.U(1.W)
   val LSU2DMA                = 0x0 //.U(1.W)
   val LSU_BUS_ID             = 0x1 //.U(1.W)
@@ -176,6 +176,11 @@ trait el2_lib extends param{
     }
   val DATA_MEM_LINE = MEM_CAL
   val Tag_Word = MEM_CAL._4
+
+  object rvsyncss {
+    def apply(din:UInt,clk:Clock) =withClock(clk){RegNext(withClock(clk){RegNext(din,0.U)},0.U)}
+  }
+
 
   ///////////////////////////////////////////////////////////////////
   def el2_btb_tag_hash(pc : UInt) =
@@ -454,7 +459,6 @@ trait el2_lib extends param{
       }
     }
   }
-
 //    def rvclkhdr_M(clk: Clock, en: Bool, scan_mode: Bool): Clock = {
 //      val cg = Module(new rvclkhdr)
 //      cg.io.clk := clk
