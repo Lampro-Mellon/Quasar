@@ -392,8 +392,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
     bht_bank_rd_data_out(i)((16*k)+j) := RegEnable(bht_bank_wr_data(i)(k)(j), 0.U, bht_bank_sel(i)(k)(j) & bht_bank_clken(i)(k))
   }
 
-  bht_bank0_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(0)(i)))
-  bht_bank1_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(1)(i)))
+  bht_bank0_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f===i.U).asBool->bht_bank_rd_data_out(0)(i)))
+  bht_bank1_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f===i.U).asBool->bht_bank_rd_data_out(1)(i)))
   bht_bank0_rd_data_p1_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_p1_f(BHT_ADDR_HI-BHT_ADDR_LO,0)===i.U).asBool->bht_bank_rd_data_out(1)(i)))
 
 
