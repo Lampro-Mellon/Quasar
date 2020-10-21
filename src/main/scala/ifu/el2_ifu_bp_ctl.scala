@@ -299,12 +299,12 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   val btb_fg_crossing_f = fetch_start_f(0) & btb_sel_f(0) & btb_rd_pc4_f
   val bp_total_branch_offset_f = bloc_f(1)^btb_rd_pc4_f
 
-  val ifc_fetch_adder_prior = RegEnable(io.ifc_fetch_addr_f, 0.U, (io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f).asBool)
+  val ifc_fetch_adder_prior = RegEnable(io.ifc_fetch_addr_f(30,1), 0.U, (io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f).asBool)
 
   io.ifu_bp_poffset_f := btb_rd_tgt_f
-  val adder_pc_in_f = Mux1H(Seq(use_fa_plus.asBool->fetch_addr_p1_f,
-                                btb_fg_crossing_f.asBool->ifc_fetch_adder_prior,
-                              (!btb_fg_crossing_f & !use_fa_plus).asBool->io.ifc_fetch_addr_f(30,1)))
+  val adder_pc_in_f = Mux1H(Seq(use_fa_plus.asBool                      -> fetch_addr_p1_f,
+                                btb_fg_crossing_f.asBool                -> ifc_fetch_adder_prior,
+                              (!btb_fg_crossing_f & !use_fa_plus).asBool-> io.ifc_fetch_addr_f(30,1)))
 
   val bp_btb_target_adder_f = rvbradder(Cat(adder_pc_in_f(29,0),bp_total_branch_offset_f, 0.U), Cat(btb_rd_tgt_f,0.U))
 
@@ -377,13 +377,9 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
                             (bht_wr_en2(i) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B))
   }
 
-  
   val bht_bank_wr_data = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>(0 until NUM_BHT_LOOP).map(j=>
     Mux((bht_wr_en2(i)&(bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.U)&(bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.U)|BHT_NO_ADDR_MATCH.B).asBool, bht_wr_data2, bht_wr_data0))))
-  //BHT_ADDR_HI-NUM_BHT_LOOP_OUTER_LO,                                         NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO
-  println(s"The addresses we are checking are ${BHT_ADDR_HI-BHT_ADDR_LO} : ${NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO}")
-  println(s"The addresses we are checking are ${NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO} : 0")
-                                                //NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO
+
   val bht_bank_sel = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH/NUM_BHT_LOOP, Vec(NUM_BHT_LOOP, Bool()))))
 
   for(i<-0 until 2; k<-0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP; j<- 0 until NUM_BHT_LOOP){
