@@ -11,7 +11,7 @@ circuit el2_ifu_bp_ctl :
     bht_dir_f <= UInt<1>("h00")
     wire dec_tlu_error_wb : UInt<1>
     dec_tlu_error_wb <= UInt<1>("h00")
-    wire btb_error_addr_wb : UInt<7>
+    wire btb_error_addr_wb : UInt<8>
     btb_error_addr_wb <= UInt<1>("h00")
     wire btb_bank0_rd_data_way0_f : UInt<22>
     btb_bank0_rd_data_way0_f <= UInt<1>("h00")
@@ -33,20 +33,20 @@ circuit el2_ifu_bp_ctl :
     dec_tlu_error_wb <= _T_1 @[el2_ifu_bp_ctl.scala 91:20]
     btb_error_addr_wb <= io.exu_i0_br_index_r @[el2_ifu_bp_ctl.scala 92:21]
     dec_tlu_way_wb <= io.dec_tlu_br0_r_pkt.way @[el2_ifu_bp_ctl.scala 93:18]
-    node _T_2 = bits(io.ifc_fetch_addr_f, 8, 1) @[el2_lib.scala 196:12]
-    node _T_3 = bits(io.ifc_fetch_addr_f, 16, 9) @[el2_lib.scala 196:50]
-    node _T_4 = xor(_T_2, _T_3) @[el2_lib.scala 196:46]
-    node _T_5 = bits(io.ifc_fetch_addr_f, 24, 17) @[el2_lib.scala 196:88]
-    node btb_rd_addr_f = xor(_T_4, _T_5) @[el2_lib.scala 196:84]
+    node _T_2 = bits(io.ifc_fetch_addr_f, 8, 1) @[el2_lib.scala 196:13]
+    node _T_3 = bits(io.ifc_fetch_addr_f, 16, 9) @[el2_lib.scala 196:51]
+    node _T_4 = xor(_T_2, _T_3) @[el2_lib.scala 196:47]
+    node _T_5 = bits(io.ifc_fetch_addr_f, 24, 17) @[el2_lib.scala 196:89]
+    node btb_rd_addr_f = xor(_T_4, _T_5) @[el2_lib.scala 196:85]
     node _T_6 = bits(io.ifc_fetch_addr_f, 30, 1) @[el2_ifu_bp_ctl.scala 99:44]
     node _T_7 = add(_T_6, UInt<1>("h01")) @[el2_ifu_bp_ctl.scala 99:51]
     node fetch_addr_p1_f = tail(_T_7, 1) @[el2_ifu_bp_ctl.scala 99:51]
     node _T_8 = cat(fetch_addr_p1_f, UInt<1>("h00")) @[Cat.scala 29:58]
-    node _T_9 = bits(_T_8, 8, 1) @[el2_lib.scala 196:12]
-    node _T_10 = bits(_T_8, 16, 9) @[el2_lib.scala 196:50]
-    node _T_11 = xor(_T_9, _T_10) @[el2_lib.scala 196:46]
-    node _T_12 = bits(_T_8, 24, 17) @[el2_lib.scala 196:88]
-    node btb_rd_addr_p1_f = xor(_T_11, _T_12) @[el2_lib.scala 196:84]
+    node _T_9 = bits(_T_8, 8, 1) @[el2_lib.scala 196:13]
+    node _T_10 = bits(_T_8, 16, 9) @[el2_lib.scala 196:51]
+    node _T_11 = xor(_T_9, _T_10) @[el2_lib.scala 196:47]
+    node _T_12 = bits(_T_8, 24, 17) @[el2_lib.scala 196:89]
+    node btb_rd_addr_p1_f = xor(_T_11, _T_12) @[el2_lib.scala 196:85]
     node _T_13 = bits(bht_dir_f, 0, 0) @[el2_ifu_bp_ctl.scala 105:33]
     node _T_14 = not(_T_13) @[el2_ifu_bp_ctl.scala 105:23]
     node _T_15 = bits(bht_dir_f, 0, 0) @[el2_ifu_bp_ctl.scala 105:46]

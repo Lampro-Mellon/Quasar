@@ -56,7 +56,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   val leak_one_f = WireInit(Bool(), 0.U)
   val bht_dir_f = WireInit(UInt(2.W), 0.U)
   val dec_tlu_error_wb = WireInit(Bool(), 0.U)
-  val btb_error_addr_wb = WireInit(UInt((BTB_ADDR_HI-BTB_ADDR_LO).W), 0.U)
+  val btb_error_addr_wb = WireInit(UInt((BTB_ADDR_HI-BTB_ADDR_LO+1).W), 0.U)
   val btb_bank0_rd_data_way0_f = WireInit(UInt((TAG_START+1).W), 0.U)
   val btb_bank0_rd_data_way1_f = WireInit(UInt((TAG_START+1).W), 0.U)
   val btb_bank0_rd_data_way0_p1_f = WireInit(UInt((TAG_START+1).W), 0.U)

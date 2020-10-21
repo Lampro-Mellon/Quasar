@@ -193,7 +193,7 @@ trait el2_lib extends param{
   ///////////////////////////////////////////////////////////////////
   def el2_btb_addr_hash(pc : UInt) =
     if(BTB_FOLD2_INDEX_HASH) pc(BTB_INDEX1_HI-1,BTB_INDEX1_LO-1) ^ pc(BTB_INDEX3_HI-1,BTB_INDEX3_LO-1)
-    else pc(BTB_INDEX1_HI-1,BTB_INDEX1_LO-1) ^ pc(BTB_INDEX2_HI-1,BTB_INDEX2_LO-1) ^ pc(BTB_INDEX3_HI-1,BTB_INDEX3_LO-1)
+    else (pc(BTB_INDEX1_HI-1,BTB_INDEX1_LO-1) ^ pc(BTB_INDEX2_HI-1,BTB_INDEX2_LO-1) ^ pc(BTB_INDEX3_HI-1,BTB_INDEX3_LO-1))
 
   ///////////////////////////////////////////////////////////////////
   def el2_btb_ghr_hash(hashin : UInt, ghr :UInt) =
