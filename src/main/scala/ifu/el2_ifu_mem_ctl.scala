@@ -178,8 +178,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val flush_final_f = RegNext(io.exu_flush_final, 0.U)
   val fetch_bf_f_c1_clken = io.ifc_fetch_req_bf_raw | ifc_fetch_req_f | miss_pending | io.exu_flush_final | scnd_miss_req
   val debug_c1_clken = io.ic_debug_rd_en | io.ic_debug_wr_en
-  val debug_c1_clk = rvclkhdr(clock, debug_c1_clken, io.scan_mode)
-  val fetch_bf_f_c1_clk = rvclkhdr(clock, fetch_bf_f_c1_clken.asBool, io.scan_mode)
+  //val debug_c1_clk = rvclkhdr(clock, debug_c1_clken, io.scan_mode)
+  //val fetch_bf_f_c1_clk = rvclkhdr(clock, fetch_bf_f_c1_clken.asBool, io.scan_mode)
   io.iccm_dma_sb_error := iccm_single_ecc_error.orR() & dma_iccm_req_f.asBool()
   io.ifu_async_error_start := io.iccm_rd_ecc_single_err | io.ic_error_start
   io.ic_dma_active := iccm_correct_ecc | (perr_state === dma_sb_err_C) | (err_stop_state === err_stop_fetch_C) | err_stop_fetch | io.dec_tlu_flush_err_wb
@@ -704,12 +704,10 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
       RegNext(way_status_new_w_debug, 0.U)
     }
     val way_status_clken = (0 until ICACHE_TAG_DEPTH / 8).map(i => ifu_status_wr_addr_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, 3) === i.U)
-    val way_status_clk = way_status_clken.map(rvclkhdr(clock, _, io.scan_mode))
+   // val way_status_clk = way_status_clken.map(rvclkhdr(clock, _, io.scan_mode))
     val way_status_out = Wire(Vec(ICACHE_TAG_DEPTH, UInt(ICACHE_STATUS_BITS.W)))
     for (i <- 0 until ICACHE_TAG_DEPTH / 8; j <- 0 until 8)
-      way_status_out(8 * i + j) := withClock(way_status_clk(i)) {
-        RegEnable(way_status_new_ff, 0.U, ifu_status_wr_addr_ff === j.U & way_status_wr_en_ff)
-      }
+      way_status_out(8 * i + j) := RegEnable(way_status_new_ff, 0.U, (ifu_status_wr_addr_ff === j.U) & way_status_wr_en_ff & way_status_clken(i))
     way_status := (0 until ICACHE_TAG_DEPTH).map(i => Fill(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, ifu_ic_rw_int_addr_ff === i.U) & way_status_out(i)).reverse.reduce(Cat(_, _))
     val ifu_ic_rw_int_addr_w_debug = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en) & io.ic_debug_tag_array,
       io.ic_debug_addr(ICACHE_INDEX_HI - 3, ICACHE_TAG_INDEX_LO - 3), ifu_ic_rw_int_addr(ICACHE_INDEX_HI - 1, ICACHE_TAG_INDEX_LO - 1))
@@ -731,13 +729,11 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
       else ((ifu_ic_rw_int_addr_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO - 1, 4) === i.U) & ifu_tag_wren_ff(j)) |
         ((perr_ic_index_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO - 1, 4) === i.U) & perr_err_inv_way(j)) |
         reset_all_tags).reduce(Cat(_, _)))
-    val tag_valid_clk = (0 until ICACHE_TAG_DEPTH / 32).map(i => (0 until ICACHE_NUM_WAYS).map(j => rvclkhdr(clock, tag_valid_clken(i)(j), io.scan_mode)))
+   // val tag_valid_clk = (0 until ICACHE_TAG_DEPTH / 32).map(i => (0 until ICACHE_NUM_WAYS).map(j => rvclkhdr(clock, tag_valid_clken(i)(j), io.scan_mode)))
     val ic_tag_valid_out = Wire(Vec(ICACHE_NUM_WAYS, Vec(ICACHE_TAG_DEPTH, Bool())))
     for (i <- 0 until ICACHE_TAG_DEPTH / 32; j <- 0 until ICACHE_NUM_WAYS; k <- 0 until 32)
-      ic_tag_valid_out(j)(32 * i + k) := withClock(tag_valid_clk(i)(j)) {
-        RegEnable(ic_valid_ff & !reset_all_tags.asBool & !perr_sel_invalidate, false.B,
-          (((ifu_ic_rw_int_addr_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j)) | ((perr_ic_index_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j))).asBool)
-      }
+      ic_tag_valid_out(j)(32 * i + k) := RegEnable(ic_valid_ff & !reset_all_tags.asBool & !perr_sel_invalidate, false.B,
+          (((ifu_ic_rw_int_addr_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j)) | ((perr_ic_index_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j))&tag_valid_clken(i)(j)).asBool)
 
     val ic_tag_valid_unq = (0 until ICACHE_NUM_WAYS).map(k => (0 until ICACHE_TAG_DEPTH).map(j =>
       Mux(ifu_ic_rw_int_addr_ff === j.U, false.B, ic_tag_valid_out(k)(j)).asUInt).reduce(_|_)).reverse.reduce(Cat(_,_))
