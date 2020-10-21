@@ -185,7 +185,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   //io.test2 := fetch_wrindex_p1_dec
   val mp_wrlru_b0 = mp_wrindex_dec & Fill(LRU_SIZE, exu_mp_valid)
   val vwayhit_f = Mux1H(Seq(~io.ifc_fetch_addr_f(0).asBool->wayhit_f,
-    io.ifc_fetch_addr_f(0).asBool->Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
+                             io.ifc_fetch_addr_f(0).asBool->Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
 
   val lru_update_valid_f = (vwayhit_f(0) | vwayhit_f(1)) & io.ifc_fetch_req_f & !leak_one_f
 
@@ -217,7 +217,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
 
   val eoc_near = io.ifc_fetch_addr_f(ICACHE_BEAT_ADDR_HI-1, 2).andR
 
-  eoc_mask := !eoc_near | (!io.ifc_fetch_addr_f(1,0).orR())
+  eoc_mask := !eoc_near | (~io.ifc_fetch_addr_f(1,0)).orR()
 
   val btb_sel_data_f = WireInit(UInt(16.W), init = 0.U)
   val hist1_raw = WireInit(UInt(2.W), init = 0.U)
@@ -274,8 +274,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
                              (num_valids===0.U).asBool->Cat(fghr(BHT_GHR_SIZE-1,0))))
 
   val exu_flush_ghr = io.exu_mp_fghr
-
-  val fghr_ns = Mux1H(Seq(exu_flush_final_d1.asBool->exu_flush_ghr,
+  val fghr_ns = Wire(UInt(BHT_GHR_SIZE.W))
+  fghr_ns := Mux1H(Seq(exu_flush_final_d1.asBool->exu_flush_ghr,
                          (!exu_flush_final_d1 & io.ifc_fetch_req_f & io.ic_hit_f & !leak_one_f_d1).asBool -> merged_ghr,
                          (!exu_flush_final_d1 & !(io.ifc_fetch_req_f & io.ic_hit_f & !leak_one_f_d1)).asBool -> fghr))
 
