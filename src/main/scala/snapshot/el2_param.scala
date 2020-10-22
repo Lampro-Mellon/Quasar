@@ -165,7 +165,7 @@ object pt1{ //scala
   val BHT_ADDR_LO            = 0x2    //.U(2.W)
   val BHT_ARRAY_DEPTH        = 0x100  //.U(11.W)
   val BHT_GHR_HASH_1         = 0x0    //.U(1.W)
-  val BHT_GHR_SIZE           = 0x4    //.U(4.W)
+  val BHT_GHR_SIZE           = 0x8    //.U(4.W)
   val BHT_SIZE               = 0x200  //.U(12.W)
   val BTB_ADDR_HI            = 0x09   //.U(5.W)
   val BTB_ADDR_LO            = 0x2    //.U(2.W)
