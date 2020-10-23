@@ -2974,7 +2974,7 @@ module el2_ifu_mem_ctl(
   wire  _T_9681 = _T_9680 | _T_9554; // @[el2_ifu_mem_ctl.scala 744:91]
   wire [1:0] ic_tag_valid_unq = {_T_10064,_T_9681}; // @[Cat.scala 29:58]
   reg [1:0] ic_debug_way_ff; // @[Reg.scala 27:20]
-  reg  ic_debug_rd_en_ff; // @[el2_ifu_mem_ctl.scala 815:54]
+  reg  ic_debug_rd_en_ff; // @[el2_ifu_mem_ctl.scala 817:54]
   wire [1:0] _T_10103 = ic_debug_rd_en_ff ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
   wire [1:0] _T_10104 = ic_debug_way_ff & _T_10103; // @[el2_ifu_mem_ctl.scala 798:67]
   wire [1:0] _T_10105 = ic_tag_valid_unq & _T_10104; // @[el2_ifu_mem_ctl.scala 798:48]
@@ -3750,7 +3750,7 @@ module el2_ifu_mem_ctl(
   wire  _T_10094 = bus_wren_last_0 | wren_reset_miss_0; // @[el2_ifu_mem_ctl.scala 780:73]
   wire [1:0] ifu_tag_wren = {_T_10095,_T_10094}; // @[Cat.scala 29:58]
   wire [1:0] _T_10129 = _T_3944 ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
-  wire [1:0] ic_debug_tag_wr_en = _T_10129 & io_ic_debug_way; // @[el2_ifu_mem_ctl.scala 811:90]
+  wire [1:0] ic_debug_tag_wr_en = _T_10129 & io_ic_debug_way; // @[el2_ifu_mem_ctl.scala 813:90]
   wire [1:0] ifu_tag_wren_w_debug = ifu_tag_wren | ic_debug_tag_wr_en; // @[el2_ifu_mem_ctl.scala 724:45]
   reg [1:0] ifu_tag_wren_ff; // @[el2_ifu_mem_ctl.scala 726:14]
   reg  ic_valid_ff; // @[el2_ifu_mem_ctl.scala 730:14]
@@ -4957,30 +4957,30 @@ module el2_ifu_mem_ctl(
   wire  _T_10097 = ~fetch_uncacheable_ff; // @[el2_ifu_mem_ctl.scala 795:63]
   wire  _T_10098 = _T_10097 & ifc_fetch_req_f; // @[el2_ifu_mem_ctl.scala 795:85]
   wire [1:0] _T_10100 = _T_10098 ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
-  reg  _T_10107; // @[el2_ifu_mem_ctl.scala 800:58]
-  reg  _T_10108; // @[el2_ifu_mem_ctl.scala 801:58]
+  reg  _T_10107; // @[el2_ifu_mem_ctl.scala 800:57]
+  reg  _T_10108; // @[el2_ifu_mem_ctl.scala 801:56]
   reg  _T_10109; // @[el2_ifu_mem_ctl.scala 802:59]
-  wire  _T_10110 = ~ifu_bus_arready_ff; // @[el2_ifu_mem_ctl.scala 803:78]
-  wire  _T_10111 = ifu_bus_arvalid_ff & _T_10110; // @[el2_ifu_mem_ctl.scala 803:76]
-  wire  _T_10112 = _T_10111 & miss_pending; // @[el2_ifu_mem_ctl.scala 803:98]
-  reg  _T_10113; // @[el2_ifu_mem_ctl.scala 803:56]
-  reg  _T_10114; // @[el2_ifu_mem_ctl.scala 804:57]
-  wire  _T_10117 = io_dec_tlu_ic_diag_pkt_icache_dicawics[15:14] == 2'h3; // @[el2_ifu_mem_ctl.scala 809:71]
-  wire  _T_10119 = io_dec_tlu_ic_diag_pkt_icache_dicawics[15:14] == 2'h2; // @[el2_ifu_mem_ctl.scala 809:124]
-  wire  _T_10121 = io_dec_tlu_ic_diag_pkt_icache_dicawics[15:14] == 2'h1; // @[el2_ifu_mem_ctl.scala 810:50]
-  wire  _T_10123 = io_dec_tlu_ic_diag_pkt_icache_dicawics[15:14] == 2'h0; // @[el2_ifu_mem_ctl.scala 810:103]
+  reg  _T_10110; // @[el2_ifu_mem_ctl.scala 803:58]
+  wire  _T_10111 = ~ifu_bus_arready_ff; // @[el2_ifu_mem_ctl.scala 804:80]
+  wire  _T_10112 = ifu_bus_arvalid_ff & _T_10111; // @[el2_ifu_mem_ctl.scala 804:78]
+  wire  _T_10113 = _T_10112 & miss_pending; // @[el2_ifu_mem_ctl.scala 804:100]
+  reg  _T_10114; // @[el2_ifu_mem_ctl.scala 804:58]
+  wire  _T_10117 = io_dec_tlu_ic_diag_pkt_icache_dicawics[15:14] == 2'h3; // @[el2_ifu_mem_ctl.scala 811:71]
+  wire  _T_10119 = io_dec_tlu_ic_diag_pkt_icache_dicawics[15:14] == 2'h2; // @[el2_ifu_mem_ctl.scala 811:124]
+  wire  _T_10121 = io_dec_tlu_ic_diag_pkt_icache_dicawics[15:14] == 2'h1; // @[el2_ifu_mem_ctl.scala 812:50]
+  wire  _T_10123 = io_dec_tlu_ic_diag_pkt_icache_dicawics[15:14] == 2'h0; // @[el2_ifu_mem_ctl.scala 812:103]
   wire [3:0] _T_10126 = {_T_10117,_T_10119,_T_10121,_T_10123}; // @[Cat.scala 29:58]
-  wire  ic_debug_ict_array_sel_in = io_ic_debug_rd_en & io_ic_debug_tag_array; // @[el2_ifu_mem_ctl.scala 812:53]
+  wire  ic_debug_ict_array_sel_in = io_ic_debug_rd_en & io_ic_debug_tag_array; // @[el2_ifu_mem_ctl.scala 814:53]
   reg  _T_10137; // @[Reg.scala 27:20]
   assign io_ifu_miss_state_idle = miss_state == 3'h0; // @[el2_ifu_mem_ctl.scala 323:26]
   assign io_ifu_ic_mb_empty = _T_327 | _T_232; // @[el2_ifu_mem_ctl.scala 322:22]
   assign io_ic_dma_active = _T_11 | io_dec_tlu_flush_err_wb; // @[el2_ifu_mem_ctl.scala 187:20]
   assign io_ic_write_stall = write_ic_16_bytes & _T_3932; // @[el2_ifu_mem_ctl.scala 691:21]
-  assign io_ifu_pmu_ic_miss = _T_10114; // @[el2_ifu_mem_ctl.scala 804:22]
-  assign io_ifu_pmu_ic_hit = _T_10113; // @[el2_ifu_mem_ctl.scala 803:21]
+  assign io_ifu_pmu_ic_miss = _T_10107; // @[el2_ifu_mem_ctl.scala 800:22]
+  assign io_ifu_pmu_ic_hit = _T_10108; // @[el2_ifu_mem_ctl.scala 801:21]
   assign io_ifu_pmu_bus_error = _T_10109; // @[el2_ifu_mem_ctl.scala 802:24]
-  assign io_ifu_pmu_bus_busy = _T_10108; // @[el2_ifu_mem_ctl.scala 801:23]
-  assign io_ifu_pmu_bus_trxn = _T_10107; // @[el2_ifu_mem_ctl.scala 800:23]
+  assign io_ifu_pmu_bus_busy = _T_10110; // @[el2_ifu_mem_ctl.scala 803:23]
+  assign io_ifu_pmu_bus_trxn = _T_10114; // @[el2_ifu_mem_ctl.scala 804:23]
   assign io_ifu_axi_awvalid = 1'h0; // @[el2_ifu_mem_ctl.scala 138:22]
   assign io_ifu_axi_awid = 3'h0; // @[el2_ifu_mem_ctl.scala 137:19]
   assign io_ifu_axi_awaddr = 32'h0; // @[el2_ifu_mem_ctl.scala 132:21]
@@ -5021,11 +5021,11 @@ module el2_ifu_mem_ctl(
   assign io_ic_wr_data_1 = ic_wr_16bytes_data[141:71]; // @[el2_ifu_mem_ctl.scala 339:17]
   assign io_ic_debug_wr_data = io_dec_tlu_ic_diag_pkt_icache_wrdata; // @[el2_ifu_mem_ctl.scala 340:23]
   assign io_ifu_ic_debug_rd_data = _T_1212; // @[el2_ifu_mem_ctl.scala 348:27]
-  assign io_ic_debug_addr = io_dec_tlu_ic_diag_pkt_icache_dicawics[9:0]; // @[el2_ifu_mem_ctl.scala 805:20]
-  assign io_ic_debug_rd_en = io_dec_tlu_ic_diag_pkt_icache_rd_valid; // @[el2_ifu_mem_ctl.scala 807:21]
-  assign io_ic_debug_wr_en = io_dec_tlu_ic_diag_pkt_icache_wr_valid; // @[el2_ifu_mem_ctl.scala 808:21]
-  assign io_ic_debug_tag_array = io_dec_tlu_ic_diag_pkt_icache_dicawics[16]; // @[el2_ifu_mem_ctl.scala 806:25]
-  assign io_ic_debug_way = _T_10126[1:0]; // @[el2_ifu_mem_ctl.scala 809:19]
+  assign io_ic_debug_addr = io_dec_tlu_ic_diag_pkt_icache_dicawics[9:0]; // @[el2_ifu_mem_ctl.scala 807:20]
+  assign io_ic_debug_rd_en = io_dec_tlu_ic_diag_pkt_icache_rd_valid; // @[el2_ifu_mem_ctl.scala 809:21]
+  assign io_ic_debug_wr_en = io_dec_tlu_ic_diag_pkt_icache_wr_valid; // @[el2_ifu_mem_ctl.scala 810:21]
+  assign io_ic_debug_tag_array = io_dec_tlu_ic_diag_pkt_icache_dicawics[16]; // @[el2_ifu_mem_ctl.scala 808:25]
+  assign io_ic_debug_way = _T_10126[1:0]; // @[el2_ifu_mem_ctl.scala 811:19]
   assign io_ic_tag_valid = ic_tag_valid_unq & _T_10100; // @[el2_ifu_mem_ctl.scala 795:19]
   assign io_iccm_rw_addr = _T_3064[14:0]; // @[el2_ifu_mem_ctl.scala 654:19]
   assign io_iccm_wren = _T_2633 | iccm_correct_ecc; // @[el2_ifu_mem_ctl.scala 625:16]
@@ -5044,7 +5044,7 @@ module el2_ifu_mem_ctl(
   assign io_ic_data_f = io_ic_rd_data[31:0]; // @[el2_ifu_mem_ctl.scala 376:16]
   assign io_ic_premux_data = ic_premux_data[63:0]; // @[el2_ifu_mem_ctl.scala 373:21]
   assign io_ic_sel_premux_data = fetch_req_iccm_f | sel_byp_data; // @[el2_ifu_mem_ctl.scala 374:25]
-  assign io_ifu_ic_debug_rd_data_valid = _T_10137; // @[el2_ifu_mem_ctl.scala 816:33]
+  assign io_ifu_ic_debug_rd_data_valid = _T_10137; // @[el2_ifu_mem_ctl.scala 818:33]
   assign io_iccm_buf_correct_ecc = iccm_correct_ecc & _T_2416; // @[el2_ifu_mem_ctl.scala 472:27]
   assign io_iccm_correction_state = _T_2444 ? 1'h0 : _GEN_59; // @[el2_ifu_mem_ctl.scala 507:28 el2_ifu_mem_ctl.scala 520:32 el2_ifu_mem_ctl.scala 527:32 el2_ifu_mem_ctl.scala 534:32]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
@@ -6015,7 +6015,7 @@ initial begin
   _RAND_465 = {1{`RANDOM}};
   _T_10109 = _RAND_465[0:0];
   _RAND_466 = {1{`RANDOM}};
-  _T_10113 = _RAND_466[0:0];
+  _T_10110 = _RAND_466[0:0];
   _RAND_467 = {1{`RANDOM}};
   _T_10114 = _RAND_467[0:0];
   _RAND_468 = {1{`RANDOM}};
@@ -8524,14 +8524,14 @@ end // initial
       _T_10109 <= ifc_bus_acc_fault_f;
     end
     if (reset) begin
-      _T_10113 <= 1'h0;
+      _T_10110 <= 1'h0;
     end else begin
-      _T_10113 <= _T_10112;
+      _T_10110 <= bus_cmd_sent;
     end
     if (reset) begin
       _T_10114 <= 1'h0;
     end else begin
-      _T_10114 <= bus_cmd_sent;
+      _T_10114 <= _T_10113;
     end
   end
 endmodule

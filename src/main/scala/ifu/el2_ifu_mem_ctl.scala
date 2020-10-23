@@ -797,11 +797,13 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ic_debug_way_ff = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
   ic_debug_tag_val_rd_out := (ic_tag_valid_unq & (ic_debug_way_ff & Fill(ICACHE_NUM_WAYS, ic_debug_rd_en_ff))).orR()
 
-  io.ifu_pmu_bus_trxn := withClock(io.active_clk){RegNext(ic_act_miss_f, false.B)}
-  io.ifu_pmu_bus_busy := withClock(io.active_clk){RegNext(ic_act_hit_f, false.B)}
+  io.ifu_pmu_ic_miss := withClock(io.active_clk){RegNext(ic_act_miss_f, false.B)}
+  io.ifu_pmu_ic_hit := withClock(io.active_clk){RegNext(ic_act_hit_f, false.B)}
   io.ifu_pmu_bus_error := withClock(io.active_clk){RegNext(ifc_bus_acc_fault_f, false.B)}
-  io.ifu_pmu_ic_hit := withClock(io.active_clk){RegNext(ifu_bus_arvalid_ff & !ifu_bus_arready_ff & miss_pending, false.B)}
-  io.ifu_pmu_ic_miss := withClock(io.active_clk){RegNext(bus_cmd_sent, false.B)}
+  io.ifu_pmu_bus_busy := withClock(io.active_clk){RegNext(bus_cmd_sent, false.B)}
+  io.ifu_pmu_bus_trxn := withClock(io.active_clk){RegNext(ifu_bus_arvalid_ff & !ifu_bus_arready_ff & miss_pending, false.B)}
+
+
   io.ic_debug_addr := io.dec_tlu_ic_diag_pkt.icache_dicawics
   io.ic_debug_tag_array := io.dec_tlu_ic_diag_pkt.icache_dicawics(16)
   io.ic_debug_rd_en := io.dec_tlu_ic_diag_pkt.icache_rd_valid
