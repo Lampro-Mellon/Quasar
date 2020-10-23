@@ -800,8 +800,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   io.ifu_pmu_ic_miss := withClock(io.active_clk){RegNext(ic_act_miss_f, false.B)}
   io.ifu_pmu_ic_hit := withClock(io.active_clk){RegNext(ic_act_hit_f, false.B)}
   io.ifu_pmu_bus_error := withClock(io.active_clk){RegNext(ifc_bus_acc_fault_f, false.B)}
-  io.ifu_pmu_bus_busy := withClock(io.active_clk){RegNext(bus_cmd_sent, false.B)}
-  io.ifu_pmu_bus_trxn := withClock(io.active_clk){RegNext(ifu_bus_arvalid_ff & !ifu_bus_arready_ff & miss_pending, false.B)}
+  io.ifu_pmu_bus_busy := withClock(io.active_clk){RegNext(ifu_bus_arvalid_ff & !ifu_bus_arready_ff & miss_pending, false.B)}
+  io.ifu_pmu_bus_trxn := withClock(io.active_clk){RegNext(bus_cmd_sent, false.B)}
 
 
   io.ic_debug_addr := io.dec_tlu_ic_diag_pkt.icache_dicawics

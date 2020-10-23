@@ -4960,10 +4960,10 @@ module el2_ifu_mem_ctl(
   reg  _T_10107; // @[el2_ifu_mem_ctl.scala 800:57]
   reg  _T_10108; // @[el2_ifu_mem_ctl.scala 801:56]
   reg  _T_10109; // @[el2_ifu_mem_ctl.scala 802:59]
-  reg  _T_10110; // @[el2_ifu_mem_ctl.scala 803:58]
-  wire  _T_10111 = ~ifu_bus_arready_ff; // @[el2_ifu_mem_ctl.scala 804:80]
-  wire  _T_10112 = ifu_bus_arvalid_ff & _T_10111; // @[el2_ifu_mem_ctl.scala 804:78]
-  wire  _T_10113 = _T_10112 & miss_pending; // @[el2_ifu_mem_ctl.scala 804:100]
+  wire  _T_10110 = ~ifu_bus_arready_ff; // @[el2_ifu_mem_ctl.scala 803:80]
+  wire  _T_10111 = ifu_bus_arvalid_ff & _T_10110; // @[el2_ifu_mem_ctl.scala 803:78]
+  wire  _T_10112 = _T_10111 & miss_pending; // @[el2_ifu_mem_ctl.scala 803:100]
+  reg  _T_10113; // @[el2_ifu_mem_ctl.scala 803:58]
   reg  _T_10114; // @[el2_ifu_mem_ctl.scala 804:58]
   wire  _T_10117 = io_dec_tlu_ic_diag_pkt_icache_dicawics[15:14] == 2'h3; // @[el2_ifu_mem_ctl.scala 811:71]
   wire  _T_10119 = io_dec_tlu_ic_diag_pkt_icache_dicawics[15:14] == 2'h2; // @[el2_ifu_mem_ctl.scala 811:124]
@@ -4979,7 +4979,7 @@ module el2_ifu_mem_ctl(
   assign io_ifu_pmu_ic_miss = _T_10107; // @[el2_ifu_mem_ctl.scala 800:22]
   assign io_ifu_pmu_ic_hit = _T_10108; // @[el2_ifu_mem_ctl.scala 801:21]
   assign io_ifu_pmu_bus_error = _T_10109; // @[el2_ifu_mem_ctl.scala 802:24]
-  assign io_ifu_pmu_bus_busy = _T_10110; // @[el2_ifu_mem_ctl.scala 803:23]
+  assign io_ifu_pmu_bus_busy = _T_10113; // @[el2_ifu_mem_ctl.scala 803:23]
   assign io_ifu_pmu_bus_trxn = _T_10114; // @[el2_ifu_mem_ctl.scala 804:23]
   assign io_ifu_axi_awvalid = 1'h0; // @[el2_ifu_mem_ctl.scala 138:22]
   assign io_ifu_axi_awid = 3'h0; // @[el2_ifu_mem_ctl.scala 137:19]
@@ -6015,7 +6015,7 @@ initial begin
   _RAND_465 = {1{`RANDOM}};
   _T_10109 = _RAND_465[0:0];
   _RAND_466 = {1{`RANDOM}};
-  _T_10110 = _RAND_466[0:0];
+  _T_10113 = _RAND_466[0:0];
   _RAND_467 = {1{`RANDOM}};
   _T_10114 = _RAND_467[0:0];
   _RAND_468 = {1{`RANDOM}};
@@ -8524,14 +8524,14 @@ end // initial
       _T_10109 <= ifc_bus_acc_fault_f;
     end
     if (reset) begin
-      _T_10110 <= 1'h0;
+      _T_10113 <= 1'h0;
     end else begin
-      _T_10110 <= bus_cmd_sent;
+      _T_10113 <= _T_10112;
     end
     if (reset) begin
       _T_10114 <= 1'h0;
     end else begin
-      _T_10114 <= _T_10113;
+      _T_10114 <= bus_cmd_sent;
     end
   end
 endmodule
