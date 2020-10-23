@@ -194,8 +194,9 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     is (idle_C){
       miss_nxtstate := Mux((ic_act_miss_f & !io.exu_flush_final).asBool, crit_byp_ok_C, hit_u_miss_C)
       miss_state_en := ic_act_miss_f & !io.dec_tlu_force_halt}
+
     is (crit_byp_ok_C){
-      miss_nxtstate := Mux((io.dec_tlu_force_halt | ic_byp_hit_f &  (last_data_recieved_ff | (bus_ifu_wr_en_ff & last_beat)) &  uncacheable_miss_ff).asBool, idle_C,
+      miss_nxtstate := Mux((io.dec_tlu_force_halt | (ic_byp_hit_f &  (last_data_recieved_ff | (bus_ifu_wr_en_ff & last_beat)) &  uncacheable_miss_ff)).asBool, idle_C,
         Mux((ic_byp_hit_f &  !last_data_recieved_ff &  uncacheable_miss_ff).asBool, miss_wait_C,
           Mux((!ic_byp_hit_f & !io.exu_flush_final & (bus_ifu_wr_en_ff & last_beat) &  uncacheable_miss_ff).asBool, crit_byp_ok_C,
             Mux(((bus_ifu_wr_en_ff & last_beat) & !uncacheable_miss_ff).asBool, idle_C,
