@@ -448,7 +448,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     (ic_miss_buff_data_valid_bypass_index & (byp_fetch_index(ICACHE_BEAT_ADDR_HI-1,2) === Fill(ICACHE_BEAT_BITS,1.U)))
 
   stream_hit_f := (miss_state===stream_C) & (miss_buff_hit_unq_f & !miss_wrap_f)
-  stream_miss_f := (miss_state===stream_C) & (miss_buff_hit_unq_f & !miss_wrap_f) & ifc_fetch_req_f
+  stream_miss_f := (miss_state===stream_C) & !(miss_buff_hit_unq_f & !miss_wrap_f) & ifc_fetch_req_f
   stream_eol_f := (byp_fetch_index(ICACHE_BEAT_ADDR_HI-1,1)===Fill(ICACHE_BEAT_BITS, 1.U)) & ifc_fetch_req_f & stream_hit_f
   crit_byp_hit_f := miss_buff_hit_unq_f & ((miss_state===crit_wrd_rdy_C) | (miss_state===crit_byp_ok_C))
 
