@@ -198,11 +198,12 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     is (crit_byp_ok_C){
       miss_nxtstate := Mux((io.dec_tlu_force_halt | (ic_byp_hit_f &  (last_data_recieved_ff | (bus_ifu_wr_en_ff & last_beat)) &  uncacheable_miss_ff)).asBool, idle_C,
         Mux((ic_byp_hit_f &  !last_data_recieved_ff &  uncacheable_miss_ff).asBool, miss_wait_C,
-          Mux((!ic_byp_hit_f & !io.exu_flush_final & (bus_ifu_wr_en_ff & last_beat) &  uncacheable_miss_ff).asBool, crit_byp_ok_C,
+          Mux((!ic_byp_hit_f & !io.exu_flush_final & (bus_ifu_wr_en_ff & last_beat) &  uncacheable_miss_ff).asBool, crit_wrd_rdy_C,
             Mux(((bus_ifu_wr_en_ff & last_beat) & !uncacheable_miss_ff).asBool, idle_C,
-              Mux(((ic_byp_hit_f | bus_ifu_wr_en_ff) & !io.exu_flush_final & !(bus_ifu_wr_en_ff & last_beat) & !ifu_bp_hit_taken_q_f & !uncacheable_miss_ff).asBool, stream_C,
+              Mux((ic_byp_hit_f & !io.exu_flush_final & !(bus_ifu_wr_en_ff & last_beat) & !ifu_bp_hit_taken_q_f & !uncacheable_miss_ff).asBool, stream_C,
+                Mux((bus_ifu_wr_en_ff & !io.exu_flush_final & !(bus_ifu_wr_en_ff & last_beat) & !ifu_bp_hit_taken_q_f & !uncacheable_miss_ff).asBool, stream_C,
                 Mux((!ic_byp_hit_f  &  !io.exu_flush_final &  (bus_ifu_wr_en_ff & last_beat)       & !uncacheable_miss_ff).asBool, idle_C,
-                  Mux(((io.exu_flush_final | ifu_bp_hit_taken_q_f) & !(bus_ifu_wr_en_ff & last_beat)).asBool, hit_u_miss_C, idle_C)))))))
+                  Mux(((io.exu_flush_final | ifu_bp_hit_taken_q_f) & !(bus_ifu_wr_en_ff & last_beat)).asBool, hit_u_miss_C, idle_C))))))))
       miss_state_en := io.dec_tlu_force_halt | io.exu_flush_final | ic_byp_hit_f | ifu_bp_hit_taken_q_f | (bus_ifu_wr_en_ff & last_beat) | (bus_ifu_wr_en_ff & !uncacheable_miss_ff)
     }
     is (crit_wrd_rdy_C){
