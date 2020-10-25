@@ -339,11 +339,15 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   sel_mb_addr_ff := withClock(io.free_clk){RegNext(sel_mb_addr, 0.U)}
   val ifu_bus_rdata_ff = WireInit(UInt(64.W), 0.U)
   val ic_miss_buff_half = WireInit(UInt(64.W), 0.U)
-  val ic_wr_ecc = rvecc_encode_64(ifu_bus_rdata_ff)
+  val ic_wr_ecc = WireInit(UInt(7.W), 0.U) //rvecc_encode_64(ifu_bus_rdata_ff)
   val m1 = Module(new rvecc_encode_64())
+  val m2 = Module(new rvecc_encode_64())
   m1.io.din := ifu_bus_rdata_ff
+  ic_wr_ecc := m1.io.ecc_out
   io.ic_wr_ecc := m1.io.ecc_out
-  val ic_miss_buff_ecc = rvecc_encode_64(ic_miss_buff_half)
+  val ic_miss_buff_ecc = WireInit(UInt(7.W), 0.U) //rvecc_encode_64(ic_miss_buff_half)
+  m2.io.din := ic_miss_buff_half
+  ic_miss_buff_ecc := m2.io.ecc_out
   io.ic_miss_buff_ecc := ic_miss_buff_ecc
   val ic_wr_16bytes_data = WireInit(UInt((ICACHE_BANKS_WAY * (if(ICACHE_ECC) 71 else 68)).W), 0.U)
   io.ic_wr_data := (0 until ICACHE_BANKS_WAY).map(i=>ic_wr_16bytes_data((i*(if(ICACHE_ECC) 71 else 68))+(if(ICACHE_ECC) 70 else 67),(if(ICACHE_ECC) 71 else 68)*i))
