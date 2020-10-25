@@ -323,7 +323,6 @@ trait el2_lib extends param{
     val mask5 = Array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0)
     val mask6 = Array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1)
 
-
     val w0 = Wire(Vec(35,UInt(1.W)))
     val w1 = Wire(Vec(35,UInt(1.W)))
     val w2 = Wire(Vec(35,UInt(1.W)))
@@ -348,7 +347,6 @@ trait el2_lib extends param{
     val ecc_out = Cat((w0.asUInt.xorR),(w1.asUInt.xorR),(w2.asUInt.xorR),(w3.asUInt.xorR),(w4.asUInt.xorR),(w5.asUInt.xorR),(w6.asUInt.xorR))
     ecc_out
   }
-
 
   def rvecc_decode_64(en:UInt,din:UInt,ecc_in:UInt) = {
     val mask0 = Array(1,1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,1,0,1)
