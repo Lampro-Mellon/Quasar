@@ -340,7 +340,9 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ifu_bus_rdata_ff = WireInit(UInt(64.W), 0.U)
   val ic_miss_buff_half = WireInit(UInt(64.W), 0.U)
   val ic_wr_ecc = rvecc_encode_64(ifu_bus_rdata_ff)
-  io.ic_wr_ecc := ic_wr_ecc
+  val m1 = Module(new rvecc_encode_64())
+  m1.io.din := ifu_bus_rdata_ff
+  io.ic_wr_ecc := m1.io.ecc_out
   val ic_miss_buff_ecc = rvecc_encode_64(ic_miss_buff_half)
   io.ic_miss_buff_ecc := ic_miss_buff_ecc
   val ic_wr_16bytes_data = WireInit(UInt((ICACHE_BANKS_WAY * (if(ICACHE_ECC) 71 else 68)).W), 0.U)
