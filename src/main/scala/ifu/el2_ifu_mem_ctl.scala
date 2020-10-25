@@ -126,7 +126,7 @@ class mem_ctl_bundle extends Bundle with el2_lib{
   val iccm_buf_correct_ecc = Output(Bool())
   val iccm_correction_state = Output(Bool())
   val scan_mode = Input(Bool())
-  val ic_miss_buff_ecc = Output(UInt())
+  val data = Output(UInt())
   val ic_wr_ecc = Output(UInt())
 }
 class el2_ifu_mem_ctl extends Module with el2_lib {
@@ -348,7 +348,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ic_miss_buff_ecc = WireInit(UInt(7.W), 0.U) //rvecc_encode_64(ic_miss_buff_half)
   m2.io.din := ic_miss_buff_half
   ic_miss_buff_ecc := m2.io.ecc_out
-  io.ic_miss_buff_ecc := ic_miss_buff_ecc
+  io.data := Cat(io.ic_wr_data(1),io.ic_wr_data(0))
   val ic_wr_16bytes_data = WireInit(UInt((ICACHE_BANKS_WAY * (if(ICACHE_ECC) 71 else 68)).W), 0.U)
   io.ic_wr_data := (0 until ICACHE_BANKS_WAY).map(i=>ic_wr_16bytes_data((i*(if(ICACHE_ECC) 71 else 68))+(if(ICACHE_ECC) 70 else 67),(if(ICACHE_ECC) 71 else 68)*i))
   io.ic_debug_wr_data := io.dec_tlu_ic_diag_pkt.icache_wrdata

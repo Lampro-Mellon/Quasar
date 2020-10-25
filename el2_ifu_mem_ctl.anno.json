@@ -302,6 +302,14 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_data",
+    "sources":[
+      "~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_ic_wr_data_1",
+      "~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_ic_wr_data_0"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_ic_rw_addr",
     "sources":[
       "~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_ifc_fetch_addr_bf"
