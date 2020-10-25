@@ -1,9 +1,12 @@
 package ifu
 import chisel3._
+import chisel3.internal.naming.chiselName
 import chisel3.util._
 import lib._
 import include._
+
 import scala.math.pow
+@chiselName
 class mem_ctl_bundle extends Bundle with el2_lib{
   val free_clk = Input(Clock())
   val active_clk = Input(Clock())
@@ -325,8 +328,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val write_ic_16_bytes = WireInit(Bool(), false.B)
   val reset_tag_valid_for_miss = WireInit(Bool(), false.B)
   val sel_mb_addr = (miss_pending & write_ic_16_bytes & !uncacheable_miss_ff) | reset_tag_valid_for_miss
-  val ifu_ic_rw_int_addr = Mux1H(Seq(sel_mb_addr.asBool->Cat(imb_ff(30,ICACHE_BEAT_ADDR_HI) , ic_wr_addr_bits_hi_3 , imb_ff(1,0)),
-                                    !sel_mb_addr.asBool->io.ifc_fetch_addr_bf))
+  val ifu_ic_rw_int_addr = Mux1H(Seq(sel_mb_addr -> Cat(imb_ff(30,ICACHE_BEAT_ADDR_HI) , ic_wr_addr_bits_hi_3 , imb_ff(1,0)),
+                                    !sel_mb_addr -> io.ifc_fetch_addr_bf))
   val bus_ifu_wr_en_ff_q = WireInit(Bool(), false.B)
   val sel_mb_status_addr = miss_pending & write_ic_16_bytes & !uncacheable_miss_ff & last_beat & bus_ifu_wr_en_ff_q
   val ifu_status_wr_addr = Mux(sel_mb_status_addr, Cat(imb_ff(30, ICACHE_BEAT_ADDR_HI),ic_wr_addr_bits_hi_3, imb_ff(1,0)), ifu_fetch_addr_int_f)
@@ -352,6 +355,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
 
   ic_wr_16bytes_data := Mux(ifu_bus_rid_ff(0).asBool,Cat(if(ICACHE_ECC)ic_wr_ecc else ic_wr_parity, ifu_bus_rdata_ff(63,0) ,  if(ICACHE_ECC)ic_miss_buff_ecc else ic_miss_buff_parity, ic_miss_buff_half(63,0)),
     Cat(if(ICACHE_ECC)ic_miss_buff_ecc else ic_miss_buff_parity, ic_miss_buff_half, if(ICACHE_ECC)ic_wr_ecc else ic_wr_parity, ifu_bus_rdata_ff))
+
+
   val bus_ifu_wr_data_error_ff = WireInit(Bool(), 0.U)
   val ifu_wr_data_comb_err_ff = WireInit(Bool(), 0.U)
   val reset_beat_cnt = WireInit(Bool(), 0.U)
@@ -392,8 +397,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val write_fill_data = (0 until ICACHE_NUM_BEATS).map(i=>bus_ifu_wr_en & (ifu_bus_rsp_tag===i.U))
   val ic_miss_buff_data = Wire(Vec(2*ICACHE_NUM_BEATS, UInt(32.W)))
   for(i<- 0 until ICACHE_NUM_BEATS){
-  ic_miss_buff_data(2*i) := RegEnable(ic_miss_buff_data_in, 0.U, write_fill_data(i).asBool())
-  ic_miss_buff_data(2*i+1) := RegEnable(ic_miss_buff_data_in, 0.U, write_fill_data(i).asBool())}
+  ic_miss_buff_data(2*i) := RegEnable(ic_miss_buff_data_in(31,0), 0.U, write_fill_data(i).asBool())
+  ic_miss_buff_data(2*i+1) := RegEnable(ic_miss_buff_data_in(63,32), 0.U, write_fill_data(i).asBool())}
   val ic_miss_buff_data_valid = WireInit(UInt(ICACHE_NUM_BEATS.W), 0.U)
   val ic_miss_buff_data_valid_in = (0 until ICACHE_NUM_BEATS).map(i=>write_fill_data(i)|(ic_miss_buff_data_valid(i)&(!ic_act_miss_f)))
   ic_miss_buff_data_valid := withClock(io.free_clk){RegNext(ic_miss_buff_data_valid_in.reverse.reduce(Cat(_,_)), 0.U)}
