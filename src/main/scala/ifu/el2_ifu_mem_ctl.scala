@@ -185,7 +185,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   io.iccm_dma_sb_error := iccm_single_ecc_error.orR() & dma_iccm_req_f.asBool()
   io.ifu_async_error_start := io.iccm_rd_ecc_single_err | io.ic_error_start
   io.ic_dma_active := iccm_correct_ecc | (perr_state === dma_sb_err_C) | (err_stop_state === err_stop_fetch_C) | err_stop_fetch | io.dec_tlu_flush_err_wb
-  val scnd_miss_req_in = ifu_bus_rsp_valid & bus_ifu_bus_clk_en & ifu_bus_rsp_ready & bus_new_data_beat_count.andR &
+
+  val scnd_miss_req_in = ifu_bus_rsp_valid & bus_ifu_bus_clk_en & ifu_bus_rsp_ready & (bus_new_data_beat_count.andR) &
     !uncacheable_miss_ff & ((miss_state === scnd_miss_C)|(miss_nxtstate === scnd_miss_C)) & !io.exu_flush_final
 
   val ifu_bp_hit_taken_q_f = io.ifu_bp_hit_taken_f & io.ic_hit_f
@@ -325,7 +326,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val reset_tag_valid_for_miss = WireInit(Bool(), false.B)
   val sel_mb_addr = (miss_pending & write_ic_16_bytes & !uncacheable_miss_ff) | reset_tag_valid_for_miss
   val ifu_ic_rw_int_addr = Mux1H(Seq(sel_mb_addr.asBool->Cat(imb_ff(30,ICACHE_BEAT_ADDR_HI) , ic_wr_addr_bits_hi_3 , imb_ff(1,0)),
-                                    !sel_mb_addr.asBool->ifu_fetch_addr_int_f))
+                                    !sel_mb_addr.asBool->io.ifc_fetch_addr_bf))
   val bus_ifu_wr_en_ff_q = WireInit(Bool(), false.B)
   val sel_mb_status_addr = miss_pending & write_ic_16_bytes & !uncacheable_miss_ff & last_beat & bus_ifu_wr_en_ff_q
   val ifu_status_wr_addr = Mux(sel_mb_status_addr, Cat(imb_ff(30, ICACHE_BEAT_ADDR_HI),ic_wr_addr_bits_hi_3, imb_ff(1,0)), ifu_fetch_addr_int_f)
