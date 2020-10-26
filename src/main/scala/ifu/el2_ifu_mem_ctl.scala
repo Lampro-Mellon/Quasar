@@ -762,7 +762,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
           (((ifu_ic_rw_int_addr_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j)) | ((perr_ic_index_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j))&tag_valid_clken(i)(j)).asBool)
 
     val ic_tag_valid_unq = (0 until ICACHE_NUM_WAYS).map(k => (0 until ICACHE_TAG_DEPTH).map(j =>
-      Mux(ifu_ic_rw_int_addr_ff === j.U, false.B, ic_tag_valid_out(k)(j)).asUInt).reduce(_|_)).reverse.reduce(Cat(_,_))
+      Mux(ifu_ic_rw_int_addr_ff === j.U, ic_tag_valid_out(k)(j), false.B).asUInt).reduce(_|_)).reverse.reduce(Cat(_,_))
 
     // Making a sudo LRU
     // val replace_way_mb_any = Wire(Vec(ICACHE_NUM_WAYS, Bool()))
