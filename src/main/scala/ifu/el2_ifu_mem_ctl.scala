@@ -746,7 +746,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     val ic_tag_valid_out = Wire(Vec(ICACHE_NUM_WAYS, Vec(ICACHE_TAG_DEPTH, Bool())))
     for (i <- 0 until ICACHE_TAG_DEPTH / 32; j <- 0 until ICACHE_NUM_WAYS; k <- 0 until 32)
       ic_tag_valid_out(j)(32 * i + k) := RegEnable(ic_valid_ff & !reset_all_tags.asBool & !perr_sel_invalidate, false.B,
-          (((ifu_ic_rw_int_addr_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j)) | ((perr_ic_index_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j))&tag_valid_clken(i)(j)).asBool)
+          (((ifu_ic_rw_int_addr_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j)) | ((perr_ic_index_ff === (k + (32 * i)).U) & perr_err_inv_way(j) | reset_all_tags) & tag_valid_clken(i)(j)).asBool)
 
     val ic_tag_valid_unq = (0 until ICACHE_NUM_WAYS).map(k => (0 until ICACHE_TAG_DEPTH).map(j =>
       Mux(ifu_ic_rw_int_addr_ff === j.U, ic_tag_valid_out(k)(j), false.B).asUInt).reduce(_|_)).reverse.reduce(Cat(_,_))
