@@ -310,7 +310,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   reset_ic_ff := RegNext(reset_ic_in)
   val fetch_uncacheable_ff = RegNext(io.ifc_fetch_uncacheable_bf, 0.U)
   ifu_fetch_addr_int_f := RegNext(io.ifc_fetch_addr_bf, 0.U)
-  val vaddr_f = ifu_fetch_addr_int_f
+  val vaddr_f = ifu_fetch_addr_int_f(ICACHE_BEAT_ADDR_HI-1, 0)
   uncacheable_miss_ff := RegNext(uncacheable_miss_in, 0.U)
   imb_ff := RegNext(imb_in)
   val miss_addr = WireInit(UInt((31-ICACHE_BEAT_ADDR_HI).W), 0.U)
@@ -399,8 +399,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   io.ic_access_fault_type_f := Mux(io.iccm_rd_ecc_double_err.asBool, 1.U,
     Mux(ifc_region_acc_fault_f.asBool, 2.U,
       Mux(ifc_region_acc_fault_memory_f.asBool(), 3.U, 0.U)))
-  val ifu_bp_inst_mask_f = WireInit(Bool(), 0.U)
-  io.ic_fetch_val_f := Cat(fetch_req_f_qual & ifu_bp_inst_mask_f & !(vaddr_f===Fill(ICACHE_BEAT_ADDR_HI,1.U)) & (err_stop_state=/=err_fetch2_C), fetch_req_f_qual)
+  io.ic_fetch_val_f := Cat(fetch_req_f_qual & io.ifu_bp_inst_mask_f & !(vaddr_f===Fill(ICACHE_BEAT_ADDR_HI,1.U)) & (err_stop_state=/=err_fetch2_C), fetch_req_f_qual)
   val two_byte_instr = io.ic_data_f(1,0) =/= 3.U
   //// Creating full buffer
   val ifu_bus_rsp_rdata = WireInit(UInt(64.W), 0.U)
