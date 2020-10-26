@@ -129,6 +129,7 @@ class mem_ctl_bundle extends Bundle with el2_lib{
   val data = Output(UInt())
   val ic_miss_buff_half = Output(UInt())
   val ic_wr_ecc = Output(UInt())
+  //val miss_buff_data = Output(UInt())
 }
 class el2_ifu_mem_ctl extends Module with el2_lib {
   val io = IO(new mem_ctl_bundle)
@@ -474,7 +475,9 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val second_half_available = Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(other_tag===i.U).asBool->ic_miss_buff_data_valid(i)))
   write_ic_16_bytes := second_half_available & bus_ifu_wr_en_ff
   ic_miss_buff_half := Cat(Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(Cat(other_tag,1.U)===i.U).asBool->ic_miss_buff_data(i))),
-    Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(Cat(other_tag,0.U)===i.U).asBool->ic_miss_buff_data(i))))
+    Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(Cat(other_tag,0.U)===i.U).asBool->ic_miss_buff_data(i))))
+
+
 
   ic_rd_parity_final_err := io.ic_tag_perr & sel_ic_data & !(ifc_region_acc_fault_final_f | ifc_bus_acc_fault_f)
   val ifu_ic_rw_int_addr_ff = WireInit(UInt((ICACHE_INDEX_HI-ICACHE_TAG_INDEX_LO).W), 0.U)
