@@ -127,6 +127,7 @@ class mem_ctl_bundle extends Bundle with el2_lib{
   val iccm_correction_state = Output(Bool())
   val scan_mode = Input(Bool())
   val data = Output(UInt())
+  val ic_miss_buff_half = Output(UInt())
   val ic_wr_ecc = Output(UInt())
 }
 class el2_ifu_mem_ctl extends Module with el2_lib {
@@ -363,10 +364,10 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ic_wr_parity = (0 until 4).map(i=>rveven_paritygen(ifu_bus_rdata_ff((16*i)+15,16*i))).reverse.reduce(Cat(_,_))
   val ic_miss_buff_parity = (0 until 4).map(i=>rveven_paritygen(ic_miss_buff_half((16*i)+15,16*i))).reverse.reduce(Cat(_,_))
 
-  ic_wr_16bytes_data := Mux(ifu_bus_rid_ff(0).asBool,Cat(if(ICACHE_ECC)ic_wr_ecc else ic_wr_parity, ifu_bus_rdata_ff(63,0) ,  if(ICACHE_ECC)ic_miss_buff_ecc else ic_miss_buff_parity, ic_miss_buff_half(63,0)),
+  ic_wr_16bytes_data := Mux(ifu_bus_rid_ff(0).asBool,Cat(if(ICACHE_ECC)ic_wr_ecc else ic_wr_parity, ifu_bus_rdata_ff,  if(ICACHE_ECC)ic_miss_buff_ecc else ic_miss_buff_parity, ic_miss_buff_half),
     Cat(if(ICACHE_ECC)ic_miss_buff_ecc else ic_miss_buff_parity, ic_miss_buff_half, if(ICACHE_ECC)ic_wr_ecc else ic_wr_parity, ifu_bus_rdata_ff))
 
-
+  io.ic_miss_buff_half := ic_miss_buff_half
   val bus_ifu_wr_data_error_ff = WireInit(Bool(), 0.U)
   val ifu_wr_data_comb_err_ff = WireInit(Bool(), 0.U)
   val reset_beat_cnt = WireInit(Bool(), 0.U)
