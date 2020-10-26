@@ -2512,7 +2512,7 @@ circuit el2_ifu_mem_ctl :
       node _T_780 = or(ic_miss_buff_data_error_bypass, ic_miss_buff_data_error_bypass_inc) @[el2_ifu_mem_ctl.scala 451:70]
       ifu_byp_data_err_new <= _T_780 @[el2_ifu_mem_ctl.scala 451:36]
       skip @[el2_ifu_mem_ctl.scala 451:5]
-    node _T_781 = bits(ifu_fetch_addr_int_f, 0, 0) @[el2_ifu_mem_ctl.scala 453:59]
+    node _T_781 = bits(ifu_fetch_addr_int_f, 1, 1) @[el2_ifu_mem_ctl.scala 453:59]
     node _T_782 = bits(_T_781, 0, 0) @[el2_ifu_mem_ctl.scala 453:63]
     node _T_783 = eq(_T_782, UInt<1>("h00")) @[el2_ifu_mem_ctl.scala 453:38]
     node _T_784 = eq(byp_fetch_index_inc_0, UInt<1>("h00")) @[el2_ifu_mem_ctl.scala 454:73]

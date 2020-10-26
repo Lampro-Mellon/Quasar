@@ -450,7 +450,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     ifu_byp_data_err_new := ic_miss_buff_data_error_bypass
   } otherwise{ifu_byp_data_err_new := ic_miss_buff_data_error_bypass | ic_miss_buff_data_error_bypass_inc}
 
-  val ic_byp_data_only_pre_new = Mux(!ifu_fetch_addr_int_f(0).asBool,
+  val ic_byp_data_only_pre_new = Mux(!ifu_fetch_addr_int_f(1).asBool,
     Cat(Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_inc_0===i.U).asBool->ic_miss_buff_data(i)(15,0))), Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_1===i.U).asBool->ic_miss_buff_data(i)(31,0))), Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_0===i.U).asBool->ic_miss_buff_data(i)(31,0)))),
     Cat(Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_inc_1===i.U).asBool->ic_miss_buff_data(i)(15,0))), Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_inc_0===i.U).asBool->ic_miss_buff_data(i)(31,0))), Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_1===i.U).asBool->ic_miss_buff_data(i)(31,0)))))
 
