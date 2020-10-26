@@ -126,6 +126,7 @@ class mem_ctl_bundle extends Bundle with el2_lib{
   val iccm_buf_correct_ecc = Output(Bool())
   val iccm_correction_state = Output(Bool())
   val scan_mode = Input(Bool())
+
 }
 class el2_ifu_mem_ctl extends Module with el2_lib {
   val io = IO(new mem_ctl_bundle)
@@ -693,7 +694,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
       ((miss_state===crit_wrd_rdy_C) & !miss_state_en)  |
       ((miss_state===crit_byp_ok_C) &  miss_state_en &  (miss_nxtstate===miss_wait_C))  ))  |
       (io.ifc_fetch_req_bf & io.exu_flush_final  & !io.ifc_fetch_uncacheable_bf & !io.ifc_iccm_access_bf)
-  val bus_ic_wr_en = WireInit(Bool(), false.B)
+  val bus_ic_wr_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
   io.ic_wr_en := bus_ic_wr_en & Fill(ICACHE_NUM_WAYS, write_ic_16_bytes)
   io.ic_write_stall := write_ic_16_bytes & !((((miss_state===crit_byp_ok_C) | ((miss_state===stream_C) & !(io.exu_flush_final | ifu_bp_hit_taken_q_f  | stream_eol_f ))) & !(bus_ifu_wr_en_ff & last_beat & !uncacheable_miss_ff)))
   reset_all_tags := withClock(io.active_clk){RegNext(io.dec_tlu_fence_i_wb, false.B)}
@@ -786,6 +787,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     val wren_reset_miss = (0 until ICACHE_NUM_WAYS).map(i => replace_way_mb_any(i) & reset_tag_valid_for_miss)
     ifu_tag_wren := (0 until ICACHE_NUM_WAYS).map(i => bus_wren_last(i) | wren_reset_miss(i)).reverse.reduce(Cat(_, _))
 
+  bus_ic_wr_en := bus_wren.reverse.reduce(Cat(_,_))
   if(!ICACHE_ENABLE){
     for(i<- 0 until ICACHE_NUM_WAYS){
 
