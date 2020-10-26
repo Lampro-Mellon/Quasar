@@ -381,8 +381,7 @@ trait el2_lib extends param{
       if(mask5(i)==1) {w5(y) := din(i); y = y +1 }
       if(mask6(i)==1) {w6(z) := din(i); z = z +1 }
     }
-    val ecc_out = Cat((w0.asUInt.xorR),(w1.asUInt.xorR),(w2.asUInt.xorR),(w3.asUInt.xorR),(w4.asUInt.xorR),(w5.asUInt.xorR),(w6.asUInt.xorR))
-    ecc_out
+    Cat((w6.asUInt.xorR),(w5.asUInt.xorR),(w4.asUInt.xorR),(w3.asUInt.xorR),(w2.asUInt.xorR),(w1.asUInt.xorR),(w0.asUInt.xorR))
   }
 
   def rvecc_decode_64(en:UInt,din:UInt,ecc_in:UInt) = {
