@@ -339,13 +339,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ifu_bus_rdata_ff = WireInit(UInt(64.W), 0.U)
   val ic_miss_buff_half = WireInit(UInt(64.W), 0.U)
   val ic_wr_ecc = rvecc_encode_64(ifu_bus_rdata_ff)
-//  val m1 = Module(new rvecc_encode_64())
-//  val m2 = Module(new rvecc_encode_64())
-//  m1.io.din := ifu_bus_rdata_ff
-//  ic_wr_ecc := m1.io.ecc_out
   val ic_miss_buff_ecc = rvecc_encode_64(ic_miss_buff_half)
-//  m2.io.din := ic_miss_buff_half
-//  ic_miss_buff_ecc := m2.io.ecc_out
   val ic_wr_16bytes_data = WireInit(UInt((ICACHE_BANKS_WAY * (if(ICACHE_ECC) 71 else 68)).W), 0.U)
   io.ic_wr_data := (0 until ICACHE_BANKS_WAY).map(i=>ic_wr_16bytes_data((i*(if(ICACHE_ECC) 71 else 68))+(if(ICACHE_ECC) 70 else 67),(if(ICACHE_ECC) 71 else 68)*i))
   io.ic_debug_wr_data := io.dec_tlu_ic_diag_pkt.icache_wrdata
@@ -460,7 +454,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
 
   stream_hit_f := (miss_state===stream_C) & (miss_buff_hit_unq_f & !miss_wrap_f)
   stream_miss_f := (miss_state===stream_C) & !(miss_buff_hit_unq_f & !miss_wrap_f) & ifc_fetch_req_f
-  stream_eol_f := (byp_fetch_index(ICACHE_BEAT_ADDR_HI-1,1)===Fill(ICACHE_BEAT_BITS, 1.U)) & ifc_fetch_req_f & stream_hit_f
+  stream_eol_f := (byp_fetch_index(ICACHE_BEAT_ADDR_HI-1,1)===Fill(ICACHE_BEAT_BITS+1, 1.U)) & ifc_fetch_req_f & stream_hit_f
   crit_byp_hit_f := miss_buff_hit_unq_f & ((miss_state===crit_wrd_rdy_C) | (miss_state===crit_byp_ok_C))
 
 
