@@ -2982,7 +2982,7 @@ circuit el2_ifu_mem_ctl :
     node _T_2116 = mux(_T_2113, ic_byp_data_only_pre_new, _T_2115) @[el2_ifu_mem_ctl.scala 444:30]
     ic_byp_data_only_new <= _T_2116 @[el2_ifu_mem_ctl.scala 444:24]
     node _T_2117 = bits(imb_ff, 5, 5) @[el2_ifu_mem_ctl.scala 446:27]
-    node _T_2118 = bits(ifu_fetch_addr_int_f, 6, 6) @[el2_ifu_mem_ctl.scala 446:75]
+    node _T_2118 = bits(ifu_fetch_addr_int_f, 5, 5) @[el2_ifu_mem_ctl.scala 446:75]
     node miss_wrap_f = neq(_T_2117, _T_2118) @[el2_ifu_mem_ctl.scala 446:51]
     node _T_2119 = bits(byp_fetch_index, 4, 2) @[el2_ifu_mem_ctl.scala 447:102]
     node _T_2120 = eq(_T_2119, UInt<1>("h00")) @[el2_ifu_mem_ctl.scala 447:127]

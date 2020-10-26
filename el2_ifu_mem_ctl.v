@@ -829,7 +829,7 @@ module el2_ifu_mem_ctl(
   wire  crit_byp_hit_f = miss_buff_hit_unq_f & _T_2250; // @[el2_ifu_mem_ctl.scala 458:41]
   wire  _T_2233 = miss_state == 3'h6; // @[el2_ifu_mem_ctl.scala 455:30]
   reg [30:0] imb_ff; // @[el2_ifu_mem_ctl.scala 311:20]
-  wire  miss_wrap_f = imb_ff[5] != ifu_fetch_addr_int_f[6]; // @[el2_ifu_mem_ctl.scala 446:51]
+  wire  miss_wrap_f = imb_ff[5] != ifu_fetch_addr_int_f[5]; // @[el2_ifu_mem_ctl.scala 446:51]
   wire  _T_2234 = ~miss_wrap_f; // @[el2_ifu_mem_ctl.scala 455:68]
   wire  _T_2235 = miss_buff_hit_unq_f & _T_2234; // @[el2_ifu_mem_ctl.scala 455:66]
   wire  stream_hit_f = _T_2233 & _T_2235; // @[el2_ifu_mem_ctl.scala 455:43]

@@ -443,7 +443,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
 
   ic_byp_data_only_new := Mux(!ifu_fetch_addr_int_f(0).asBool(),ic_byp_data_only_pre_new,Cat(0.U(16.W),ic_byp_data_only_pre_new(79,16)))
 
-  val miss_wrap_f = imb_ff(ICACHE_TAG_INDEX_LO-1) =/= ifu_fetch_addr_int_f(ICACHE_TAG_INDEX_LO)
+  val miss_wrap_f = imb_ff(ICACHE_TAG_INDEX_LO-1) =/= ifu_fetch_addr_int_f(ICACHE_TAG_INDEX_LO-1)
   val ic_miss_buff_data_valid_bypass_index = Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(byp_fetch_index(ICACHE_BEAT_ADDR_HI-1,2)===i.U).asBool->ic_miss_buff_data_valid(i)))
   val ic_miss_buff_data_valid_inc_bypass_index = Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(byp_fetch_index_inc===i.U).asBool->ic_miss_buff_data_valid(i)))
   val miss_buff_hit_unq_f = (ic_miss_buff_data_valid_bypass_index & !byp_fetch_index(1) & !byp_fetch_index(0)) |
