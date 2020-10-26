@@ -468,7 +468,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
 
 
   ic_rd_parity_final_err := io.ic_tag_perr & sel_ic_data & !(ifc_region_acc_fault_final_f | ifc_bus_acc_fault_f)
-  val ifu_ic_rw_int_addr_ff = WireInit(UInt((ICACHE_INDEX_HI-ICACHE_TAG_INDEX_LO).W), 0.U)
+  val ifu_ic_rw_int_addr_ff = WireInit(UInt((ICACHE_INDEX_HI-ICACHE_TAG_INDEX_LO+1).W), 0.U)
 
   val perr_sb_write_status = WireInit(Bool(), false.B)
   val perr_ic_index_ff = withClock(io.active_clk){RegEnable(ifu_ic_rw_int_addr_ff, 0.U, perr_sb_write_status)}

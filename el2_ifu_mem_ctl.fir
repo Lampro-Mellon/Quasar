@@ -3342,7 +3342,7 @@ circuit el2_ifu_mem_ctl :
     node _T_2458 = eq(_T_2457, UInt<1>("h00")) @[el2_ifu_mem_ctl.scala 470:60]
     node _T_2459 = and(_T_2456, _T_2458) @[el2_ifu_mem_ctl.scala 470:58]
     ic_rd_parity_final_err <= _T_2459 @[el2_ifu_mem_ctl.scala 470:26]
-    wire ifu_ic_rw_int_addr_ff : UInt<6>
+    wire ifu_ic_rw_int_addr_ff : UInt<7>
     ifu_ic_rw_int_addr_ff <= UInt<1>("h00")
     wire perr_sb_write_status : UInt<1>
     perr_sb_write_status <= UInt<1>("h00")
