@@ -650,17 +650,17 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val iccm_dma_ecc_error_in = iccm_double_ecc_error.orR
   val iccm_dma_rdata_in = Mux(iccm_dma_ecc_error_in, Fill(2, io.dma_mem_addr), Cat(iccm_dma_rdata_1_muxed, iccm_corrected_data(0)))
   val dma_mem_tag_ff = withClock(io.free_clk){RegNext(io.dma_mem_tag, 0.U)}
-  val iccm_dma_rtag = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(dma_mem_tag_ff, 0.U)} else 0.U
-  io.iccm_dma_rtag := iccm_dma_rtag
+  val iccm_dma_rtag_temp = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(dma_mem_tag_ff, 0.U)} else 0.U
+  io.iccm_dma_rtag := iccm_dma_rtag_temp
 
   dma_mem_addr_ff := withClock(io.free_clk) {RegNext(io.dma_mem_addr(3,2), 0.U)}
   val iccm_dma_rvalid_in = withClock(io.free_clk) {RegNext(iccm_dma_rden, false.B)}
-  val iccm_dma_rvalid = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(iccm_dma_rvalid_in, false.B)} else 0.U
-  io.iccm_dma_rvalid := iccm_dma_rvalid
+  val iccm_dma_rvalid_temp = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(iccm_dma_rvalid_in, false.B)} else 0.U
+  io.iccm_dma_rvalid := iccm_dma_rvalid_temp
   val iccm_dma_ecc_error = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(iccm_dma_ecc_error_in, false.B)} else 0.U
   io.iccm_dma_ecc_error := iccm_dma_ecc_error_in
-  val iccm_dma_rdata = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(iccm_dma_rdata_in, 0.U)} else 0.U
-  io.iccm_dma_rdata := iccm_dma_rdata
+  val iccm_dma_rdata_temp = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(iccm_dma_rdata_in, 0.U)} else 0.U
+  io.iccm_dma_rdata := iccm_dma_rdata_temp
   val iccm_ecc_corr_index_ff = WireInit(UInt((ICCM_BITS-2).W), 0.U)
   io.iccm_rw_addr := Mux(ifc_dma_access_q_ok & io.dma_iccm_req  & !iccm_correct_ecc, io.dma_mem_addr,
     Mux(!(ifc_dma_access_q_ok & io.dma_iccm_req) & iccm_correct_ecc, Cat(iccm_ecc_corr_index_ff, 0.U), io.ifc_fetch_addr_bf(ICCM_BITS-1,0)))
