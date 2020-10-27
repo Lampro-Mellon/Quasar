@@ -127,6 +127,7 @@ class mem_ctl_bundle extends Bundle with el2_lib{
   val iccm_correction_state = Output(Bool())
   val scan_mode = Input(Bool())
   val valids = Output(UInt())
+  val tagv_mb_in = Output(UInt())
 }
 class el2_ifu_mem_ctl extends Module with el2_lib {
   val io = IO(new mem_ctl_bundle)
@@ -839,6 +840,9 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ifc_region_acc_fault_memory_bf = !io.ifc_iccm_access_bf & !ifc_region_acc_okay & io.ifc_fetch_req_bf
   ifc_region_acc_fault_final_bf := io.ifc_region_acc_fault_bf | ifc_region_acc_fault_memory_bf
   ifc_region_acc_fault_memory_f := withClock(io.free_clk){RegNext(ifc_region_acc_fault_memory_bf, false.B)}
+
+
+  io.tagv_mb_in := tagv_mb_in
 }
 object ifu_mem extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_mem_ctl()))

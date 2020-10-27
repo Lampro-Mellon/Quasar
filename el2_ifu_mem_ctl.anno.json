@@ -130,6 +130,14 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_tagv_mb_in",
+    "sources":[
+      "~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_ic_tag_valid",
+      "~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_exu_flush_final"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_iccm_rden",
     "sources":[
       "~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_ifc_iccm_access_bf",
