@@ -128,6 +128,7 @@ class mem_ctl_bundle extends Bundle with el2_lib{
   val scan_mode = Input(Bool())
   val valids = Output(UInt())
   val tagv_mb_in = Output(UInt())
+  val test = Output(UInt())
 }
 class el2_ifu_mem_ctl extends Module with el2_lib {
   val io = IO(new mem_ctl_bundle)
@@ -712,7 +713,9 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     }
     val way_status_new = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
     val way_status_new_w_debug = Mux(io.ic_debug_wr_en & io.ic_debug_tag_array,
-      Mux((ICACHE_STATUS_BITS == 1).B, io.ic_debug_wr_data(4), io.ic_debug_wr_data(6, 4)), way_status_new)
+      if (ICACHE_STATUS_BITS == 1) io.ic_debug_wr_data(4) else io.ic_debug_wr_data(6, 4), way_status_new)
+
+  io.test := way_status_new_w_debug
     val way_status_new_ff = withClock(io.free_clk) {
       RegNext(way_status_new_w_debug, 0.U)
     }
