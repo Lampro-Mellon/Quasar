@@ -245,7 +245,6 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val way_status_mb_scnd_ff = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
   val way_status = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
   val tagv_mb_scnd_ff = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
-  val ic_tag_valid = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
   val uncacheable_miss_scnd_ff = WireInit(Bool(), 0.U)
   val imb_scnd_ff = WireInit(UInt(31.W), 0.U)
   val reset_all_tags = WireInit(Bool(), 0.U)
@@ -260,7 +259,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val sel_hold_imb_scnd = ((miss_state === scnd_miss_C) | ic_miss_under_miss_f) & !flush_final_f
   val way_status_mb_scnd_in = Mux(miss_state === scnd_miss_C, way_status_mb_scnd_ff, way_status)
 
-  val tagv_mb_scnd_in = Mux(miss_state === scnd_miss_C, tagv_mb_scnd_ff, Fill(ICACHE_NUM_WAYS, !reset_all_tags) & ic_tag_valid)
+  val tagv_mb_scnd_in = Mux(miss_state === scnd_miss_C, tagv_mb_scnd_ff, Fill(ICACHE_NUM_WAYS, !reset_all_tags) & io.ic_tag_valid)
   val uncacheable_miss_scnd_in = Mux(sel_hold_imb_scnd.asBool, uncacheable_miss_scnd_ff, io.ifc_fetch_uncacheable_bf)
   uncacheable_miss_scnd_ff := RegNext(uncacheable_miss_scnd_in, 0.U)
   val imb_scnd_in = Mux(sel_hold_imb_scnd.asBool, imb_scnd_ff, io.ifc_fetch_addr_bf)
@@ -300,7 +299,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val replace_way_mb_any = Wire(Vec(ICACHE_NUM_WAYS, UInt(1.W)))
   val tagv_mb_ff = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
   val tagv_mb_in = Mux(scnd_miss_req.asBool, tagv_mb_scnd_ff | (Fill(ICACHE_NUM_WAYS, scnd_miss_index_match) & replace_way_mb_any.reverse.reduce(Cat(_,_))),
-  Mux(miss_pending.asBool, tagv_mb_ff, ic_tag_valid & Fill(ICACHE_NUM_WAYS, !reset_all_tags)))
+  Mux(miss_pending.asBool, tagv_mb_ff, io.ic_tag_valid & Fill(ICACHE_NUM_WAYS, !reset_all_tags)))
   val scnd_miss_req_q = WireInit(Bool(), false.B)
   val reset_ic_ff = WireInit(Bool(), false.B)
   val reset_ic_in = miss_pending & !scnd_miss_req_q &  (reset_all_tags |  reset_ic_ff)
