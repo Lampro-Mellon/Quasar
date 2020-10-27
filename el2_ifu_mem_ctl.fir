@@ -461,12 +461,12 @@ circuit el2_ifu_mem_ctl :
     node imb_in = mux(_T_269, imb_scnd_ff, _T_271) @[el2_ifu_mem_ctl.scala 292:19]
     wire ifu_wr_cumulative_err_data : UInt<1>
     ifu_wr_cumulative_err_data <= UInt<1>("h00")
-    node _T_272 = bits(imb_ff, 12, 6) @[el2_ifu_mem_ctl.scala 294:38]
-    node _T_273 = bits(imb_scnd_ff, 12, 6) @[el2_ifu_mem_ctl.scala 294:89]
-    node _T_274 = eq(_T_272, _T_273) @[el2_ifu_mem_ctl.scala 294:75]
-    node _T_275 = and(_T_274, scnd_miss_req) @[el2_ifu_mem_ctl.scala 294:127]
-    node _T_276 = eq(ifu_wr_cumulative_err_data, UInt<1>("h00")) @[el2_ifu_mem_ctl.scala 294:145]
-    node scnd_miss_index_match = and(_T_275, _T_276) @[el2_ifu_mem_ctl.scala 294:143]
+    node _T_272 = bits(imb_ff, 11, 5) @[el2_ifu_mem_ctl.scala 294:38]
+    node _T_273 = bits(imb_scnd_ff, 11, 5) @[el2_ifu_mem_ctl.scala 294:93]
+    node _T_274 = eq(_T_272, _T_273) @[el2_ifu_mem_ctl.scala 294:79]
+    node _T_275 = and(_T_274, scnd_miss_req) @[el2_ifu_mem_ctl.scala 294:135]
+    node _T_276 = eq(ifu_wr_cumulative_err_data, UInt<1>("h00")) @[el2_ifu_mem_ctl.scala 294:153]
+    node scnd_miss_index_match = and(_T_275, _T_276) @[el2_ifu_mem_ctl.scala 294:151]
     wire way_status_mb_ff : UInt<1>
     way_status_mb_ff <= UInt<1>("h00")
     wire way_status_rep_new : UInt<1>

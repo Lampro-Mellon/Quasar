@@ -291,7 +291,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val uncacheable_miss_in = Mux(scnd_miss_req.asBool, uncacheable_miss_scnd_ff, Mux(sel_hold_imb.asBool, uncacheable_miss_ff, io.ifc_fetch_uncacheable_bf))
   val imb_in = Mux(scnd_miss_req.asBool, imb_scnd_ff, Mux(sel_hold_imb.asBool, imb_ff, io.ifc_fetch_addr_bf))
   val ifu_wr_cumulative_err_data = WireInit(Bool(), 0.U)
-  val scnd_miss_index_match = (imb_ff(ICACHE_INDEX_HI,ICACHE_TAG_INDEX_LO)===imb_scnd_ff(ICACHE_INDEX_HI,ICACHE_TAG_INDEX_LO))& scnd_miss_req & !ifu_wr_cumulative_err_data
+  val scnd_miss_index_match = (imb_ff(ICACHE_INDEX_HI-1,ICACHE_TAG_INDEX_LO-1)===imb_scnd_ff(ICACHE_INDEX_HI-1,ICACHE_TAG_INDEX_LO-1))& scnd_miss_req & !ifu_wr_cumulative_err_data
   val way_status_mb_ff = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
   val way_status_rep_new = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
   val way_status_mb_in = Mux((scnd_miss_req & !scnd_miss_index_match).asBool, way_status_mb_scnd_ff,
