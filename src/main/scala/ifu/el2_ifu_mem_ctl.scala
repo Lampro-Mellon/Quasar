@@ -126,11 +126,6 @@ class mem_ctl_bundle extends Bundle with el2_lib{
   val iccm_buf_correct_ecc = Output(Bool())
   val iccm_correction_state = Output(Bool())
   val scan_mode = Input(Bool())
-//  val valids = Output(UInt())
-//  val tagv_mb_in = Output(UInt())
-//  val test = Output(UInt())
-//  val test_way_status_out = Output(UInt())
-//  val test_way_status_clken = Output(UInt())
 }
 class el2_ifu_mem_ctl extends Module with el2_lib {
   val io = IO(new mem_ctl_bundle)

@@ -38,6 +38,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
     val ifu_bp_pc4_f = Output(UInt(2.W))
     val ifu_bp_valid_f = Output(UInt(2.W))
     val ifu_bp_poffset_f = Output(UInt(12.W))
+    val scan_mode = Input(Bool())
   })
 
   val TAG_START = 16+BTB_BTAG_SIZE
