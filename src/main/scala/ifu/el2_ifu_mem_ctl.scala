@@ -738,17 +738,18 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
       RegNext(ic_valid_w_debug, false.B)
     }
     val tag_valid_clken = (0 until (ICACHE_TAG_DEPTH / 32)).map(i => (0 until ICACHE_NUM_WAYS).map(j =>
-      if (ICACHE_TAG_DEPTH == 32) (ifu_tag_wren_ff(j) | perr_err_inv_way(j) | reset_all_tags)
+      if (ICACHE_TAG_DEPTH == 32) ifu_tag_wren_ff(j) | perr_err_inv_way(j) | reset_all_tags
       else ((ifu_ic_rw_int_addr_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, 5) === i.U) & ifu_tag_wren_ff(j)) |
         ((perr_ic_index_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, 5) === i.U) & perr_err_inv_way(j)) |
         reset_all_tags).reverse.reduce(Cat(_, _)))
    // val tag_valid_clk = (0 until ICACHE_TAG_DEPTH / 32).map(i => (0 until ICACHE_NUM_WAYS).map(j => rvclkhdr(clock, tag_valid_clken(i)(j), io.scan_mode)))
     val ic_tag_valid_out = Wire(Vec(ICACHE_NUM_WAYS, Vec(ICACHE_TAG_DEPTH, Bool())))
     io.valids := Cat((0 until ICACHE_TAG_DEPTH).map(i=>ic_tag_valid_out(1)(i).asUInt()).reverse.reduce(Cat(_,_)),
-  (0 until ICACHE_TAG_DEPTH).map(i=>ic_tag_valid_out(0)(i).asUInt()).reverse.reduce(Cat(_,_)))
-    for (i <- 0 until ICACHE_TAG_DEPTH / 32; j <- 0 until ICACHE_NUM_WAYS; k <- 0 until 32)
-      ic_tag_valid_out(j)(32 * i + k) := RegEnable(ic_valid_ff & !reset_all_tags.asBool & !perr_sel_invalidate, false.B,
-          (((ifu_ic_rw_int_addr_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j)) | ((perr_ic_index_ff === (k + (32 * i)).U) & perr_err_inv_way(j) | reset_all_tags) & tag_valid_clken(i)(j)).asBool)
+      (0 until ICACHE_TAG_DEPTH).map(i=>ic_tag_valid_out(0)(i).asUInt()).reverse.reduce(Cat(_,_)))
+
+    for (i <- 0 until (ICACHE_TAG_DEPTH / 32); j <- 0 until ICACHE_NUM_WAYS; k <- 0 until 32)
+      ic_tag_valid_out(j)((32 * i) + k) := RegEnable(ic_valid_ff & !reset_all_tags.asBool & !perr_sel_invalidate, false.B,
+          ((((ifu_ic_rw_int_addr_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j)) | ((perr_ic_index_ff === (k + (32 * i)).U) & perr_err_inv_way(j)) | reset_all_tags) & tag_valid_clken(i)(j)).asBool)
 
     val ic_tag_valid_unq = (0 until ICACHE_NUM_WAYS).map(k => (0 until ICACHE_TAG_DEPTH).map(j =>
       Mux(ifu_ic_rw_int_addr_ff === j.U, ic_tag_valid_out(k)(j), false.B).asUInt).reduce(_|_)).reverse.reduce(Cat(_,_))
