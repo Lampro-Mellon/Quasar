@@ -737,10 +737,10 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     val ic_valid_ff = withClock(io.free_clk) {
       RegNext(ic_valid_w_debug, false.B)
     }
-    val tag_valid_clken = (0 until ICACHE_TAG_DEPTH / 32).map(i => (0 until ICACHE_NUM_WAYS).map(j =>
+    val tag_valid_clken = (0 until (ICACHE_TAG_DEPTH / 32)).map(i => (0 until ICACHE_NUM_WAYS).map(j =>
       if (ICACHE_TAG_DEPTH == 32) (ifu_tag_wren_ff(j) | perr_err_inv_way(j) | reset_all_tags)
-      else ((ifu_ic_rw_int_addr_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO - 1, 4) === i.U) & ifu_tag_wren_ff(j)) |
-        ((perr_ic_index_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO - 1, 4) === i.U) & perr_err_inv_way(j)) |
+      else ((ifu_ic_rw_int_addr_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, 5) === i.U) & ifu_tag_wren_ff(j)) |
+        ((perr_ic_index_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, 5) === i.U) & perr_err_inv_way(j)) |
         reset_all_tags).reverse.reduce(Cat(_, _)))
    // val tag_valid_clk = (0 until ICACHE_TAG_DEPTH / 32).map(i => (0 until ICACHE_NUM_WAYS).map(j => rvclkhdr(clock, tag_valid_clken(i)(j), io.scan_mode)))
     val ic_tag_valid_out = Wire(Vec(ICACHE_NUM_WAYS, Vec(ICACHE_TAG_DEPTH, Bool())))
