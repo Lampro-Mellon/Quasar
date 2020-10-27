@@ -126,11 +126,11 @@ class mem_ctl_bundle extends Bundle with el2_lib{
   val iccm_buf_correct_ecc = Output(Bool())
   val iccm_correction_state = Output(Bool())
   val scan_mode = Input(Bool())
-  val valids = Output(UInt())
-  val tagv_mb_in = Output(UInt())
-  val test = Output(UInt())
-  val test_way_status_out = Output(UInt())
-  val test_way_status_clken = Output(UInt())
+//  val valids = Output(UInt())
+//  val tagv_mb_in = Output(UInt())
+//  val test = Output(UInt())
+//  val test_way_status_out = Output(UInt())
+//  val test_way_status_clken = Output(UInt())
 }
 class el2_ifu_mem_ctl extends Module with el2_lib {
   val io = IO(new mem_ctl_bundle)
@@ -717,7 +717,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     val way_status_new_w_debug = Mux(io.ic_debug_wr_en & io.ic_debug_tag_array,
       if (ICACHE_STATUS_BITS == 1) io.ic_debug_wr_data(4) else io.ic_debug_wr_data(6, 4), way_status_new)
 
-  io.test := way_status_new_w_debug
+ // io.test := way_status_new_w_debug
     val way_status_new_ff = withClock(io.free_clk) {
       RegNext(way_status_new_w_debug, 0.U)
     }
@@ -727,9 +727,9 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     for (i <- 0 until ICACHE_TAG_DEPTH / 8; j <- 0 until 8)
       way_status_out((8 * i) + j) := RegEnable(way_status_new_ff, 0.U, ((ifu_status_wr_addr_ff(2,0)===j.U) & way_status_wr_en_ff) & way_status_clken(i))
   val test_way_status_out = (0 until ICACHE_TAG_DEPTH).map(i=>way_status_out(i).asUInt).reverse.reduce(Cat(_,_))
-  io.test_way_status_out := test_way_status_out
+ // io.test_way_status_out := test_way_status_out
   val test_way_status_clken = (0 until ICACHE_TAG_DEPTH/8).map(i=>way_status_clken(i).asUInt()).reverse.reduce(Cat(_,_))
-  io.test_way_status_clken := test_way_status_clken
+  //io.test_way_status_clken := test_way_status_clken
   way_status := Mux1H((0 until ICACHE_TAG_DEPTH).map(i=>(ifu_ic_rw_int_addr_ff === i.U) -> way_status_out(i)))
     val ifu_ic_rw_int_addr_w_debug = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en) & io.ic_debug_tag_array,
       io.ic_debug_addr(ICACHE_INDEX_HI - 3, ICACHE_TAG_INDEX_LO - 3), ifu_ic_rw_int_addr(ICACHE_INDEX_HI - 1, ICACHE_TAG_INDEX_LO - 1))
@@ -753,8 +753,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
         reset_all_tags).reverse.reduce(Cat(_, _)))
    // val tag_valid_clk = (0 until ICACHE_TAG_DEPTH / 32).map(i => (0 until ICACHE_NUM_WAYS).map(j => rvclkhdr(clock, tag_valid_clken(i)(j), io.scan_mode)))
     val ic_tag_valid_out = Wire(Vec(ICACHE_NUM_WAYS, Vec(ICACHE_TAG_DEPTH, Bool())))
-    io.valids := Cat((0 until ICACHE_TAG_DEPTH).map(i=>ic_tag_valid_out(1)(i).asUInt()).reverse.reduce(Cat(_,_)),
-      (0 until ICACHE_TAG_DEPTH).map(i=>ic_tag_valid_out(0)(i).asUInt()).reverse.reduce(Cat(_,_)))
+   // io.valids := Cat((0 until ICACHE_TAG_DEPTH).map(i=>ic_tag_valid_out(1)(i).asUInt()).reverse.reduce(Cat(_,_)),
+     // (0 until ICACHE_TAG_DEPTH).map(i=>ic_tag_valid_out(0)(i).asUInt()).reverse.reduce(Cat(_,_)))
 
     for (i <- 0 until (ICACHE_TAG_DEPTH / 32); j <- 0 until ICACHE_NUM_WAYS; k <- 0 until 32)
       ic_tag_valid_out(j)((32 * i) + k) := RegEnable(ic_valid_ff & !reset_all_tags.asBool & !perr_sel_invalidate, false.B,
@@ -851,7 +851,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   ifc_region_acc_fault_memory_f := withClock(io.free_clk){RegNext(ifc_region_acc_fault_memory_bf, false.B)}
 
 
-  io.tagv_mb_in := tagv_mb_in
+ // io.tagv_mb_in := tagv_mb_in
 }
 object ifu_mem extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_mem_ctl()))
