@@ -377,11 +377,11 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ic_byp_data_only_new = WireInit(UInt(80.W), 0.U)
   val ic_final_data = Mux1H(Seq((sel_byp_data | (if(ICCM_ICACHE) (sel_iccm_data | sel_ic_data) else if(ICACHE_ONLY) sel_ic_data else 0.U)).asBool->
     (if(ICCM_ICACHE) io.ic_rd_data else ic_byp_data_only_new(63,0))))
-  val ic_premux_data = if(ICCM_ICACHE) (Fill(64,sel_iccm_data) & io.iccm_rd_data) | (Fill(64, sel_byp_data) & ic_byp_data_only_new)
+  val ic_premux_data_temp = if(ICCM_ICACHE) (Fill(64,sel_iccm_data) & io.iccm_rd_data) | (Fill(64, sel_byp_data) & ic_byp_data_only_new)
   else if(ICACHE_ONLY) Fill(64, sel_byp_data) & ic_byp_data_only_new else 0.U
-  val ic_sel_premux_data = if(ICCM_ICACHE) sel_iccm_data | sel_byp_data else if(ICACHE_ONLY) sel_byp_data else 0.U
-  io.ic_premux_data := ic_premux_data
-  io.ic_sel_premux_data := ic_sel_premux_data
+  val ic_sel_premux_data_temp = if(ICCM_ICACHE) sel_iccm_data | sel_byp_data else if(ICACHE_ONLY) sel_byp_data else 0.U
+  io.ic_premux_data := ic_premux_data_temp
+  io.ic_sel_premux_data := ic_sel_premux_data_temp
   val ifc_bus_acc_fault_f = ic_byp_hit_f & ifu_byp_data_err_new
   io.ic_data_f := ic_final_data
   val fetch_req_f_qual = io.ic_hit_f & !io.exu_flush_final
