@@ -730,7 +730,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   io.test_way_status_out := test_way_status_out
   val test_way_status_clken = (0 until ICACHE_TAG_DEPTH/8).map(i=>way_status_clken(i).asUInt()).reverse.reduce(Cat(_,_))
   io.test_way_status_clken := test_way_status_clken
-  way_status := (0 until ICACHE_TAG_DEPTH).map(i => Fill(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, ifu_ic_rw_int_addr_ff === i.U) & way_status_out(i)).reverse.reduce(Cat(_, _))
+  way_status := Mux1H((0 until ICACHE_TAG_DEPTH).map(i=>(ifu_ic_rw_int_addr_ff === i.U) -> way_status_out(i)))
     val ifu_ic_rw_int_addr_w_debug = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en) & io.ic_debug_tag_array,
       io.ic_debug_addr(ICACHE_INDEX_HI - 3, ICACHE_TAG_INDEX_LO - 3), ifu_ic_rw_int_addr(ICACHE_INDEX_HI - 1, ICACHE_TAG_INDEX_LO - 1))
     ifu_ic_rw_int_addr_ff := withClock(io.free_clk) {
