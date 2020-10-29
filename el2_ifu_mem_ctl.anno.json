@@ -116,13 +116,6 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_test",
-    "sources":[
-      "~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_dma_mem_wdata"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_ic_debug_rd_en",
     "sources":[
       "~el2_ifu_mem_ctl|el2_ifu_mem_ctl>io_dec_tlu_ic_diag_pkt_icache_rd_valid"
