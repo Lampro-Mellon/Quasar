@@ -632,7 +632,11 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   io.iccm_rden := (ifc_dma_access_q_ok & io.dma_iccm_req & !io.dma_mem_write) | (io.ifc_iccm_access_bf & io.ifc_fetch_req_bf)
   val iccm_dma_rden = ifc_dma_access_q_ok & io.dma_iccm_req & !io.dma_mem_write
   io.iccm_wr_size := Fill(3, io.dma_iccm_req) & io.dma_mem_sz
-  val dma_mem_ecc = Cat(rvecc_encode(io.dma_mem_wdata(63,32)), rvecc_encode(io.dma_mem_wdata(31,0)))
+  val m1 = Module(new rvecc_encode)
+  m1.io.din := io.dma_mem_wdata(31,0)
+  val m2 = Module(new rvecc_encode)
+  m2.io.din := io.dma_mem_wdata(63,32)
+  val dma_mem_ecc = Cat(m2.io.ecc_out, m1.io.ecc_out)
   val iccm_ecc_corr_data_ff = WireInit(UInt(39.W), 0.U)
   io.iccm_wr_data := Mux(iccm_correct_ecc & !(ifc_dma_access_q_ok & io.dma_iccm_req), Fill(2,iccm_ecc_corr_data_ff),
     Cat(dma_mem_ecc(13,7),io.dma_mem_wdata(63,32), dma_mem_ecc(6,0), io.dma_mem_wdata(31,0)))
