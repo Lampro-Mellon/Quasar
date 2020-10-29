@@ -241,32 +241,15 @@ trait el2_lib extends param{
 
   // Move rvecc_encode to a proper trait
   def rvecc_encode(din:UInt):UInt = {
-    val mask0 = Array(1,1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,1,0)
-    val mask1 = Array(1,0,1,1,0,1,1,0,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,0,1)
-    val mask2 = Array(0,1,1,1,0,0,0,1,1,1,1,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1)
-    val mask3 = Array(0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0)
-    val mask4 = Array(0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0)
-    val mask5 = Array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1)
-    val w0 = Wire(Vec(18,UInt(1.W)))
-    val w1 = Wire(Vec(18,UInt(1.W)))
-    val w2 = Wire(Vec(18,UInt(1.W)))
-    val w3 = Wire(Vec(15,UInt(1.W)))
-    val w4 = Wire(Vec(15,UInt(1.W)))
-    val w5 = Wire(Vec(6, UInt(1.W)))
-    var j = 0;var k = 0;var m = 0;
-    var x = 0;var y = 0;var z = 0
-    for(i <- 0 to 31)
-    {
-      if(mask0(i)==1) {w0(j) := din(i); j = j +1 }
-      if(mask1(i)==1) {w1(k) := din(i); k = k +1 }
-      if(mask2(i)==1) {w2(m) := din(i); m = m +1 }
-      if(mask3(i)==1) {w3(x) := din(i); x = x +1 }
-      if(mask4(i)==1) {w4(y) := din(i); y = y +1 }
-      if(mask5(i)==1) {w5(z) := din(i); z = z +1 }
-    }
-    val w6 = Cat((w5.asUInt.xorR),(w4.asUInt.xorR),(w3.asUInt.xorR),(w2.asUInt.xorR),(w1.asUInt.xorR),(w0.asUInt.xorR))
-    val ecc_out = Cat(din.xorR ^ w6.xorR, w6)
-    ecc_out
+    def pat(y : List[Int]) = (0 until y.size).map(i=> din(y(i))).reduce(_^_)
+    val w0 = pat(List(0, 1, 3, 4, 6, 8, 10, 11, 13, 15, 17, 19, 21, 23, 25, 26, 28, 30))
+    val w1 = pat(List(0, 2, 3, 5, 6, 9, 10, 12, 13, 16, 17, 20, 21, 24, 25, 27, 28, 31))
+    val w2 = pat(List(1, 2, 3, 7, 8, 9, 10, 14, 15, 16, 17, 22, 23, 24, 25, 29, 30, 31))
+    val w3 = pat(List(4, 5, 6, 7, 8, 9, 10, 18, 19, 20, 21, 22, 23, 24, 25))
+    val w4 = pat(List(11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25))
+    val w5 = pat(List(26, 27, 28, 29, 30, 31))
+    val w6 = Cat(w5,w4,w3,w2,w1,w0)
+    Cat(din.xorR ^ w6.xorR, w6)
   }
 
   class rvecc_encode extends Module{   //Done for verification and testing
