@@ -660,7 +660,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   io.iccm_dma_rdata := iccm_dma_rdata_temp
   val iccm_ecc_corr_index_ff = WireInit(UInt((ICCM_BITS-2).W), 0.U)
   io.iccm_rw_addr := Mux(ifc_dma_access_q_ok & io.dma_iccm_req  & !iccm_correct_ecc, io.dma_mem_addr,
-    Mux(!(ifc_dma_access_q_ok & io.dma_iccm_req) & iccm_correct_ecc, Cat(iccm_ecc_corr_index_ff, 0.U), io.ifc_fetch_addr_bf(ICCM_BITS-1,0)))
+    Mux(!(ifc_dma_access_q_ok & io.dma_iccm_req) & iccm_correct_ecc, Cat(iccm_ecc_corr_index_ff, 0.U), io.ifc_fetch_addr_bf(ICCM_BITS-2,0)))
   val ic_fetch_val_int_f = Cat(0.U(2.W), io.ic_fetch_val_f)
   val ic_fetch_val_shift_right = ic_fetch_val_int_f << ifu_fetch_addr_int_f(0)
   val iccm_rdmux_data = io.iccm_rd_data_ecc

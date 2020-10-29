@@ -4394,7 +4394,7 @@ circuit el2_ifu_mem_ctl :
     node _T_3265 = eq(_T_3264, UInt<1>("h00")) @[el2_ifu_mem_ctl.scala 663:9]
     node _T_3266 = and(_T_3265, iccm_correct_ecc) @[el2_ifu_mem_ctl.scala 663:50]
     node _T_3267 = cat(iccm_ecc_corr_index_ff, UInt<1>("h00")) @[Cat.scala 29:58]
-    node _T_3268 = bits(io.ifc_fetch_addr_bf, 15, 0) @[el2_ifu_mem_ctl.scala 663:124]
+    node _T_3268 = bits(io.ifc_fetch_addr_bf, 14, 0) @[el2_ifu_mem_ctl.scala 663:124]
     node _T_3269 = mux(_T_3266, _T_3267, _T_3268) @[el2_ifu_mem_ctl.scala 663:8]
     node _T_3270 = mux(_T_3263, io.dma_mem_addr, _T_3269) @[el2_ifu_mem_ctl.scala 662:25]
     io.iccm_rw_addr <= _T_3270 @[el2_ifu_mem_ctl.scala 662:19]
