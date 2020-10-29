@@ -126,6 +126,7 @@ class mem_ctl_bundle extends Bundle with el2_lib{
   val iccm_buf_correct_ecc = Output(Bool())
   val iccm_correction_state = Output(Bool())
   val scan_mode = Input(Bool())
+  val test = Output(UInt())
 }
 class el2_ifu_mem_ctl extends Module with el2_lib {
   val io = IO(new mem_ctl_bundle)
@@ -632,6 +633,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   io.iccm_rden := (ifc_dma_access_q_ok & io.dma_iccm_req & !io.dma_mem_write) | (io.ifc_iccm_access_bf & io.ifc_fetch_req_bf)
   val iccm_dma_rden = ifc_dma_access_q_ok & io.dma_iccm_req & !io.dma_mem_write
   io.iccm_wr_size := Fill(3, io.dma_iccm_req) & io.dma_mem_sz
+  io.test := rvecc_encode(io.dma_mem_wdata(31,0))
   val dma_mem_ecc = Cat(rvecc_encode(io.dma_mem_wdata(63,32)), rvecc_encode(io.dma_mem_wdata(31,0)))
   val iccm_ecc_corr_data_ff = WireInit(UInt(39.W), 0.U)
   io.iccm_wr_data := Mux(iccm_correct_ecc & !(ifc_dma_access_q_ok & io.dma_iccm_req), Fill(2,iccm_ecc_corr_data_ff),
