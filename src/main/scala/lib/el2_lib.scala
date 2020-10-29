@@ -240,7 +240,7 @@ trait el2_lib extends param{
   }
 
   // Move rvecc_encode to a proper trait
-  def rvecc_encode(din:UInt) = {   //Done for verification and testing
+  def rvecc_encode(din:UInt):UInt = {
     val mask0 = Array(1,1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,1,0)
     val mask1 = Array(1,0,1,1,0,1,1,0,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,0,1)
     val mask2 = Array(0,1,1,1,0,0,0,1,1,1,1,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1)
@@ -265,7 +265,8 @@ trait el2_lib extends param{
       if(mask5(i)==1) {w5(z) := din(i); z = z +1 }
     }
     val w6 = Cat((w5.asUInt.xorR),(w4.asUInt.xorR),(w3.asUInt.xorR),(w2.asUInt.xorR),(w1.asUInt.xorR),(w0.asUInt.xorR))
-    Cat(din.xorR ^ w6.xorR, w6)
+    val ecc_out = Cat(din.xorR ^ w6.xorR, w6)
+    ecc_out
   }
 
   class rvecc_encode extends Module{   //Done for verification and testing
