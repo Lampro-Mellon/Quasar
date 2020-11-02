@@ -39,6 +39,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
     val ifu_bp_valid_f = Output(UInt(2.W))
     val ifu_bp_poffset_f = Output(UInt(12.W))
     val scan_mode = Input(Bool())
+    val test = Output(UInt())
   })
 
   val TAG_START = 16+BTB_BTAG_SIZE
@@ -64,6 +65,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   val btb_bank0_rd_data_way1_p1_f = WireInit(UInt((TAG_START+1).W), 0.U)
   val eoc_mask = WireInit(Bool(), 0.U)
   val btb_lru_b0_f = WireInit(UInt(LRU_SIZE.W), init = 0.U)
+  io.test := btb_lru_b0_f
   val dec_tlu_way_wb = WireInit(Bool(), 0.U)
   /////////////////////////////////////////////////////////
   // Misprediction packet
@@ -225,7 +227,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   val use_mp_way_p1 = fetch_mp_collision_p1_f
 
   // Calculate the lru next value and flop it
-  val btb_lru_b0_ns = Mux1H(Seq(!exu_mp_way.asBool          -> mp_wrlru_b0,
+  val btb_lru_b0_ns : UInt = Mux1H(Seq(!exu_mp_way.asBool          -> mp_wrlru_b0,
                                  tag_match_way0_f.asBool    -> fetch_wrlru_b0,
                                  tag_match_way0_p1_f.asBool -> fetch_wrlru_p1_b0)) | btb_lru_b0_hold & btb_lru_b0_f
 
@@ -245,8 +247,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   io.ifu_bp_way_f := tag_match_vway1_expanded_f | (~vwayhit_f & btb_vlru_rd_f)
 
   // update the lru
-  btb_lru_b0_f := RegEnable(btb_lru_b0_ns, init = 0.U, (io.ifc_fetch_req_f|exu_mp_valid).asBool)
-
+  btb_lru_b0_f := rvdffe(btb_lru_b0_ns, (io.ifc_fetch_req_f|exu_mp_valid).asBool, clock, io.scan_mode)
+//io.test := btb_lru_b0_ns
   // Checking if the end of line is near
   val eoc_near = io.ifc_fetch_addr_f(ICACHE_BEAT_ADDR_HI-1, 2).andR
 
@@ -349,7 +351,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   val btb_fg_crossing_f = fetch_start_f(0) & btb_sel_f(0) & btb_rd_pc4_f
   val bp_total_branch_offset_f = bloc_f(1)^btb_rd_pc4_f
 
-  val ifc_fetch_adder_prior = RegEnable(io.ifc_fetch_addr_f(30,1), 0.U, (io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f).asBool)
+  val ifc_fetch_adder_prior = rvdffe(io.ifc_fetch_addr_f(30,1), (io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f).asBool, clock, io.scan_mode)
 
   io.ifu_bp_poffset_f := btb_rd_tgt_f
 
@@ -385,7 +387,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
                    rs_pop.asBool ->rets_out(i+1))))
 
   // Make flops for poping the data
-  rets_out := (0 until RET_STACK_SIZE).map(i=>RegEnable(rets_in(i),0.U,rsenable(i).asBool))
+  rets_out := (0 until RET_STACK_SIZE).map(i=>rvdffe(rets_in(i), rsenable(i).asBool, clock, io.scan_mode))
 
   val btb_valid = exu_mp_valid & (!dec_tlu_error_wb)
   val btb_wr_tag = io.exu_mp_btag
@@ -422,8 +424,8 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   // BTB
   // Entry -> Tag[BTB-BTAG-SIZE], toffset[12], pc4, boffset, call, ret, valid
 
-  val btb_bank0_rd_data_way0_out = (0 until LRU_SIZE).map(i=>RegEnable(btb_wr_data,0.U,((btb_wr_addr===i.U) & btb_wr_en_way0).asBool))
-  val btb_bank0_rd_data_way1_out = (0 until LRU_SIZE).map(i=>RegEnable(btb_wr_data,0.U,((btb_wr_addr===i.U) & btb_wr_en_way1).asBool))
+  val btb_bank0_rd_data_way0_out = (0 until LRU_SIZE).map(i=>rvdffe(btb_wr_data, ((btb_wr_addr===i.U) & btb_wr_en_way0).asBool, clock, io.scan_mode))
+  val btb_bank0_rd_data_way1_out = (0 until LRU_SIZE).map(i=>rvdffe(btb_wr_data, ((btb_wr_addr===i.U) & btb_wr_en_way1).asBool, clock, io.scan_mode))
 
   btb_bank0_rd_data_way0_f := Mux1H((0 until LRU_SIZE).map(i=>(btb_rd_addr_f===i.U).asBool->btb_bank0_rd_data_way0_out(i)))
   btb_bank0_rd_data_way1_f := Mux1H((0 until LRU_SIZE).map(i=>(btb_rd_addr_f===i.U).asBool->btb_bank0_rd_data_way1_out(i)))
@@ -433,6 +435,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   btb_bank0_rd_data_way1_p1_f := Mux1H((0 until LRU_SIZE).map(i=>(btb_rd_addr_p1_f===i.U).asBool->btb_bank0_rd_data_way1_out(i)))
 
   val bht_bank_clken = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH/NUM_BHT_LOOP, Bool())))
+  val bht_bank_clk = (0 until 2).map(i=>(0 until (BHT_ARRAY_DEPTH/NUM_BHT_LOOP)).map(k=>rvclkhdr(clock, bht_bank_clken(i)(k), io.scan_mode)))
   for(i<-0 until 2; k<- 0 until (BHT_ARRAY_DEPTH/NUM_BHT_LOOP)){
   // Checking if there is a write enable with address for the BHT
     bht_bank_clken(i)(k) := (bht_wr_en0(i) & ((bht_wr_addr0(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B)) |
@@ -456,7 +459,7 @@ class el2_ifu_bp_ctl extends Module with el2_lib with RequireAsyncReset {
   // Reading the BHT with i->way, k->block and the j->offset
   val bht_bank_rd_data_out = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH, UInt(2.W))))
   for(i<-0 until 2; k<-0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP; j<-0 until NUM_BHT_LOOP){
-    bht_bank_rd_data_out(i)((16*k)+j) := RegEnable(bht_bank_wr_data(i)(k)(j), 0.U, bht_bank_sel(i)(k)(j) & bht_bank_clken(i)(k))
+    bht_bank_rd_data_out(i)((16*k)+j) := withClock(bht_bank_clk(i)(k)){RegEnable(bht_bank_wr_data(i)(k)(j), 0.U, bht_bank_sel(i)(k)(j))}
   }
 
   // Make the final read mux

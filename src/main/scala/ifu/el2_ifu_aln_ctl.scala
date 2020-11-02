@@ -137,21 +137,21 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
   val q1off = withClock(io.active_clk) {RegNext(q1off_in, init = 0.U)}
   val q0off = withClock(io.active_clk) {RegNext(q0off_in, init = 0.U)}
 
-  val f2pc = RegEnable(io.ifu_fetch_pc, 0.U, f2_wr_en.asBool)
-  val f1pc = RegEnable(f1pc_in, 0.U, f1_shift_wr_en.asBool)
-  val f0pc = RegEnable(f0pc_in, 0.U, f0_shift_wr_en.asBool)
+  val f2pc = rvdffe(io.ifu_fetch_pc, f2_wr_en.asBool, clock, io.scan_mode)
+  val f1pc = rvdffe(f1pc_in, f1_shift_wr_en.asBool, clock, io.scan_mode)
+  val f0pc = rvdffe(f0pc_in, f0_shift_wr_en.asBool, clock, io.scan_mode)
 
-  brdata2 := RegEnable(brdata_in, 0.U, qwen(2))
-  brdata1 := RegEnable(brdata_in, 0.U, qwen(1))
-  brdata0 := RegEnable(brdata_in, 0.U, qwen(0))
+  brdata2 := rvdffe(brdata_in, qwen(2), clock, io.scan_mode)
+  brdata1 := rvdffe(brdata_in, qwen(1), clock, io.scan_mode)
+  brdata0 := rvdffe(brdata_in, qwen(0), clock, io.scan_mode)
 
-  misc2 := RegEnable(misc_data_in, 0.U, qwen(2))
-  misc1 := RegEnable(misc_data_in, 0.U, qwen(1))
-  misc0 := RegEnable(misc_data_in, 0.U, qwen(0))
+  misc2 := rvdffe(misc_data_in, qwen(2), clock, io.scan_mode)
+  misc1 := rvdffe(misc_data_in, qwen(1), clock, io.scan_mode)
+  misc0 := rvdffe(misc_data_in, qwen(0), clock, io.scan_mode)
 
-  q2 := RegEnable(io.ifu_fetch_data_f, 0.U, qwen(2))
-  q1 := RegEnable(io.ifu_fetch_data_f, 0.U, qwen(1))
-  q0 := RegEnable(io.ifu_fetch_data_f, 0.U, qwen(0))
+  q2 := rvdffe(io.ifu_fetch_data_f, qwen(2), clock, io.scan_mode)
+  q1 := rvdffe(io.ifu_fetch_data_f, qwen(1), clock, io.scan_mode)
+  q0 := rvdffe(io.ifu_fetch_data_f, qwen(0), clock, io.scan_mode)
 
   f2_wr_en       := fetch_to_f2
   f1_shift_wr_en := fetch_to_f1 | shift_f2_f1 | f1_shift_2B
