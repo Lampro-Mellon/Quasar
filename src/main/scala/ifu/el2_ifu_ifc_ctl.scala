@@ -139,7 +139,7 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
 
   io.ifc_fetch_req_f := withClock(io.active_clk){RegNext(io.ifc_fetch_req_bf, init=0.U)}
 
-  io.ifc_fetch_addr_f := RegEnable(io.ifc_fetch_addr_bf, init = 0.U, io.exu_flush_final|io.ifc_fetch_req_f)
+  io.ifc_fetch_addr_f := rvdffe(io.ifc_fetch_addr_bf, io.exu_flush_final|io.ifc_fetch_req_f, clock, io.scan_mode)
   //rvdffe(io.ifc_fetch_addr_bf,(io.exu_flush_final|io.ifc_fetch_req_f).asBool,clock,io.scan_mode)
 }
 
