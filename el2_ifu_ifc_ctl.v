@@ -1,3 +1,24 @@
+module rvclkhdr(
+  output  io_l1clk,
+  input   io_clk,
+  input   io_en,
+  input   io_scan_mode
+);
+  wire  clkhdr_Q; // @[el2_lib.scala 452:26]
+  wire  clkhdr_CK; // @[el2_lib.scala 452:26]
+  wire  clkhdr_EN; // @[el2_lib.scala 452:26]
+  wire  clkhdr_SE; // @[el2_lib.scala 452:26]
+  TEC_RV_ICG clkhdr ( // @[el2_lib.scala 452:26]
+    .Q(clkhdr_Q),
+    .CK(clkhdr_CK),
+    .EN(clkhdr_EN),
+    .SE(clkhdr_SE)
+  );
+  assign io_l1clk = clkhdr_Q; // @[el2_lib.scala 453:14]
+  assign clkhdr_CK = io_clk; // @[el2_lib.scala 454:18]
+  assign clkhdr_EN = io_en; // @[el2_lib.scala 455:18]
+  assign clkhdr_SE = io_scan_mode; // @[el2_lib.scala 456:18]
+endmodule
 module el2_ifu_ifc_ctl(
   input         clock,
   input         reset,
@@ -37,6 +58,10 @@ module el2_ifu_ifc_ctl(
   reg [31:0] _RAND_5;
   reg [31:0] _RAND_6;
 `endif // RANDOMIZE_REG_INIT
+  wire  rvclkhdr_io_l1clk; // @[el2_lib.scala 472:23]
+  wire  rvclkhdr_io_clk; // @[el2_lib.scala 472:23]
+  wire  rvclkhdr_io_en; // @[el2_lib.scala 472:23]
+  wire  rvclkhdr_io_scan_mode; // @[el2_lib.scala 472:23]
   reg  dma_iccm_stall_any_f; // @[el2_ifu_ifc_ctl.scala 63:58]
   wire  dma_stall = io_ic_dma_active | dma_iccm_stall_any_f; // @[el2_ifu_ifc_ctl.scala 62:36]
   reg  miss_a; // @[el2_ifu_ifc_ctl.scala 65:44]
@@ -54,7 +79,7 @@ module el2_ifu_ifc_ctl(
   wire [30:0] _T_17 = io_exu_flush_final ? io_exu_flush_path_final : 31'h0; // @[Mux.scala 27:72]
   wire [30:0] _T_18 = sel_last_addr_bf ? io_ifc_fetch_addr_f : 31'h0; // @[Mux.scala 27:72]
   wire [30:0] _T_19 = sel_btb_addr_bf ? io_ifu_bp_btb_target_f : 31'h0; // @[Mux.scala 27:72]
-  wire [29:0] address_upper = {io_ifc_fetch_addr_f[30:1]} + 30'h1; // @[el2_ifu_ifc_ctl.scala 77:48]
+  wire [29:0] address_upper = io_ifc_fetch_addr_f[30:1] + 30'h1; // @[el2_ifu_ifc_ctl.scala 77:48]
   wire  _T_29 = address_upper[4] ^ io_ifc_fetch_addr_f[5]; // @[el2_ifu_ifc_ctl.scala 78:63]
   wire  _T_30 = ~_T_29; // @[el2_ifu_ifc_ctl.scala 78:24]
   wire  fetch_addr_next_0 = _T_30 & io_ifc_fetch_addr_f[0]; // @[el2_ifu_ifc_ctl.scala 78:109]
@@ -111,7 +136,6 @@ module el2_ifu_ifc_ctl(
   wire  _T_42 = ~io_ic_write_stall; // @[el2_ifu_ifc_ctl.scala 85:18]
   wire  _T_43 = _T_41 & _T_42; // @[el2_ifu_ifc_ctl.scala 85:16]
   wire  _T_44 = ~io_dec_tlu_flush_noredir_wb; // @[el2_ifu_ifc_ctl.scala 85:39]
-  wire  fetch_bf_en = io_exu_flush_final | io_ifc_fetch_req_f; // @[el2_ifu_ifc_ctl.scala 87:37]
   wire  _T_51 = io_ifu_ic_mb_empty | io_exu_flush_final; // @[el2_ifu_ifc_ctl.scala 91:39]
   wire  _T_53 = _T_51 & _T_40; // @[el2_ifu_ifc_ctl.scala 91:61]
   wire  _T_55 = _T_53 & _T_94; // @[el2_ifu_ifc_ctl.scala 91:74]
@@ -140,8 +164,8 @@ module el2_ifu_ifc_ctl(
   wire  _T_139 = _T_138 | dma_stall; // @[el2_ifu_ifc_ctl.scala 127:84]
   wire  _T_140 = io_ifc_fetch_req_bf_raw & _T_139; // @[el2_ifu_ifc_ctl.scala 126:60]
   wire [31:0] _T_142 = {io_ifc_fetch_addr_bf,1'h0}; // @[Cat.scala 29:58]
-  wire  iccm_acc_in_region_bf = _T_142[31:28] == 4'he; // @[el2_lib.scala 216:47]
-  wire  iccm_acc_in_range_bf = _T_142[31:16] == 16'hee00; // @[el2_lib.scala 219:29]
+  wire  iccm_acc_in_region_bf = _T_142[31:28] == 4'he; // @[el2_lib.scala 219:47]
+  wire  iccm_acc_in_range_bf = _T_142[31:16] == 16'hee00; // @[el2_lib.scala 222:29]
   wire  _T_145 = ~io_ifc_iccm_access_bf; // @[el2_ifu_ifc_ctl.scala 133:30]
   wire  _T_148 = fb_full_f & _T_36; // @[el2_ifu_ifc_ctl.scala 134:16]
   wire  _T_149 = _T_145 | _T_148; // @[el2_ifu_ifc_ctl.scala 133:53]
@@ -154,7 +178,13 @@ module el2_ifu_ifc_ctl(
   wire [4:0] _T_160 = {io_ifc_fetch_addr_bf[30:27],1'h0}; // @[Cat.scala 29:58]
   wire [31:0] _T_161 = io_dec_tlu_mrac_ff >> _T_160; // @[el2_ifu_ifc_ctl.scala 138:53]
   reg  _T_164; // @[el2_ifu_ifc_ctl.scala 140:57]
-  reg [30:0] _T_166; // @[Reg.scala 27:20]
+  reg [30:0] _T_166; // @[el2_lib.scala 478:16]
+  rvclkhdr rvclkhdr ( // @[el2_lib.scala 472:23]
+    .io_l1clk(rvclkhdr_io_l1clk),
+    .io_clk(rvclkhdr_io_clk),
+    .io_en(rvclkhdr_io_en),
+    .io_scan_mode(rvclkhdr_io_scan_mode)
+  );
   assign io_ifc_fetch_addr_f = _T_166; // @[el2_ifu_ifc_ctl.scala 142:23]
   assign io_ifc_fetch_addr_bf = _T_22 | _T_20; // @[el2_ifu_ifc_ctl.scala 72:24]
   assign io_ifc_fetch_req_f = _T_164; // @[el2_ifu_ifc_ctl.scala 140:22]
@@ -165,6 +195,9 @@ module el2_ifu_ifc_ctl(
   assign io_ifc_iccm_access_bf = _T_142[31:16] == 16'hee00; // @[el2_ifu_ifc_ctl.scala 132:25]
   assign io_ifc_region_acc_fault_bf = _T_157 & iccm_acc_in_region_bf; // @[el2_ifu_ifc_ctl.scala 137:30]
   assign io_ifc_dma_access_ok = _T_155 | dma_iccm_stall_any_f; // @[el2_ifu_ifc_ctl.scala 133:24]
+  assign rvclkhdr_io_clk = clock; // @[el2_lib.scala 474:18]
+  assign rvclkhdr_io_en = io_exu_flush_final | io_ifc_fetch_req_f; // @[el2_lib.scala 475:17]
+  assign rvclkhdr_io_scan_mode = io_scan_mode; // @[el2_lib.scala 476:24]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -284,10 +317,10 @@ end // initial
       _T_164 <= io_ifc_fetch_req_bf;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge rvclkhdr_io_l1clk or posedge reset) begin
     if (reset) begin
       _T_166 <= 31'h0;
-    end else if (fetch_bf_en) begin
+    end else begin
       _T_166 <= io_ifc_fetch_addr_bf;
     end
   end

@@ -155,7 +155,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val err_idle_C :: ic_wff_C :: ecc_wff_C :: ecc_cor_C :: dma_sb_err_C :: Nil = Enum(5)
 
   val iccm_single_ecc_error = WireInit(UInt(2.W), 0.U)
-  val ifc_fetch_req_f = WireInit(Bool(), 0.U)
+  val ifc_fetch_req_f = WireInit(Bool(), false.B)
   val miss_pending = WireInit(Bool(), false.B)
   val scnd_miss_req = WireInit(Bool(), false.B)
   val dma_iccm_req_f = WireInit(Bool(), false.B)
@@ -185,8 +185,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val flush_final_f = RegNext(io.exu_flush_final, 0.U)
   val fetch_bf_f_c1_clken = io.ifc_fetch_req_bf_raw | ifc_fetch_req_f | miss_pending | io.exu_flush_final | scnd_miss_req
   val debug_c1_clken = io.ic_debug_rd_en | io.ic_debug_wr_en
-  //val debug_c1_clk = rvclkhdr(clock, debug_c1_clken, io.scan_mode)
-  //val fetch_bf_f_c1_clk = rvclkhdr(clock, fetch_bf_f_c1_clken.asBool, io.scan_mode)
+  val debug_c1_clk = rvclkhdr(clock, debug_c1_clken, io.scan_mode)
+  val fetch_bf_f_c1_clk = rvclkhdr(clock, fetch_bf_f_c1_clken, io.scan_mode)
   io.iccm_dma_sb_error := iccm_single_ecc_error.orR() & dma_iccm_req_f.asBool()
   io.ifu_async_error_start := io.iccm_rd_ecc_single_err | io.ic_error_start
   io.ic_dma_active := iccm_correct_ecc | (perr_state === dma_sb_err_C) | (err_stop_state === err_stop_fetch_C) | err_stop_fetch | io.dec_tlu_flush_err_wb
@@ -261,11 +261,11 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
 
   val tagv_mb_scnd_in = Mux(miss_state === scnd_miss_C, tagv_mb_scnd_ff, Fill(ICACHE_NUM_WAYS, !reset_all_tags) & io.ic_tag_valid)
   val uncacheable_miss_scnd_in = Mux(sel_hold_imb_scnd.asBool, uncacheable_miss_scnd_ff, io.ifc_fetch_uncacheable_bf)
-  uncacheable_miss_scnd_ff := RegNext(uncacheable_miss_scnd_in, 0.U)
+  uncacheable_miss_scnd_ff := withClock(fetch_bf_f_c1_clk){RegNext(uncacheable_miss_scnd_in, 0.U)}
   val imb_scnd_in = Mux(sel_hold_imb_scnd.asBool, imb_scnd_ff, io.ifc_fetch_addr_bf)
-  imb_scnd_ff := RegNext(imb_scnd_in, 0.U)
-  way_status_mb_scnd_ff := RegNext(way_status_mb_scnd_in, 0.U)
-  tagv_mb_scnd_ff := RegNext(tagv_mb_scnd_in, 0.U)
+  imb_scnd_ff := withClock(fetch_bf_f_c1_clk){RegNext(imb_scnd_in, 0.U)}
+  way_status_mb_scnd_ff := withClock(fetch_bf_f_c1_clk){RegNext(way_status_mb_scnd_in, 0.U)}
+  tagv_mb_scnd_ff := withClock(fetch_bf_f_c1_clk){RegNext(tagv_mb_scnd_in, 0.U)}
 
   val ic_req_addr_bits_hi_3 = bus_rd_addr_count
   val ic_wr_addr_bits_hi_3 = ifu_bus_rid_ff & Fill(ICACHE_BEAT_BITS, bus_ifu_wr_en_ff)
@@ -305,24 +305,24 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val reset_ic_in = miss_pending & !scnd_miss_req_q &  (reset_all_tags |  reset_ic_ff)
   reset_ic_ff := RegNext(reset_ic_in)
   val fetch_uncacheable_ff = RegNext(io.ifc_fetch_uncacheable_bf, 0.U)
-  ifu_fetch_addr_int_f := RegNext(io.ifc_fetch_addr_bf, 0.U)
+  ifu_fetch_addr_int_f := withClock(fetch_bf_f_c1_clk){RegNext(io.ifc_fetch_addr_bf, 0.U)}
   val vaddr_f = ifu_fetch_addr_int_f(ICACHE_BEAT_ADDR_HI-1, 0)
-  uncacheable_miss_ff := RegNext(uncacheable_miss_in, 0.U)
-  imb_ff := RegNext(imb_in)
+  uncacheable_miss_ff := withClock(fetch_bf_f_c1_clk){RegNext(uncacheable_miss_in, 0.U)}
+  imb_ff := withClock(fetch_bf_f_c1_clk){RegNext(imb_in)}
   val miss_addr = WireInit(UInt((31-ICACHE_BEAT_ADDR_HI).W), 0.U)
   val miss_addr_in = Mux(!miss_pending, imb_ff(30, ICACHE_BEAT_ADDR_HI),
     Mux(scnd_miss_req_q.asBool, imb_scnd_ff(30, ICACHE_BEAT_ADDR_HI), miss_addr))
   miss_addr := RegNext(miss_addr_in, 0.U)
-  way_status_mb_ff := RegNext(way_status_mb_in, 0.U)
-  tagv_mb_ff := RegNext(tagv_mb_in, 0.U)
+  way_status_mb_ff := withClock(fetch_bf_f_c1_clk){RegNext(way_status_mb_in, 0.U)}
+  tagv_mb_ff := withClock(fetch_bf_f_c1_clk){RegNext(tagv_mb_in, 0.U)}
   val stream_miss_f = WireInit(Bool(), 0.U)
   val ifc_fetch_req_qual_bf  = io.ifc_fetch_req_bf  & !((miss_state===crit_wrd_rdy_C) & flush_final_f) & !stream_miss_f
   val ifc_fetch_req_f_raw = RegNext(ifc_fetch_req_qual_bf, 0.U)
   ifc_fetch_req_f := ifc_fetch_req_f_raw & !io.exu_flush_final
-  ifc_iccm_access_f := RegNext(io.ifc_iccm_access_bf, 0.U)
+  ifc_iccm_access_f := withClock(fetch_bf_f_c1_clk){RegNext(io.ifc_iccm_access_bf, 0.U)}
   val ifc_region_acc_fault_final_bf = WireInit(Bool(), 0.U)
-  ifc_region_acc_fault_final_f := RegNext(ifc_region_acc_fault_final_bf, 0.U)
-  val ifc_region_acc_fault_f = RegNext(io.ifc_region_acc_fault_bf, 0.U)
+  ifc_region_acc_fault_final_f := withClock(fetch_bf_f_c1_clk){RegNext(ifc_region_acc_fault_final_bf, 0.U)}
+  val ifc_region_acc_fault_f = withClock(fetch_bf_f_c1_clk){RegNext(io.ifc_region_acc_fault_bf, 0.U)}
   val ifu_ic_req_addr_f = Cat(miss_addr, ic_req_addr_bits_hi_3)
   io.ifu_ic_mb_empty := (((miss_state===hit_u_miss_C) | (miss_state===stream_C)) & !(bus_ifu_wr_en_ff & last_beat)) | !miss_pending
   io.ifu_miss_state_idle := miss_state === idle_C

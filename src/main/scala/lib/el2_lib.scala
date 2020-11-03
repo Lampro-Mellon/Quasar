@@ -25,14 +25,14 @@ trait param {
   val BUILD_AXI4             = true
   val BUILD_AXI_NATIVE       = true
   val BUS_PRTY_DEFAULT       = 3
-  val DATA_ACCESS_ADDR0      = 0x00000000 //.U(32.W)
-  val DATA_ACCESS_ADDR1      = 0xC0000000 //.U(32.W)
-  val DATA_ACCESS_ADDR2      = 0xA0000000 //.U(32.W)
-  val DATA_ACCESS_ADDR3      = 0x80000000 //.U(32.W)
-  val DATA_ACCESS_ADDR4      = 0x00000000 //.U(32.W)
-  val DATA_ACCESS_ADDR5      = 0x00000000 //.U(32.W)
-  val DATA_ACCESS_ADDR6      = 0x00000000 //.U(32.W)
-  val DATA_ACCESS_ADDR7      = 0x00000000 //.U(32.W)
+  val DATA_ACCESS_ADDR0      = 0x00000000L //.U(32.W)
+  val DATA_ACCESS_ADDR1      = 0xC0000000L //.U(32.W)
+  val DATA_ACCESS_ADDR2      = 0xA0000000L //.U(32.W)
+  val DATA_ACCESS_ADDR3      = 0x80000000L //.U(32.W)
+  val DATA_ACCESS_ADDR4      = 0x00000000L //.U(32.W)
+  val DATA_ACCESS_ADDR5      = 0x00000000L //.U(32.W)
+  val DATA_ACCESS_ADDR6      = 0x00000000L //.U(32.W)
+  val DATA_ACCESS_ADDR7      = 0x00000000L //.U(32.W)
   val DATA_ACCESS_ENABLE0    = true //.U(1.W)
   val DATA_ACCESS_ENABLE1    = true //.U(1.W)
   val DATA_ACCESS_ENABLE2    = true //.U(1.W)
@@ -41,14 +41,14 @@ trait param {
   val DATA_ACCESS_ENABLE5    = false //.U(1.W)
   val DATA_ACCESS_ENABLE6    = false //.U(1.W)
   val DATA_ACCESS_ENABLE7    = false //.U(1.W)
-  val DATA_ACCESS_MASK0      = 0x7FFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK1      = 0x3FFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK2      = 0x1FFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK3      = 0x0FFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK4      = 0xFFFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK5      = 0xFFFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK6      = 0xFFFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK7      = 0xFFFFFFFF //.U(32.W)
+  val DATA_ACCESS_MASK0      = 0x7FFFFFFFL //.U(32.W)
+  val DATA_ACCESS_MASK1      = 0x3FFFFFFFL //.U(32.W)
+  val DATA_ACCESS_MASK2      = 0x1FFFFFFFL //.U(32.W)
+  val DATA_ACCESS_MASK3      = 0x0FFFFFFFL //.U(32.W)
+  val DATA_ACCESS_MASK4      = 0xFFFFFFFFL //.U(32.W)
+  val DATA_ACCESS_MASK5      = 0xFFFFFFFFL //.U(32.W)
+  val DATA_ACCESS_MASK6      = 0xFFFFFFFFL //.U(32.W)
+  val DATA_ACCESS_MASK7      = 0xFFFFFFFFL //.U(32.W)
   val DCCM_BANK_BITS         = 2  //.U(3.W)
   val DCCM_BITS              = 16 //.U(5.W)
   val DCCM_BYTE_WIDTH        = 4  //.U(3.W)
@@ -465,11 +465,8 @@ trait el2_lib extends param{
       cg.io.l1clk
     }
   }
- class rvdffe extends Module{
-   val io = IO(new Bundle{
 
-   })
- }
+  ////rvdffe ///////////////////////////////////////////////////////////////////////
   object rvdffe {
     def apply(din: UInt, en: Bool, clk: Clock, scan_mode: Bool): UInt = {
       val obj = Module(new rvclkhdr())

@@ -1,5 +1,29 @@
 ;buildInfoPackage: chisel3, version: 3.3.1, scalaVersion: 2.12.11, sbtVersion: 1.3.10
 circuit el2_ifu_ifc_ctl : 
+  extmodule TEC_RV_ICG : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG @[el2_lib.scala 452:26]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[el2_lib.scala 453:14]
+    clkhdr.CK <= io.clk @[el2_lib.scala 454:18]
+    clkhdr.EN <= io.en @[el2_lib.scala 455:18]
+    clkhdr.SE <= io.scan_mode @[el2_lib.scala 456:18]
+    
   module el2_ifu_ifc_ctl : 
     input clock : Clock
     input reset : AsyncReset
@@ -228,10 +252,10 @@ circuit el2_ifu_ifc_ctl :
     node _T_141 = or(wfm, _T_140) @[el2_ifu_ifc_ctl.scala 126:33]
     io.ifu_pmu_fetch_stall <= _T_141 @[el2_ifu_ifc_ctl.scala 126:26]
     node _T_142 = cat(io.ifc_fetch_addr_bf, UInt<1>("h00")) @[Cat.scala 29:58]
-    node _T_143 = bits(_T_142, 31, 28) @[el2_lib.scala 216:25]
-    node iccm_acc_in_region_bf = eq(_T_143, UInt<4>("h0e")) @[el2_lib.scala 216:47]
-    node _T_144 = bits(_T_142, 31, 16) @[el2_lib.scala 219:14]
-    node iccm_acc_in_range_bf = eq(_T_144, UInt<16>("h0ee00")) @[el2_lib.scala 219:29]
+    node _T_143 = bits(_T_142, 31, 28) @[el2_lib.scala 219:25]
+    node iccm_acc_in_region_bf = eq(_T_143, UInt<4>("h0e")) @[el2_lib.scala 219:47]
+    node _T_144 = bits(_T_142, 31, 16) @[el2_lib.scala 222:14]
+    node iccm_acc_in_range_bf = eq(_T_144, UInt<16>("h0ee00")) @[el2_lib.scala 222:29]
     io.ifc_iccm_access_bf <= iccm_acc_in_range_bf @[el2_ifu_ifc_ctl.scala 132:25]
     node _T_145 = eq(io.ifc_iccm_access_bf, UInt<1>("h00")) @[el2_ifu_ifc_ctl.scala 133:30]
     node _T_146 = or(io.ifu_fb_consume2, io.ifu_fb_consume1) @[el2_ifu_ifc_ctl.scala 134:39]
@@ -258,10 +282,14 @@ circuit el2_ifu_ifc_ctl :
     reg _T_164 : UInt<1>, io.active_clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_ifc_ctl.scala 140:57]
     _T_164 <= io.ifc_fetch_req_bf @[el2_ifu_ifc_ctl.scala 140:57]
     io.ifc_fetch_req_f <= _T_164 @[el2_ifu_ifc_ctl.scala 140:22]
-    node _T_165 = or(io.exu_flush_final, io.ifc_fetch_req_f) @[el2_ifu_ifc_ctl.scala 142:88]
-    reg _T_166 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_165 : @[Reg.scala 28:19]
-      _T_166 <= io.ifc_fetch_addr_bf @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    node _T_165 = or(io.exu_flush_final, io.ifc_fetch_req_f) @[el2_ifu_ifc_ctl.scala 142:73]
+    inst rvclkhdr of rvclkhdr @[el2_lib.scala 472:23]
+    rvclkhdr.clock <= clock
+    rvclkhdr.reset <= reset
+    rvclkhdr.io.clk <= clock @[el2_lib.scala 474:18]
+    rvclkhdr.io.en <= _T_165 @[el2_lib.scala 475:17]
+    rvclkhdr.io.scan_mode <= io.scan_mode @[el2_lib.scala 476:24]
+    reg _T_166 : UInt, rvclkhdr.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_lib.scala 478:16]
+    _T_166 <= io.ifc_fetch_addr_bf @[el2_lib.scala 478:16]
     io.ifc_fetch_addr_f <= _T_166 @[el2_ifu_ifc_ctl.scala 142:23]
     
