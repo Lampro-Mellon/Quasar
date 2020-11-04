@@ -72,6 +72,30 @@ circuit el2_ifu_mem_ctl :
     clkhdr.EN <= io.en @[el2_lib.scala 455:18]
     clkhdr.SE <= io.scan_mode @[el2_lib.scala 456:18]
     
+  extmodule TEC_RV_ICG_3 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr_3 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG_3 @[el2_lib.scala 452:26]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[el2_lib.scala 453:14]
+    clkhdr.CK <= io.clk @[el2_lib.scala 454:18]
+    clkhdr.EN <= io.en @[el2_lib.scala 455:18]
+    clkhdr.SE <= io.scan_mode @[el2_lib.scala 456:18]
+    
   module el2_ifu_mem_ctl : 
     input clock : Clock
     input reset : UInt<1>
@@ -149,6 +173,12 @@ circuit el2_ifu_mem_ctl :
     ic_ignore_2nd_miss_f <= UInt<1>("h00")
     wire ic_debug_rd_en_ff : UInt<1>
     ic_debug_rd_en_ff <= UInt<1>("h00")
+    inst rvclkhdr of rvclkhdr @[el2_lib.scala 461:22]
+    rvclkhdr.clock <= clock
+    rvclkhdr.reset <= reset
+    rvclkhdr.io.clk <= clock @[el2_lib.scala 462:17]
+    rvclkhdr.io.en <= ic_debug_rd_en_ff @[el2_lib.scala 463:16]
+    rvclkhdr.io.scan_mode <= io.scan_mode @[el2_lib.scala 464:23]
     reg flush_final_f : UInt<1>, clock with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 185:30]
     flush_final_f <= io.exu_flush_final @[el2_ifu_mem_ctl.scala 185:30]
     node _T = or(io.ifc_fetch_req_bf_raw, ifc_fetch_req_f) @[el2_ifu_mem_ctl.scala 186:53]
@@ -156,18 +186,18 @@ circuit el2_ifu_mem_ctl :
     node _T_2 = or(_T_1, io.exu_flush_final) @[el2_ifu_mem_ctl.scala 186:86]
     node fetch_bf_f_c1_clken = or(_T_2, scnd_miss_req) @[el2_ifu_mem_ctl.scala 186:107]
     node debug_c1_clken = or(io.ic_debug_rd_en, io.ic_debug_wr_en) @[el2_ifu_mem_ctl.scala 187:42]
-    inst rvclkhdr of rvclkhdr @[el2_lib.scala 461:22]
-    rvclkhdr.clock <= clock
-    rvclkhdr.reset <= reset
-    rvclkhdr.io.clk <= clock @[el2_lib.scala 462:17]
-    rvclkhdr.io.en <= debug_c1_clken @[el2_lib.scala 463:16]
-    rvclkhdr.io.scan_mode <= io.scan_mode @[el2_lib.scala 464:23]
     inst rvclkhdr_1 of rvclkhdr_1 @[el2_lib.scala 461:22]
     rvclkhdr_1.clock <= clock
     rvclkhdr_1.reset <= reset
     rvclkhdr_1.io.clk <= clock @[el2_lib.scala 462:17]
-    rvclkhdr_1.io.en <= fetch_bf_f_c1_clken @[el2_lib.scala 463:16]
+    rvclkhdr_1.io.en <= debug_c1_clken @[el2_lib.scala 463:16]
     rvclkhdr_1.io.scan_mode <= io.scan_mode @[el2_lib.scala 464:23]
+    inst rvclkhdr_2 of rvclkhdr_2 @[el2_lib.scala 461:22]
+    rvclkhdr_2.clock <= clock
+    rvclkhdr_2.reset <= reset
+    rvclkhdr_2.io.clk <= clock @[el2_lib.scala 462:17]
+    rvclkhdr_2.io.en <= fetch_bf_f_c1_clken @[el2_lib.scala 463:16]
+    rvclkhdr_2.io.scan_mode <= io.scan_mode @[el2_lib.scala 464:23]
     node _T_3 = orr(iccm_single_ecc_error) @[el2_ifu_mem_ctl.scala 190:52]
     node _T_4 = bits(dma_iccm_req_f, 0, 0) @[el2_ifu_mem_ctl.scala 190:78]
     node _T_5 = and(_T_3, _T_4) @[el2_ifu_mem_ctl.scala 190:55]
@@ -438,18 +468,18 @@ circuit el2_ifu_mem_ctl :
     node tagv_mb_scnd_in = mux(_T_194, tagv_mb_scnd_ff, _T_198) @[el2_ifu_mem_ctl.scala 262:28]
     node _T_199 = bits(sel_hold_imb_scnd, 0, 0) @[el2_ifu_mem_ctl.scala 263:56]
     node uncacheable_miss_scnd_in = mux(_T_199, uncacheable_miss_scnd_ff, io.ifc_fetch_uncacheable_bf) @[el2_ifu_mem_ctl.scala 263:37]
-    reg _T_200 : UInt<1>, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 264:67]
+    reg _T_200 : UInt<1>, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 264:67]
     _T_200 <= uncacheable_miss_scnd_in @[el2_ifu_mem_ctl.scala 264:67]
     uncacheable_miss_scnd_ff <= _T_200 @[el2_ifu_mem_ctl.scala 264:28]
     node _T_201 = bits(sel_hold_imb_scnd, 0, 0) @[el2_ifu_mem_ctl.scala 265:43]
     node imb_scnd_in = mux(_T_201, imb_scnd_ff, io.ifc_fetch_addr_bf) @[el2_ifu_mem_ctl.scala 265:24]
-    reg _T_202 : UInt, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 266:54]
+    reg _T_202 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 266:54]
     _T_202 <= imb_scnd_in @[el2_ifu_mem_ctl.scala 266:54]
     imb_scnd_ff <= _T_202 @[el2_ifu_mem_ctl.scala 266:15]
-    reg _T_203 : UInt, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 267:64]
+    reg _T_203 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 267:64]
     _T_203 <= way_status_mb_scnd_in @[el2_ifu_mem_ctl.scala 267:64]
     way_status_mb_scnd_ff <= _T_203 @[el2_ifu_mem_ctl.scala 267:25]
-    reg _T_204 : UInt, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 268:58]
+    reg _T_204 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 268:58]
     _T_204 <= tagv_mb_scnd_in @[el2_ifu_mem_ctl.scala 268:58]
     tagv_mb_scnd_ff <= _T_204 @[el2_ifu_mem_ctl.scala 268:19]
     node _T_205 = bits(bus_ifu_wr_en_ff, 0, 0) @[Bitwise.scala 72:15]
@@ -593,14 +623,14 @@ circuit el2_ifu_mem_ctl :
     reset_ic_ff <= _T_300 @[el2_ifu_mem_ctl.scala 306:15]
     reg fetch_uncacheable_ff : UInt<1>, clock with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 307:37]
     fetch_uncacheable_ff <= io.ifc_fetch_uncacheable_bf @[el2_ifu_mem_ctl.scala 307:37]
-    reg _T_301 : UInt, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 308:63]
+    reg _T_301 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 308:63]
     _T_301 <= io.ifc_fetch_addr_bf @[el2_ifu_mem_ctl.scala 308:63]
     ifu_fetch_addr_int_f <= _T_301 @[el2_ifu_mem_ctl.scala 308:24]
     node vaddr_f = bits(ifu_fetch_addr_int_f, 4, 0) @[el2_ifu_mem_ctl.scala 309:37]
-    reg _T_302 : UInt<1>, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 310:62]
+    reg _T_302 : UInt<1>, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 310:62]
     _T_302 <= uncacheable_miss_in @[el2_ifu_mem_ctl.scala 310:62]
     uncacheable_miss_ff <= _T_302 @[el2_ifu_mem_ctl.scala 310:23]
-    reg _T_303 : UInt, rvclkhdr_1.io.l1clk @[el2_ifu_mem_ctl.scala 311:49]
+    reg _T_303 : UInt, rvclkhdr_2.io.l1clk @[el2_ifu_mem_ctl.scala 311:49]
     _T_303 <= imb_in @[el2_ifu_mem_ctl.scala 311:49]
     imb_ff <= _T_303 @[el2_ifu_mem_ctl.scala 311:10]
     wire miss_addr : UInt<26>
@@ -613,19 +643,19 @@ circuit el2_ifu_mem_ctl :
     node miss_addr_in = mux(_T_304, _T_305, _T_308) @[el2_ifu_mem_ctl.scala 313:25]
     node _T_309 = or(bus_ifu_bus_clk_en, ic_act_miss_f) @[el2_ifu_mem_ctl.scala 315:57]
     node _T_310 = or(_T_309, io.dec_tlu_force_halt) @[el2_ifu_mem_ctl.scala 315:73]
-    inst rvclkhdr_2 of rvclkhdr_2 @[el2_lib.scala 461:22]
-    rvclkhdr_2.clock <= clock
-    rvclkhdr_2.reset <= reset
-    rvclkhdr_2.io.clk <= clock @[el2_lib.scala 462:17]
-    rvclkhdr_2.io.en <= _T_310 @[el2_lib.scala 463:16]
-    rvclkhdr_2.io.scan_mode <= io.scan_mode @[el2_lib.scala 464:23]
-    reg _T_311 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 316:48]
+    inst rvclkhdr_3 of rvclkhdr_3 @[el2_lib.scala 461:22]
+    rvclkhdr_3.clock <= clock
+    rvclkhdr_3.reset <= reset
+    rvclkhdr_3.io.clk <= clock @[el2_lib.scala 462:17]
+    rvclkhdr_3.io.en <= _T_310 @[el2_lib.scala 463:16]
+    rvclkhdr_3.io.scan_mode <= io.scan_mode @[el2_lib.scala 464:23]
+    reg _T_311 : UInt, rvclkhdr_3.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 316:48]
     _T_311 <= miss_addr_in @[el2_ifu_mem_ctl.scala 316:48]
     miss_addr <= _T_311 @[el2_ifu_mem_ctl.scala 316:13]
-    reg _T_312 : UInt, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 317:59]
+    reg _T_312 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 317:59]
     _T_312 <= way_status_mb_in @[el2_ifu_mem_ctl.scala 317:59]
     way_status_mb_ff <= _T_312 @[el2_ifu_mem_ctl.scala 317:20]
-    reg _T_313 : UInt, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 318:53]
+    reg _T_313 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 318:53]
     _T_313 <= tagv_mb_in @[el2_ifu_mem_ctl.scala 318:53]
     tagv_mb_ff <= _T_313 @[el2_ifu_mem_ctl.scala 318:14]
     wire stream_miss_f : UInt<1>
@@ -641,15 +671,15 @@ circuit el2_ifu_mem_ctl :
     node _T_319 = eq(io.exu_flush_final, UInt<1>("h00")) @[el2_ifu_mem_ctl.scala 322:44]
     node _T_320 = and(ifc_fetch_req_f_raw, _T_319) @[el2_ifu_mem_ctl.scala 322:42]
     ifc_fetch_req_f <= _T_320 @[el2_ifu_mem_ctl.scala 322:19]
-    reg _T_321 : UInt<1>, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 323:60]
+    reg _T_321 : UInt<1>, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 323:60]
     _T_321 <= io.ifc_iccm_access_bf @[el2_ifu_mem_ctl.scala 323:60]
     ifc_iccm_access_f <= _T_321 @[el2_ifu_mem_ctl.scala 323:21]
     wire ifc_region_acc_fault_final_bf : UInt<1>
     ifc_region_acc_fault_final_bf <= UInt<1>("h00")
-    reg _T_322 : UInt<1>, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 325:71]
+    reg _T_322 : UInt<1>, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 325:71]
     _T_322 <= ifc_region_acc_fault_final_bf @[el2_ifu_mem_ctl.scala 325:71]
     ifc_region_acc_fault_final_f <= _T_322 @[el2_ifu_mem_ctl.scala 325:32]
-    reg ifc_region_acc_fault_f : UInt<1>, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 326:68]
+    reg ifc_region_acc_fault_f : UInt<1>, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 326:68]
     ifc_region_acc_fault_f <= io.ifc_region_acc_fault_bf @[el2_ifu_mem_ctl.scala 326:68]
     node ifu_ic_req_addr_f = cat(miss_addr, bus_rd_addr_count) @[Cat.scala 29:58]
     node _T_323 = eq(miss_state, UInt<3>("h02")) @[el2_ifu_mem_ctl.scala 328:38]
@@ -1985,10 +2015,8 @@ circuit el2_ifu_mem_ctl :
     node _T_1209 = cat(_T_1208, _T_1207) @[Cat.scala 29:58]
     node _T_1210 = cat(_T_1209, _T_1206) @[Cat.scala 29:58]
     node ifu_ic_debug_rd_data_in = mux(_T_1201, _T_1210, io.ic_debug_rd_data) @[el2_ifu_mem_ctl.scala 351:36]
-    reg _T_1211 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when ic_debug_rd_en_ff : @[Reg.scala 28:19]
-      _T_1211 <= ifu_ic_debug_rd_data_in @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    reg _T_1211 : UInt, rvclkhdr.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 354:63]
+    _T_1211 <= ifu_ic_debug_rd_data_in @[el2_ifu_mem_ctl.scala 354:63]
     io.ifu_ic_debug_rd_data <= _T_1211 @[el2_ifu_mem_ctl.scala 354:27]
     node _T_1212 = bits(ifu_bus_rdata_ff, 15, 0) @[el2_ifu_mem_ctl.scala 355:74]
     node _T_1213 = xorr(_T_1212) @[el2_lib.scala 201:13]
@@ -3756,7 +3784,7 @@ circuit el2_ifu_mem_ctl :
     node _T_2614 = mux(bus_cmd_sent, _T_2613, bus_rd_addr_count) @[el2_ifu_mem_ctl.scala 603:12]
     node _T_2615 = mux(scnd_miss_req_q, _T_2611, _T_2614) @[el2_ifu_mem_ctl.scala 602:10]
     node bus_new_rd_addr_count = mux(_T_2609, _T_2610, _T_2615) @[el2_ifu_mem_ctl.scala 601:34]
-    reg _T_2616 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 604:55]
+    reg _T_2616 : UInt, rvclkhdr_3.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 604:55]
     _T_2616 <= bus_new_rd_addr_count @[el2_ifu_mem_ctl.scala 604:55]
     bus_rd_addr_count <= _T_2616 @[el2_ifu_mem_ctl.scala 604:21]
     node _T_2617 = and(ifu_bus_cmd_valid, ifu_bus_cmd_ready) @[el2_ifu_mem_ctl.scala 606:48]
@@ -3786,7 +3814,7 @@ circuit el2_ifu_mem_ctl :
     node _T_2636 = or(_T_2635, _T_2633) @[Mux.scala 27:72]
     wire bus_new_cmd_beat_count : UInt<3> @[Mux.scala 27:72]
     bus_new_cmd_beat_count <= _T_2636 @[Mux.scala 27:72]
-    reg _T_2637 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
+    reg _T_2637 : UInt, rvclkhdr_3.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
     when bus_cmd_beat_en : @[Reg.scala 28:19]
       _T_2637 <= bus_new_cmd_beat_count @[Reg.scala 28:23]
       skip @[Reg.scala 28:19]
@@ -13563,10 +13591,10 @@ circuit el2_ifu_mem_ctl :
     node _T_10418 = and(_T_10417, io.ic_debug_way) @[el2_ifu_mem_ctl.scala 830:90]
     ic_debug_tag_wr_en <= _T_10418 @[el2_ifu_mem_ctl.scala 830:22]
     node ic_debug_ict_array_sel_in = and(io.ic_debug_rd_en, io.ic_debug_tag_array) @[el2_ifu_mem_ctl.scala 831:53]
-    reg _T_10419 : UInt, rvclkhdr.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 832:53]
+    reg _T_10419 : UInt, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 832:53]
     _T_10419 <= io.ic_debug_way @[el2_ifu_mem_ctl.scala 832:53]
     ic_debug_way_ff <= _T_10419 @[el2_ifu_mem_ctl.scala 832:19]
-    reg _T_10420 : UInt<1>, rvclkhdr.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 833:63]
+    reg _T_10420 : UInt<1>, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 833:63]
     _T_10420 <= ic_debug_ict_array_sel_in @[el2_ifu_mem_ctl.scala 833:63]
     ic_debug_ict_array_sel_ff <= _T_10420 @[el2_ifu_mem_ctl.scala 833:29]
     reg _T_10421 : UInt<1>, io.free_clk with : (reset => (reset, UInt<1>("h00"))) @[el2_ifu_mem_ctl.scala 834:54]

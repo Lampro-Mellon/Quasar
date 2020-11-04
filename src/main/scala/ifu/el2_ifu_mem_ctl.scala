@@ -181,7 +181,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ic_miss_under_miss_f = WireInit(Bool(), false.B)
   val ic_ignore_2nd_miss_f = WireInit(Bool(), false.B)
   val ic_debug_rd_en_ff = WireInit(Bool(), false.B)
-
+  val debug_data_clk = rvclkhdr(clock, ic_debug_rd_en_ff, io.scan_mode)
   val flush_final_f = RegNext(io.exu_flush_final, 0.U)
   val fetch_bf_f_c1_clken = io.ifc_fetch_req_bf_raw | ifc_fetch_req_f | miss_pending | io.exu_flush_final | scnd_miss_req
   val debug_c1_clken = io.ic_debug_rd_en | io.ic_debug_wr_en
@@ -351,7 +351,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ifu_ic_debug_rd_data_in = Mux(ic_debug_ict_array_sel_ff.asBool, if(ICACHE_ECC) Cat(0.U(2.W),io.ictag_debug_rd_data(25,21),0.U(32.W),io.ictag_debug_rd_data(20,0), 0.U(7-ICACHE_STATUS_BITS), way_status, 0.U(3.W),ic_debug_tag_val_rd_out)
   else Cat(0.U(6.W),io.ictag_debug_rd_data(21),0.U(32.W),io.ictag_debug_rd_data(20,0),0.U(7-ICACHE_STATUS_BITS),way_status ,0.U(3.W) ,ic_debug_tag_val_rd_out) ,
     io.ic_debug_rd_data)
-  io.ifu_ic_debug_rd_data := RegEnable(ifu_ic_debug_rd_data_in, 0.U, ic_debug_rd_en_ff)
+  io.ifu_ic_debug_rd_data := withClock(debug_data_clk){RegNext(ifu_ic_debug_rd_data_in, 0.U)}
   val ic_wr_parity = (0 until 4).map(i=>rveven_paritygen(ifu_bus_rdata_ff((16*i)+15,16*i))).reverse.reduce(Cat(_,_))
   val ic_miss_buff_parity = (0 until 4).map(i=>rveven_paritygen(ic_miss_buff_half((16*i)+15,16*i))).reverse.reduce(Cat(_,_))
 
