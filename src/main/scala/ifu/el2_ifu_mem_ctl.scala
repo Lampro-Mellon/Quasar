@@ -312,7 +312,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val miss_addr = WireInit(UInt((31-ICACHE_BEAT_ADDR_HI).W), 0.U)
   val miss_addr_in = Mux(!miss_pending, imb_ff(30, ICACHE_BEAT_ADDR_HI),
     Mux(scnd_miss_req_q.asBool, imb_scnd_ff(30, ICACHE_BEAT_ADDR_HI), miss_addr))
-  miss_addr := RegNext(miss_addr_in, 0.U)
+  val busclk_reset = rvclkhdr(clock, bus_ifu_bus_clk_en | ic_act_miss_f | io.dec_tlu_force_halt, io.scan_mode)
+  miss_addr := withClock(busclk_reset) {RegNext(miss_addr_in, 0.U)}
   way_status_mb_ff := withClock(fetch_bf_f_c1_clk){RegNext(way_status_mb_in, 0.U)}
   tagv_mb_ff := withClock(fetch_bf_f_c1_clk){RegNext(tagv_mb_in, 0.U)}
   val stream_miss_f = WireInit(Bool(), 0.U)
@@ -600,7 +601,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val bus_new_rd_addr_count = Mux(!miss_pending, imb_ff(ICACHE_BEAT_ADDR_HI-1, 2),
       Mux(scnd_miss_req_q, imb_scnd_ff(ICACHE_BEAT_ADDR_HI-1, 2),
         Mux(bus_cmd_sent, bus_rd_addr_count + 1.U, bus_rd_addr_count)))
-  bus_rd_addr_count := RegEnable(bus_new_rd_addr_count, 0.U, bus_ifu_bus_clk_en | ic_act_miss_f | io.dec_tlu_force_halt)
+  bus_rd_addr_count := withClock(busclk_reset){RegNext(bus_new_rd_addr_count, 0.U)}
   // Command beat Count
   val bus_inc_cmd_beat_cnt = ifu_bus_cmd_valid & ifu_bus_cmd_ready & miss_pending & !io.dec_tlu_force_halt
   val bus_reset_cmd_beat_cnt_0 = (ic_act_miss_f & !uncacheable_miss_in) | io.dec_tlu_force_halt
@@ -609,7 +610,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val bus_cmd_beat_en = bus_inc_cmd_beat_cnt | ic_act_miss_f | io.dec_tlu_force_halt
   val bus_new_cmd_beat_count = Mux1H(Seq(bus_reset_cmd_beat_cnt_0->0.U, bus_reset_cmd_beat_cnt_secondlast.asBool->ICACHE_SCND_LAST.U,
     bus_inc_cmd_beat_cnt->(bus_cmd_beat_count+1.U), bus_hold_cmd_beat_cnt->bus_cmd_beat_count))
-  bus_cmd_beat_count := RegEnable(bus_new_cmd_beat_count, 0.U, (bus_ifu_bus_clk_en | ic_act_miss_f | io.dec_tlu_force_halt) & bus_cmd_beat_en)
+  bus_cmd_beat_count := withClock(busclk_reset){RegEnable(bus_new_cmd_beat_count, 0.U, bus_cmd_beat_en)}
   bus_last_data_beat := Mux(uncacheable_miss_ff, bus_data_beat_count===1.U, bus_data_beat_count.andR())
   bus_ifu_wr_en := ifu_bus_rvalid & miss_pending
   bus_ifu_wr_en_ff := ifu_bus_rvalid_ff & miss_pending
