@@ -828,8 +828,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
     io.dec_tlu_ic_diag_pkt.icache_dicawics(15,14)===1.U, io.dec_tlu_ic_diag_pkt.icache_dicawics(15,14)===0.U)
   ic_debug_tag_wr_en := Fill(ICACHE_NUM_WAYS, io.ic_debug_wr_en & io.ic_debug_tag_array) & io.ic_debug_way
   val ic_debug_ict_array_sel_in = io.ic_debug_rd_en & io.ic_debug_tag_array
-  ic_debug_way_ff := RegEnable(io.ic_debug_way, 0.U, io.ic_debug_rd_en | io.ic_debug_wr_en)
-  ic_debug_ict_array_sel_ff := RegEnable(ic_debug_ict_array_sel_in, 0.U, io.ic_debug_rd_en | io.ic_debug_wr_en)
+  ic_debug_way_ff := withClock(debug_c1_clk){RegNext(io.ic_debug_way, 0.U)}
+  ic_debug_ict_array_sel_ff := withClock(debug_c1_clk){RegNext(ic_debug_ict_array_sel_in, 0.U)}
   ic_debug_rd_en_ff := withClock(io.free_clk){RegNext(io.ic_debug_rd_en, false.B)}
   io.ifu_ic_debug_rd_data_valid := withClock(io.free_clk){RegEnable(ic_debug_rd_en_ff, 0.U, ic_debug_rd_en_ff.asBool)}
   val ifc_region_acc_okay = Cat(INST_ACCESS_ENABLE0.U,INST_ACCESS_ENABLE1.U,INST_ACCESS_ENABLE2.U,INST_ACCESS_ENABLE3.U,INST_ACCESS_ENABLE4.U,INST_ACCESS_ENABLE5.U,INST_ACCESS_ENABLE6.U,INST_ACCESS_ENABLE7.U).orR() |
