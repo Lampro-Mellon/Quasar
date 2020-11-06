@@ -169,19 +169,19 @@ class el2_alu_pkt_t extends Bundle {
 }
 
 class el2_lsu_pkt_t extends Bundle {
-  val fast_int   = UInt(1.W)
-  val by         = UInt(1.W)
-  val half       = UInt(1.W)
-  val word       = UInt(1.W)
-  val dword      = UInt(1.W)    // for dma
-  val load       = UInt(1.W)
-  val store      = UInt(1.W)
-  val unsign     = UInt(1.W)
-  val dma        = UInt(1.W)    // dma pkt
-  val store_data_bypass_d  = UInt(1.W)
-  val load_ldst_bypass_d   = UInt(1.W)
-  val store_data_bypass_m  = UInt(1.W)
-  val valid      = UInt(1.W)
+  val fast_int   = Bool()
+  val by         = Bool()
+  val half       = Bool()
+  val word       = Bool()
+  val dword      = Bool()    // for dma
+  val load       = Bool()
+  val store      = Bool()
+  val unsign     = Bool()
+  val dma        = Bool()    // dma pkt
+  val store_data_bypass_d  = Bool()
+  val load_ldst_bypass_d   = Bool()
+  val store_data_bypass_m  = Bool()
+  val valid      = Bool()
 }
 
 class el2_lsu_error_pkt_t extends Bundle {
