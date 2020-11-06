@@ -389,8 +389,8 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val obuf_data = rvdffe(obuf_data_in, obuf_wr_en, io.lsu_busm_clk, io.scan_mode)
   obuf_wr_timer := withClock(io.lsu_busm_clk){RegNext(obuf_wr_timer_in, 0.U)}
   val WrPtr0_m = WireInit(UInt(DEPTH_LOG2.W), 0.U)
-  val found_array1 = (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((ibuf_valid & (ibuf_tag===i.U)) |
-    (io.lsu_busreq_m & (WrPtr0_r===i.U)) | (io.ldst_dual_r & (WrPtr1_r === i.U))))->i.U)
+  val found_array1 = (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((Fill(DEPTH_LOG2,ibuf_valid) & (ibuf_tag===i.U)) |
+    (Fill(DEPTH_LOG2, io.lsu_busreq_m) & (WrPtr0_r===i.U)) | (Fill(DEPTH_LOG2, io.ldst_dual_r) & (WrPtr1_r === i.U))))->i.U)
   WrPtr0_m := MuxCase(0.U, found_array1)
   val found_array2 = (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((ibuf_valid & (ibuf_tag===i.U)) |
     (io.lsu_busreq_m & (WrPtr0_m===i.U)) | (io.lsu_busreq_r & (WrPtr0_r === i.U)) | (io.ldst_dual_r & (WrPtr1_r===i.U))))->i.U)
