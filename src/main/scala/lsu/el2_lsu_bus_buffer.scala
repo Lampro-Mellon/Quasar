@@ -8,17 +8,17 @@ import snapshot._
 import chisel3.experimental.{ChiselEnum, chiselName}
 import chisel3.util.ImplicitConversions.intToUInt
 
-object el2_lsu_bus_buffer {
-   object State extends ChiselEnum {
-      val IDLE, WAIT, CMD, RESP, DONE_PARTIAL, DONE_WAIT, DONE = Value
-   }
-}
+//object el2_lsu_bus_buffer {
+//   object State extends ChiselEnum {
+//      val IDLE, WAIT, CMD, RESP, DONE_PARTIAL, DONE_WAIT, DONE = Value
+//   }
+//}
 
 @chiselName
-class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
+class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib
 {
-   import el2_lsu_bus_buffer.State
-   import el2_lsu_bus_buffer.State._
+//   import el2_lsu_bus_buffer.State
+//   import el2_lsu_bus_buffer.State._
 
    val io = IO (new Bundle {
       //val clk         = Input(Clock()) //implicit
@@ -128,6 +128,8 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
    val TIMER_MAX                    = TIMER - 1
    val TIMER_LOG2                   = if (TIMER < 2) 1 else log2Ceil(TIMER)
 
+   val idle_C :: wait_C :: cmd_C :: resp_C :: done_partial_C :: done_wait_C :: done_C :: Nil = Enum(7)
+
    val ldst_byteen_hi_m             = WireInit(UInt(4.W),               init = 0.U)
    val ldst_byteen_lo_m             = WireInit(UInt(4.W),               init = 0.U)
    val ld_addr_hitvec_lo            = WireInit(UInt(4.W),               init = 0.U)
@@ -160,9 +162,9 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
    val lsu_nonblock_dual            = WireInit(Bool(),                  init = false.B)
    val lsu_nonblock_load_data_ready = WireInit(Bool(),                  init = false.B)
 
-   val CmdPtr0Dec                   = Wire(Vec(DEPTH, Bool()))    
-   val CmdPtr1Dec                   = Wire(Vec(DEPTH, Bool()))    
-   val RspPtrDec                    = Wire(Vec(DEPTH, Bool()))    
+  val CmdPtr0Dec                    = Wire(Vec(DEPTH, Bool()))
+  val CmdPtr1Dec                    = Wire(Vec(DEPTH, Bool()))
+   val RspPtrDec                    = Wire(Vec(DEPTH, Bool()))
    val CmdPtr0                      = WireInit(UInt(DEPTH_LOG2.W),      init = 0.U)
    val CmdPtr1                      = WireInit(UInt(DEPTH_LOG2.W),      init = 0.U)
    val RspPtr                       = WireInit(UInt(DEPTH_LOG2.W),      init = 0.U)
@@ -199,7 +201,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
    val bus_rsp_rdata                = WireInit(UInt(64.W),              init = 0.U)
 
    // Bus buffer signals
-   val buf_state                    = Wire(Vec(DEPTH, State()))
+   val buf_state                    = Wire(Vec(DEPTH, UInt(3.W)))
    val buf_sz                       = Wire(Vec(DEPTH, UInt(2.W)))
    val buf_addr                     = Wire(Vec(DEPTH, UInt(32.W)))
    val buf_byteen                   = Wire(Vec(DEPTH, UInt(4.W)))
@@ -220,7 +222,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
    val buf_rspage                   = Wire(Vec(DEPTH, Vec(DEPTH, Bool())))
    val buf_rsp_pickage              = Wire(Vec(DEPTH, Vec(DEPTH, Bool())))
 
-   val buf_nxtstate                 = Wire(Vec(DEPTH, State()))
+   val buf_nxtstate                 = Wire(Vec(DEPTH, UInt(3.W)))
    val buf_rst                      = Wire(Vec(DEPTH, Bool()))
    val buf_state_en                 = Wire(Vec(DEPTH, Bool()))
    val buf_cmd_state_bus_en         = Wire(Vec(DEPTH, Bool()))
@@ -349,10 +351,10 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
 
 /////////////  Initialization of vectors//////////////////
    for (i <- 0 until DEPTH) {
-      CmdPtr0Dec(i)        := 0.U
-      CmdPtr1Dec(i)        := 0.U
+    CmdPtr0Dec (i)        := 0.U
+    CmdPtr1Dec  (i)       := 0.U
       RspPtrDec(i)         := 0.U
-      buf_state(i)         := IDLE
+      buf_state(i)         := idle_C
       buf_sz(i)            := 0.U
       buf_addr(i)          := 0.U
       buf_byteen(i)        := 0.U
@@ -404,8 +406,8 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
    ld_byte_ibuf_hit_lo     := (0 until 4).map(i =>(ld_addr_ibuf_hit_lo & ibuf_byteen(i) & ldst_byteen_lo_m(i)).asUInt).reverse.reduce(Cat(_,_))
    ld_byte_ibuf_hit_hi     := (0 until 4).map(i =>(ld_addr_ibuf_hit_hi & ibuf_byteen(i) & ldst_byteen_hi_m(i)).asUInt).reverse.reduce(Cat(_,_))
 
-   ld_addr_hitvec_lo       := (0 until DEPTH).map(i =>((io.lsu_addr_m(31,2) === buf_addr(i)(31,2)) & buf_write(i) & (buf_state(i) =/= IDLE) & io.lsu_busreq_m).asUInt).reverse.reduce(Cat(_,_))
-   ld_addr_hitvec_hi       := (0 until DEPTH).map(i =>((io.end_addr_m(31,2) === buf_addr(i)(31,2)) & buf_write(i) & (buf_state(i) =/= IDLE) & io.lsu_busreq_m).asUInt).reverse.reduce(Cat(_,_))
+   ld_addr_hitvec_lo       := (0 until DEPTH).map(i =>((io.lsu_addr_m(31,2) === buf_addr(i)(31,2)) & buf_write(i) & (buf_state(i) =/= idle_C) & io.lsu_busreq_m).asUInt).reverse.reduce(Cat(_,_))
+   ld_addr_hitvec_hi       := (0 until DEPTH).map(i =>((io.end_addr_m(31,2) === buf_addr(i)(31,2)) & buf_write(i) & (buf_state(i) =/= idle_C) & io.lsu_busreq_m).asUInt).reverse.reduce(Cat(_,_))
 
    io.ld_byte_hit_buf_lo   := (0 until 4).map(i =>(ld_byte_ibuf_hit_lo(i) | ld_byte_hitvecfn_lo(i).orR).asUInt).reverse.reduce(Cat(_,_))
    io.ld_byte_hit_buf_hi   := (0 until 4).map(i =>(ld_byte_ibuf_hit_lo(i) | ld_byte_hitvecfn_lo(i).orR).asUInt).reverse.reduce(Cat(_,_))
@@ -440,12 +442,12 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
                                           io.lsu_pkt_r.word.asBool -> (io.lsu_addr_r(1,0).asUInt === 0.U)
                                        ))
 ////////////////////////////////////////////////////////////////////////////
-   ibuf_byp                  := (io.lsu_busreq_r & (io.lsu_pkt_r.load | io.no_word_merge_r) & ~ibuf_valid).asBool
-   ibuf_wr_en                := (io.lsu_busreq_r & io.lsu_commit_r & ~ibuf_byp).asBool
-   ibuf_rst                  := ((ibuf_drain_vld & ~ibuf_wr_en) | io.dec_tlu_force_halt).asBool
-   ibuf_force_drain          := (io.lsu_busreq_m & ~io.lsu_busreq_r & ibuf_valid & (io.lsu_pkt_m.load | (ibuf_addr(31,2) =/= io.lsu_addr_m(31,2)))).asBool
-   ibuf_drain_vld            := ibuf_valid & (((ibuf_wr_en | (ibuf_timer === (TIMER_MAX.asUInt(TIMER_LOG2.W)))) & ~(ibuf_merge_en & ibuf_merge_in)) |
-                                   ibuf_byp | ibuf_force_drain | ibuf_sideeffect | ~ibuf_write | bus_coalescing_disable)
+   ibuf_byp                  := (io.lsu_busreq_r & (io.lsu_pkt_r.load | io.no_word_merge_r) & !ibuf_valid).asBool
+   ibuf_wr_en                := (io.lsu_busreq_r & io.lsu_commit_r & !ibuf_byp).asBool
+   ibuf_rst                  := ((ibuf_drain_vld & !ibuf_wr_en) | io.dec_tlu_force_halt).asBool
+   ibuf_force_drain          := (io.lsu_busreq_m & !io.lsu_busreq_r & ibuf_valid & (io.lsu_pkt_m.load | (ibuf_addr(31,2) =/= io.lsu_addr_m(31,2)))).asBool
+   ibuf_drain_vld            := ibuf_valid & (((ibuf_wr_en | (ibuf_timer === (TIMER_MAX.asUInt(TIMER_LOG2.W)))) & !(ibuf_merge_en & ibuf_merge_in)) |
+                                   ibuf_byp | ibuf_force_drain | ibuf_sideeffect | !ibuf_write | bus_coalescing_disable)
    ibuf_tag_in               := Mux((ibuf_merge_en & ibuf_merge_in), ibuf_tag(DEPTH_LOG2-1,0),Mux(io.ldst_dual_r,WrPtr1_r,WrPtr0_r))
    ibuf_dualtag_in           := WrPtr0_r(DEPTH_LOG2-1,0)
    ibuf_sz_in                := Cat(io.lsu_pkt_r.word,io.lsu_pkt_r.half)
@@ -459,7 +461,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
    ibuf_merge_in             := ~io.ldst_dual_r.asUInt()
 
    withClock(io.lsu_free_c2_clk){
-      ibuf_valid        := RegEnable(~ibuf_rst              ,init = false.B, (ibuf_wr_en|ibuf_rst).asBool())
+      ibuf_valid := RegNext(Mux(ibuf_wr_en.asBool(),1.U ,ibuf_valid) & !ibuf_rst, false.B)
       ibuf_timer        := RegNext(ibuf_timer_in            ,init = 0.U)
    }
    withClock(io.lsu_bus_ibuf_c1_clk) {
@@ -483,7 +485,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
    obuf_wr_wait          := (buf_numvld_wrcmd_any(3,0) === 1.U(4.W)) & (buf_numvld_cmd_any(3,0) === 1.U(4.W)) & (obuf_wr_timer =/= (TIMER_MAX.asUInt(TIMER_LOG2.W))) &
                                 ~bus_coalescing_disable & ~buf_nomerge(CmdPtr0) & ~buf_sideeffect(CmdPtr0) & ~obuf_force_wr_en
    obuf_wr_en            := ((ibuf_buf_byp & io.lsu_commit_r & ~(io.is_sideeffects_r & bus_sideeffect_pend)) |
-                                ((buf_state(CmdPtr0) === CMD) & found_cmdptr0 & ~buf_cmd_state_bus_en(CmdPtr0) & ~(buf_sideeffect(CmdPtr0) & bus_sideeffect_pend) &
+                                ((buf_state(CmdPtr0) === cmd_C) & found_cmdptr0 & ~buf_cmd_state_bus_en(CmdPtr0) & ~(buf_sideeffect(CmdPtr0) & bus_sideeffect_pend) &
                                     (~(buf_dual(CmdPtr0) & buf_samedw(CmdPtr0) & ~buf_write(CmdPtr0)) | found_cmdptr1 | buf_nomerge(CmdPtr0) | obuf_force_wr_en))) &
                                        (bus_cmd_ready | ~obuf_valid | obuf_nosend) & ~obuf_wr_wait & ~lsu_bus_cntr_overflow & ~bus_addr_match_pending & io.lsu_bus_clk_en
    obuf_rst              := ((bus_cmd_sent | (obuf_valid & obuf_nosend)) & ~obuf_wr_en & io.lsu_bus_clk_en) | io.dec_tlu_force_halt
@@ -504,7 +506,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
    obuf_tag1_in          := Mux(ibuf_buf_byp, WrPtr1_r, CmdPtr0)
    obuf_rdrsp_tag_in     := Mux((bus_cmd_sent & ~obuf_write), obuf_tag0(pt1.LSU_BUS_TAG-1,0), obuf_rdrsp_tag(pt1.LSU_BUS_TAG-1,0))
 
-   obuf_merge_en         := ((CmdPtr0 =/= CmdPtr1) & found_cmdptr0 & found_cmdptr1 & (buf_state(CmdPtr0) === CMD) & (buf_state(CmdPtr1) === CMD) &
+   obuf_merge_en         := ((CmdPtr0 =/= CmdPtr1) & found_cmdptr0 & found_cmdptr1 & (buf_state(CmdPtr0) === cmd_C) & (buf_state(CmdPtr1) === cmd_C) &
                               ~buf_cmd_state_bus_en(CmdPtr0) & ~buf_sideeffect(CmdPtr0) &
                                  ((buf_write(CmdPtr0) & buf_write(CmdPtr1) & (buf_addr(CmdPtr0)(31,3) === buf_addr(CmdPtr1)(31,3)) & ~bus_coalescing_disable & ~pt.BUILD_AXI_NATIVE) |
                                     (~buf_write(CmdPtr0) & buf_dual(CmdPtr0) & ~buf_dualhi(CmdPtr0) & buf_samedw(CmdPtr0)))) |
@@ -526,7 +528,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
       obuf_wr_enQ       := RegNext(obuf_wr_en            , init = 0.U)
    }
    withClock(io.lsu_free_c2_clk){
-      obuf_valid        := RegEnable(~obuf_rst           , init = 0.U, obuf_wr_en|obuf_rst)
+      obuf_valid := RegNext(Mux(obuf_wr_en.asBool(),1.U ,obuf_valid) & !obuf_rst, false.B)
       obuf_nosend       := RegEnable(obuf_nosend_in      , init = 0.U, obuf_wr_en)
    }
    withClock(io.lsu_bus_obuf_c1_clk){
@@ -539,42 +541,49 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
       obuf_tag1         := RegEnable(obuf_tag1_in        , init = 0.U, obuf_wr_en)
    }
 ////////////////////////////////////////////////////////////////////////////////////
-   WrPtr0_m             := PriorityMux((0 until DEPTH).map(i =>(((buf_state(i) === IDLE) & ~((ibuf_valid & (ibuf_tag === i)) | (io.lsu_busreq_r & ((WrPtr0_r === i) | (io.ldst_dual_r & (WrPtr1_r === i)))))).asBool -> i.asUInt(DEPTH_LOG2.W))))
-   WrPtr1_m             := PriorityMux((0 until DEPTH).map(i =>(((buf_state(i) === IDLE) & ~((ibuf_valid & (ibuf_tag === i)) | (io.lsu_busreq_m & (WrPtr0_m === i)) | (io.lsu_busreq_r & (WrPtr0_r === i) | (io.ldst_dual_r & (WrPtr1_r === i))))).asBool -> i.asUInt(DEPTH_LOG2.W))))
 
-   for {
-      i <- 0 until DEPTH
-      j <- 0 until DEPTH
-   }{
-      CmdPtr0Dec(i)           := ~(buf_age(i).asUInt.orR()) & (buf_state(i) === CMD) & ~buf_cmd_state_bus_en(i)
-      CmdPtr1Dec(i)           := ~((buf_age(i).asUInt.orR() & ~CmdPtr0Dec.asUInt)) & ~CmdPtr0Dec(i) & (buf_state(i) === CMD) & ~buf_cmd_state_bus_en(i)
-      RspPtrDec(i)            := ~(buf_rsp_pickage(i).asUInt.orR()) & (buf_state(i) === DONE_WAIT)
+   // WrPtr0_m := PriorityMux((0 until DEPTH).map(i =>(((buf_state(i)===IDLE.U) & !((ibuf_valid & (ibuf_tag====i.U)) | (io.lsu_busreq_r & ((WrPtr0_r === i) | (io.ldst_dual_r & (WrPtr1_r === i)))))).asBool -> i.asUInt(DEPTH_LOG2.W))))
+   val test_seq = (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((ibuf_valid & ibuf_tag===i.U) |
+     (io.lsu_busreq_r & ((WrPtr0_r===i.U) | (io.ldst_dual_r & (WrPtr1_r===i.U)))))).asBool() -> i.U)
+   WrPtr0_m := MuxCase(0.U, test_seq)
+   val test_seq2 = (0 until DEPTH).map(i=>((buf_state(i) === idle_C) & !((ibuf_valid & (ibuf_tag === i.U)) |
+     (io.lsu_busreq_m & (WrPtr0_m === i.U)) | (io.lsu_busreq_r & (WrPtr0_r === i.U) |
+     (io.ldst_dual_r & (WrPtr1_r === i.U))))).asBool -> i.U)
+    WrPtr1_m             := MuxCase(0.U, test_seq2)
 
-      buf_age_in(i)(j)        := (((buf_state(i) === IDLE) & buf_state_en(i)) &
-                                    (((buf_state(j) === WAIT) | ((buf_state(j) === CMD) & ~buf_cmd_state_bus_en(j)))  |
-                                       (ibuf_drain_vld & io.lsu_busreq_r & (ibuf_byp | io.ldst_dual_r) & (i === WrPtr0_r) & (j === ibuf_tag))  |
-                                          (ibuf_byp & io.lsu_busreq_r & io.ldst_dual_r & (i === WrPtr1_r) & (j === WrPtr0_r))))  | buf_age(i)(j)
+  for {
+    i <- 0 until DEPTH
+    j <- 0 until DEPTH
+  }{
+    CmdPtr0Dec(i)           := ~(buf_age(i).asUInt.orR()) & (buf_state(i) === cmd_C) & ~buf_cmd_state_bus_en(i)
+    CmdPtr1Dec(i)           := ~((buf_age(i).asUInt & ~CmdPtr0Dec.asUInt).orR()) & ~CmdPtr0Dec(i) & (buf_state(i) === cmd_C) & ~buf_cmd_state_bus_en(i)
+    RspPtrDec(i)            := ~(buf_rsp_pickage(i).asUInt.orR()) & (buf_state(i) === done_wait_C)
 
-      buf_age(i)(j)           := buf_ageQ(i)(j) & ~((buf_state(j) === CMD) & buf_cmd_state_bus_en(j))
-      buf_age_younger(i)(j)   := Mux(i.asUInt(DEPTH_LOG2.W) === j.asUInt(DEPTH_LOG2.W), 0.U, (~buf_age(i)(j) & (buf_state(j) =/= IDLE)))
+    buf_age_in(i)(j)        := (((buf_state(i) === idle_C) & buf_state_en(i)) &
+      (((buf_state(j) === wait_C) | ((buf_state(j) === cmd_C) & ~buf_cmd_state_bus_en(j)))  |
+        (ibuf_drain_vld & io.lsu_busreq_r & (ibuf_byp | io.ldst_dual_r) & (i === WrPtr0_r) & (j === ibuf_tag))  |
+        (ibuf_byp & io.lsu_busreq_r & io.ldst_dual_r & (i === WrPtr1_r) & (j === WrPtr0_r))))  | buf_age(i)(j)
 
-      buf_rspage_set(i)(j)    := ((buf_state(i) === IDLE) & buf_state_en(i)) & (~((buf_state(j) === IDLE) | (buf_state(j) === DONE))  |
-                                   (ibuf_drain_vld & io.lsu_busreq_r & (ibuf_byp | io.ldst_dual_r) & (i === WrPtr0_r) & (j === ibuf_tag)) |
-                                     (ibuf_byp & io.lsu_busreq_r & io.ldst_dual_r & (i === WrPtr1_r) & (j === WrPtr0_r)))
-      buf_rspage_in(i)(j)     := buf_rspage_set(i)(j) | buf_rspage(i)(j)
-      buf_rspage(i)(j)        := buf_rspageQ(i)(j) & ~((buf_state(j) === DONE) | (buf_state(j) === IDLE))
-      buf_rsp_pickage(i)(j)   := buf_rspageQ(i)(j) & (buf_state(j) === DONE_WAIT)
-   }
+    buf_age(i)(j)           := buf_ageQ(i)(j) & ~((buf_state(j) === cmd_C) & buf_cmd_state_bus_en(j))
+    buf_age_younger(i)(j)   := Mux(i.asUInt(DEPTH_LOG2.W) === j.asUInt(DEPTH_LOG2.W), 0.U, (~buf_age(i)(j) & (buf_state(j) =/= idle_C)))
 
-   CmdPtr0                 := PriorityEncoderOH(CmdPtr0Dec.asUInt)
-   CmdPtr1                 := PriorityEncoderOH(CmdPtr1Dec.asUInt)
-   RspPtr                  := PriorityEncoderOH(RspPtrDec.asUInt)
-   found_cmdptr0           := CmdPtr0Dec.reduce(_|_)
-   found_cmdptr1           := CmdPtr1Dec.reduce(_|_)
+    buf_rspage_set(i)(j)    := ((buf_state(i) === idle_C) & buf_state_en(i)) & (~((buf_state(j) === idle_C) | (buf_state(j) === done_C))  |
+      (ibuf_drain_vld & io.lsu_busreq_r & (ibuf_byp | io.ldst_dual_r) & (i === WrPtr0_r) & (j === ibuf_tag)) |
+      (ibuf_byp & io.lsu_busreq_r & io.ldst_dual_r & (i === WrPtr1_r) & (j === WrPtr0_r)))
+    buf_rspage_in(i)(j)     := buf_rspage_set(i)(j) | buf_rspage(i)(j)
+    buf_rspage(i)(j)        := buf_rspageQ(i)(j) & ~((buf_state(j) === done_C) | (buf_state(j) === idle_C))
+    buf_rsp_pickage(i)(j)   := buf_rspageQ(i)(j) & (buf_state(j) === done_wait_C)
+  }
+
+  CmdPtr0                 := PriorityEncoderOH(CmdPtr0Dec.asUInt)
+  CmdPtr1                 := PriorityEncoderOH(CmdPtr1Dec.asUInt)
+  RspPtr                  := PriorityEncoderOH(RspPtrDec.asUInt)
+  found_cmdptr0           := CmdPtr0Dec.reduce(_|_)
+  found_cmdptr1           := CmdPtr1Dec.reduce(_|_)
 
 //////////////////////////       FSM       ///////////////////////////////////////
    for (i <- 0 until DEPTH){
-      buf_nxtstate(i)            := IDLE
+      buf_nxtstate(i)            := idle_C
       buf_state_en(i)            := 0.U
       buf_cmd_state_bus_en(i)    := 0.U
       buf_resp_state_bus_en(i)   := 0.U
@@ -603,33 +612,33 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
 
       // Buffer entry state machine
       switch (buf_state(i)){
-         is (IDLE) {
-            buf_nxtstate(i)   := Mux(io.lsu_bus_clk_en.asBool(), CMD, WAIT)
-            buf_state_en(i)   := (io.lsu_busreq_r & io.lsu_commit_r & (((ibuf_byp | io.ldst_dual_r) & ~ibuf_merge_en & (i === WrPtr0_r)) | (ibuf_byp & io.ldst_dual_r & (i === WrPtr1_r)))) | (ibuf_drain_vld & (i === ibuf_tag))
+         is (idle_C) {
+            buf_nxtstate(i)   := Mux(io.lsu_bus_clk_en.asBool(), cmd_C, wait_C)
+            buf_state_en(i)   := (io.lsu_busreq_r & io.lsu_commit_r & (((ibuf_byp | io.ldst_dual_r) & !ibuf_merge_en & (i === WrPtr0_r)) | (ibuf_byp & io.ldst_dual_r & (i === WrPtr1_r)))) | (ibuf_drain_vld & (i === ibuf_tag))
             buf_wr_en(i)      := buf_state_en(i)
             buf_data_en(i)    := buf_state_en(i)
             buf_data_in(i)    := Mux((ibuf_drain_vld & (i === ibuf_tag)).asBool(), ibuf_data_out(31, 0), store_data_lo_r(31, 0))
          }
-         is (WAIT) {
-            buf_nxtstate(i)   := Mux(io.dec_tlu_force_halt.asBool(), IDLE, CMD)
+         is (wait_C) {
+            buf_nxtstate(i)   := Mux(io.dec_tlu_force_halt.asBool(), idle_C, cmd_C)
             buf_state_en(i)   := io.lsu_bus_clk_en | io.dec_tlu_force_halt
          }
-         is (CMD) {
-            buf_nxtstate(i)         := Mux(io.dec_tlu_force_halt.asBool(), IDLE, Mux((obuf_nosend & bus_rsp_read & (bus_rsp_read_tag === obuf_rdrsp_tag)), DONE_WAIT, RESP))
+         is (cmd_C) {
+            buf_nxtstate(i)         := Mux(io.dec_tlu_force_halt.asBool(), idle_C, Mux((obuf_nosend & bus_rsp_read & (bus_rsp_read_tag === obuf_rdrsp_tag)), done_wait_C, resp_C))
             buf_cmd_state_bus_en(i) := ((obuf_tag0 === i.asUInt(pt1.LSU_BUS_TAG.W)) | (obuf_merge & (obuf_tag1 === i.asUInt(pt1.LSU_BUS_TAG.W)))) & obuf_valid & obuf_wr_enQ
             buf_state_bus_en(i)     := buf_cmd_state_bus_en(i)
             buf_state_en(i)         := (buf_state_bus_en(i) & io.lsu_bus_clk_en) | io.dec_tlu_force_halt
             buf_ldfwd_in(i)         := 1.U(1.W)
-            buf_ldfwd_en(i)         := buf_state_en(i) & ~buf_write(i) & obuf_nosend & ~io.dec_tlu_force_halt
+            buf_ldfwd_en(i)         := buf_state_en(i) & !buf_write(i) & obuf_nosend & !io.dec_tlu_force_halt
             buf_ldfwdtag_in(i)      := (obuf_rdrsp_tag(pt1.LSU_BUS_TAG - 2,0)).asUInt
             buf_data_en(i)          := buf_state_bus_en(i) & io.lsu_bus_clk_en & obuf_nosend & bus_rsp_read
             buf_error_en(i)         := buf_state_bus_en(i) & io.lsu_bus_clk_en & obuf_nosend & bus_rsp_read_error
             buf_data_in(i)          := Mux(buf_error_en(i), bus_rsp_rdata(31,0), Mux(buf_addr(i)(2), bus_rsp_rdata(63, 32), bus_rsp_rdata(31, 0)))
          }
-         is (RESP){
-            buf_nxtstate(i)         := Mux((io.dec_tlu_force_halt | (buf_write(i) & ~(pt.BUILD_AXI_NATIVE & bus_rsp_write_error))).asBool(), IDLE,
-                                          Mux((buf_dual(i) & ~ buf_samedw(i) & ~ buf_write(i) &(buf_state(buf_dualtag(i)) =/= DONE_PARTIAL)), DONE_PARTIAL,
-                                             Mux((buf_ldfwd(i) | any_done_wait_state | (buf_dual(i) & ~ buf_samedw(i) & ~ buf_write(i) & buf_ldfwd(buf_dualtag(i)) & (buf_state(buf_dualtag(i)) === DONE_PARTIAL) & any_done_wait_state)), DONE_WAIT, DONE)))
+         is (resp_C){
+            buf_nxtstate(i)         := Mux((io.dec_tlu_force_halt | (buf_write(i) & ~(pt.BUILD_AXI_NATIVE & bus_rsp_write_error))).asBool(), idle_C,
+                                          Mux((buf_dual(i) & ~ buf_samedw(i) & ~ buf_write(i) &(buf_state(buf_dualtag(i)) =/= done_partial_C)), done_partial_C,
+                                             Mux((buf_ldfwd(i) | any_done_wait_state | (buf_dual(i) & ~ buf_samedw(i) & ~ buf_write(i) & buf_ldfwd(buf_dualtag(i)) & (buf_state(buf_dualtag(i)) === done_partial_C) & any_done_wait_state)), done_wait_C, done_C)))
             buf_resp_state_bus_en(i):= (bus_rsp_write & (bus_rsp_write_tag === (i.asUInt(pt1.LSU_BUS_TAG.W)))) |
                                           (bus_rsp_read & ((bus_rsp_read_tag === (i.asUInt(pt1.LSU_BUS_TAG.W))) |
                                              (buf_ldfwd(i) & (bus_rsp_read_tag === (buf_ldfwdtag(i)))) |
@@ -640,20 +649,20 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
             buf_error_en(i)         := buf_state_bus_en(i) & io.lsu_bus_clk_en & ((bus_rsp_read_error & (bus_rsp_read_tag === (i.asUInt(pt1.LSU_BUS_TAG.W))) ) |
                                           (bus_rsp_read_error & buf_ldfwd(i) & (bus_rsp_read_tag === buf_ldfwdtag(i))) |
                                              (bus_rsp_write_error & pt.BUILD_AXI_NATIVE & (bus_rsp_write_tag ===  i.asUInt(pt1.LSU_BUS_TAG.W))))
-            buf_data_in(i)          := Mux((buf_state_en(i) & ~buf_error_en(i)), Mux(buf_addr(i)(2), bus_rsp_rdata(63, 32), bus_rsp_rdata(31, 0)), bus_rsp_rdata(31, 0))
+            buf_data_in(i)          := Mux((buf_state_en(i) & !buf_error_en(i)), Mux(buf_addr(i)(2), bus_rsp_rdata(63, 32), bus_rsp_rdata(31, 0)), bus_rsp_rdata(31, 0))
          }
-         is (DONE_PARTIAL){ // Other part of dual load hasn't returned
-            buf_nxtstate(i)      := Mux(io.dec_tlu_force_halt.asBool(), IDLE, Mux((buf_ldfwd(i) | buf_ldfwd(buf_dualtag(i)) | any_done_wait_state), DONE_WAIT, DONE))
+         is (done_partial_C){ // Other part of dual load hasn't returned
+            buf_nxtstate(i)      := Mux(io.dec_tlu_force_halt.asBool(), idle_C, Mux((buf_ldfwd(i) | buf_ldfwd(buf_dualtag(i)) | any_done_wait_state), done_wait_C, done_C))
             buf_state_bus_en(i)  := bus_rsp_read & ((bus_rsp_read_tag === buf_dualtag(i).asUInt()) |
                                        (buf_ldfwd(buf_dualtag(i)) & (bus_rsp_read_tag === buf_ldfwdtag(buf_dualtag(i)).asUInt())))
             buf_state_en(i)      := (buf_state_bus_en(i) & io.lsu_bus_clk_en) | io.dec_tlu_force_halt
          }
-         is (DONE_WAIT) { // WAIT state if there are multiple outstanding nb returns
-            buf_nxtstate(i)   := Mux(io.dec_tlu_force_halt.asBool(), IDLE, DONE)
+         is (done_wait_C) { // WAIT state if there are multiple outstanding nb returns
+            buf_nxtstate(i)   := Mux(io.dec_tlu_force_halt.asBool(), idle_C, done_C)
             buf_state_en(i)   := ((RspPtr === i.asUInt(DEPTH_LOG2.W)) |(buf_dual(i) & (buf_dualtag(i) === RspPtr))) | io.dec_tlu_force_halt
          }
-         is (DONE) {
-            buf_nxtstate(i)   := IDLE
+         is (done_C) {
+            buf_nxtstate(i)   := idle_C
             buf_rst(i)        := 1.U
             buf_state_en(i)   := 1.U
             buf_ldfwd_in(i)   := 0.U
@@ -664,7 +673,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
       buf_byteen(i)           := RegEnable(buf_byteen_in(i)       , init = 0.U   ,buf_wr_en(i))
       buf_data(i)             := RegEnable(buf_data_in(i)         , init = 0.U   ,buf_data_en(i))
       withClock(io.lsu_bus_buf_c1_clk){
-         buf_state(i)         := RegEnable(buf_nxtstate(i)        , init = IDLE  ,buf_state_en(i))
+         buf_state(i)         := RegEnable(buf_nxtstate(i)        , init = idle_C  ,buf_state_en(i))
          buf_dualtag(i)       := RegEnable(buf_dualtag_in(i)      , init = 0.U   ,buf_wr_en(i))
          buf_dual(i)          := RegEnable(buf_dual_in(i)         , init = 0.U   ,buf_wr_en(i))
          buf_samedw(i)        := RegEnable(buf_samedw_in(i)       , init = 0.U   ,buf_wr_en(i))
@@ -685,11 +694,11 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
 
 //////////////////////////////////////////////////////////////////////////////////
    buf_numvld_any       := (io.lsu_busreq_m << io.ldst_dual_m) + (io.lsu_busreq_r << io.ldst_dual_r) + ibuf_valid + 
-                           {for(i <- 0 until DEPTH) yield (  buf_state(i) =/= IDLE).asUInt                                                       }.reduce(_+_)
-   buf_numvld_wrcmd_any := {for(i <- 0 until DEPTH) yield (( buf_state(i) === CMD) & ~buf_cmd_state_bus_en(i) & buf_write(i)).asUInt             }.reduce(_+_)
-   buf_numvld_cmd_any   := {for(i <- 0 until DEPTH) yield (( buf_state(i) === CMD) & ~buf_cmd_state_bus_en(i)).asUInt                            }.reduce(_+_)
-   buf_numvld_pend_any  := {for(i <- 0 until DEPTH) yield (((buf_state(i) === CMD) & ~buf_cmd_state_bus_en(i)) | (buf_state(i) === WAIT)).asUInt }.reduce(_+_)
-   any_done_wait_state  := {for(i <- 0 until DEPTH) yield    buf_state(i) === DONE_WAIT                                                          }.reduce(_|_)
+                           {for(i <- 0 until DEPTH) yield (  buf_state(i) =/= idle_C).asUInt                                                       }.reduce(_+_)
+   buf_numvld_wrcmd_any := {for(i <- 0 until DEPTH) yield (( buf_state(i) === cmd_C) & ~buf_cmd_state_bus_en(i) & buf_write(i)).asUInt             }.reduce(_+_)
+   buf_numvld_cmd_any   := {for(i <- 0 until DEPTH) yield (( buf_state(i) === cmd_C) & ~buf_cmd_state_bus_en(i)).asUInt                            }.reduce(_+_)
+   buf_numvld_pend_any  := {for(i <- 0 until DEPTH) yield (((buf_state(i) === cmd_C) & ~buf_cmd_state_bus_en(i)) | (buf_state(i) === wait_C)).asUInt }.reduce(_+_)
+   any_done_wait_state  := {for(i <- 0 until DEPTH) yield    buf_state(i) === done_wait_C                                                          }.reduce(_|_)
 
    io.lsu_bus_buffer_pend_any       := buf_numvld_pend_any =/= 0.U
    io.lsu_bus_buffer_full_any       := Mux((io.ldst_dual_d & io.dec_lsu_valid_raw_d),buf_numvld_any(3,0) >= (DEPTH-1).asUInt(4.W), buf_numvld_any(3,0) === DEPTH.asUInt(4.W))
@@ -700,11 +709,11 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
    io.lsu_nonblock_load_inv_r       := lsu_nonblock_load_valid_r & ~io.lsu_commit_r
    io.lsu_nonblock_load_inv_tag_r   := WrPtr0_r(DEPTH_LOG2-1,0)
 
-   lsu_nonblock_load_data_ready     := Mux1H((0 until DEPTH).map(i =>(buf_state(i) === DONE)  -> ~(pt.BUILD_AXI_NATIVE & buf_write(i))))
-   io.lsu_nonblock_load_data_error  := Mux1H((0 until DEPTH).map(i =>(buf_state(i) === DONE & ~buf_write(i))  -> (buf_error(i))))
-   io.lsu_nonblock_load_data_tag    := Mux1H((0 until DEPTH).map(i =>(buf_state(i) === DONE & (~buf_dual(i) | ~buf_dualhi(i)) & ~buf_write(i)) -> intToUInt(i)))
-   lsu_nonblock_load_data_lo        := Mux1H((0 until DEPTH).map(i =>(buf_state(i) === DONE & ~buf_write(i) & (~buf_dual(i) | ~buf_dualhi(i))) -> buf_data(i)))
-   lsu_nonblock_load_data_hi        := Mux1H((0 until DEPTH).map(i =>(buf_state(i) === DONE & ~buf_write(i) & ( buf_dual(i) &  buf_dualhi(i))) -> buf_data(i)))
+   lsu_nonblock_load_data_ready     := Mux1H((0 until DEPTH).map(i =>(buf_state(i) === done_C)  -> ~(pt.BUILD_AXI_NATIVE & buf_write(i))))
+   io.lsu_nonblock_load_data_error  := Mux1H((0 until DEPTH).map(i =>(buf_state(i) === done_C & ~buf_write(i))  -> (buf_error(i))))
+   io.lsu_nonblock_load_data_tag    := Mux1H((0 until DEPTH).map(i =>(buf_state(i) === done_C & (~buf_dual(i) | ~buf_dualhi(i)) & ~buf_write(i)) -> intToUInt(i)))
+   lsu_nonblock_load_data_lo        := Mux1H((0 until DEPTH).map(i =>(buf_state(i) === done_C & ~buf_write(i) & (~buf_dual(i) | ~buf_dualhi(i))) -> buf_data(i)))
+   lsu_nonblock_load_data_hi        := Mux1H((0 until DEPTH).map(i =>(buf_state(i) === done_C & ~buf_write(i) & ( buf_dual(i) &  buf_dualhi(i))) -> buf_data(i)))
 
   lsu_nonblock_addr_offset          := buf_addr(io.lsu_nonblock_load_data_tag)(1,0)
   lsu_nonblock_sz                   := buf_sz(io.lsu_nonblock_load_data_tag)(1,0)
@@ -719,8 +728,8 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
                                           (~lsu_nonblock_unsign & lsu_nonblock_sz === 1.U) -> Cat(Fill(16,lsu_nonblock_data_unalgn(15)),lsu_nonblock_data_unalgn(15,0)),
                                           (lsu_nonblock_unsign  & lsu_nonblock_sz === 2.U) -> lsu_nonblock_data_unalgn(31,0)
                                       ))
-  bus_sideeffect_pend      := Mux(obuf_valid,obuf_sideeffect & io.dec_tlu_sideeffect_posted_disable,Mux1H((0 until DEPTH).map(i =>(buf_state(i) === RESP) -> (buf_sideeffect(i) & io.dec_tlu_sideeffect_posted_disable))))
-  bus_addr_match_pending   := Mux1H((0 until DEPTH).map(i =>(pt.BUILD_AXI_NATIVE & obuf_valid & (obuf_addr(31,3) === buf_addr(i)(31,3))).asBool -> ((buf_state(i) === RESP) & ~((obuf_tag0 === intToUInt(i)) | (obuf_merge & (obuf_tag1 === intToUInt(i)))))))
+  bus_sideeffect_pend      := Mux(obuf_valid,obuf_sideeffect & io.dec_tlu_sideeffect_posted_disable,Mux1H((0 until DEPTH).map(i =>(buf_state(i) === resp_C) -> (buf_sideeffect(i) & io.dec_tlu_sideeffect_posted_disable))))
+  bus_addr_match_pending   := Mux1H((0 until DEPTH).map(i =>(pt.BUILD_AXI_NATIVE & obuf_valid & (obuf_addr(31,3) === buf_addr(i)(31,3))).asBool -> ((buf_state(i) === resp_C) & ~((obuf_tag0 === intToUInt(i)) | (obuf_merge & (obuf_tag1 === intToUInt(i)))))))
 
   bus_cmd_ready            := Mux(obuf_write, Mux((obuf_cmd_done | obuf_data_done), Mux(obuf_cmd_done, io.lsu_axi_wready, io.lsu_axi_awready), (io.lsu_axi_awready & io.lsu_axi_wready)), io.lsu_axi_arready)
   bus_wcmd_sent            := io.lsu_axi_awvalid & io.lsu_axi_awready
@@ -737,7 +746,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
 //////////////////////////////////////////////////////////////////////////////////
    lsu_axi_rdata_q               := RegEnable(io.lsu_axi_rdata, init = 0.U, io.lsu_axi_rvalid&io.lsu_bus_clk_en)
    withClock(io.lsu_c2_r_clk){
-      io.lsu_busreq_r            := RegNext(RegNext((io.lsu_busreq_m & ~io.flush_r & ~io.ld_full_hit_m), init = 0.U), init = 0.U)
+      io.lsu_busreq_r            := RegNext((io.lsu_busreq_m & !io.flush_r & !io.ld_full_hit_m),  0.U)
       WrPtr0_r                   := RegNext(WrPtr0_m, init = 0.U)
       WrPtr1_r                   := RegNext(WrPtr1_m, init = 0.U)
       lsu_nonblock_load_valid_r  := RegNext(io.lsu_nonblock_load_valid_m, init = 0.U)
@@ -763,9 +772,9 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset
   io.ld_fwddata_buf_lo              := 0.U
   io.ld_fwddata_buf_hi              := 0.U
 
-  lsu_imprecise_error_store_tag     :=  Mux1H((0 until DEPTH).map(i =>(((buf_state(i) === DONE) & buf_error(i) & buf_write(i))  -> intToUInt(i))))
+  lsu_imprecise_error_store_tag     :=  Mux1H((0 until DEPTH).map(i =>(((buf_state(i) === done_C) & buf_error(i) & buf_write(i))  -> intToUInt(i))))
   io.lsu_imprecise_error_load_any   := io.lsu_nonblock_load_data_error & ~io.lsu_imprecise_error_store_any
-  io.lsu_imprecise_error_store_any  := {for(i <- 0 until DEPTH) yield io.lsu_bus_clk_en_q & (buf_state(i) === DONE) & buf_error(i) & buf_write(i)}.reduce(_|_)
+  io.lsu_imprecise_error_store_any  := {for(i <- 0 until DEPTH) yield io.lsu_bus_clk_en_q & (buf_state(i) === done_C) & buf_error(i) & buf_write(i)}.reduce(_|_)
   io.lsu_imprecise_error_addr_any   := Mux(io.lsu_imprecise_error_store_any, buf_addr(lsu_imprecise_error_store_tag), buf_addr(io.lsu_nonblock_load_data_tag))
 
   bus_pend_trxnQ                    := 0.U(8.W)

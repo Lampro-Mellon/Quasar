@@ -1,3 +1,24 @@
+module rvclkhdr(
+  output  io_l1clk,
+  input   io_clk,
+  input   io_en,
+  input   io_scan_mode
+);
+  wire  clkhdr_Q; // @[beh_lib.scala 332:24]
+  wire  clkhdr_CK; // @[beh_lib.scala 332:24]
+  wire  clkhdr_EN; // @[beh_lib.scala 332:24]
+  wire  clkhdr_SE; // @[beh_lib.scala 332:24]
+  TEC_RV_ICG clkhdr ( // @[beh_lib.scala 332:24]
+    .Q(clkhdr_Q),
+    .CK(clkhdr_CK),
+    .EN(clkhdr_EN),
+    .SE(clkhdr_SE)
+  );
+  assign io_l1clk = clkhdr_Q; // @[beh_lib.scala 333:12]
+  assign clkhdr_CK = io_clk; // @[beh_lib.scala 334:16]
+  assign clkhdr_EN = io_en; // @[beh_lib.scala 335:16]
+  assign clkhdr_SE = io_scan_mode; // @[beh_lib.scala 336:16]
+endmodule
 module el2_lsu_stbuf(
   input         clock,
   input         reset,
@@ -87,20 +108,52 @@ module el2_lsu_stbuf(
   reg [31:0] _RAND_22;
   reg [31:0] _RAND_23;
 `endif // RANDOMIZE_REG_INIT
+  wire  rvclkhdr_io_l1clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_io_clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_io_en; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_io_scan_mode; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_1_io_l1clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_1_io_clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_1_io_en; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_1_io_scan_mode; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_2_io_l1clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_2_io_clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_2_io_en; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_2_io_scan_mode; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_3_io_l1clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_3_io_clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_3_io_en; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_3_io_scan_mode; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_4_io_l1clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_4_io_clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_4_io_en; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_4_io_scan_mode; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_5_io_l1clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_5_io_clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_5_io_en; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_5_io_scan_mode; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_6_io_l1clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_6_io_clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_6_io_en; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_6_io_scan_mode; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_7_io_l1clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_7_io_clk; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_7_io_en; // @[beh_lib.scala 352:21]
+  wire  rvclkhdr_7_io_scan_mode; // @[beh_lib.scala 352:21]
   wire [1:0] _T_5 = io_lsu_pkt_r_half ? 2'h3 : 2'h0; // @[Mux.scala 27:72]
   wire [3:0] _T_6 = io_lsu_pkt_r_word ? 4'hf : 4'h0; // @[Mux.scala 27:72]
   wire [7:0] _T_7 = io_lsu_pkt_r_dword ? 8'hff : 8'h0; // @[Mux.scala 27:72]
-  wire [1:0] _GEN_18 = {{1'd0}, io_lsu_pkt_r_by}; // @[Mux.scala 27:72]
-  wire [1:0] _T_8 = _GEN_18 | _T_5; // @[Mux.scala 27:72]
-  wire [3:0] _GEN_19 = {{2'd0}, _T_8}; // @[Mux.scala 27:72]
-  wire [3:0] _T_9 = _GEN_19 | _T_6; // @[Mux.scala 27:72]
-  wire [7:0] _GEN_20 = {{4'd0}, _T_9}; // @[Mux.scala 27:72]
-  wire [7:0] ldst_byteen_r = _GEN_20 | _T_7; // @[Mux.scala 27:72]
+  wire [1:0] _GEN_10 = {{1'd0}, io_lsu_pkt_r_by}; // @[Mux.scala 27:72]
+  wire [1:0] _T_8 = _GEN_10 | _T_5; // @[Mux.scala 27:72]
+  wire [3:0] _GEN_11 = {{2'd0}, _T_8}; // @[Mux.scala 27:72]
+  wire [3:0] _T_9 = _GEN_11 | _T_6; // @[Mux.scala 27:72]
+  wire [7:0] _GEN_12 = {{4'd0}, _T_9}; // @[Mux.scala 27:72]
+  wire [7:0] ldst_byteen_r = _GEN_12 | _T_7; // @[Mux.scala 27:72]
   wire  ldst_dual_d = io_lsu_addr_d[2] != io_end_addr_d[2]; // @[el2_lsu_stbuf.scala 118:40]
   reg  ldst_dual_r; // @[el2_lsu_stbuf.scala 177:53]
   wire  dual_stbuf_write_r = ldst_dual_r & io_store_stbuf_reqvld_r; // @[el2_lsu_stbuf.scala 119:41]
-  wire [10:0] _GEN_21 = {{3'd0}, ldst_byteen_r}; // @[el2_lsu_stbuf.scala 121:40]
-  wire [10:0] _T_14 = _GEN_21 << io_lsu_addr_r[1:0]; // @[el2_lsu_stbuf.scala 121:40]
+  wire [10:0] _GEN_13 = {{3'd0}, ldst_byteen_r}; // @[el2_lsu_stbuf.scala 121:40]
+  wire [10:0] _T_14 = _GEN_13 << io_lsu_addr_r[1:0]; // @[el2_lsu_stbuf.scala 121:40]
   wire [7:0] store_byteen_ext_r = _T_14[7:0]; // @[el2_lsu_stbuf.scala 121:23]
   wire [3:0] _T_17 = io_lsu_pkt_r_store ? 4'hf : 4'h0; // @[Bitwise.scala 72:12]
   wire [3:0] store_byteen_hi_r = store_byteen_ext_r[7:4] & _T_17; // @[el2_lsu_stbuf.scala 122:52]
@@ -110,7 +163,7 @@ module el2_lsu_stbuf(
   reg [1:0] WrPtr; // @[Reg.scala 27:20]
   wire [1:0] WrPtrPlus1 = WrPtr + 2'h1; // @[el2_lsu_stbuf.scala 126:27]
   wire [1:0] WrPtrPlus2 = WrPtr + 2'h2; // @[el2_lsu_stbuf.scala 127:27]
-  reg [15:0] stbuf_addr_0; // @[Reg.scala 27:20]
+  reg [15:0] stbuf_addr_0; // @[beh_lib.scala 358:14]
   wire  _T_27 = stbuf_addr_0[15:2] == io_lsu_addr_r[15:2]; // @[el2_lsu_stbuf.scala 131:120]
   reg  _T_588; // @[el2_lsu_stbuf.scala 164:88]
   reg  _T_580; // @[el2_lsu_stbuf.scala 164:88]
@@ -137,21 +190,21 @@ module el2_lsu_stbuf(
   wire [3:0] stbuf_reset = {_T_215,_T_211,_T_207,_T_203}; // @[Cat.scala 29:58]
   wire  _T_34 = ~stbuf_reset[0]; // @[el2_lsu_stbuf.scala 131:218]
   wire  _T_35 = _T_32 & _T_34; // @[el2_lsu_stbuf.scala 131:216]
-  reg [15:0] stbuf_addr_1; // @[Reg.scala 27:20]
+  reg [15:0] stbuf_addr_1; // @[beh_lib.scala 358:14]
   wire  _T_38 = stbuf_addr_1[15:2] == io_lsu_addr_r[15:2]; // @[el2_lsu_stbuf.scala 131:120]
   wire  _T_40 = _T_38 & stbuf_vld[1]; // @[el2_lsu_stbuf.scala 131:179]
   wire  _T_42 = ~stbuf_dma_kill[1]; // @[el2_lsu_stbuf.scala 131:197]
   wire  _T_43 = _T_40 & _T_42; // @[el2_lsu_stbuf.scala 131:195]
   wire  _T_45 = ~stbuf_reset[1]; // @[el2_lsu_stbuf.scala 131:218]
   wire  _T_46 = _T_43 & _T_45; // @[el2_lsu_stbuf.scala 131:216]
-  reg [15:0] stbuf_addr_2; // @[Reg.scala 27:20]
+  reg [15:0] stbuf_addr_2; // @[beh_lib.scala 358:14]
   wire  _T_49 = stbuf_addr_2[15:2] == io_lsu_addr_r[15:2]; // @[el2_lsu_stbuf.scala 131:120]
   wire  _T_51 = _T_49 & stbuf_vld[2]; // @[el2_lsu_stbuf.scala 131:179]
   wire  _T_53 = ~stbuf_dma_kill[2]; // @[el2_lsu_stbuf.scala 131:197]
   wire  _T_54 = _T_51 & _T_53; // @[el2_lsu_stbuf.scala 131:195]
   wire  _T_56 = ~stbuf_reset[2]; // @[el2_lsu_stbuf.scala 131:218]
   wire  _T_57 = _T_54 & _T_56; // @[el2_lsu_stbuf.scala 131:216]
-  reg [15:0] stbuf_addr_3; // @[Reg.scala 27:20]
+  reg [15:0] stbuf_addr_3; // @[beh_lib.scala 358:14]
   wire  _T_60 = stbuf_addr_3[15:2] == io_lsu_addr_r[15:2]; // @[el2_lsu_stbuf.scala 131:120]
   wire  _T_62 = _T_60 & stbuf_vld[3]; // @[el2_lsu_stbuf.scala 131:179]
   wire  _T_64 = ~stbuf_dma_kill[3]; // @[el2_lsu_stbuf.scala 131:197]
@@ -268,28 +321,28 @@ module el2_lsu_stbuf(
   wire [3:0] stbuf_byteenin_3 = sel_lo[3] ? _T_286 : _T_287; // @[el2_lsu_stbuf.scala 146:59]
   wire  _T_291 = ~stbuf_byteen_0[0]; // @[el2_lsu_stbuf.scala 148:68]
   wire  _T_293 = _T_291 | store_byteen_lo_r[0]; // @[el2_lsu_stbuf.scala 148:88]
-  reg [31:0] stbuf_data_0; // @[Reg.scala 27:20]
+  reg [31:0] stbuf_data_0; // @[beh_lib.scala 358:14]
   wire [7:0] _T_296 = _T_293 ? io_store_datafn_lo_r[7:0] : stbuf_data_0[7:0]; // @[el2_lsu_stbuf.scala 148:67]
   wire  _T_300 = _T_291 | store_byteen_hi_r[0]; // @[el2_lsu_stbuf.scala 149:31]
   wire [7:0] _T_303 = _T_300 ? io_store_datafn_hi_r[7:0] : stbuf_data_0[7:0]; // @[el2_lsu_stbuf.scala 149:10]
   wire [7:0] datain1_0 = sel_lo[0] ? _T_296 : _T_303; // @[el2_lsu_stbuf.scala 148:52]
   wire  _T_307 = ~stbuf_byteen_1[0]; // @[el2_lsu_stbuf.scala 148:68]
   wire  _T_309 = _T_307 | store_byteen_lo_r[0]; // @[el2_lsu_stbuf.scala 148:88]
-  reg [31:0] stbuf_data_1; // @[Reg.scala 27:20]
+  reg [31:0] stbuf_data_1; // @[beh_lib.scala 358:14]
   wire [7:0] _T_312 = _T_309 ? io_store_datafn_lo_r[7:0] : stbuf_data_1[7:0]; // @[el2_lsu_stbuf.scala 148:67]
   wire  _T_316 = _T_307 | store_byteen_hi_r[0]; // @[el2_lsu_stbuf.scala 149:31]
   wire [7:0] _T_319 = _T_316 ? io_store_datafn_hi_r[7:0] : stbuf_data_1[7:0]; // @[el2_lsu_stbuf.scala 149:10]
   wire [7:0] datain1_1 = sel_lo[1] ? _T_312 : _T_319; // @[el2_lsu_stbuf.scala 148:52]
   wire  _T_323 = ~stbuf_byteen_2[0]; // @[el2_lsu_stbuf.scala 148:68]
   wire  _T_325 = _T_323 | store_byteen_lo_r[0]; // @[el2_lsu_stbuf.scala 148:88]
-  reg [31:0] stbuf_data_2; // @[Reg.scala 27:20]
+  reg [31:0] stbuf_data_2; // @[beh_lib.scala 358:14]
   wire [7:0] _T_328 = _T_325 ? io_store_datafn_lo_r[7:0] : stbuf_data_2[7:0]; // @[el2_lsu_stbuf.scala 148:67]
   wire  _T_332 = _T_323 | store_byteen_hi_r[0]; // @[el2_lsu_stbuf.scala 149:31]
   wire [7:0] _T_335 = _T_332 ? io_store_datafn_hi_r[7:0] : stbuf_data_2[7:0]; // @[el2_lsu_stbuf.scala 149:10]
   wire [7:0] datain1_2 = sel_lo[2] ? _T_328 : _T_335; // @[el2_lsu_stbuf.scala 148:52]
   wire  _T_339 = ~stbuf_byteen_3[0]; // @[el2_lsu_stbuf.scala 148:68]
   wire  _T_341 = _T_339 | store_byteen_lo_r[0]; // @[el2_lsu_stbuf.scala 148:88]
-  reg [31:0] stbuf_data_3; // @[Reg.scala 27:20]
+  reg [31:0] stbuf_data_3; // @[beh_lib.scala 358:14]
   wire [7:0] _T_344 = _T_341 ? io_store_datafn_lo_r[7:0] : stbuf_data_3[7:0]; // @[el2_lsu_stbuf.scala 148:67]
   wire  _T_348 = _T_339 | store_byteen_hi_r[0]; // @[el2_lsu_stbuf.scala 149:31]
   wire [7:0] _T_351 = _T_348 ? io_store_datafn_hi_r[7:0] : stbuf_data_3[7:0]; // @[el2_lsu_stbuf.scala 149:10]
@@ -366,10 +419,14 @@ module el2_lsu_stbuf(
   wire  _T_540 = _T_531 | store_byteen_hi_r[3]; // @[el2_lsu_stbuf.scala 158:31]
   wire [7:0] _T_543 = _T_540 ? io_store_datafn_hi_r[31:24] : stbuf_data_3[31:24]; // @[el2_lsu_stbuf.scala 158:10]
   wire [7:0] datain4_3 = sel_lo[3] ? _T_536 : _T_543; // @[el2_lsu_stbuf.scala 157:53]
-  wire [31:0] stbuf_datain_0 = {datain4_0,datain3_0,datain2_0,datain1_0}; // @[Cat.scala 29:58]
-  wire [31:0] stbuf_datain_1 = {datain4_1,datain3_1,datain2_1,datain1_1}; // @[Cat.scala 29:58]
-  wire [31:0] stbuf_datain_2 = {datain4_2,datain3_2,datain2_2,datain1_2}; // @[Cat.scala 29:58]
-  wire [31:0] stbuf_datain_3 = {datain4_3,datain3_3,datain2_3,datain1_3}; // @[Cat.scala 29:58]
+  wire [15:0] _T_545 = {datain2_0,datain1_0}; // @[Cat.scala 29:58]
+  wire [15:0] _T_546 = {datain4_0,datain3_0}; // @[Cat.scala 29:58]
+  wire [15:0] _T_548 = {datain2_1,datain1_1}; // @[Cat.scala 29:58]
+  wire [15:0] _T_549 = {datain4_1,datain3_1}; // @[Cat.scala 29:58]
+  wire [15:0] _T_551 = {datain2_2,datain1_2}; // @[Cat.scala 29:58]
+  wire [15:0] _T_552 = {datain4_2,datain3_2}; // @[Cat.scala 29:58]
+  wire [15:0] _T_554 = {datain2_3,datain1_3}; // @[Cat.scala 29:58]
+  wire [15:0] _T_555 = {datain4_3,datain3_3}; // @[Cat.scala 29:58]
   wire  _T_560 = stbuf_wr_en[0] | stbuf_vld[0]; // @[el2_lsu_stbuf.scala 164:92]
   wire  _T_568 = stbuf_wr_en[1] | stbuf_vld[1]; // @[el2_lsu_stbuf.scala 164:92]
   wire  _T_576 = stbuf_wr_en[2] | stbuf_vld[2]; // @[el2_lsu_stbuf.scala 164:92]
@@ -446,10 +503,10 @@ module el2_lsu_stbuf(
   wire  _T_699 = _T_689[0] & _T_698; // @[el2_lsu_stbuf.scala 181:45]
   wire  _T_700 = |stbuf_dma_kill_en; // @[el2_lsu_stbuf.scala 181:92]
   wire  _T_701 = ~_T_700; // @[el2_lsu_stbuf.scala 181:72]
-  wire [15:0] _GEN_9 = 2'h1 == RdPtr ? stbuf_addr_1 : stbuf_addr_0; // @[el2_lsu_stbuf.scala 182:23]
-  wire [15:0] _GEN_10 = 2'h2 == RdPtr ? stbuf_addr_2 : _GEN_9; // @[el2_lsu_stbuf.scala 182:23]
-  wire [31:0] _GEN_13 = 2'h1 == RdPtr ? stbuf_data_1 : stbuf_data_0; // @[el2_lsu_stbuf.scala 183:23]
-  wire [31:0] _GEN_14 = 2'h2 == RdPtr ? stbuf_data_2 : _GEN_13; // @[el2_lsu_stbuf.scala 183:23]
+  wire [15:0] _GEN_1 = 2'h1 == RdPtr ? stbuf_addr_1 : stbuf_addr_0; // @[el2_lsu_stbuf.scala 182:23]
+  wire [15:0] _GEN_2 = 2'h2 == RdPtr ? stbuf_addr_2 : _GEN_1; // @[el2_lsu_stbuf.scala 182:23]
+  wire [31:0] _GEN_5 = 2'h1 == RdPtr ? stbuf_data_1 : stbuf_data_0; // @[el2_lsu_stbuf.scala 183:23]
+  wire [31:0] _GEN_6 = 2'h2 == RdPtr ? stbuf_data_2 : _GEN_5; // @[el2_lsu_stbuf.scala 183:23]
   wire  _T_703 = ~dual_stbuf_write_r; // @[el2_lsu_stbuf.scala 185:44]
   wire  _T_704 = io_ldst_stbuf_reqvld_r & _T_703; // @[el2_lsu_stbuf.scala 185:42]
   wire  _T_705 = store_coalesce_hi_r | store_coalesce_lo_r; // @[el2_lsu_stbuf.scala 185:88]
@@ -478,12 +535,12 @@ module el2_lsu_stbuf(
   wire  isdccmst_r = _T_738 & _T_739; // @[el2_lsu_stbuf.scala 196:81]
   wire [1:0] _T_740 = {1'h0,isdccmst_m}; // @[Cat.scala 29:58]
   wire  _T_741 = isdccmst_m & ldst_dual_m; // @[el2_lsu_stbuf.scala 198:63]
-  wire [2:0] _GEN_22 = {{1'd0}, _T_740}; // @[el2_lsu_stbuf.scala 198:48]
-  wire [2:0] _T_742 = _GEN_22 << _T_741; // @[el2_lsu_stbuf.scala 198:48]
+  wire [2:0] _GEN_14 = {{1'd0}, _T_740}; // @[el2_lsu_stbuf.scala 198:48]
+  wire [2:0] _T_742 = _GEN_14 << _T_741; // @[el2_lsu_stbuf.scala 198:48]
   wire [1:0] _T_743 = {1'h0,isdccmst_r}; // @[Cat.scala 29:58]
   wire  _T_744 = isdccmst_r & ldst_dual_r; // @[el2_lsu_stbuf.scala 199:63]
-  wire [2:0] _GEN_23 = {{1'd0}, _T_743}; // @[el2_lsu_stbuf.scala 199:48]
-  wire [2:0] _T_745 = _GEN_23 << _T_744; // @[el2_lsu_stbuf.scala 199:48]
+  wire [2:0] _GEN_15 = {{1'd0}, _T_743}; // @[el2_lsu_stbuf.scala 199:48]
+  wire [2:0] _T_745 = _GEN_15 << _T_744; // @[el2_lsu_stbuf.scala 199:48]
   wire [1:0] stbuf_specvld_m = _T_742[1:0]; // @[el2_lsu_stbuf.scala 198:20]
   wire [3:0] _T_746 = {2'h0,stbuf_specvld_m}; // @[Cat.scala 29:58]
   wire [3:0] _T_748 = stbuf_numvld_any + _T_746; // @[el2_lsu_stbuf.scala 200:45]
@@ -670,10 +727,10 @@ module el2_lsu_stbuf(
   wire [7:0] _T_1179 = ld_byte_rhit_lo_lo[3] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
   wire [7:0] _T_1181 = _T_1179 & io_store_data_lo_r[31:24]; // @[el2_lsu_stbuf.scala 246:54]
   wire [7:0] _T_1184 = ld_byte_rhit_hi_lo[3] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  wire [23:0] _GEN_25 = {{16'd0}, _T_1184}; // @[el2_lsu_stbuf.scala 246:117]
-  wire [23:0] _T_1186 = _GEN_25 & io_store_data_hi_r[31:8]; // @[el2_lsu_stbuf.scala 246:117]
-  wire [23:0] _GEN_26 = {{16'd0}, _T_1181}; // @[el2_lsu_stbuf.scala 246:83]
-  wire [23:0] fwdpipe4_lo = _GEN_26 | _T_1186; // @[el2_lsu_stbuf.scala 246:83]
+  wire [23:0] _GEN_17 = {{16'd0}, _T_1184}; // @[el2_lsu_stbuf.scala 246:117]
+  wire [23:0] _T_1186 = _GEN_17 & io_store_data_hi_r[31:8]; // @[el2_lsu_stbuf.scala 246:117]
+  wire [23:0] _GEN_18 = {{16'd0}, _T_1181}; // @[el2_lsu_stbuf.scala 246:83]
+  wire [23:0] fwdpipe4_lo = _GEN_18 | _T_1186; // @[el2_lsu_stbuf.scala 246:83]
   wire [47:0] _T_1189 = {fwdpipe4_lo,fwdpipe3_lo,fwdpipe2_lo,fwdpipe1_lo}; // @[Cat.scala 29:58]
   wire [7:0] _T_1192 = ld_byte_rhit_lo_hi[0] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
   wire [7:0] _T_1194 = _T_1192 & io_store_data_lo_r[7:0]; // @[el2_lsu_stbuf.scala 249:54]
@@ -693,10 +750,10 @@ module el2_lsu_stbuf(
   wire [7:0] _T_1222 = ld_byte_rhit_lo_hi[3] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
   wire [7:0] _T_1224 = _T_1222 & io_store_data_lo_r[31:24]; // @[el2_lsu_stbuf.scala 252:54]
   wire [7:0] _T_1227 = ld_byte_rhit_hi_hi[3] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  wire [23:0] _GEN_27 = {{16'd0}, _T_1227}; // @[el2_lsu_stbuf.scala 252:117]
-  wire [23:0] _T_1229 = _GEN_27 & io_store_data_hi_r[31:8]; // @[el2_lsu_stbuf.scala 252:117]
-  wire [23:0] _GEN_28 = {{16'd0}, _T_1224}; // @[el2_lsu_stbuf.scala 252:83]
-  wire [23:0] fwdpipe4_hi = _GEN_28 | _T_1229; // @[el2_lsu_stbuf.scala 252:83]
+  wire [23:0] _GEN_19 = {{16'd0}, _T_1227}; // @[el2_lsu_stbuf.scala 252:117]
+  wire [23:0] _T_1229 = _GEN_19 & io_store_data_hi_r[31:8]; // @[el2_lsu_stbuf.scala 252:117]
+  wire [23:0] _GEN_20 = {{16'd0}, _T_1224}; // @[el2_lsu_stbuf.scala 252:83]
+  wire [23:0] fwdpipe4_hi = _GEN_20 | _T_1229; // @[el2_lsu_stbuf.scala 252:83]
   wire [47:0] _T_1232 = {fwdpipe4_hi,fwdpipe3_hi,fwdpipe2_hi,fwdpipe1_hi}; // @[Cat.scala 29:58]
   wire  _T_1264 = ld_byte_rhit_hi[0] | stbuf_fwdbyteen_hi_pre_m_0; // @[el2_lsu_stbuf.scala 258:84]
   wire  _T_1266 = ld_byte_rhit_hi[1] | stbuf_fwdbyteen_hi_pre_m_1; // @[el2_lsu_stbuf.scala 258:84]
@@ -722,10 +779,58 @@ module el2_lsu_stbuf(
   wire [7:0] stbuf_fwdpipe4_hi = ld_byte_rhit_hi[3] ? ld_fwddata_rpipe_hi[31:24] : stbuf_fwddata_hi_pre_m[31:24]; // @[el2_lsu_stbuf.scala 271:31]
   wire [15:0] _T_1312 = {stbuf_fwdpipe2_hi,stbuf_fwdpipe1_hi}; // @[Cat.scala 29:58]
   wire [15:0] _T_1313 = {stbuf_fwdpipe4_hi,stbuf_fwdpipe3_hi}; // @[Cat.scala 29:58]
+  rvclkhdr rvclkhdr ( // @[beh_lib.scala 352:21]
+    .io_l1clk(rvclkhdr_io_l1clk),
+    .io_clk(rvclkhdr_io_clk),
+    .io_en(rvclkhdr_io_en),
+    .io_scan_mode(rvclkhdr_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_1 ( // @[beh_lib.scala 352:21]
+    .io_l1clk(rvclkhdr_1_io_l1clk),
+    .io_clk(rvclkhdr_1_io_clk),
+    .io_en(rvclkhdr_1_io_en),
+    .io_scan_mode(rvclkhdr_1_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_2 ( // @[beh_lib.scala 352:21]
+    .io_l1clk(rvclkhdr_2_io_l1clk),
+    .io_clk(rvclkhdr_2_io_clk),
+    .io_en(rvclkhdr_2_io_en),
+    .io_scan_mode(rvclkhdr_2_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_3 ( // @[beh_lib.scala 352:21]
+    .io_l1clk(rvclkhdr_3_io_l1clk),
+    .io_clk(rvclkhdr_3_io_clk),
+    .io_en(rvclkhdr_3_io_en),
+    .io_scan_mode(rvclkhdr_3_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_4 ( // @[beh_lib.scala 352:21]
+    .io_l1clk(rvclkhdr_4_io_l1clk),
+    .io_clk(rvclkhdr_4_io_clk),
+    .io_en(rvclkhdr_4_io_en),
+    .io_scan_mode(rvclkhdr_4_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_5 ( // @[beh_lib.scala 352:21]
+    .io_l1clk(rvclkhdr_5_io_l1clk),
+    .io_clk(rvclkhdr_5_io_clk),
+    .io_en(rvclkhdr_5_io_en),
+    .io_scan_mode(rvclkhdr_5_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_6 ( // @[beh_lib.scala 352:21]
+    .io_l1clk(rvclkhdr_6_io_l1clk),
+    .io_clk(rvclkhdr_6_io_clk),
+    .io_en(rvclkhdr_6_io_en),
+    .io_scan_mode(rvclkhdr_6_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_7 ( // @[beh_lib.scala 352:21]
+    .io_l1clk(rvclkhdr_7_io_l1clk),
+    .io_clk(rvclkhdr_7_io_clk),
+    .io_en(rvclkhdr_7_io_en),
+    .io_scan_mode(rvclkhdr_7_io_scan_mode)
+  );
   assign io_stbuf_reqvld_any = _T_699 & _T_701; // @[el2_lsu_stbuf.scala 52:47 el2_lsu_stbuf.scala 181:25]
   assign io_stbuf_reqvld_flushed_any = _T_689[0] & _T_691[0]; // @[el2_lsu_stbuf.scala 53:36 el2_lsu_stbuf.scala 180:32]
-  assign io_stbuf_addr_any = 2'h3 == RdPtr ? stbuf_addr_3 : _GEN_10; // @[el2_lsu_stbuf.scala 54:35 el2_lsu_stbuf.scala 182:23]
-  assign io_stbuf_data_any = 2'h3 == RdPtr ? stbuf_data_3 : _GEN_14; // @[el2_lsu_stbuf.scala 55:35 el2_lsu_stbuf.scala 183:23]
+  assign io_stbuf_addr_any = 2'h3 == RdPtr ? stbuf_addr_3 : _GEN_2; // @[el2_lsu_stbuf.scala 54:35 el2_lsu_stbuf.scala 182:23]
+  assign io_stbuf_data_any = 2'h3 == RdPtr ? stbuf_data_3 : _GEN_6; // @[el2_lsu_stbuf.scala 55:35 el2_lsu_stbuf.scala 183:23]
   assign io_lsu_stbuf_full_any = _T_752 ? _T_754 : _T_755; // @[el2_lsu_stbuf.scala 56:43 el2_lsu_stbuf.scala 202:27]
   assign io_lsu_stbuf_empty_any = stbuf_numvld_any == 4'h0; // @[el2_lsu_stbuf.scala 57:43 el2_lsu_stbuf.scala 203:27]
   assign io_ldst_stbuf_reqvld_r = io_lsu_commit_r & io_store_stbuf_reqvld_r; // @[el2_lsu_stbuf.scala 58:43 el2_lsu_stbuf.scala 129:27]
@@ -733,6 +838,30 @@ module el2_lsu_stbuf(
   assign io_stbuf_fwddata_lo_m = {_T_1298,_T_1297}; // @[el2_lsu_stbuf.scala 60:43 el2_lsu_stbuf.scala 266:26]
   assign io_stbuf_fwdbyteen_hi_m = {_T_1272,_T_1264}; // @[el2_lsu_stbuf.scala 61:37 el2_lsu_stbuf.scala 258:28]
   assign io_stbuf_fwdbyteen_lo_m = {_T_1283,_T_1275}; // @[el2_lsu_stbuf.scala 62:37 el2_lsu_stbuf.scala 259:28]
+  assign rvclkhdr_io_clk = clock; // @[beh_lib.scala 354:16]
+  assign rvclkhdr_io_en = stbuf_wr_en[0]; // @[beh_lib.scala 355:15]
+  assign rvclkhdr_io_scan_mode = io_scan_mode; // @[beh_lib.scala 356:22]
+  assign rvclkhdr_1_io_clk = clock; // @[beh_lib.scala 354:16]
+  assign rvclkhdr_1_io_en = stbuf_wr_en[0]; // @[beh_lib.scala 355:15]
+  assign rvclkhdr_1_io_scan_mode = io_scan_mode; // @[beh_lib.scala 356:22]
+  assign rvclkhdr_2_io_clk = clock; // @[beh_lib.scala 354:16]
+  assign rvclkhdr_2_io_en = stbuf_wr_en[1]; // @[beh_lib.scala 355:15]
+  assign rvclkhdr_2_io_scan_mode = io_scan_mode; // @[beh_lib.scala 356:22]
+  assign rvclkhdr_3_io_clk = clock; // @[beh_lib.scala 354:16]
+  assign rvclkhdr_3_io_en = stbuf_wr_en[1]; // @[beh_lib.scala 355:15]
+  assign rvclkhdr_3_io_scan_mode = io_scan_mode; // @[beh_lib.scala 356:22]
+  assign rvclkhdr_4_io_clk = clock; // @[beh_lib.scala 354:16]
+  assign rvclkhdr_4_io_en = stbuf_wr_en[2]; // @[beh_lib.scala 355:15]
+  assign rvclkhdr_4_io_scan_mode = io_scan_mode; // @[beh_lib.scala 356:22]
+  assign rvclkhdr_5_io_clk = clock; // @[beh_lib.scala 354:16]
+  assign rvclkhdr_5_io_en = stbuf_wr_en[2]; // @[beh_lib.scala 355:15]
+  assign rvclkhdr_5_io_scan_mode = io_scan_mode; // @[beh_lib.scala 356:22]
+  assign rvclkhdr_6_io_clk = clock; // @[beh_lib.scala 354:16]
+  assign rvclkhdr_6_io_en = stbuf_wr_en[3]; // @[beh_lib.scala 355:15]
+  assign rvclkhdr_6_io_scan_mode = io_scan_mode; // @[beh_lib.scala 356:22]
+  assign rvclkhdr_7_io_clk = clock; // @[beh_lib.scala 354:16]
+  assign rvclkhdr_7_io_en = stbuf_wr_en[3]; // @[beh_lib.scala 355:15]
+  assign rvclkhdr_7_io_scan_mode = io_scan_mode; // @[beh_lib.scala 356:22]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -920,15 +1049,13 @@ end // initial
       end
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge rvclkhdr_io_l1clk or posedge reset) begin
     if (reset) begin
       stbuf_addr_0 <= 16'h0;
-    end else if (stbuf_wr_en[0]) begin
-      if (sel_lo[0]) begin
-        stbuf_addr_0 <= io_lsu_addr_r[15:0];
-      end else begin
-        stbuf_addr_0 <= io_end_addr_r[15:0];
-      end
+    end else if (sel_lo[0]) begin
+      stbuf_addr_0 <= io_lsu_addr_r[15:0];
+    end else begin
+      stbuf_addr_0 <= io_end_addr_r[15:0];
     end
   end
   always @(posedge io_lsu_free_c2_clk or posedge reset) begin
@@ -987,37 +1114,31 @@ end // initial
       _T_599 <= _T_595 & _T_34;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge rvclkhdr_2_io_l1clk or posedge reset) begin
     if (reset) begin
       stbuf_addr_1 <= 16'h0;
-    end else if (stbuf_wr_en[1]) begin
-      if (sel_lo[1]) begin
-        stbuf_addr_1 <= io_lsu_addr_r[15:0];
-      end else begin
-        stbuf_addr_1 <= io_end_addr_r[15:0];
-      end
+    end else if (sel_lo[1]) begin
+      stbuf_addr_1 <= io_lsu_addr_r[15:0];
+    end else begin
+      stbuf_addr_1 <= io_end_addr_r[15:0];
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge rvclkhdr_4_io_l1clk or posedge reset) begin
     if (reset) begin
       stbuf_addr_2 <= 16'h0;
-    end else if (stbuf_wr_en[2]) begin
-      if (sel_lo[2]) begin
-        stbuf_addr_2 <= io_lsu_addr_r[15:0];
-      end else begin
-        stbuf_addr_2 <= io_end_addr_r[15:0];
-      end
+    end else if (sel_lo[2]) begin
+      stbuf_addr_2 <= io_lsu_addr_r[15:0];
+    end else begin
+      stbuf_addr_2 <= io_end_addr_r[15:0];
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge rvclkhdr_6_io_l1clk or posedge reset) begin
     if (reset) begin
       stbuf_addr_3 <= 16'h0;
-    end else if (stbuf_wr_en[3]) begin
-      if (sel_lo[3]) begin
-        stbuf_addr_3 <= io_lsu_addr_r[15:0];
-      end else begin
-        stbuf_addr_3 <= io_end_addr_r[15:0];
-      end
+    end else if (sel_lo[3]) begin
+      stbuf_addr_3 <= io_lsu_addr_r[15:0];
+    end else begin
+      stbuf_addr_3 <= io_end_addr_r[15:0];
     end
   end
   always @(posedge io_lsu_stbuf_c1_clk or posedge reset) begin
@@ -1048,32 +1169,32 @@ end // initial
       stbuf_byteen_3 <= _T_656 & _T_660;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge rvclkhdr_1_io_l1clk or posedge reset) begin
     if (reset) begin
       stbuf_data_0 <= 32'h0;
-    end else if (stbuf_wr_en[0]) begin
-      stbuf_data_0 <= stbuf_datain_0;
+    end else begin
+      stbuf_data_0 <= {_T_546,_T_545};
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge rvclkhdr_3_io_l1clk or posedge reset) begin
     if (reset) begin
       stbuf_data_1 <= 32'h0;
-    end else if (stbuf_wr_en[1]) begin
-      stbuf_data_1 <= stbuf_datain_1;
+    end else begin
+      stbuf_data_1 <= {_T_549,_T_548};
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge rvclkhdr_5_io_l1clk or posedge reset) begin
     if (reset) begin
       stbuf_data_2 <= 32'h0;
-    end else if (stbuf_wr_en[2]) begin
-      stbuf_data_2 <= stbuf_datain_2;
+    end else begin
+      stbuf_data_2 <= {_T_552,_T_551};
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
       stbuf_data_3 <= 32'h0;
-    end else if (stbuf_wr_en[3]) begin
-      stbuf_data_3 <= stbuf_datain_3;
+    end else begin
+      stbuf_data_3 <= {_T_555,_T_554};
     end
   end
   always @(posedge io_lsu_c1_m_clk or posedge reset) begin

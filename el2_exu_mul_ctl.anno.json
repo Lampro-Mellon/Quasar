@@ -4,6 +4,11 @@
     "emitter":"firrtl.VerilogEmitter"
   },
   {
+    "class":"firrtl.transforms.BlackBoxResourceAnno",
+    "target":"el2_exu_mul_ctl.TEC_RV_ICG",
+    "resourceId":"/vsrc/TEC_RV_ICG.v"
+  },
+  {
     "class":"firrtl.options.TargetDirAnnotation",
     "directory":"."
   },

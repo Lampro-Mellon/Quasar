@@ -26,30 +26,30 @@ trait param {
   val BUILD_AXI4             = true
   val BUILD_AXI_NATIVE       = true
   val BUS_PRTY_DEFAULT       = 3
-  val DATA_ACCESS_ADDR0      = 0x00000000 //.U(32.W)
-  val DATA_ACCESS_ADDR1      = 0xC0000000 //.U(32.W)
-  val DATA_ACCESS_ADDR2      = 0xA0000000 //.U(32.W)
-  val DATA_ACCESS_ADDR3      = 0x80000000 //.U(32.W)
-  val DATA_ACCESS_ADDR4      = 0x00000000 //.U(32.W)
-  val DATA_ACCESS_ADDR5      = 0x00000000 //.U(32.W)
-  val DATA_ACCESS_ADDR6      = 0x00000000 //.U(32.W)
-  val DATA_ACCESS_ADDR7      = 0x00000000 //.U(32.W)
-  val DATA_ACCESS_ENABLE0    = true //.U(1.W)
-  val DATA_ACCESS_ENABLE1    = true //.U(1.W)
-  val DATA_ACCESS_ENABLE2    = true //.U(1.W)
-  val DATA_ACCESS_ENABLE3    = true //.U(1.W)
-  val DATA_ACCESS_ENABLE4    = false //.U(1.W)
-  val DATA_ACCESS_ENABLE5    = false //.U(1.W)
-  val DATA_ACCESS_ENABLE6    = false //.U(1.W)
-  val DATA_ACCESS_ENABLE7    = false //.U(1.W)
-  val DATA_ACCESS_MASK0      = 0x7FFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK1      = 0x3FFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK2      = 0x1FFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK3      = 0x0FFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK4      = 0xFFFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK5      = 0xFFFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK6      = 0xFFFFFFFF //.U(32.W)
-  val DATA_ACCESS_MASK7      = 0xFFFFFFFF //.U(32.W)
+  val DATA_ACCESS_ADDR0      = "h00000000".U(32.W)
+  val DATA_ACCESS_ADDR1      = "hC0000000".U(32.W)
+  val DATA_ACCESS_ADDR2      = "hA0000000".U(32.W)
+  val DATA_ACCESS_ADDR3      = "h80000000".U(32.W)
+  val DATA_ACCESS_ADDR4      = "h00000000".U(32.W)
+  val DATA_ACCESS_ADDR5      = "h00000000".U(32.W)
+  val DATA_ACCESS_ADDR6      = "h00000000".U(32.W)
+  val DATA_ACCESS_ADDR7      = "h00000000".U(32.W)
+  val DATA_ACCESS_ENABLE0    = "h1".U(1.W)
+  val DATA_ACCESS_ENABLE1    = "h1".U(1.W)
+  val DATA_ACCESS_ENABLE2    = "h1".U(1.W)
+  val DATA_ACCESS_ENABLE3    = "h1".U(1.W)
+  val DATA_ACCESS_ENABLE4    = "h0".U(1.W)
+  val DATA_ACCESS_ENABLE5    = "h0".U(1.W)
+  val DATA_ACCESS_ENABLE6    = "h0".U(1.W)
+  val DATA_ACCESS_ENABLE7    = "h0".U(1.W)
+  val DATA_ACCESS_MASK0      = "h7FFFFFFF".U(32.W)
+  val DATA_ACCESS_MASK1      = "h3FFFFFFF".U(32.W)
+  val DATA_ACCESS_MASK2      = "h1FFFFFFF".U(32.W)
+  val DATA_ACCESS_MASK3      = "h0FFFFFFF".U(32.W)
+  val DATA_ACCESS_MASK4      = "hFFFFFFFF".U(32.W)
+  val DATA_ACCESS_MASK5      = "hFFFFFFFF".U(32.W)
+  val DATA_ACCESS_MASK6      = "hFFFFFFFF".U(32.W)
+  val DATA_ACCESS_MASK7      = "hFFFFFFFF".U(32.W)
   val DCCM_BANK_BITS         = 2  //.U(3.W)
   val DCCM_BITS              = 16 //.U(5.W)
   val DCCM_BYTE_WIDTH        = 4  //.U(3.W)
@@ -59,8 +59,8 @@ trait param {
   val DCCM_FDATA_WIDTH       = 0x27 //.U(6.W)
   val DCCM_INDEX_BITS        = 0xC  //.U(4.W)
   val DCCM_NUM_BANKS         = 0x04 //.U(5.W)
-  val DCCM_REGION            = 15  //.U(4.W)
-  val DCCM_SADR              = 0xF0040000
+  val DCCM_REGION            = 15
+  val DCCM_SADR              = "hF0040000".U(32.W)
   val DCCM_SIZE              = 0x040
   val DCCM_WIDTH_BITS        = 2 //.U(2.W)
   val DMA_BUF_DEPTH          = 5 //.U(3.W)
@@ -103,7 +103,7 @@ trait param {
   val ICCM_INDEX_BITS        = 0xC   //.U(4.W)
   val ICCM_NUM_BANKS         = 0x04  //.U(5.W)
   val ICCM_ONLY              = 0x0   //.U(1.W)
-  val ICCM_REGION            = 0xE   //.U(4.W)
+  val ICCM_REGION            = 0xE  //.U(4.W)
   val ICCM_SADR              = 0xEE000000L //.U(32.W)
   val ICCM_SIZE              = 0x040 //.U(10.W)
   val IFU_BUS_ID             = 0x1   //.U(1.W)
@@ -144,11 +144,11 @@ trait param {
   val LSU_STBUF_DEPTH        = 0x4  //.U(4.W)
   val NO_ICCM_NO_ICACHE      = 0x0  //.U(1.W)
   val PIC_2CYCLE             = 0x0  //.U(1.W)
-  val PIC_BASE_ADDR          = 0xF00C0000 //.U(32.W)
+  val PIC_BASE_ADDR          = "hF00C0000".U(32.W)
   val PIC_BITS               = 0x0F  //.U(5.W)
   val PIC_INT_WORDS          = 0x1   //.U(4.W)
-  val PIC_REGION             = 0xF   //.U(4.W)
-  val PIC_SIZE               = 0x020 //.U(9.W)
+  val PIC_REGION             = 0xF
+  val PIC_SIZE               = 0x020//.U(9.W)
   val PIC_TOTAL_INT          = 0x1F  //.U(8.W)
   val PIC_TOTAL_INT_PLUS1    = 0x020 //.U(9.W)
   val RET_STACK_SIZE         = 0x8   //.U(4.W)
@@ -198,6 +198,12 @@ trait el2_lib extends param{
       ((Fill(20, offset(11) & ~w1(12))) & (rs1(31,12)-1.U))
     Cat(dout_upper,w1(11,0))
   }
+
+  def Encoder(dec_value:UInt) = {
+    val enc_val =  Cat(dec_value(4)| dec_value(5) | dec_value(6)|dec_value(7),
+                       dec_value(2)| dec_value(3) | dec_value(6)|dec_value(7),
+                       dec_value(1)| dec_value(3) | dec_value(5)|dec_value(7))
+    enc_val }
 
 
 
@@ -252,8 +258,6 @@ trait el2_lib extends param{
       in_range := (addr(31,MASK_BITS) === start_addr(31,MASK_BITS)).asUInt
     (in_range,in_region)
   }
-
-
   def rvecc_encode(din:UInt):UInt = {
     val mask0 = Array(1,1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,1,0)
     val mask1 = Array(1,0,1,1,0,1,1,0,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,0,1)

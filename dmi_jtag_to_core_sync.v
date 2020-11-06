@@ -10,14 +10,14 @@ module dmi_jtag_to_core_sync(
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  reg [2:0] rden; // @[dmi_jtag_to_core_sync.scala 25:18]
-  reg [2:0] wren; // @[dmi_jtag_to_core_sync.scala 26:18]
-  wire  _T_8 = ~rden[2]; // @[dmi_jtag_to_core_sync.scala 28:27]
-  wire  c_rd_en = rden[1] & _T_8; // @[dmi_jtag_to_core_sync.scala 28:25]
-  wire  _T_11 = ~wren[2]; // @[dmi_jtag_to_core_sync.scala 29:27]
-  wire  c_wr_en = wren[1] & _T_11; // @[dmi_jtag_to_core_sync.scala 29:25]
-  assign io_reg_en = c_wr_en | c_rd_en; // @[dmi_jtag_to_core_sync.scala 19:16 dmi_jtag_to_core_sync.scala 31:13]
-  assign io_reg_wr_en = wren[1] & _T_11; // @[dmi_jtag_to_core_sync.scala 20:16 dmi_jtag_to_core_sync.scala 32:16]
+  reg [2:0] rden; // @[dmi_jtag_to_core_sync.scala 26:18]
+  reg [2:0] wren; // @[dmi_jtag_to_core_sync.scala 27:18]
+  wire  _T_8 = ~rden[2]; // @[dmi_jtag_to_core_sync.scala 28:23]
+  wire  c_rd_en = rden[1] & _T_8; // @[dmi_jtag_to_core_sync.scala 28:21]
+  wire  _T_12 = ~wren[2]; // @[dmi_jtag_to_core_sync.scala 29:23]
+  wire  c_wr_en = wren[1] & _T_12; // @[dmi_jtag_to_core_sync.scala 29:21]
+  assign io_reg_en = c_wr_en | c_rd_en; // @[dmi_jtag_to_core_sync.scala 31:17]
+  assign io_reg_wr_en = wren[1] & _T_12; // @[dmi_jtag_to_core_sync.scala 32:17]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif

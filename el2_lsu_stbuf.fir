@@ -1,5 +1,197 @@
 ;buildInfoPackage: chisel3, version: 3.3.1, scalaVersion: 2.12.11, sbtVersion: 1.3.10
 circuit el2_lsu_stbuf : 
+  extmodule TEC_RV_ICG : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG @[beh_lib.scala 332:24]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[beh_lib.scala 333:12]
+    clkhdr.CK <= io.clk @[beh_lib.scala 334:16]
+    clkhdr.EN <= io.en @[beh_lib.scala 335:16]
+    clkhdr.SE <= io.scan_mode @[beh_lib.scala 336:16]
+    
+  extmodule TEC_RV_ICG_1 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr_1 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG_1 @[beh_lib.scala 332:24]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[beh_lib.scala 333:12]
+    clkhdr.CK <= io.clk @[beh_lib.scala 334:16]
+    clkhdr.EN <= io.en @[beh_lib.scala 335:16]
+    clkhdr.SE <= io.scan_mode @[beh_lib.scala 336:16]
+    
+  extmodule TEC_RV_ICG_2 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr_2 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG_2 @[beh_lib.scala 332:24]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[beh_lib.scala 333:12]
+    clkhdr.CK <= io.clk @[beh_lib.scala 334:16]
+    clkhdr.EN <= io.en @[beh_lib.scala 335:16]
+    clkhdr.SE <= io.scan_mode @[beh_lib.scala 336:16]
+    
+  extmodule TEC_RV_ICG_3 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr_3 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG_3 @[beh_lib.scala 332:24]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[beh_lib.scala 333:12]
+    clkhdr.CK <= io.clk @[beh_lib.scala 334:16]
+    clkhdr.EN <= io.en @[beh_lib.scala 335:16]
+    clkhdr.SE <= io.scan_mode @[beh_lib.scala 336:16]
+    
+  extmodule TEC_RV_ICG_4 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr_4 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG_4 @[beh_lib.scala 332:24]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[beh_lib.scala 333:12]
+    clkhdr.CK <= io.clk @[beh_lib.scala 334:16]
+    clkhdr.EN <= io.en @[beh_lib.scala 335:16]
+    clkhdr.SE <= io.scan_mode @[beh_lib.scala 336:16]
+    
+  extmodule TEC_RV_ICG_5 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr_5 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG_5 @[beh_lib.scala 332:24]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[beh_lib.scala 333:12]
+    clkhdr.CK <= io.clk @[beh_lib.scala 334:16]
+    clkhdr.EN <= io.en @[beh_lib.scala 335:16]
+    clkhdr.SE <= io.scan_mode @[beh_lib.scala 336:16]
+    
+  extmodule TEC_RV_ICG_6 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr_6 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG_6 @[beh_lib.scala 332:24]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[beh_lib.scala 333:12]
+    clkhdr.CK <= io.clk @[beh_lib.scala 334:16]
+    clkhdr.EN <= io.en @[beh_lib.scala 335:16]
+    clkhdr.SE <= io.scan_mode @[beh_lib.scala 336:16]
+    
+  extmodule TEC_RV_ICG_7 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr_7 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG_7 @[beh_lib.scala 332:24]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[beh_lib.scala 333:12]
+    clkhdr.CK <= io.clk @[beh_lib.scala 334:16]
+    clkhdr.EN <= io.en @[beh_lib.scala 335:16]
+    clkhdr.SE <= io.scan_mode @[beh_lib.scala 336:16]
+    
   module el2_lsu_stbuf : 
     input clock : Clock
     input reset : AsyncReset
@@ -831,61 +1023,93 @@ circuit el2_lsu_stbuf :
     stbuf_byteen[1] <= _T_644 @[el2_lsu_stbuf.scala 167:16]
     stbuf_byteen[2] <= _T_653 @[el2_lsu_stbuf.scala 167:16]
     stbuf_byteen[3] <= _T_662 @[el2_lsu_stbuf.scala 167:16]
-    node _T_663 = bits(stbuf_wr_en, 0, 0) @[el2_lsu_stbuf.scala 172:67]
-    node _T_664 = bits(_T_663, 0, 0) @[el2_lsu_stbuf.scala 172:77]
-    reg _T_665 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_664 : @[Reg.scala 28:19]
-      _T_665 <= stbuf_addrin[0] @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    node _T_663 = bits(stbuf_wr_en, 0, 0) @[el2_lsu_stbuf.scala 172:58]
+    node _T_664 = bits(_T_663, 0, 0) @[el2_lsu_stbuf.scala 172:68]
+    inst rvclkhdr of rvclkhdr @[beh_lib.scala 352:21]
+    rvclkhdr.clock <= clock
+    rvclkhdr.reset <= reset
+    rvclkhdr.io.clk <= clock @[beh_lib.scala 354:16]
+    rvclkhdr.io.en <= _T_664 @[beh_lib.scala 355:15]
+    rvclkhdr.io.scan_mode <= io.scan_mode @[beh_lib.scala 356:22]
+    reg _T_665 : UInt, rvclkhdr.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[beh_lib.scala 358:14]
+    _T_665 <= stbuf_addrin[0] @[beh_lib.scala 358:14]
     stbuf_addr[0] <= _T_665 @[el2_lsu_stbuf.scala 172:21]
-    node _T_666 = bits(stbuf_wr_en, 0, 0) @[el2_lsu_stbuf.scala 174:66]
-    node _T_667 = bits(_T_666, 0, 0) @[el2_lsu_stbuf.scala 174:76]
-    reg _T_668 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_667 : @[Reg.scala 28:19]
-      _T_668 <= stbuf_datain[0] @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    node _T_666 = bits(stbuf_wr_en, 0, 0) @[el2_lsu_stbuf.scala 174:57]
+    node _T_667 = bits(_T_666, 0, 0) @[el2_lsu_stbuf.scala 174:67]
+    inst rvclkhdr_1 of rvclkhdr_1 @[beh_lib.scala 352:21]
+    rvclkhdr_1.clock <= clock
+    rvclkhdr_1.reset <= reset
+    rvclkhdr_1.io.clk <= clock @[beh_lib.scala 354:16]
+    rvclkhdr_1.io.en <= _T_667 @[beh_lib.scala 355:15]
+    rvclkhdr_1.io.scan_mode <= io.scan_mode @[beh_lib.scala 356:22]
+    reg _T_668 : UInt, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[beh_lib.scala 358:14]
+    _T_668 <= stbuf_datain[0] @[beh_lib.scala 358:14]
     stbuf_data[0] <= _T_668 @[el2_lsu_stbuf.scala 174:20]
-    node _T_669 = bits(stbuf_wr_en, 1, 1) @[el2_lsu_stbuf.scala 172:67]
-    node _T_670 = bits(_T_669, 0, 0) @[el2_lsu_stbuf.scala 172:77]
-    reg _T_671 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_670 : @[Reg.scala 28:19]
-      _T_671 <= stbuf_addrin[1] @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    node _T_669 = bits(stbuf_wr_en, 1, 1) @[el2_lsu_stbuf.scala 172:58]
+    node _T_670 = bits(_T_669, 0, 0) @[el2_lsu_stbuf.scala 172:68]
+    inst rvclkhdr_2 of rvclkhdr_2 @[beh_lib.scala 352:21]
+    rvclkhdr_2.clock <= clock
+    rvclkhdr_2.reset <= reset
+    rvclkhdr_2.io.clk <= clock @[beh_lib.scala 354:16]
+    rvclkhdr_2.io.en <= _T_670 @[beh_lib.scala 355:15]
+    rvclkhdr_2.io.scan_mode <= io.scan_mode @[beh_lib.scala 356:22]
+    reg _T_671 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[beh_lib.scala 358:14]
+    _T_671 <= stbuf_addrin[1] @[beh_lib.scala 358:14]
     stbuf_addr[1] <= _T_671 @[el2_lsu_stbuf.scala 172:21]
-    node _T_672 = bits(stbuf_wr_en, 1, 1) @[el2_lsu_stbuf.scala 174:66]
-    node _T_673 = bits(_T_672, 0, 0) @[el2_lsu_stbuf.scala 174:76]
-    reg _T_674 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_673 : @[Reg.scala 28:19]
-      _T_674 <= stbuf_datain[1] @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    node _T_672 = bits(stbuf_wr_en, 1, 1) @[el2_lsu_stbuf.scala 174:57]
+    node _T_673 = bits(_T_672, 0, 0) @[el2_lsu_stbuf.scala 174:67]
+    inst rvclkhdr_3 of rvclkhdr_3 @[beh_lib.scala 352:21]
+    rvclkhdr_3.clock <= clock
+    rvclkhdr_3.reset <= reset
+    rvclkhdr_3.io.clk <= clock @[beh_lib.scala 354:16]
+    rvclkhdr_3.io.en <= _T_673 @[beh_lib.scala 355:15]
+    rvclkhdr_3.io.scan_mode <= io.scan_mode @[beh_lib.scala 356:22]
+    reg _T_674 : UInt, rvclkhdr_3.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[beh_lib.scala 358:14]
+    _T_674 <= stbuf_datain[1] @[beh_lib.scala 358:14]
     stbuf_data[1] <= _T_674 @[el2_lsu_stbuf.scala 174:20]
-    node _T_675 = bits(stbuf_wr_en, 2, 2) @[el2_lsu_stbuf.scala 172:67]
-    node _T_676 = bits(_T_675, 0, 0) @[el2_lsu_stbuf.scala 172:77]
-    reg _T_677 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_676 : @[Reg.scala 28:19]
-      _T_677 <= stbuf_addrin[2] @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    node _T_675 = bits(stbuf_wr_en, 2, 2) @[el2_lsu_stbuf.scala 172:58]
+    node _T_676 = bits(_T_675, 0, 0) @[el2_lsu_stbuf.scala 172:68]
+    inst rvclkhdr_4 of rvclkhdr_4 @[beh_lib.scala 352:21]
+    rvclkhdr_4.clock <= clock
+    rvclkhdr_4.reset <= reset
+    rvclkhdr_4.io.clk <= clock @[beh_lib.scala 354:16]
+    rvclkhdr_4.io.en <= _T_676 @[beh_lib.scala 355:15]
+    rvclkhdr_4.io.scan_mode <= io.scan_mode @[beh_lib.scala 356:22]
+    reg _T_677 : UInt, rvclkhdr_4.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[beh_lib.scala 358:14]
+    _T_677 <= stbuf_addrin[2] @[beh_lib.scala 358:14]
     stbuf_addr[2] <= _T_677 @[el2_lsu_stbuf.scala 172:21]
-    node _T_678 = bits(stbuf_wr_en, 2, 2) @[el2_lsu_stbuf.scala 174:66]
-    node _T_679 = bits(_T_678, 0, 0) @[el2_lsu_stbuf.scala 174:76]
-    reg _T_680 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_679 : @[Reg.scala 28:19]
-      _T_680 <= stbuf_datain[2] @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    node _T_678 = bits(stbuf_wr_en, 2, 2) @[el2_lsu_stbuf.scala 174:57]
+    node _T_679 = bits(_T_678, 0, 0) @[el2_lsu_stbuf.scala 174:67]
+    inst rvclkhdr_5 of rvclkhdr_5 @[beh_lib.scala 352:21]
+    rvclkhdr_5.clock <= clock
+    rvclkhdr_5.reset <= reset
+    rvclkhdr_5.io.clk <= clock @[beh_lib.scala 354:16]
+    rvclkhdr_5.io.en <= _T_679 @[beh_lib.scala 355:15]
+    rvclkhdr_5.io.scan_mode <= io.scan_mode @[beh_lib.scala 356:22]
+    reg _T_680 : UInt, rvclkhdr_5.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[beh_lib.scala 358:14]
+    _T_680 <= stbuf_datain[2] @[beh_lib.scala 358:14]
     stbuf_data[2] <= _T_680 @[el2_lsu_stbuf.scala 174:20]
-    node _T_681 = bits(stbuf_wr_en, 3, 3) @[el2_lsu_stbuf.scala 172:67]
-    node _T_682 = bits(_T_681, 0, 0) @[el2_lsu_stbuf.scala 172:77]
-    reg _T_683 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_682 : @[Reg.scala 28:19]
-      _T_683 <= stbuf_addrin[3] @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    node _T_681 = bits(stbuf_wr_en, 3, 3) @[el2_lsu_stbuf.scala 172:58]
+    node _T_682 = bits(_T_681, 0, 0) @[el2_lsu_stbuf.scala 172:68]
+    inst rvclkhdr_6 of rvclkhdr_6 @[beh_lib.scala 352:21]
+    rvclkhdr_6.clock <= clock
+    rvclkhdr_6.reset <= reset
+    rvclkhdr_6.io.clk <= clock @[beh_lib.scala 354:16]
+    rvclkhdr_6.io.en <= _T_682 @[beh_lib.scala 355:15]
+    rvclkhdr_6.io.scan_mode <= io.scan_mode @[beh_lib.scala 356:22]
+    reg _T_683 : UInt, rvclkhdr_6.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[beh_lib.scala 358:14]
+    _T_683 <= stbuf_addrin[3] @[beh_lib.scala 358:14]
     stbuf_addr[3] <= _T_683 @[el2_lsu_stbuf.scala 172:21]
-    node _T_684 = bits(stbuf_wr_en, 3, 3) @[el2_lsu_stbuf.scala 174:66]
-    node _T_685 = bits(_T_684, 0, 0) @[el2_lsu_stbuf.scala 174:76]
-    reg _T_686 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_685 : @[Reg.scala 28:19]
-      _T_686 <= stbuf_datain[3] @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    node _T_684 = bits(stbuf_wr_en, 3, 3) @[el2_lsu_stbuf.scala 174:57]
+    node _T_685 = bits(_T_684, 0, 0) @[el2_lsu_stbuf.scala 174:67]
+    inst rvclkhdr_7 of rvclkhdr_7 @[beh_lib.scala 352:21]
+    rvclkhdr_7.clock <= clock
+    rvclkhdr_7.reset <= reset
+    rvclkhdr_7.io.clk <= clock @[beh_lib.scala 354:16]
+    rvclkhdr_7.io.en <= _T_685 @[beh_lib.scala 355:15]
+    rvclkhdr_7.io.scan_mode <= io.scan_mode @[beh_lib.scala 356:22]
+    reg _T_686 : UInt, rvclkhdr_7.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[beh_lib.scala 358:14]
+    _T_686 <= stbuf_datain[3] @[beh_lib.scala 358:14]
     stbuf_data[3] <= _T_686 @[el2_lsu_stbuf.scala 174:20]
     reg _T_687 : UInt<1>, io.lsu_c1_m_clk with : (reset => (reset, UInt<1>("h00"))) @[el2_lsu_stbuf.scala 176:53]
     _T_687 <= ldst_dual_d @[el2_lsu_stbuf.scala 176:53]

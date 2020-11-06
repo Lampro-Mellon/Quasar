@@ -17,10 +17,10 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
 
     val out                = Output(UInt(32.W))
     val finish_dly         = Output(UInt(1.W))
- //   val out_s              = Output(UInt(33.W))
- //   val test               = Output(UInt(6.W))
+    //   val out_s              = Output(UInt(33.W))
+    //   val test               = Output(UInt(6.W))
   })
-  val exu_div_clk          = Wire(Clock())
+  // val exu_div_clk          = Wire(Clock())
   val run_state            = WireInit(0.U(1.W))
   val count                = WireInit(0.U(6.W))
   val m_ff                 = WireInit(0.U(33.W))
@@ -44,9 +44,11 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
   val finish_ff            = WireInit(0.U(1.W))
   val smallnum_case_ff     = WireInit(0.U(1.W))
   val smallnum_ff          = WireInit(0.U(4.W))
+  val smallnum_case        = WireInit(0.U(1.W))
   val count_in             = WireInit(0.U(6.W))
   val dividend_eff         = WireInit(0.U(32.W))
   val a_shift              = WireInit(0.U(33.W))
+ // val scan_mode            = WireInit(0.U(1.W))
 
   io.out := 0.U
   io.finish_dly := 0.U
@@ -57,8 +59,9 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
   // START - short circuit logic for small numbers {{
   // small number divides - any 4b / 4b is done in 1 cycle (divisor != 0)
   // smallnum case does not cover divide by 0
- val smallnum_case =  ((q_ff(31,4) === 0.U(28.W)) & (m_ff(31,4) === 0.U(28.W)) & (m_ff =/= 0.U(32.W)) & !rem_ff & valid_x) |
-  ((q_ff === 0.U(32.W)) & (m_ff =/= 0.U(32.W)) & !rem_ff & valid_x)
+
+  smallnum_case :=  ((q_ff(31,4) === 0.U) & (m_ff(31,4) === 0.U) & (m_ff(31,0) =/= 0.U) & !rem_ff & valid_x) |
+    ((q_ff(31,0) === 0.U) & (m_ff(31,0) =/= 0.U) & !rem_ff & valid_x)
 
   def pat(x : List[Int], y : List[Int]) = {
     val pat1 = (0 until x.size).map(i=> if(x(i)>=0) q_ff(x(i)) else !q_ff(x(i).abs)).reduce(_&_)
@@ -66,26 +69,26 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
     pat1 & pat2
   }
 
- val smallnum = Cat(
-                 pat(List(3),List(-3, -2, -1)),
+  val smallnum = Cat(
+    pat(List(3),List(-3, -2, -1)),
 
-                 pat(List(3),List(-3, -2))& !m_ff(0) | pat(List(2),List(-3, -2, -1)) | pat(List(3, 2),List(-3, -2)),
+    pat(List(3),List(-3, -2))& !m_ff(0) | pat(List(2),List(-3, -2, -1)) | pat(List(3, 2),List(-3, -2)),
 
-                 pat(List(2),List(-3, -2))& !m_ff(0) | pat(List(1),List(-3, -2, -1))    | pat(List(3),List(-3, -1))& !m_ff(0) |
-                 pat(List(3, -2),List(-3, -2, 1, 0)) | pat(List(-3, 2, 1),List(-3, -2)) | pat(List(3, 2),List(-3))& !m_ff(0)  |
-                 pat(List(3, 2),List(-3, 2, -1))     | pat(List(3, 1),List(-3,-1))     | pat(List(3, 2, 1),List(-3, 2)),
+    pat(List(2),List(-3, -2))& !m_ff(0) | pat(List(1),List(-3, -2, -1))    | pat(List(3),List(-3, -1))& !m_ff(0) |
+      pat(List(3, -2),List(-3, -2, 1, 0)) | pat(List(-3, 2, 1),List(-3, -2)) | pat(List(3, 2),List(-3))& !m_ff(0)  |
+      pat(List(3, 2),List(-3, 2, -1))     | pat(List(3, 1),List(-3,-1))     | pat(List(3, 2, 1),List(-3, 2)),
 
-                 pat(List(2, 1, 0),List(-3, -1))        | pat(List(3, -2, 0),List(-3, 1, 0))    | pat(List(2),List(-3, -1))& !m_ff(0)     |
-                 pat(List(1),List(-3, -2))& !m_ff(0)    | pat(List(0),List(-3, -2, -1))         | pat(List(-3, 2, -1),List(-3, -2, 1, 0)) |
-                 pat(List(-3, 2, 1),List(-3))& !m_ff(0) | pat(List(3),List(-2, -1)) & !m_ff(0)  | pat(List(3, -2),List(-3, 2, 1))         |
-                 pat(List(-3, 2, 1),List(-3, 2, -1))    | pat(List(-3, 2, 0),List(-3, -1))      | pat(List(3, -2, -1),List(-3, 2, 0))     |
-                 pat(List(-2, 1, 0),List(-3, -2))       | pat(List(3, 2),List(-1)) & !m_ff(0)   | pat(List(-3, 2, 1, 0),List(-3, 2))      |
-                 pat(List(3, 2),List(3, -2))            | pat(List(3, 1),List(3,-2,-1))         | pat(List(3, 0),List(-2, -1))            |
-                 pat(List(3, -1),List(-3, 2, 1, 0))     | pat(List(3, 2, 1),List(3)) & !m_ff(0) | pat(List(3, 2, 1),List(3, -1))          |
-                 pat(List(3, 2, 0),List(3, -1))         | pat(List(3, -2, 1),List(-3, 1))       | pat(List(3, 1, 0),List(-2))             |
-                 pat(List(3, 2, 1, 0),List(3))          |pat(List(3, 1),List(-2)) & !m_ff(0)
+    pat(List(2, 1, 0),List(-3, -1))        | pat(List(3, -2, 0),List(-3, 1, 0))    | pat(List(2),List(-3, -1))& !m_ff(0)     |
+      pat(List(1),List(-3, -2))& !m_ff(0)    | pat(List(0),List(-3, -2, -1))         | pat(List(-3, 2, -1),List(-3, -2, 1, 0)) |
+      pat(List(-3, 2, 1),List(-3))& !m_ff(0) | pat(List(3),List(-2, -1)) & !m_ff(0)  | pat(List(3, -2),List(-3, 2, 1))         |
+      pat(List(-3, 2, 1),List(-3, 2, -1))    | pat(List(-3, 2, 0),List(-3, -1))      | pat(List(3, -2, -1),List(-3, 2, 0))     |
+      pat(List(-2, 1, 0),List(-3, -2))       | pat(List(3, 2),List(-1)) & !m_ff(0)   | pat(List(-3, 2, 1, 0),List(-3, 2))      |
+      pat(List(3, 2),List(3, -2))            | pat(List(3, 1),List(3,-2,-1))         | pat(List(3, 0),List(-2, -1))            |
+      pat(List(3, -1),List(-3, 2, 1, 0))     | pat(List(3, 2, 1),List(3)) & !m_ff(0) | pat(List(3, 2, 1),List(3, -1))          |
+      pat(List(3, 2, 0),List(3, -1))         | pat(List(3, -2, 1),List(-3, 1))       | pat(List(3, 1, 0),List(-2))             |
+      pat(List(3, 2, 1, 0),List(3))          |pat(List(3, 1),List(-2)) & !m_ff(0)
   )
- //io.test := smallnum
+  //io.test := smallnum
   // END   - short circuit logic for small numbers }}
 
   // *** Start Short Q *** {{
@@ -132,24 +135,24 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
       ( (a_cls(2,0) === "b000".U ) & (b_cls(2,1) === "b01".U  ) ) |
       ( (a_cls(2,0) === "b000".U ) & (b_cls(2,0) === "b001".U ) ) ,
 
-      ( (a_cls(2)   === "b1".U   ) & (b_cls(2)   === "b1".U   ) ) |  // Shift by 24
+    ( (a_cls(2)   === "b1".U   ) & (b_cls(2)   === "b1".U   ) ) |  // Shift by 24
       ( (a_cls(2,1) === "b01".U  ) & (b_cls(2,1) === "b01".U  ) ) |
       ( (a_cls(2,0) === "b001".U ) & (b_cls(2,0) === "b001".U ) ) |
       ( (a_cls(2,0) === "b000".U ) & (b_cls(2,0) === "b000".U ) ) ,
 
-      ( (a_cls(2)   === "b1".U   ) & (b_cls(2,1) === "b01".U  ) ) |  // Shift by 16
+    ( (a_cls(2)   === "b1".U   ) & (b_cls(2,1) === "b01".U  ) ) |  // Shift by 16
       ( (a_cls(2,1) === "b01".U  ) & (b_cls(2,0) === "b001".U ) ) |
       ( (a_cls(2,0) === "b001".U ) & (b_cls(2,0) === "b000".U ) ) ,
 
-      ( (a_cls(2)   === "b1".U   ) & (b_cls(2,0) === "b001".U ) ) |  // Shift by 8
+    ( (a_cls(2)   === "b1".U   ) & (b_cls(2,0) === "b001".U ) ) |  // Shift by 8
       ( (a_cls(2,1) === "b01".U  ) & (b_cls(2,0) === "b000".U ) )
 
   )
   val shortq_enable =  valid_ff_x & (m_ff(31,0) =/= 0.U(32.W)) & (shortq_raw =/= 0.U(4.W))
   val shortq_shift = Fill(4,shortq_enable) & shortq_raw
 
-  withClock(exu_div_clk) {shortq_enable_ff := RegNext(shortq_enable,0.U)}
-  withClock(exu_div_clk) {shortq_shift_xx  := RegNext(shortq_shift,0.U)}
+  //  shortq_enable_ff := RegEnable(shortq_enable,0.U,div_clken.asBool)
+  //  shortq_shift_xx  := RegEnable(shortq_shift,0.U,div_clken.asBool)
 
   val shortq_shift_ff = Mux1H(Seq (
     shortq_shift_xx(3).asBool -> "b11111".U,
@@ -168,9 +171,10 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
   io.finish_dly  :=  finish_ff & !io.cancel
   val sign_eff   = !io.dp.unsign & (io.divisor =/= 0.U(32.W))
 
+
   q_in := Mux1H(Seq(
     (!run_state).asBool -> Cat(0.U(1.W),io.dividend) ,
-    (run_state & valid_ff_x | shortq_enable_ff).asBool -> (Cat(dividend_eff(31,0),!a_in(32)) << shortq_shift_ff) ,
+    (run_state & (valid_ff_x | shortq_enable_ff)).asBool -> (Cat(dividend_eff(31,0),!a_in(32)) << shortq_shift_ff) ,
     (run_state & !(valid_ff_x | shortq_enable_ff)).asBool -> Cat(q_ff(31,0),!a_in(32))
   ))
   val qff_enable   =  io.dp.valid | (run_state & !shortq_enable)
@@ -199,25 +203,29 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
     rem_ff.asBool -> a_ff_eff ,
     (!smallnum_case_ff & !rem_ff).asBool -> q_ff_eff
   ))
-  val exu_div_cgc  = Module(new rvclkhdr)
-  exu_div_cgc.io.en          := div_clken
-  exu_div_clk                := exu_div_cgc.io.l1clk
-  exu_div_cgc.io.clk         := clock
-  exu_div_cgc.io.scan_mode   := io.scan_mode
 
-  withClock(exu_div_clk){valid_ff_x := RegNext(io.dp.valid  & !io.cancel,0.U)}
-  withClock(exu_div_clk){finish_ff  := RegNext(finish    & !io.cancel,0.U)}
-  withClock(exu_div_clk){run_state  := RegNext(run_in,0.U)}
-  withClock(exu_div_clk){count      := RegNext(count_in,0.U)}
-  withClock(exu_div_clk){dividend_neg_ff := RegEnable (io.dividend(31), 0.U, io.dp.valid.asBool)}
-  withClock(exu_div_clk){divisor_neg_ff  := RegEnable (io.divisor(31), 0.U, io.dp.valid.asBool)}
-  withClock(exu_div_clk){sign_ff  := RegEnable (sign_eff, 0.U, io.dp.valid.asBool)}
-  withClock(exu_div_clk){rem_ff   := RegEnable (io.dp.rem, 0.U, io.dp.valid.asBool)}
-  withClock(exu_div_clk){smallnum_case_ff  := RegNext(smallnum_case,0.U)}
-  withClock(exu_div_clk){smallnum_ff      := RegNext(smallnum,0.U)}
-  q_ff := RegEnable (q_in, 0.U, qff_enable.asBool)
-  a_ff := RegEnable (a_in, 0.U, aff_enable.asBool)
-  m_ff := RegEnable (Cat(!io.dp.unsign & io.divisor(31), io.divisor), 0.U, io.dp.valid.asBool)
+  val exu_div_cgc = rvclkhdr(clock,div_clken.asBool,io.scan_mode)
+
+  withClock(exu_div_cgc) {
+    valid_ff_x := RegNext(io.dp.valid & !io.cancel, 0.U)
+    finish_ff := RegNext(finish & !io.cancel, 0.U)
+    run_state := RegNext(run_in, 0.U)
+    count := RegNext(count_in, 0.U)
+    dividend_neg_ff := RegEnable(io.dividend(31), 0.U, io.dp.valid.asBool)
+    divisor_neg_ff := RegEnable(io.divisor(31), 0.U, io.dp.valid.asBool)
+    sign_ff := RegEnable(sign_eff, 0.U, io.dp.valid.asBool)
+    rem_ff := RegEnable(io.dp.rem, 0.U, io.dp.valid.asBool)
+    smallnum_case_ff := RegNext(smallnum_case, 0.U)
+    smallnum_ff := RegNext(smallnum, 0.U)
+    shortq_enable_ff := RegNext(shortq_enable, 0.U)
+    shortq_shift_xx := RegNext(shortq_shift, 0.U)
+  }
+  q_ff := rvdffe(q_in, qff_enable.asBool,clock,io.scan_mode)
+  a_ff := rvdffe(a_in, aff_enable.asBool,clock,io.scan_mode)
+  m_ff := rvdffe(Cat(!io.dp.unsign & io.divisor(31), io.divisor), io.dp.valid.asBool,clock,io.scan_mode)
+ // q_ff := RegEnable (q_in, 0.U, qff_enable.asBool)
+ // a_ff := RegEnable (a_in, 0.U, aff_enable.asBool)
+ // m_ff := RegEnable (Cat(!io.dp.unsign & io.divisor(31), io.divisor), 0.U, io.dp.valid.asBool)
 
 }
 object div_main extends App{

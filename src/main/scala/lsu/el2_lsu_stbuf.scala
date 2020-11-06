@@ -169,9 +169,9 @@ class el2_lsu_stbuf extends Module with param with RequireAsyncReset {
   for (i<- 0 until LSU_STBUF_DEPTH) {
     //  withClock(io.lsu_free_c2_clk){ stbuf_dma_kill(i) := RegEnable(1.U & !stbuf_reset(i), 0.U, stbuf_dma_kill_en(i).asBool)}
 
-      stbuf_addr(i) := RegEnable(stbuf_addrin(i), 0.U, stbuf_wr_en(i).asBool())
+      stbuf_addr(i) := rvdffe(stbuf_addrin(i),stbuf_wr_en(i).asBool(),clock,io.scan_mode)
     //  withClock(io.lsu_stbuf_c1_clk){ stbuf_byteen(i) := RegNext( stbuf_byteenin(i) & Fill(stbuf_byteenin(i).getWidth, !stbuf_reset(i)), 0.U, stbuf_wr_en(i).asBool())}
-     stbuf_data(i) := RegEnable(stbuf_datain(i), 0.U, stbuf_wr_en(i).asBool())
+     stbuf_data(i) := rvdffe(stbuf_datain(i),stbuf_wr_en(i).asBool(),clock,io.scan_mode)
    }
    withClock(io.lsu_c1_m_clk){ldst_dual_m := RegNext(ldst_dual_d,0.U)}
    withClock(io.lsu_c1_r_clk){ldst_dual_r := RegNext(ldst_dual_m,0.U)}

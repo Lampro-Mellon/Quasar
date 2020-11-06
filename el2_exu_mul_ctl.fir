@@ -1,5 +1,77 @@
 ;buildInfoPackage: chisel3, version: 3.3.1, scalaVersion: 2.12.11, sbtVersion: 1.3.10
 circuit el2_exu_mul_ctl : 
+  extmodule TEC_RV_ICG : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG @[beh_lib.scala 332:24]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[beh_lib.scala 333:12]
+    clkhdr.CK <= io.clk @[beh_lib.scala 334:16]
+    clkhdr.EN <= io.en @[beh_lib.scala 335:16]
+    clkhdr.SE <= io.scan_mode @[beh_lib.scala 336:16]
+    
+  extmodule TEC_RV_ICG_1 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr_1 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG_1 @[beh_lib.scala 332:24]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[beh_lib.scala 333:12]
+    clkhdr.CK <= io.clk @[beh_lib.scala 334:16]
+    clkhdr.EN <= io.en @[beh_lib.scala 335:16]
+    clkhdr.SE <= io.scan_mode @[beh_lib.scala 336:16]
+    
+  extmodule TEC_RV_ICG_2 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = TEC_RV_ICG
+    
+    
+  module rvclkhdr_2 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of TEC_RV_ICG_2 @[beh_lib.scala 332:24]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[beh_lib.scala 333:12]
+    clkhdr.CK <= io.clk @[beh_lib.scala 334:16]
+    clkhdr.EN <= io.en @[beh_lib.scala 335:16]
+    clkhdr.SE <= io.scan_mode @[beh_lib.scala 336:16]
+    
   module el2_exu_mul_ctl : 
     input clock : Clock
     input reset : AsyncReset
@@ -9,47 +81,65 @@ circuit el2_exu_mul_ctl :
     rs1_ext_in <= asSInt(UInt<1>("h00"))
     wire rs2_ext_in : SInt<33>
     rs2_ext_in <= asSInt(UInt<1>("h00"))
+    wire rs1_x : SInt<33>
+    rs1_x <= asSInt(UInt<1>("h00"))
+    wire rs2_x : SInt<33>
+    rs2_x <= asSInt(UInt<1>("h00"))
     wire prod_x : SInt<66>
     prod_x <= asSInt(UInt<1>("h00"))
     wire low_x : UInt<1>
     low_x <= UInt<1>("h00")
-    node _T = bits(io.rs1_in, 31, 31) @[el2_exu_mul_ctl.scala 23:50]
-    node _T_1 = and(io.mul_p.rs1_sign, _T) @[el2_exu_mul_ctl.scala 23:39]
+    node _T = bits(io.rs1_in, 31, 31) @[el2_exu_mul_ctl.scala 26:50]
+    node _T_1 = and(io.mul_p.rs1_sign, _T) @[el2_exu_mul_ctl.scala 26:39]
     node _T_2 = cat(_T_1, io.rs1_in) @[Cat.scala 29:58]
-    node _T_3 = asSInt(_T_2) @[el2_exu_mul_ctl.scala 23:66]
-    rs1_ext_in <= _T_3 @[el2_exu_mul_ctl.scala 23:14]
-    node _T_4 = bits(io.rs2_in, 31, 31) @[el2_exu_mul_ctl.scala 24:50]
-    node _T_5 = and(io.mul_p.rs2_sign, _T_4) @[el2_exu_mul_ctl.scala 24:39]
+    node _T_3 = asSInt(_T_2) @[el2_exu_mul_ctl.scala 26:66]
+    rs1_ext_in <= _T_3 @[el2_exu_mul_ctl.scala 26:14]
+    node _T_4 = bits(io.rs2_in, 31, 31) @[el2_exu_mul_ctl.scala 27:50]
+    node _T_5 = and(io.mul_p.rs2_sign, _T_4) @[el2_exu_mul_ctl.scala 27:39]
     node _T_6 = cat(_T_5, io.rs2_in) @[Cat.scala 29:58]
-    node _T_7 = asSInt(_T_6) @[el2_exu_mul_ctl.scala 24:66]
-    rs2_ext_in <= _T_7 @[el2_exu_mul_ctl.scala 24:14]
-    node _T_8 = bits(io.mul_p.valid, 0, 0) @[el2_exu_mul_ctl.scala 27:55]
-    reg _T_9 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_8 : @[Reg.scala 28:19]
-      _T_9 <= io.mul_p.low @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
-    low_x <= _T_9 @[el2_exu_mul_ctl.scala 27:9]
-    node _T_10 = bits(io.mul_p.valid, 0, 0) @[el2_exu_mul_ctl.scala 28:56]
-    reg rs1_x : SInt, clock with : (reset => (reset, asSInt(UInt<1>("h00")))) @[Reg.scala 27:20]
-    when _T_10 : @[Reg.scala 28:19]
-      rs1_x <= rs1_ext_in @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
-    node _T_11 = bits(io.mul_p.valid, 0, 0) @[el2_exu_mul_ctl.scala 29:56]
-    reg rs2_x : SInt, clock with : (reset => (reset, asSInt(UInt<1>("h00")))) @[Reg.scala 27:20]
-    when _T_11 : @[Reg.scala 28:19]
-      rs2_x <= rs2_ext_in @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
-    node _T_12 = mul(rs1_x, rs2_x) @[el2_exu_mul_ctl.scala 31:20]
-    prod_x <= _T_12 @[el2_exu_mul_ctl.scala 31:10]
-    node _T_13 = bits(low_x, 0, 0) @[el2_exu_mul_ctl.scala 32:36]
-    node _T_14 = eq(_T_13, UInt<1>("h00")) @[el2_exu_mul_ctl.scala 32:29]
-    node _T_15 = bits(prod_x, 63, 32) @[el2_exu_mul_ctl.scala 32:52]
-    node _T_16 = bits(low_x, 0, 0) @[el2_exu_mul_ctl.scala 32:67]
-    node _T_17 = bits(prod_x, 31, 0) @[el2_exu_mul_ctl.scala 32:83]
-    node _T_18 = mux(_T_14, _T_15, UInt<1>("h00")) @[Mux.scala 27:72]
-    node _T_19 = mux(_T_16, _T_17, UInt<1>("h00")) @[Mux.scala 27:72]
-    node _T_20 = or(_T_18, _T_19) @[Mux.scala 27:72]
-    wire _T_21 : UInt<32> @[Mux.scala 27:72]
-    _T_21 <= _T_20 @[Mux.scala 27:72]
-    io.result_x <= _T_21 @[el2_exu_mul_ctl.scala 32:15]
+    node _T_7 = asSInt(_T_6) @[el2_exu_mul_ctl.scala 27:66]
+    rs2_ext_in <= _T_7 @[el2_exu_mul_ctl.scala 27:14]
+    node _T_8 = bits(io.mul_p.valid, 0, 0) @[el2_exu_mul_ctl.scala 36:47]
+    inst rvclkhdr of rvclkhdr @[beh_lib.scala 352:21]
+    rvclkhdr.clock <= clock
+    rvclkhdr.reset <= reset
+    rvclkhdr.io.clk <= clock @[beh_lib.scala 354:16]
+    rvclkhdr.io.en <= _T_8 @[beh_lib.scala 355:15]
+    rvclkhdr.io.scan_mode <= io.scan_mode @[beh_lib.scala 356:22]
+    reg _T_9 : UInt, rvclkhdr.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[beh_lib.scala 358:14]
+    _T_9 <= io.mul_p.low @[beh_lib.scala 358:14]
+    low_x <= _T_9 @[el2_exu_mul_ctl.scala 36:9]
+    node _T_10 = bits(io.mul_p.valid, 0, 0) @[el2_exu_mul_ctl.scala 37:44]
+    inst rvclkhdr_1 of rvclkhdr_1 @[beh_lib.scala 372:21]
+    rvclkhdr_1.clock <= clock
+    rvclkhdr_1.reset <= reset
+    rvclkhdr_1.io.clk <= clock @[beh_lib.scala 374:16]
+    rvclkhdr_1.io.en <= _T_10 @[beh_lib.scala 375:15]
+    rvclkhdr_1.io.scan_mode <= io.scan_mode @[beh_lib.scala 376:22]
+    reg _T_11 : SInt, rvclkhdr_1.io.l1clk with : (reset => (reset, asSInt(UInt<1>("h00")))) @[beh_lib.scala 378:14]
+    _T_11 <= rs1_ext_in @[beh_lib.scala 378:14]
+    rs1_x <= _T_11 @[el2_exu_mul_ctl.scala 37:9]
+    node _T_12 = bits(io.mul_p.valid, 0, 0) @[el2_exu_mul_ctl.scala 38:45]
+    inst rvclkhdr_2 of rvclkhdr_2 @[beh_lib.scala 372:21]
+    rvclkhdr_2.clock <= clock
+    rvclkhdr_2.reset <= reset
+    rvclkhdr_2.io.clk <= clock @[beh_lib.scala 374:16]
+    rvclkhdr_2.io.en <= _T_12 @[beh_lib.scala 375:15]
+    rvclkhdr_2.io.scan_mode <= io.scan_mode @[beh_lib.scala 376:22]
+    reg _T_13 : SInt, rvclkhdr_2.io.l1clk with : (reset => (reset, asSInt(UInt<1>("h00")))) @[beh_lib.scala 378:14]
+    _T_13 <= rs2_ext_in @[beh_lib.scala 378:14]
+    rs2_x <= _T_13 @[el2_exu_mul_ctl.scala 38:9]
+    node _T_14 = mul(rs1_x, rs2_x) @[el2_exu_mul_ctl.scala 40:20]
+    prod_x <= _T_14 @[el2_exu_mul_ctl.scala 40:10]
+    node _T_15 = bits(low_x, 0, 0) @[el2_exu_mul_ctl.scala 41:36]
+    node _T_16 = eq(_T_15, UInt<1>("h00")) @[el2_exu_mul_ctl.scala 41:29]
+    node _T_17 = bits(prod_x, 63, 32) @[el2_exu_mul_ctl.scala 41:52]
+    node _T_18 = bits(low_x, 0, 0) @[el2_exu_mul_ctl.scala 41:67]
+    node _T_19 = bits(prod_x, 31, 0) @[el2_exu_mul_ctl.scala 41:83]
+    node _T_20 = mux(_T_16, _T_17, UInt<1>("h00")) @[Mux.scala 27:72]
+    node _T_21 = mux(_T_18, _T_19, UInt<1>("h00")) @[Mux.scala 27:72]
+    node _T_22 = or(_T_20, _T_21) @[Mux.scala 27:72]
+    wire _T_23 : UInt<32> @[Mux.scala 27:72]
+    _T_23 <= _T_22 @[Mux.scala 27:72]
+    io.result_x <= _T_23 @[el2_exu_mul_ctl.scala 41:15]
     

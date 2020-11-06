@@ -87,8 +87,8 @@
       "~el2_lsu_addrcheck|el2_lsu_addrcheck>io_lsu_pkt_d_dma",
       "~el2_lsu_addrcheck|el2_lsu_addrcheck>io_addr_in_pic_d",
       "~el2_lsu_addrcheck|el2_lsu_addrcheck>io_lsu_pkt_d_word",
-      "~el2_lsu_addrcheck|el2_lsu_addrcheck>io_rs1_region_d",
       "~el2_lsu_addrcheck|el2_lsu_addrcheck>io_start_addr_d",
+      "~el2_lsu_addrcheck|el2_lsu_addrcheck>io_rs1_region_d",
       "~el2_lsu_addrcheck|el2_lsu_addrcheck>io_end_addr_d"
     ]
   },

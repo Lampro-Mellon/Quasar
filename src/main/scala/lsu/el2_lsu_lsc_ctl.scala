@@ -1,20 +1,13 @@
 package lsu
 import include._
 import lib._
-import snapshot._
-
 import chisel3._
 import chisel3.util._
-import chisel3.iotesters.{ChiselFlatSpec, Driver, PeekPokeTester}
-import chisel3.experimental.ChiselEnum
-import chisel3.experimental.{withClock, withReset, withClockAndReset}
-import chisel3.experimental.BundleLiterals._
-import chisel3.tester._
-import chisel3.tester.RawTester.test
-import chisel3.util.HasBlackBoxResource
+
+
 import chisel3.experimental.chiselName
 @chiselName
-class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset
+class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset with el2_lib
 {
   val io = IO(new Bundle{
     //val rst_l = IO(Input(1.W)) //implicit
@@ -112,10 +105,7 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset
   val rs1_d           = Mux(io.lsu_pkt_d.load_ldst_bypass_d.asBool,io.lsu_result_m,rs1_d_raw)
 
   // generate the ls address
-  val lsadder = Module(new rvlsadder())
-  lsadder.io.rs1         := rs1_d
-  lsadder.io.offset      := offset_d
-  val full_addr_d         =  lsadder.io.dout
+  val full_addr_d  = rvlsadder(rs1_d,offset_d)
 
   val addr_offset_d = ((Fill(3,io.lsu_pkt_d.half))  & 1.U(3.W)) |
     ((Fill(3,io.lsu_pkt_d.word))  & 3.U(3.W)) |
@@ -164,15 +154,15 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset
   fir_nondccm_access_error_m         := withClock(io.lsu_c1_m_clk){RegNext(fir_nondccm_access_error_d,0.U)}
 
   io.lsu_exc_m := access_fault_m | misaligned_fault_m
-  io.lsu_single_ecc_error_incr := (io.lsu_single_ecc_error_r & ~io.lsu_double_ecc_error_r) & (io.lsu_commit_r | io.lsu_pkt_r.dma) & io.lsu_pkt_r.valid
+  io.lsu_single_ecc_error_incr := (io.lsu_single_ecc_error_r & !io.lsu_double_ecc_error_r) & (io.lsu_commit_r | io.lsu_pkt_r.dma) & io.lsu_pkt_r.valid
 
-  if (pt1.LOAD_TO_USE_PLUS1 == 1){
+  if (LOAD_TO_USE_PLUS1 == 1){
     // Generate exception packet
-    io.lsu_error_pkt_r.exc_valid := (access_fault_r | misaligned_fault_r | io.lsu_double_ecc_error_r) & io.lsu_pkt_r.valid & ~io.lsu_pkt_r.dma & ~io.lsu_pkt_r.fast_int  //TBD(lsu_pkt_r.fast_int)
-    io.lsu_error_pkt_r.single_ecc_error := io.lsu_single_ecc_error_r & ~io.lsu_error_pkt_r.exc_valid & ~io.lsu_pkt_r.dma
+    io.lsu_error_pkt_r.exc_valid := (access_fault_r | misaligned_fault_r | io.lsu_double_ecc_error_r) & io.lsu_pkt_r.valid & !io.lsu_pkt_r.dma & !io.lsu_pkt_r.fast_int  //TBD(lsu_pkt_r.fast_int)
+    io.lsu_error_pkt_r.single_ecc_error := io.lsu_single_ecc_error_r & !io.lsu_error_pkt_r.exc_valid & !io.lsu_pkt_r.dma
     io.lsu_error_pkt_r.inst_type := io.lsu_pkt_r.store
     io.lsu_error_pkt_r.exc_type  := ~misaligned_fault_r
-    io.lsu_error_pkt_r.mscause   := Mux((io.lsu_double_ecc_error_r & ~misaligned_fault_r & ~access_fault_r).asBool,1.U(4.W), exc_mscause_r(3,0))
+    io.lsu_error_pkt_r.mscause   := Mux((io.lsu_double_ecc_error_r & !misaligned_fault_r & !access_fault_r).asBool,1.U(4.W), exc_mscause_r(3,0))
     io.lsu_error_pkt_r.addr      := io.lsu_addr_r(31,0)//lsu_addr_d->lsu_full_addr
     io.lsu_fir_error             := Mux(fir_nondccm_access_error_r.asBool,3.U(2.W), Mux(fir_dccm_access_error_r.asBool,2.U(2.W), Mux((io.lsu_pkt_r.fast_int & io.lsu_double_ecc_error_r).asBool,1.U(2.W),0.U(2.W))))
 
@@ -186,11 +176,11 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset
   else //L2U_Plus1_0
   {
     // Generate exception packet
-    lsu_error_pkt_m.exc_valid := (access_fault_m | misaligned_fault_m | io.lsu_double_ecc_error_m) & io.lsu_pkt_m.valid & ~io.lsu_pkt_m.dma & ~io.lsu_pkt_m.fast_int & ~io.flush_m_up  //TBD(lsu_pkt_r.fast_int)
-    lsu_error_pkt_m.single_ecc_error := io.lsu_single_ecc_error_m  & ~lsu_error_pkt_m.exc_valid  & ~io.lsu_pkt_m.dma
+    lsu_error_pkt_m.exc_valid := (access_fault_m | misaligned_fault_m | io.lsu_double_ecc_error_m) & io.lsu_pkt_m.valid & !io.lsu_pkt_m.dma & !io.lsu_pkt_m.fast_int & !io.flush_m_up  //TBD(lsu_pkt_r.fast_int)
+    lsu_error_pkt_m.single_ecc_error := io.lsu_single_ecc_error_m  & !lsu_error_pkt_m.exc_valid  & !io.lsu_pkt_m.dma
     lsu_error_pkt_m.inst_type        := io.lsu_pkt_m.store
     lsu_error_pkt_m.exc_type         := ~misaligned_fault_m
-    lsu_error_pkt_m.mscause          := Mux(((io.lsu_double_ecc_error_m & ~misaligned_fault_m & ~access_fault_m)===1.U),1.U(4.W), exc_mscause_m(3,0))
+    lsu_error_pkt_m.mscause          := Mux(((io.lsu_double_ecc_error_m & !misaligned_fault_m & !access_fault_m)===1.U),1.U(4.W), exc_mscause_m(3,0))
     lsu_error_pkt_m.addr             := io.lsu_addr_m(31,0)//lsu_addr_d->lsu_full_addr
     lsu_fir_error_m                  := Mux(fir_nondccm_access_error_m.asBool,3.U(2.W), Mux(fir_dccm_access_error_m.asBool,2.U(2.W), Mux((io.lsu_pkt_m.fast_int & io.lsu_double_ecc_error_m).asBool,1.U(2.W),0.U(2.W))))
     io.lsu_error_pkt_r               := withClock(io.lsu_c2_r_clk){RegNext(lsu_error_pkt_m,0.U.asTypeOf(lsu_error_pkt_m.cloneType))}
@@ -218,9 +208,9 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset
   lsu_pkt_m_in     := io.lsu_pkt_d
   lsu_pkt_r_in     := io.lsu_pkt_m
 
-  io.lsu_pkt_d.valid   := (io.lsu_p.valid & ~(io.flush_m_up &  ~io.lsu_p.fast_int)) | io.dma_dccm_req
-  lsu_pkt_m_in.valid   := io.lsu_pkt_d.valid  & ~(io.flush_m_up &  ~io.lsu_pkt_d.dma)
-  lsu_pkt_r_in.valid   := io.lsu_pkt_m.valid  & ~(io.flush_m_up &  ~io.lsu_pkt_m.dma)
+  io.lsu_pkt_d.valid   := (io.lsu_p.valid & !(io.flush_m_up &  !io.lsu_p.fast_int)) | io.dma_dccm_req
+  lsu_pkt_m_in.valid   := io.lsu_pkt_d.valid  & !(io.flush_m_up &  !io.lsu_pkt_d.dma)
+  lsu_pkt_r_in.valid   := io.lsu_pkt_m.valid  & !(io.flush_m_up &  !io.lsu_pkt_m.dma)
 
   io.lsu_pkt_m             := withClock(io.lsu_c1_m_clk){RegNext(lsu_pkt_m_in,0.U.asTypeOf(lsu_pkt_m_in.cloneType))}
   io.lsu_pkt_r             := withClock(io.lsu_c1_r_clk){RegNext(lsu_pkt_r_in,0.U.asTypeOf(lsu_pkt_r_in.cloneType))}
@@ -236,36 +226,36 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset
       io.lsu_addr_r        :=  withClock(io.lsu_c1_r_clk){RegNext(io.lsu_addr_m,0.U)}
       io.end_addr_m        :=  withClock(io.lsu_c1_m_clk){RegNext(io.end_addr_d,0.U)}
       io.end_addr_r        :=  withClock(io.lsu_c1_r_clk){RegNext(io.end_addr_m,0.U)}
-      io.addr_in_dccm_m    := withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_dccm_d,0.U)}
-      io.addr_in_dccm_r    := withClock(io.lsu_c1_r_clk){RegNext(io.addr_in_dccm_m,0.U)}
-      io.addr_in_pic_m     := withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_pic_d,0.U)}
-      io.addr_in_pic_r     := withClock(io.lsu_c1_r_clk){RegNext(io.addr_in_pic_m,0.U)}
-      io.addr_external_m   := withClock(io.lsu_c1_m_clk){RegNext(addr_external_d,0.U)}
-  val addr_external_r       = withClock(io.lsu_c1_r_clk){RegNext(io.addr_external_m,0.U)}
-  val bus_read_data_r       = withClock(io.lsu_c1_r_clk){RegNext(io.bus_read_data_m,0.U)}
+      io.addr_in_dccm_m    :=  withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_dccm_d,0.U)}
+      io.addr_in_dccm_r    :=  withClock(io.lsu_c1_r_clk){RegNext(io.addr_in_dccm_m,0.U)}
+      io.addr_in_pic_m     :=  withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_pic_d,0.U)}
+      io.addr_in_pic_r     :=  withClock(io.lsu_c1_r_clk){RegNext(io.addr_in_pic_m,0.U)}
+      io.addr_external_m   :=  withClock(io.lsu_c1_m_clk){RegNext(addr_external_d,0.U)}
+  val addr_external_r       =  withClock(io.lsu_c1_r_clk){RegNext(io.addr_external_m,0.U)}
+  val bus_read_data_r       =  withClock(io.lsu_c1_r_clk){RegNext(io.bus_read_data_m,0.U)}
   // Fast interrupt address
   io.lsu_fir_addr          := io.lsu_ld_data_corr_r(31,1)   //original (31,1)  TBD
   // absence load/store all 0's
   io.lsu_addr_d            := full_addr_d
   // Interrupt as a flush source allows the WB to occur
-  io.lsu_commit_r := io.lsu_pkt_r.valid & (io.lsu_pkt_r.store | io.lsu_pkt_r.load) & ~io.flush_r & ~io.lsu_pkt_r.dma
-  io.store_data_m           := (io.picm_mask_data_m(31,0) | Fill(32,~io.addr_in_pic_m)) & Mux(io.lsu_pkt_m.store_data_bypass_m.asBool,io.lsu_result_m,store_data_pre_m)
+  io.lsu_commit_r := io.lsu_pkt_r.valid & (io.lsu_pkt_r.store | io.lsu_pkt_r.load) & !io.flush_r & !io.lsu_pkt_r.dma
+  io.store_data_m           := (io.picm_mask_data_m(31,0) | Fill(32,!io.addr_in_pic_m)) & Mux(io.lsu_pkt_m.store_data_bypass_m.asBool,io.lsu_result_m,store_data_pre_m)
 
-  if (pt1.LOAD_TO_USE_PLUS1 == 1){
+  if (LOAD_TO_USE_PLUS1 == 1){
     //bus_read_data_r coming from bus interface, lsu_ld_data_r -> coming from dccm_ctl
     lsu_ld_datafn_r       := Mux(addr_external_r.asBool, bus_read_data_r,io.lsu_ld_data_r)
     lsu_ld_datafn_corr_r  := Mux(addr_external_r.asBool, bus_read_data_r,io.lsu_ld_data_corr_r)
     // this is really R stage but don't want to make all the changes to support M,R buses
     io.lsu_result_m       := ((Fill(32,io.lsu_pkt_r.unsign  & io.lsu_pkt_r.by))    & Cat(0.U(24.W),lsu_ld_datafn_r(7,0))) |
       ((Fill(32,io.lsu_pkt_r.unsign  & io.lsu_pkt_r.half))  & Cat(0.U(16.W),lsu_ld_datafn_r(15,0)))    |
-      ((Fill(32,~io.lsu_pkt_r.unsign & io.lsu_pkt_r.by))    & Cat((Fill(24, lsu_ld_datafn_r(7)))  ,lsu_ld_datafn_r(7,0)))  |
-      ((Fill(32,~io.lsu_pkt_r.unsign & io.lsu_pkt_r.half))  & Cat((Fill(16,lsu_ld_datafn_r(15)))  ,lsu_ld_datafn_r(15,0))) |
+      ((Fill(32,!io.lsu_pkt_r.unsign & io.lsu_pkt_r.by))    & Cat((Fill(24, lsu_ld_datafn_r(7)))  ,lsu_ld_datafn_r(7,0)))  |
+      ((Fill(32,!io.lsu_pkt_r.unsign & io.lsu_pkt_r.half))  & Cat((Fill(16,lsu_ld_datafn_r(15)))  ,lsu_ld_datafn_r(15,0))) |
       ((Fill(32,io.lsu_pkt_r.word))  & lsu_ld_datafn_r(31,0))
     // this signal is used for gpr update
     io.lsu_result_corr_r  := ((Fill(32,io.lsu_pkt_r.unsign  & io.lsu_pkt_r.by))    & Cat(0.U(24.W),lsu_ld_datafn_corr_r(7,0))) |
       ((Fill(32,io.lsu_pkt_r.unsign  & io.lsu_pkt_r.half))  & Cat(0.U(16.W),lsu_ld_datafn_corr_r(15,0)))    |
-      ((Fill(32,~io.lsu_pkt_r.unsign & io.lsu_pkt_r.by))    & Cat((Fill(24, lsu_ld_datafn_corr_r(7)))  ,lsu_ld_datafn_corr_r(7,0)))  |
-      ((Fill(32,~io.lsu_pkt_r.unsign & io.lsu_pkt_r.half))  & Cat((Fill(16,lsu_ld_datafn_corr_r(15)))  ,lsu_ld_datafn_corr_r(15,0))) |
+      ((Fill(32,!io.lsu_pkt_r.unsign & io.lsu_pkt_r.by))    & Cat((Fill(24, lsu_ld_datafn_corr_r(7)))  ,lsu_ld_datafn_corr_r(7,0)))  |
+      ((Fill(32,!io.lsu_pkt_r.unsign & io.lsu_pkt_r.half))  & Cat((Fill(16,lsu_ld_datafn_corr_r(15)))  ,lsu_ld_datafn_corr_r(15,0))) |
       ((Fill(32,io.lsu_pkt_r.word))  & lsu_ld_datafn_corr_r(31,0))
   }
 
@@ -274,19 +264,18 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset
     lsu_ld_datafn_corr_r  := Mux(addr_external_r===1.U, bus_read_data_r,io.lsu_ld_data_corr_r)
     io.lsu_result_m       := ((Fill(32,io.lsu_pkt_m.unsign  & io.lsu_pkt_m.by))    & Cat(0.U(24.W),lsu_ld_datafn_m(7,0))) |
       ((Fill(32,io.lsu_pkt_m.unsign  & io.lsu_pkt_m.half))  & Cat(0.U(16.W),lsu_ld_datafn_m(15,0)))    |
-      ((Fill(32,~io.lsu_pkt_m.unsign & io.lsu_pkt_m.by))    & Cat((Fill(24, lsu_ld_datafn_m(7)))  ,lsu_ld_datafn_m(7,0)))  |
-      ((Fill(32,~io.lsu_pkt_m.unsign & io.lsu_pkt_m.half))  & Cat((Fill(16,lsu_ld_datafn_m(15)))  ,lsu_ld_datafn_m(15,0))) |
+      ((Fill(32,!io.lsu_pkt_m.unsign & io.lsu_pkt_m.by))    & Cat((Fill(24, lsu_ld_datafn_m(7)))  ,lsu_ld_datafn_m(7,0)))  |
+      ((Fill(32,!io.lsu_pkt_m.unsign & io.lsu_pkt_m.half))  & Cat((Fill(16,lsu_ld_datafn_m(15)))  ,lsu_ld_datafn_m(15,0))) |
       ((Fill(32,io.lsu_pkt_m.word))  & lsu_ld_datafn_m(31,0))
     io.lsu_result_corr_r  := ((Fill(32,io.lsu_pkt_r.unsign  & io.lsu_pkt_r.by))    & Cat(0.U(24.W),lsu_ld_datafn_corr_r(7,0))) |
       ((Fill(32,io.lsu_pkt_r.unsign  & io.lsu_pkt_r.half))  & Cat(0.U(16.W),lsu_ld_datafn_corr_r(15,0)))    |
-      ((Fill(32,~io.lsu_pkt_r.unsign & io.lsu_pkt_r.by))    & Cat((Fill(24, lsu_ld_datafn_corr_r(7)))  ,lsu_ld_datafn_corr_r(7,0)))  |
-      ((Fill(32,~io.lsu_pkt_r.unsign & io.lsu_pkt_r.half))  & Cat((Fill(16,lsu_ld_datafn_corr_r(15)))  ,lsu_ld_datafn_corr_r(15,0))) |
+      ((Fill(32,!io.lsu_pkt_r.unsign & io.lsu_pkt_r.by))    & Cat((Fill(24, lsu_ld_datafn_corr_r(7)))  ,lsu_ld_datafn_corr_r(7,0)))  |
+      ((Fill(32,!io.lsu_pkt_r.unsign & io.lsu_pkt_r.half))  & Cat((Fill(16,lsu_ld_datafn_corr_r(15)))  ,lsu_ld_datafn_corr_r(15,0))) |
       ((Fill(32,io.lsu_pkt_r.word))  & lsu_ld_datafn_corr_r(31,0))
   }
 }
 
-//println(chisel3.Driver.emitVerilog(new el2_lsu_lsc_ctl))
 object lsu_lsc_ctl extends App{
   println("Generate Verilog")
-  chisel3.Driver.execute(args, ()=> new el2_lsu_lsc_ctl)
+  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_lsu_lsc_ctl()))
 }

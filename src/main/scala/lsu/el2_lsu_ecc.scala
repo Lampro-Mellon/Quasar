@@ -154,8 +154,8 @@ class el2_lsu_ecc extends Module with el2_lib with RequireAsyncReset {
     io.dma_dccm_wdata_ecc_hi := dccm_wdata_ecc_hi_any
     io.dma_dccm_wdata_ecc_lo := dccm_wdata_ecc_lo_any
 
-  io.sec_data_hi_r_ff := RegEnable(io.sec_data_hi_r, 0.U, io.ld_single_ecc_error_r)
-  io.sec_data_lo_r_ff := RegEnable(io.sec_data_lo_r, 0.U, io.ld_single_ecc_error_r)
+  io.sec_data_hi_r_ff := rvdffe(io.sec_data_hi_r, io.ld_single_ecc_error_r,clock,io.scan_mode)
+  io.sec_data_lo_r_ff := rvdffe(io.sec_data_lo_r, io.ld_single_ecc_error_r,clock,io.scan_mode)
 
 }
 object eccmain extends App{
