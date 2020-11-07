@@ -590,7 +590,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   io.lsu_axi_awvalid := obuf_valid & obuf_write & !obuf_cmd_done & !bus_addr_match_pending
   io.lsu_axi_awid := obuf_tag0
   io.lsu_axi_awaddr := Mux(obuf_sideeffect, obuf_addr, Cat(obuf_addr(31,3), 0.U(3.W)))
-  io.lsu_axi_awsize := Mux(obuf_sideeffect, Cat(0.U, obuf_sz), 2.U(3.W))
+  io.lsu_axi_awsize := Mux(obuf_sideeffect, Cat(0.U, obuf_sz), 3.U(3.W))
   io.lsu_axi_awprot := 0.U
   io.lsu_axi_awcache := Mux(obuf_sideeffect, 0.U, 15.U)
   io.lsu_axi_awregion := obuf_addr(31,28)

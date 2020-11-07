@@ -2602,7 +2602,7 @@ module el2_lsu_bus_buffer(
   assign io_lsu_axi_awaddr = obuf_sideeffect ? obuf_addr : _T_4777; // @[el2_lsu_bus_buffer.scala 592:21]
   assign io_lsu_axi_awregion = obuf_addr[31:28]; // @[el2_lsu_bus_buffer.scala 596:23]
   assign io_lsu_axi_awlen = 8'h0; // @[el2_lsu_bus_buffer.scala 597:20]
-  assign io_lsu_axi_awsize = obuf_sideeffect ? _T_4779 : 3'h2; // @[el2_lsu_bus_buffer.scala 593:21]
+  assign io_lsu_axi_awsize = obuf_sideeffect ? _T_4779 : 3'h3; // @[el2_lsu_bus_buffer.scala 593:21]
   assign io_lsu_axi_awburst = 2'h1; // @[el2_lsu_bus_buffer.scala 598:22]
   assign io_lsu_axi_awlock = 1'h0; // @[el2_lsu_bus_buffer.scala 600:21]
   assign io_lsu_axi_awcache = obuf_sideeffect ? 4'h0 : 4'hf; // @[el2_lsu_bus_buffer.scala 595:22]

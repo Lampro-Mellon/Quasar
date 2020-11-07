@@ -6256,7 +6256,7 @@ circuit el2_lsu_bus_buffer :
     node _T_4778 = mux(obuf_sideeffect, obuf_addr, _T_4777) @[el2_lsu_bus_buffer.scala 592:27]
     io.lsu_axi_awaddr <= _T_4778 @[el2_lsu_bus_buffer.scala 592:21]
     node _T_4779 = cat(UInt<1>("h00"), obuf_sz) @[Cat.scala 29:58]
-    node _T_4780 = mux(obuf_sideeffect, _T_4779, UInt<3>("h02")) @[el2_lsu_bus_buffer.scala 593:27]
+    node _T_4780 = mux(obuf_sideeffect, _T_4779, UInt<3>("h03")) @[el2_lsu_bus_buffer.scala 593:27]
     io.lsu_axi_awsize <= _T_4780 @[el2_lsu_bus_buffer.scala 593:21]
     io.lsu_axi_awprot <= UInt<1>("h00") @[el2_lsu_bus_buffer.scala 594:21]
     node _T_4781 = mux(obuf_sideeffect, UInt<1>("h00"), UInt<4>("h0f")) @[el2_lsu_bus_buffer.scala 595:28]
