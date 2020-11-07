@@ -398,7 +398,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val found_array2 = (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((ibuf_valid & (ibuf_tag===i.U)) |
     (io.lsu_busreq_m & (WrPtr0_m===i.U)) | (io.lsu_busreq_r & (WrPtr0_r === i.U)) | (io.ldst_dual_r & (WrPtr1_r===i.U))))->i.U)
   val WrPtr1_m = MuxCase(0.U, found_array2)
-  //io.test := WrPtr1_m
+
   val buf_age = Wire(Vec(DEPTH, UInt(DEPTH.W)))
   buf_age := buf_age.map(i=> 0.U)
 
@@ -416,7 +416,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val CmdPtr1 = WireInit(UInt(DEPTH_LOG2.W), 0.U)
   val RspPtr = WireInit(UInt(DEPTH_LOG2.W), 0.U)
   CmdPtr0 := Enc8x3(Cat(Fill(8-DEPTH, 0.U),CmdPtr0Dec))
-  io.test := CmdPtr0
+
   CmdPtr1 := Enc8x3(Cat(Fill(8-DEPTH, 0.U),CmdPtr1Dec))
   RspPtr := Enc8x3(Cat(Fill(8-DEPTH, 0.U),RspPtrDec))
   val buf_state_en = Wire(Vec(DEPTH, Bool()))
@@ -543,6 +543,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     buf_data := (0 until DEPTH).map(i=>rvdffe(buf_data_in(i), buf_data_en(i), clock, io.scan_mode))
     buf_error := (0 until DEPTH).map(i=>(withClock(io.lsu_bus_buf_c1_clk){RegNext(Mux(buf_error_en(i), true.B, buf_error(i)) & !buf_rst(i), false.B)}).asUInt()).reverse.reduce(Cat(_,_))
   io.data_en := (0 until DEPTH).map(i=>buf_data_en(i).asUInt()).reverse.reduce(Cat(_,_))
+  io.test :=  (0 until DEPTH).map(i=>buf_data_in(i).asUInt()).reverse.reduce(Cat(_,_))
   val buf_numvld_any = (0 until DEPTH).map(i=>(buf_state(i)=/=idle_C).asUInt).reverse.reduce(_ +& _)
   buf_numvld_wrcmd_any := (0 until DEPTH).map(i=>(buf_write(i) & (buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(_ +& _)
   buf_numvld_cmd_any :=  (0 until DEPTH).map(i=>((buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(_ +& _)
