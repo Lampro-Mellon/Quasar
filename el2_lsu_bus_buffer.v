@@ -379,7 +379,7 @@ module el2_lsu_bus_buffer(
   wire  _T_3994 = _GEN_350 == 3'h3; // @[el2_lsu_bus_buffer.scala 471:104]
   wire  _T_3995 = obuf_merge & _T_3994; // @[el2_lsu_bus_buffer.scala 471:91]
   wire  _T_3996 = _T_3993 | _T_3995; // @[el2_lsu_bus_buffer.scala 471:77]
-  reg  obuf_valid; // @[el2_lsu_bus_buffer.scala 375:51]
+  reg  obuf_valid; // @[el2_lsu_bus_buffer.scala 375:54]
   wire  _T_3997 = _T_3996 & obuf_valid; // @[el2_lsu_bus_buffer.scala 471:135]
   reg  obuf_wr_enQ; // @[el2_lsu_bus_buffer.scala 374:55]
   wire  _T_3998 = _T_3997 & obuf_wr_enQ; // @[el2_lsu_bus_buffer.scala 471:148]
@@ -1243,7 +1243,7 @@ module el2_lsu_bus_buffer(
   wire [7:0] _T_1535 = _T_1489 ? obuf_data1_in[55:48] : obuf_data1_in[55:48]; // @[el2_lsu_bus_buffer.scala 364:44]
   wire [7:0] _T_1540 = _T_1493 ? obuf_data1_in[63:56] : obuf_data1_in[63:56]; // @[el2_lsu_bus_buffer.scala 364:44]
   wire [55:0] _T_1546 = {_T_1540,_T_1535,_T_1530,_T_1525,_T_1520,_T_1515,_T_1510}; // @[Cat.scala 29:58]
-  wire  _T_1766 = obuf_wr_en | _T_1157; // @[el2_lsu_bus_buffer.scala 375:55]
+  wire  _T_1766 = obuf_wr_en | _T_1157; // @[el2_lsu_bus_buffer.scala 375:58]
   reg [1:0] obuf_sz; // @[Reg.scala 27:20]
   reg [7:0] obuf_byteen; // @[Reg.scala 27:20]
   reg [63:0] obuf_data; // @[el2_lib.scala 491:16]
@@ -3506,7 +3506,7 @@ end // initial
       end
     end
   end
-  always @(posedge io_lsu_busm_clk or posedge reset) begin
+  always @(posedge io_lsu_free_c2_clk or posedge reset) begin
     if (reset) begin
       obuf_valid <= 1'h0;
     end else begin
@@ -3838,7 +3838,7 @@ end // initial
       obuf_data_done <= _T_1231 & _T_4721;
     end
   end
-  always @(posedge io_lsu_busm_clk or posedge reset) begin
+  always @(posedge io_lsu_free_c2_clk or posedge reset) begin
     if (reset) begin
       obuf_nosend <= 1'h0;
     end else if (obuf_wr_en) begin
