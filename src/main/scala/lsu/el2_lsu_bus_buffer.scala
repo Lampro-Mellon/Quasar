@@ -398,23 +398,21 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   //io.test := WrPtr1_m
   val buf_age = Wire(Vec(DEPTH, UInt(DEPTH.W)))
   buf_age := buf_age.map(i=> 0.U)
-  val CmdPtr0Dec = WireInit(UInt(8.W), 0.U)
-  val CmdPtr1Dec = WireInit(UInt(8.W), 0.U)
-  CmdPtr0Dec := (0 until DEPTH).map(i=> (!(buf_age(i).orR) & (buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(Cat(_,_))
-  CmdPtr1Dec := (0 until DEPTH).map(i=> (!((buf_age(i) & (~CmdPtr0Dec)).orR) & !CmdPtr0Dec(i) & (buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(Cat(_,_))
+
+  val CmdPtr0Dec = (0 until DEPTH).map(i=> (!(buf_age(i).orR) & (buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(Cat(_,_))
+  val CmdPtr1Dec = (0 until DEPTH).map(i=> (!((buf_age(i) & (~CmdPtr0Dec)).orR) & !CmdPtr0Dec(i) & (buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(Cat(_,_))
   val buf_rsp_pickage = Wire(Vec(DEPTH, UInt(DEPTH.W)))
   buf_rsp_pickage := buf_rsp_pickage.map(i=> 0.U)
-  val RspPtrDec = WireInit(UInt(8.W), 0.U)
-  RspPtrDec := (0 until DEPTH).map(i=> (!(buf_rsp_pickage(i).orR) & (buf_state(i)===done_wait_C)).asUInt).reverse.reduce(Cat(_,_))
+  val RspPtrDec = (0 until DEPTH).map(i=> (!(buf_rsp_pickage(i).orR) & (buf_state(i)===done_wait_C)).asUInt).reverse.reduce(Cat(_,_))
   found_cmdptr0 := CmdPtr0Dec.orR
   found_cmdptr1 := CmdPtr1Dec.orR
 
   def Enc8x3(in: UInt) : UInt = Cat(in(4)|in(5)|in(6)|in(7), in(2)|in(3)|in(6)|in(7), in(1)|in(3)|in(5)|in(7))
 
-  val CmdPtr0 = Enc8x3(CmdPtr0Dec)
+  val CmdPtr0 = Enc8x3(Cat(Fill(8-DEPTH, 0.U),CmdPtr0Dec))
   io.test := CmdPtr0
-  val CmdPtr1 = Enc8x3(CmdPtr1Dec)
-  val RspPtr = Enc8x3(RspPtrDec)
+  val CmdPtr1 = Enc8x3(Cat(Fill(8-DEPTH, 0.U),CmdPtr1Dec))
+  val RspPtr = Enc8x3(Cat(Fill(8-DEPTH, 0.U),RspPtrDec))
   val buf_state_en = Wire(Vec(DEPTH, Bool()))
   buf_state_en := buf_state_en.map(i=> false.B)
   val buf_rspageQ = Wire(Vec(DEPTH, UInt(DEPTH.W)))
