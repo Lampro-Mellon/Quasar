@@ -409,10 +409,13 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
 
   def Enc8x3(in: UInt) : UInt = Cat(in(4)|in(5)|in(6)|in(7), in(2)|in(3)|in(6)|in(7), in(1)|in(3)|in(5)|in(7))
 
-  val CmdPtr0 = Enc8x3(Cat(Fill(8-DEPTH, 0.U),CmdPtr0Dec))
+  val CmdPtr0 = WireInit(UInt(DEPTH_LOG2.W), 0.U)
+  val CmdPtr1 = WireInit(UInt(DEPTH_LOG2.W), 0.U)
+  val RspPtr = WireInit(UInt(DEPTH_LOG2.W), 0.U)
+  CmdPtr0 := Enc8x3(Cat(Fill(8-DEPTH, 0.U),CmdPtr0Dec))
   io.test := CmdPtr0
-  val CmdPtr1 = Enc8x3(Cat(Fill(8-DEPTH, 0.U),CmdPtr1Dec))
-  val RspPtr = Enc8x3(Cat(Fill(8-DEPTH, 0.U),RspPtrDec))
+  CmdPtr1 := Enc8x3(Cat(Fill(8-DEPTH, 0.U),CmdPtr1Dec))
+  RspPtr := Enc8x3(Cat(Fill(8-DEPTH, 0.U),RspPtrDec))
   val buf_state_en = Wire(Vec(DEPTH, Bool()))
   buf_state_en := buf_state_en.map(i=> false.B)
   val buf_rspageQ = Wire(Vec(DEPTH, UInt(DEPTH.W)))
