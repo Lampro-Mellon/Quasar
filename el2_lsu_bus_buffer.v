@@ -20,131 +20,131 @@ module rvclkhdr(
   assign clkhdr_SE = io_scan_mode; // @[el2_lib.scala 469:18]
 endmodule
 module el2_lsu_bus_buffer(
-  input         clock,
-  input         reset,
-  input         io_scan_mode,
-  input         io_dec_tlu_external_ldfwd_disable,
-  input         io_dec_tlu_wb_coalescing_disable,
-  input         io_dec_tlu_sideeffect_posted_disable,
-  input         io_dec_tlu_force_halt,
-  input         io_lsu_c2_r_clk,
-  input         io_lsu_bus_ibuf_c1_clk,
-  input         io_lsu_bus_obuf_c1_clk,
-  input         io_lsu_bus_buf_c1_clk,
-  input         io_lsu_free_c2_clk,
-  input         io_lsu_busm_clk,
-  input         io_dec_lsu_valid_raw_d,
-  input         io_lsu_pkt_m_fast_int,
-  input         io_lsu_pkt_m_by,
-  input         io_lsu_pkt_m_half,
-  input         io_lsu_pkt_m_word,
-  input         io_lsu_pkt_m_dword,
-  input         io_lsu_pkt_m_load,
-  input         io_lsu_pkt_m_store,
-  input         io_lsu_pkt_m_unsign,
-  input         io_lsu_pkt_m_dma,
-  input         io_lsu_pkt_m_store_data_bypass_d,
-  input         io_lsu_pkt_m_load_ldst_bypass_d,
-  input         io_lsu_pkt_m_store_data_bypass_m,
-  input         io_lsu_pkt_m_valid,
-  input         io_lsu_pkt_r_fast_int,
-  input         io_lsu_pkt_r_by,
-  input         io_lsu_pkt_r_half,
-  input         io_lsu_pkt_r_word,
-  input         io_lsu_pkt_r_dword,
-  input         io_lsu_pkt_r_load,
-  input         io_lsu_pkt_r_store,
-  input         io_lsu_pkt_r_unsign,
-  input         io_lsu_pkt_r_dma,
-  input         io_lsu_pkt_r_store_data_bypass_d,
-  input         io_lsu_pkt_r_load_ldst_bypass_d,
-  input         io_lsu_pkt_r_store_data_bypass_m,
-  input         io_lsu_pkt_r_valid,
-  input  [31:0] io_lsu_addr_m,
-  input  [31:0] io_end_addr_m,
-  input  [31:0] io_lsu_addr_r,
-  input  [31:0] io_end_addr_r,
-  input  [31:0] io_store_data_r,
-  input         io_no_word_merge_r,
-  input         io_no_dword_merge_r,
-  input         io_lsu_busreq_m,
-  input         io_ld_full_hit_m,
-  input         io_flush_m_up,
-  input         io_flush_r,
-  input         io_lsu_commit_r,
-  input         io_is_sideeffects_r,
-  input         io_ldst_dual_d,
-  input         io_ldst_dual_m,
-  input         io_ldst_dual_r,
-  input  [7:0]  io_ldst_byteen_ext_m,
-  input         io_lsu_axi_awready,
-  input         io_lsu_axi_wready,
-  input         io_lsu_axi_bvalid,
-  input  [1:0]  io_lsu_axi_bresp,
-  input  [2:0]  io_lsu_axi_bid,
-  input         io_lsu_axi_arready,
-  input         io_lsu_axi_rvalid,
-  input  [2:0]  io_lsu_axi_rid,
-  input  [63:0] io_lsu_axi_rdata,
-  input  [1:0]  io_lsu_axi_rresp,
-  input         io_lsu_bus_clk_en,
-  input         io_lsu_bus_clk_en_q,
-  output        io_lsu_busreq_r,
-  output        io_lsu_bus_buffer_pend_any,
-  output        io_lsu_bus_buffer_full_any,
-  output        io_lsu_bus_buffer_empty_any,
-  output        io_lsu_bus_idle_any,
-  output [3:0]  io_ld_byte_hit_buf_lo,
-  output [3:0]  io_ld_byte_hit_buf_hi,
-  output [31:0] io_ld_fwddata_buf_lo,
-  output [31:0] io_ld_fwddata_buf_hi,
-  output        io_lsu_imprecise_error_load_any,
-  output        io_lsu_imprecise_error_store_any,
-  output [31:0] io_lsu_imprecise_error_addr_any,
-  output        io_lsu_nonblock_load_valid_m,
-  output [1:0]  io_lsu_nonblock_load_tag_m,
-  output        io_lsu_nonblock_load_inv_r,
-  output [1:0]  io_lsu_nonblock_load_inv_tag_r,
-  output        io_lsu_nonblock_load_data_valid,
-  output        io_lsu_nonblock_load_data_error,
-  output [1:0]  io_lsu_nonblock_load_data_tag,
-  output [31:0] io_lsu_nonblock_load_data,
-  output        io_lsu_pmu_bus_trxn,
-  output        io_lsu_pmu_bus_misaligned,
-  output        io_lsu_pmu_bus_error,
-  output        io_lsu_pmu_bus_busy,
-  output        io_lsu_axi_awvalid,
-  output [2:0]  io_lsu_axi_awid,
-  output [31:0] io_lsu_axi_awaddr,
-  output [3:0]  io_lsu_axi_awregion,
-  output [7:0]  io_lsu_axi_awlen,
-  output [2:0]  io_lsu_axi_awsize,
-  output [1:0]  io_lsu_axi_awburst,
-  output        io_lsu_axi_awlock,
-  output [3:0]  io_lsu_axi_awcache,
-  output [2:0]  io_lsu_axi_awprot,
-  output [3:0]  io_lsu_axi_awqos,
-  output        io_lsu_axi_wvalid,
-  output [63:0] io_lsu_axi_wdata,
-  output [7:0]  io_lsu_axi_wstrb,
-  output        io_lsu_axi_wlast,
-  output        io_lsu_axi_bready,
-  output        io_lsu_axi_arvalid,
-  output [2:0]  io_lsu_axi_arid,
-  output [31:0] io_lsu_axi_araddr,
-  output [3:0]  io_lsu_axi_arregion,
-  output [7:0]  io_lsu_axi_arlen,
-  output [2:0]  io_lsu_axi_arsize,
-  output [1:0]  io_lsu_axi_arburst,
-  output        io_lsu_axi_arlock,
-  output [3:0]  io_lsu_axi_arcache,
-  output [2:0]  io_lsu_axi_arprot,
-  output [3:0]  io_lsu_axi_arqos,
-  output        io_lsu_axi_rready,
-  output [15:0] io_test,
-  output [31:0] io_data_hi,
-  output [31:0] io_data_lo,
-  output [3:0]  io_data_en
+  input          clock,
+  input          reset,
+  input          io_scan_mode,
+  input          io_dec_tlu_external_ldfwd_disable,
+  input          io_dec_tlu_wb_coalescing_disable,
+  input          io_dec_tlu_sideeffect_posted_disable,
+  input          io_dec_tlu_force_halt,
+  input          io_lsu_c2_r_clk,
+  input          io_lsu_bus_ibuf_c1_clk,
+  input          io_lsu_bus_obuf_c1_clk,
+  input          io_lsu_bus_buf_c1_clk,
+  input          io_lsu_free_c2_clk,
+  input          io_lsu_busm_clk,
+  input          io_dec_lsu_valid_raw_d,
+  input          io_lsu_pkt_m_fast_int,
+  input          io_lsu_pkt_m_by,
+  input          io_lsu_pkt_m_half,
+  input          io_lsu_pkt_m_word,
+  input          io_lsu_pkt_m_dword,
+  input          io_lsu_pkt_m_load,
+  input          io_lsu_pkt_m_store,
+  input          io_lsu_pkt_m_unsign,
+  input          io_lsu_pkt_m_dma,
+  input          io_lsu_pkt_m_store_data_bypass_d,
+  input          io_lsu_pkt_m_load_ldst_bypass_d,
+  input          io_lsu_pkt_m_store_data_bypass_m,
+  input          io_lsu_pkt_m_valid,
+  input          io_lsu_pkt_r_fast_int,
+  input          io_lsu_pkt_r_by,
+  input          io_lsu_pkt_r_half,
+  input          io_lsu_pkt_r_word,
+  input          io_lsu_pkt_r_dword,
+  input          io_lsu_pkt_r_load,
+  input          io_lsu_pkt_r_store,
+  input          io_lsu_pkt_r_unsign,
+  input          io_lsu_pkt_r_dma,
+  input          io_lsu_pkt_r_store_data_bypass_d,
+  input          io_lsu_pkt_r_load_ldst_bypass_d,
+  input          io_lsu_pkt_r_store_data_bypass_m,
+  input          io_lsu_pkt_r_valid,
+  input  [31:0]  io_lsu_addr_m,
+  input  [31:0]  io_end_addr_m,
+  input  [31:0]  io_lsu_addr_r,
+  input  [31:0]  io_end_addr_r,
+  input  [31:0]  io_store_data_r,
+  input          io_no_word_merge_r,
+  input          io_no_dword_merge_r,
+  input          io_lsu_busreq_m,
+  input          io_ld_full_hit_m,
+  input          io_flush_m_up,
+  input          io_flush_r,
+  input          io_lsu_commit_r,
+  input          io_is_sideeffects_r,
+  input          io_ldst_dual_d,
+  input          io_ldst_dual_m,
+  input          io_ldst_dual_r,
+  input  [7:0]   io_ldst_byteen_ext_m,
+  input          io_lsu_axi_awready,
+  input          io_lsu_axi_wready,
+  input          io_lsu_axi_bvalid,
+  input  [1:0]   io_lsu_axi_bresp,
+  input  [2:0]   io_lsu_axi_bid,
+  input          io_lsu_axi_arready,
+  input          io_lsu_axi_rvalid,
+  input  [2:0]   io_lsu_axi_rid,
+  input  [63:0]  io_lsu_axi_rdata,
+  input  [1:0]   io_lsu_axi_rresp,
+  input          io_lsu_bus_clk_en,
+  input          io_lsu_bus_clk_en_q,
+  output         io_lsu_busreq_r,
+  output         io_lsu_bus_buffer_pend_any,
+  output         io_lsu_bus_buffer_full_any,
+  output         io_lsu_bus_buffer_empty_any,
+  output         io_lsu_bus_idle_any,
+  output [3:0]   io_ld_byte_hit_buf_lo,
+  output [3:0]   io_ld_byte_hit_buf_hi,
+  output [31:0]  io_ld_fwddata_buf_lo,
+  output [31:0]  io_ld_fwddata_buf_hi,
+  output         io_lsu_imprecise_error_load_any,
+  output         io_lsu_imprecise_error_store_any,
+  output [31:0]  io_lsu_imprecise_error_addr_any,
+  output         io_lsu_nonblock_load_valid_m,
+  output [1:0]   io_lsu_nonblock_load_tag_m,
+  output         io_lsu_nonblock_load_inv_r,
+  output [1:0]   io_lsu_nonblock_load_inv_tag_r,
+  output         io_lsu_nonblock_load_data_valid,
+  output         io_lsu_nonblock_load_data_error,
+  output [1:0]   io_lsu_nonblock_load_data_tag,
+  output [31:0]  io_lsu_nonblock_load_data,
+  output         io_lsu_pmu_bus_trxn,
+  output         io_lsu_pmu_bus_misaligned,
+  output         io_lsu_pmu_bus_error,
+  output         io_lsu_pmu_bus_busy,
+  output         io_lsu_axi_awvalid,
+  output [2:0]   io_lsu_axi_awid,
+  output [31:0]  io_lsu_axi_awaddr,
+  output [3:0]   io_lsu_axi_awregion,
+  output [7:0]   io_lsu_axi_awlen,
+  output [2:0]   io_lsu_axi_awsize,
+  output [1:0]   io_lsu_axi_awburst,
+  output         io_lsu_axi_awlock,
+  output [3:0]   io_lsu_axi_awcache,
+  output [2:0]   io_lsu_axi_awprot,
+  output [3:0]   io_lsu_axi_awqos,
+  output         io_lsu_axi_wvalid,
+  output [63:0]  io_lsu_axi_wdata,
+  output [7:0]   io_lsu_axi_wstrb,
+  output         io_lsu_axi_wlast,
+  output         io_lsu_axi_bready,
+  output         io_lsu_axi_arvalid,
+  output [2:0]   io_lsu_axi_arid,
+  output [31:0]  io_lsu_axi_araddr,
+  output [3:0]   io_lsu_axi_arregion,
+  output [7:0]   io_lsu_axi_arlen,
+  output [2:0]   io_lsu_axi_arsize,
+  output [1:0]   io_lsu_axi_arburst,
+  output         io_lsu_axi_arlock,
+  output [3:0]   io_lsu_axi_arcache,
+  output [2:0]   io_lsu_axi_arprot,
+  output [3:0]   io_lsu_axi_arqos,
+  output         io_lsu_axi_rready,
+  output [127:0] io_test,
+  output [31:0]  io_data_hi,
+  output [31:0]  io_data_lo,
+  output [3:0]   io_data_en
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -762,23 +762,19 @@ module el2_lsu_bus_buffer(
   wire  _T_82 = _T_80 | ld_byte_ibuf_hit_hi[3]; // @[el2_lsu_bus_buffer.scala 192:77]
   wire [2:0] _T_84 = {_T_82,_T_79,_T_76}; // @[Cat.scala 29:58]
   wire [7:0] _T_554 = ld_byte_hitvecfn_lo_3[0] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  reg [3:0] _T_4297; // @[el2_lib.scala 491:16]
-  wire [31:0] buf_data_0 = {{28'd0}, _T_4297}; // @[el2_lsu_bus_buffer.scala 213:22 el2_lsu_bus_buffer.scala 214:12 el2_lsu_bus_buffer.scala 543:14]
+  reg [31:0] buf_data_0; // @[el2_lib.scala 491:16]
   wire [8:0] _GEN_354 = {{1'd0}, _T_554}; // @[el2_lsu_bus_buffer.scala 217:91]
   wire [8:0] _T_556 = _GEN_354 & buf_data_0[31:23]; // @[el2_lsu_bus_buffer.scala 217:91]
   wire [7:0] _T_559 = ld_byte_hitvecfn_lo_3[1] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  reg [3:0] _T_4298; // @[el2_lib.scala 491:16]
-  wire [31:0] buf_data_1 = {{28'd0}, _T_4298}; // @[el2_lsu_bus_buffer.scala 213:22 el2_lsu_bus_buffer.scala 214:12 el2_lsu_bus_buffer.scala 543:14]
+  reg [31:0] buf_data_1; // @[el2_lib.scala 491:16]
   wire [8:0] _GEN_355 = {{1'd0}, _T_559}; // @[el2_lsu_bus_buffer.scala 217:91]
   wire [8:0] _T_561 = _GEN_355 & buf_data_1[31:23]; // @[el2_lsu_bus_buffer.scala 217:91]
   wire [7:0] _T_564 = ld_byte_hitvecfn_lo_3[2] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  reg [3:0] _T_4299; // @[el2_lib.scala 491:16]
-  wire [31:0] buf_data_2 = {{28'd0}, _T_4299}; // @[el2_lsu_bus_buffer.scala 213:22 el2_lsu_bus_buffer.scala 214:12 el2_lsu_bus_buffer.scala 543:14]
+  reg [31:0] buf_data_2; // @[el2_lib.scala 491:16]
   wire [8:0] _GEN_356 = {{1'd0}, _T_564}; // @[el2_lsu_bus_buffer.scala 217:91]
   wire [8:0] _T_566 = _GEN_356 & buf_data_2[31:23]; // @[el2_lsu_bus_buffer.scala 217:91]
   wire [7:0] _T_569 = ld_byte_hitvecfn_lo_3[3] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  reg [3:0] _T_4300; // @[el2_lib.scala 491:16]
-  wire [31:0] buf_data_3 = {{28'd0}, _T_4300}; // @[el2_lsu_bus_buffer.scala 213:22 el2_lsu_bus_buffer.scala 214:12 el2_lsu_bus_buffer.scala 543:14]
+  reg [31:0] buf_data_3; // @[el2_lib.scala 491:16]
   wire [8:0] _GEN_357 = {{1'd0}, _T_569}; // @[el2_lsu_bus_buffer.scala 217:91]
   wire [8:0] _T_571 = _GEN_357 & buf_data_3[31:23]; // @[el2_lsu_bus_buffer.scala 217:91]
   wire [8:0] _T_572 = _T_556 | _T_561; // @[el2_lsu_bus_buffer.scala 217:123]
@@ -2065,7 +2061,7 @@ module el2_lsu_bus_buffer(
   wire  _GEN_74 = _T_3460 ? 1'h0 : _GEN_62; // @[Conditional.scala 39:67]
   wire  buf_wr_en_0 = _T_3437 & buf_state_en_0; // @[Conditional.scala 40:58]
   wire  buf_data_en_0 = _T_3437 ? buf_state_en_0 : _GEN_70; // @[Conditional.scala 40:58]
-  wire [31:0] _GEN_79 = _T_3437 ? _T_3459 : _GEN_72; // @[Conditional.scala 40:58]
+  wire [31:0] buf_data_in_0 = _T_3437 ? _T_3459 : _GEN_72; // @[Conditional.scala 40:58]
   wire  buf_ldfwd_en_0 = _T_3437 ? 1'h0 : _GEN_68; // @[Conditional.scala 40:58]
   wire  buf_rst_0 = _T_3437 ? 1'h0 : _GEN_74; // @[Conditional.scala 40:58]
   wire [31:0] _T_3652 = _T_3645 ? ibuf_data_out : store_data_lo_r; // @[el2_lsu_bus_buffer.scala 473:30]
@@ -2141,7 +2137,7 @@ module el2_lsu_bus_buffer(
   wire  _GEN_150 = _T_3653 ? 1'h0 : _GEN_138; // @[Conditional.scala 39:67]
   wire  buf_wr_en_1 = _T_3630 & buf_state_en_1; // @[Conditional.scala 40:58]
   wire  buf_data_en_1 = _T_3630 ? buf_state_en_1 : _GEN_146; // @[Conditional.scala 40:58]
-  wire [31:0] _GEN_155 = _T_3630 ? _T_3652 : _GEN_148; // @[Conditional.scala 40:58]
+  wire [31:0] buf_data_in_1 = _T_3630 ? _T_3652 : _GEN_148; // @[Conditional.scala 40:58]
   wire  buf_ldfwd_en_1 = _T_3630 ? 1'h0 : _GEN_144; // @[Conditional.scala 40:58]
   wire  buf_rst_1 = _T_3630 ? 1'h0 : _GEN_150; // @[Conditional.scala 40:58]
   wire [31:0] _T_3845 = _T_3838 ? ibuf_data_out : store_data_lo_r; // @[el2_lsu_bus_buffer.scala 473:30]
@@ -2217,7 +2213,7 @@ module el2_lsu_bus_buffer(
   wire  _GEN_226 = _T_3846 ? 1'h0 : _GEN_214; // @[Conditional.scala 39:67]
   wire  buf_wr_en_2 = _T_3823 & buf_state_en_2; // @[Conditional.scala 40:58]
   wire  buf_data_en_2 = _T_3823 ? buf_state_en_2 : _GEN_222; // @[Conditional.scala 40:58]
-  wire [31:0] _GEN_231 = _T_3823 ? _T_3845 : _GEN_224; // @[Conditional.scala 40:58]
+  wire [31:0] buf_data_in_2 = _T_3823 ? _T_3845 : _GEN_224; // @[Conditional.scala 40:58]
   wire  buf_ldfwd_en_2 = _T_3823 ? 1'h0 : _GEN_220; // @[Conditional.scala 40:58]
   wire  buf_rst_2 = _T_3823 ? 1'h0 : _GEN_226; // @[Conditional.scala 40:58]
   wire [31:0] _T_4038 = _T_4031 ? ibuf_data_out : store_data_lo_r; // @[el2_lsu_bus_buffer.scala 473:30]
@@ -2293,7 +2289,7 @@ module el2_lsu_bus_buffer(
   wire  _GEN_302 = _T_4039 ? 1'h0 : _GEN_290; // @[Conditional.scala 39:67]
   wire  buf_wr_en_3 = _T_4016 & buf_state_en_3; // @[Conditional.scala 40:58]
   wire  buf_data_en_3 = _T_4016 ? buf_state_en_3 : _GEN_298; // @[Conditional.scala 40:58]
-  wire [31:0] _GEN_307 = _T_4016 ? _T_4038 : _GEN_300; // @[Conditional.scala 40:58]
+  wire [31:0] buf_data_in_3 = _T_4016 ? _T_4038 : _GEN_300; // @[Conditional.scala 40:58]
   wire  buf_ldfwd_en_3 = _T_4016 ? 1'h0 : _GEN_296; // @[Conditional.scala 40:58]
   wire  buf_rst_3 = _T_4016 ? 1'h0 : _GEN_302; // @[Conditional.scala 40:58]
   reg  _T_4245; // @[Reg.scala 27:20]
@@ -2319,11 +2315,7 @@ module el2_lsu_bus_buffer(
   wire  _T_4317 = buf_error_en_3 | buf_error[3]; // @[el2_lsu_bus_buffer.scala 544:86]
   wire  _T_4318 = ~buf_rst_3; // @[el2_lsu_bus_buffer.scala 544:128]
   wire [2:0] _T_4325 = {buf_data_en_3,buf_data_en_2,buf_data_en_1}; // @[Cat.scala 29:58]
-  wire [3:0] buf_data_in_3 = _GEN_307[3:0]; // @[el2_lsu_bus_buffer.scala 151:25 el2_lsu_bus_buffer.scala 152:15 el2_lsu_bus_buffer.scala 473:24 el2_lsu_bus_buffer.scala 489:24 el2_lsu_bus_buffer.scala 505:24]
-  wire [3:0] buf_data_in_2 = _GEN_231[3:0]; // @[el2_lsu_bus_buffer.scala 151:25 el2_lsu_bus_buffer.scala 152:15 el2_lsu_bus_buffer.scala 473:24 el2_lsu_bus_buffer.scala 489:24 el2_lsu_bus_buffer.scala 505:24]
-  wire [3:0] buf_data_in_1 = _GEN_155[3:0]; // @[el2_lsu_bus_buffer.scala 151:25 el2_lsu_bus_buffer.scala 152:15 el2_lsu_bus_buffer.scala 473:24 el2_lsu_bus_buffer.scala 489:24 el2_lsu_bus_buffer.scala 505:24]
-  wire [11:0] _T_4328 = {buf_data_in_3,buf_data_in_2,buf_data_in_1}; // @[Cat.scala 29:58]
-  wire [3:0] buf_data_in_0 = _GEN_79[3:0]; // @[el2_lsu_bus_buffer.scala 151:25 el2_lsu_bus_buffer.scala 152:15 el2_lsu_bus_buffer.scala 473:24 el2_lsu_bus_buffer.scala 489:24 el2_lsu_bus_buffer.scala 505:24]
+  wire [95:0] _T_4328 = {buf_data_in_3,buf_data_in_2,buf_data_in_1}; // @[Cat.scala 29:58]
   wire [1:0] _T_4334 = _T_26 + _T_19; // @[el2_lsu_bus_buffer.scala 547:96]
   wire [1:0] _GEN_391 = {{1'd0}, _T_12}; // @[el2_lsu_bus_buffer.scala 547:96]
   wire [2:0] _T_4335 = _T_4334 + _GEN_391; // @[el2_lsu_bus_buffer.scala 547:96]
@@ -2763,13 +2755,13 @@ initial begin
   _RAND_28 = {1{`RANDOM}};
   buf_ageQ_0 = _RAND_28[3:0];
   _RAND_29 = {1{`RANDOM}};
-  _T_4297 = _RAND_29[3:0];
+  buf_data_0 = _RAND_29[31:0];
   _RAND_30 = {1{`RANDOM}};
-  _T_4298 = _RAND_30[3:0];
+  buf_data_1 = _RAND_30[31:0];
   _RAND_31 = {1{`RANDOM}};
-  _T_4299 = _RAND_31[3:0];
+  buf_data_2 = _RAND_31[31:0];
   _RAND_32 = {1{`RANDOM}};
-  _T_4300 = _RAND_32[3:0];
+  buf_data_3 = _RAND_32[31:0];
   _RAND_33 = {1{`RANDOM}};
   ibuf_timer = _RAND_33[2:0];
   _RAND_34 = {1{`RANDOM}};
@@ -3007,16 +2999,16 @@ initial begin
     buf_ageQ_0 = 4'h0;
   end
   if (reset) begin
-    _T_4297 = 4'h0;
+    buf_data_0 = 32'h0;
   end
   if (reset) begin
-    _T_4298 = 4'h0;
+    buf_data_1 = 32'h0;
   end
   if (reset) begin
-    _T_4299 = 4'h0;
+    buf_data_2 = 32'h0;
   end
   if (reset) begin
-    _T_4300 = 4'h0;
+    buf_data_3 = 32'h0;
   end
   if (reset) begin
     ibuf_timer = 3'h0;
@@ -3667,30 +3659,134 @@ end // initial
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      _T_4297 <= 4'h0;
+      buf_data_0 <= 32'h0;
+    end else if (_T_3437) begin
+      if (_T_3452) begin
+        buf_data_0 <= ibuf_data_out;
+      end else begin
+        buf_data_0 <= store_data_lo_r;
+      end
+    end else if (_T_3460) begin
+      buf_data_0 <= 32'h0;
+    end else if (_T_3464) begin
+      if (buf_error_en_0) begin
+        buf_data_0 <= io_lsu_axi_rdata[31:0];
+      end else if (buf_addr_0[2]) begin
+        buf_data_0 <= io_lsu_axi_rdata[63:32];
+      end else begin
+        buf_data_0 <= io_lsu_axi_rdata[31:0];
+      end
+    end else if (_T_3498) begin
+      if (_T_3578) begin
+        if (buf_addr_0[2]) begin
+          buf_data_0 <= io_lsu_axi_rdata[63:32];
+        end else begin
+          buf_data_0 <= io_lsu_axi_rdata[31:0];
+        end
+      end else begin
+        buf_data_0 <= io_lsu_axi_rdata[31:0];
+      end
     end else begin
-      _T_4297 <= _GEN_79[3:0];
+      buf_data_0 <= 32'h0;
     end
   end
   always @(posedge rvclkhdr_9_io_l1clk or posedge reset) begin
     if (reset) begin
-      _T_4298 <= 4'h0;
+      buf_data_1 <= 32'h0;
+    end else if (_T_3630) begin
+      if (_T_3645) begin
+        buf_data_1 <= ibuf_data_out;
+      end else begin
+        buf_data_1 <= store_data_lo_r;
+      end
+    end else if (_T_3653) begin
+      buf_data_1 <= 32'h0;
+    end else if (_T_3657) begin
+      if (buf_error_en_1) begin
+        buf_data_1 <= io_lsu_axi_rdata[31:0];
+      end else if (buf_addr_1[2]) begin
+        buf_data_1 <= io_lsu_axi_rdata[63:32];
+      end else begin
+        buf_data_1 <= io_lsu_axi_rdata[31:0];
+      end
+    end else if (_T_3691) begin
+      if (_T_3771) begin
+        if (buf_addr_1[2]) begin
+          buf_data_1 <= io_lsu_axi_rdata[63:32];
+        end else begin
+          buf_data_1 <= io_lsu_axi_rdata[31:0];
+        end
+      end else begin
+        buf_data_1 <= io_lsu_axi_rdata[31:0];
+      end
     end else begin
-      _T_4298 <= _GEN_155[3:0];
+      buf_data_1 <= 32'h0;
     end
   end
   always @(posedge rvclkhdr_10_io_l1clk or posedge reset) begin
     if (reset) begin
-      _T_4299 <= 4'h0;
+      buf_data_2 <= 32'h0;
+    end else if (_T_3823) begin
+      if (_T_3838) begin
+        buf_data_2 <= ibuf_data_out;
+      end else begin
+        buf_data_2 <= store_data_lo_r;
+      end
+    end else if (_T_3846) begin
+      buf_data_2 <= 32'h0;
+    end else if (_T_3850) begin
+      if (buf_error_en_2) begin
+        buf_data_2 <= io_lsu_axi_rdata[31:0];
+      end else if (buf_addr_2[2]) begin
+        buf_data_2 <= io_lsu_axi_rdata[63:32];
+      end else begin
+        buf_data_2 <= io_lsu_axi_rdata[31:0];
+      end
+    end else if (_T_3884) begin
+      if (_T_3964) begin
+        if (buf_addr_2[2]) begin
+          buf_data_2 <= io_lsu_axi_rdata[63:32];
+        end else begin
+          buf_data_2 <= io_lsu_axi_rdata[31:0];
+        end
+      end else begin
+        buf_data_2 <= io_lsu_axi_rdata[31:0];
+      end
     end else begin
-      _T_4299 <= _GEN_231[3:0];
+      buf_data_2 <= 32'h0;
     end
   end
   always @(posedge rvclkhdr_11_io_l1clk or posedge reset) begin
     if (reset) begin
-      _T_4300 <= 4'h0;
+      buf_data_3 <= 32'h0;
+    end else if (_T_4016) begin
+      if (_T_4031) begin
+        buf_data_3 <= ibuf_data_out;
+      end else begin
+        buf_data_3 <= store_data_lo_r;
+      end
+    end else if (_T_4039) begin
+      buf_data_3 <= 32'h0;
+    end else if (_T_4043) begin
+      if (buf_error_en_3) begin
+        buf_data_3 <= io_lsu_axi_rdata[31:0];
+      end else if (buf_addr_3[2]) begin
+        buf_data_3 <= io_lsu_axi_rdata[63:32];
+      end else begin
+        buf_data_3 <= io_lsu_axi_rdata[31:0];
+      end
+    end else if (_T_4077) begin
+      if (_T_4157) begin
+        if (buf_addr_3[2]) begin
+          buf_data_3 <= io_lsu_axi_rdata[63:32];
+        end else begin
+          buf_data_3 <= io_lsu_axi_rdata[31:0];
+        end
+      end else begin
+        buf_data_3 <= io_lsu_axi_rdata[31:0];
+      end
     end else begin
-      _T_4300 <= _GEN_307[3:0];
+      buf_data_3 <= 32'h0;
     end
   end
   always @(posedge io_lsu_bus_ibuf_c1_clk or posedge reset) begin

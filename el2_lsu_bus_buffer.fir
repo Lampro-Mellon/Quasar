@@ -404,7 +404,7 @@ circuit el2_lsu_bus_buffer :
     buf_ldfwd_en[1] <= UInt<1>("h00") @[el2_lsu_bus_buffer.scala 150:16]
     buf_ldfwd_en[2] <= UInt<1>("h00") @[el2_lsu_bus_buffer.scala 150:16]
     buf_ldfwd_en[3] <= UInt<1>("h00") @[el2_lsu_bus_buffer.scala 150:16]
-    wire buf_data_in : UInt<4>[4] @[el2_lsu_bus_buffer.scala 151:25]
+    wire buf_data_in : UInt<32>[4] @[el2_lsu_bus_buffer.scala 151:25]
     buf_data_in[0] <= UInt<1>("h00") @[el2_lsu_bus_buffer.scala 152:15]
     buf_data_in[1] <= UInt<1>("h00") @[el2_lsu_bus_buffer.scala 152:15]
     buf_data_in[2] <= UInt<1>("h00") @[el2_lsu_bus_buffer.scala 152:15]

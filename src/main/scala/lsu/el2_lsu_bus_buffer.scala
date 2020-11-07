@@ -148,7 +148,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   buf_ldfwd_in := buf_ldfwd_in.map(i=> false.B)
   val buf_ldfwd_en = Wire(Vec(DEPTH, Bool()))
   buf_ldfwd_en := buf_ldfwd_en.map(i=> false.B)
-  val buf_data_in = Wire(Vec(DEPTH, UInt(DEPTH.W)))
+  val buf_data_in = Wire(Vec(DEPTH, UInt(32.W)))
   buf_data_in := buf_data_in.map(i=> 0.U)
   val buf_ldfwdtag_in = Wire(Vec(DEPTH, UInt(DEPTH_LOG2.W)))
   buf_ldfwdtag_in := buf_ldfwdtag_in.map(i=> 0.U)
