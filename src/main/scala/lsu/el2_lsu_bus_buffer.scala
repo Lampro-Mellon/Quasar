@@ -395,7 +395,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val found_array2 = (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((ibuf_valid & (ibuf_tag===i.U)) |
     (io.lsu_busreq_m & (WrPtr0_m===i.U)) | (io.lsu_busreq_r & (WrPtr0_r === i.U)) | (io.ldst_dual_r & (WrPtr1_r===i.U))))->i.U)
   val WrPtr1_m = MuxCase(0.U, found_array2)
-  io.test := WrPtr1_m
+  //io.test := WrPtr1_m
   val buf_age = Wire(Vec(DEPTH, UInt(DEPTH.W)))
   buf_age := buf_age.map(i=> 0.U)
   val CmdPtr0Dec = (0 until DEPTH).map(i=> (!(buf_age(i).orR) & (buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(Cat(_,_))
@@ -407,6 +407,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   found_cmdptr1 := CmdPtr1Dec.orR
 
   val CmdPtr0 = PriorityEncoder(CmdPtr0Dec)
+  io.test := CmdPtr0
   val CmdPtr1 = PriorityEncoder(CmdPtr1Dec)
   val RspPtr = PriorityEncoder(RspPtrDec)
   val buf_state_en = Wire(Vec(DEPTH, Bool()))
