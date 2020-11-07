@@ -1243,7 +1243,8 @@ module el2_lsu_bus_buffer(
   wire [7:0] _T_1535 = _T_1489 ? obuf_data1_in[55:48] : obuf_data1_in[55:48]; // @[el2_lsu_bus_buffer.scala 364:44]
   wire [7:0] _T_1540 = _T_1493 ? obuf_data1_in[63:56] : obuf_data1_in[63:56]; // @[el2_lsu_bus_buffer.scala 364:44]
   wire [55:0] _T_1546 = {_T_1540,_T_1535,_T_1530,_T_1525,_T_1520,_T_1515,_T_1510}; // @[Cat.scala 29:58]
-  wire  _T_1766 = obuf_wr_en | _T_1157; // @[el2_lsu_bus_buffer.scala 375:58]
+  wire  _T_1765 = obuf_wr_en | obuf_valid; // @[el2_lsu_bus_buffer.scala 375:58]
+  wire  _T_1766 = ~obuf_rst; // @[el2_lsu_bus_buffer.scala 375:93]
   reg [1:0] obuf_sz; // @[Reg.scala 27:20]
   reg [7:0] obuf_byteen; // @[Reg.scala 27:20]
   reg [63:0] obuf_data; // @[el2_lib.scala 491:16]
@@ -3510,7 +3511,7 @@ end // initial
     if (reset) begin
       obuf_valid <= 1'h0;
     end else begin
-      obuf_valid <= _T_1766 & obuf_rst;
+      obuf_valid <= _T_1765 & _T_1766;
     end
   end
   always @(posedge io_lsu_busm_clk or posedge reset) begin

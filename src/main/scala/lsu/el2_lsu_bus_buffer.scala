@@ -372,7 +372,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     (ibuf_buf_byp & ldst_samedw_r & io.ldst_dual_r)
 
   val obuf_wr_enQ = withClock(io.lsu_busm_clk){RegNext(obuf_wr_en, false.B)}
-  obuf_valid := withClock(io.lsu_free_c2_clk){RegNext(Mux(obuf_wr_en, true.B, !obuf_valid) & obuf_rst, false.B)}
+  obuf_valid := withClock(io.lsu_free_c2_clk){RegNext(Mux(obuf_wr_en, true.B, obuf_valid) & !obuf_rst, false.B)}
   obuf_nosend := withClock(io.lsu_free_c2_clk){RegEnable(obuf_nosend_in, false.B, obuf_wr_en)}
   obuf_cmd_done := withClock(io.lsu_busm_clk){RegNext(obuf_cmd_done_in, false.B)}
   obuf_data_done := withClock(io.lsu_busm_clk){RegNext(obuf_data_done_in, false.B)}
