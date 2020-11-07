@@ -541,9 +541,9 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     buf_error := (0 until DEPTH).map(i=>(withClock(io.lsu_bus_buf_c1_clk){RegNext(Mux(buf_error_en(i), true.B, buf_error(i)) & !buf_rst(i), false.B)}).asUInt()).reverse.reduce(Cat(_,_))
 
   val buf_numvld_any = (0 until DEPTH).map(i=>(buf_state(i)=/=idle_C).asUInt).reverse.reduce(_ +& _)
-  buf_numvld_wrcmd_any := (0 until DEPTH).map(i=>(buf_write(i) & (buf_write(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(_ +& _)
-  buf_numvld_cmd_any :=  (0 until DEPTH).map(i=>((buf_write(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(_ +& _)
-  buf_numvld_pend_any := (0 until DEPTH).map(i=>((buf_write(i)===wait_C)| ((buf_write(i)===cmd_C) & !buf_cmd_state_bus_en(i))).asUInt).reverse.reduce(_ +& _)
+  buf_numvld_wrcmd_any := (0 until DEPTH).map(i=>(buf_write(i) & (buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(_ +& _)
+  buf_numvld_cmd_any :=  (0 until DEPTH).map(i=>((buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(_ +& _)
+  buf_numvld_pend_any := (0 until DEPTH).map(i=>((buf_state(i)===wait_C) | ((buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i))).asUInt).reverse.reduce(_ +& _)
   any_done_wait_state := (0 until DEPTH).map(i=>buf_state(i)===done_wait_C).reverse.reduce(_|_)
   io.lsu_bus_buffer_pend_any := buf_numvld_pend_any.orR
   io.lsu_bus_buffer_full_any := Mux(io.ldst_dual_d & io.dec_lsu_valid_raw_d, buf_numvld_any>=(DEPTH-1), buf_numvld_any===(DEPTH-1))
