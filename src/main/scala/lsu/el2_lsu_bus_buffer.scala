@@ -106,6 +106,8 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     val lsu_axi_arqos = Output(UInt(4.W))
     val lsu_axi_rready = Output(Bool())
     val test = Output(UInt())
+    val data_hi = Output(UInt())
+    val data_lo = Output(UInt())
   })
   def indexing(in : UInt, index : UInt) = Mux1H((0 until math.pow(2, index.getWidth).asInstanceOf[Int]).map(i=>(index===i.U)->in(i)))
   def indexing(in : Vec[UInt], index : UInt) = Mux1H((0 until math.pow(2, index.getWidth).asInstanceOf[Int]).map(i=>(index===i.U)->in(i)))
@@ -564,6 +566,8 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val lsu_nonblock_unsign = indexing(buf_unsign, io.lsu_nonblock_load_data_tag)
   val lsu_nonblock_dual = indexing(buf_dual.map(_.asUInt).reverse.reduce(Cat(_,_)), io.lsu_nonblock_load_data_tag)
   val lsu_nonblock_data_unalgn = Cat(lsu_nonblock_load_data_hi, lsu_nonblock_load_data_lo) >> (lsu_nonblock_addr_offset * 8.U)
+  io.data_hi := lsu_nonblock_load_data_hi
+  io.data_lo := lsu_nonblock_load_data_lo
   io.lsu_nonblock_load_data_valid := lsu_nonblock_load_data_ready & !io.lsu_nonblock_load_data_error
   io.lsu_nonblock_load_data := Mux1H(Seq((lsu_nonblock_unsign & (lsu_nonblock_sz===0.U)) -> Cat(0.U(24.W),lsu_nonblock_data_unalgn(7,0)),
     (lsu_nonblock_unsign &  (lsu_nonblock_sz===1.U)) -> Cat(0.U(16.W),lsu_nonblock_data_unalgn(15,0)),
