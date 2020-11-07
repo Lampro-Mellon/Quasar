@@ -143,7 +143,7 @@ trait param {
   val LSU_STBUF_DEPTH        = 0x4  //.U(4.W)
   val NO_ICCM_NO_ICACHE      = false  //.U(1.W)
   val PIC_2CYCLE             = 0x0  //.U(1.W)
-  val PIC_BASE_ADDR          = 0xF00C0000 //.U(32.W)
+  val PIC_BASE_ADDR          = 0xF00C0000L //.U(32.W)
   val PIC_BITS               = 0x0F  //.U(5.W)
   val PIC_INT_WORDS          = 0x1   //.U(4.W)
   val PIC_REGION             = 0xF   //.U(4.W)
@@ -197,8 +197,10 @@ trait el2_lib extends param{
   def rveven_paritycheck(data_in:UInt, parity_in:UInt) : UInt =
     (data_in.xorR.asUInt) ^ parity_in
 
+  ///////////////////////////////////////////////////////////////////
   def rveven_paritygen(data_in : UInt) =
     data_in.xorR.asUInt
+  ///////////////////////////////////////////////////////////////////
 //rvbradder(Cat(pc, 0.U), Cat(offset, 0.U))
   def rvbradder (pc:UInt, offset:UInt) = {
     val dout_lower = pc(12,1) +& offset(12,1)
@@ -210,6 +212,7 @@ trait el2_lib extends param{
                   ( sign & !dout_lower(dout_lower.getWidth-1)).asBool -> pc_dec)), dout_lower(11,0), 0.U)
   }
 
+  ///////////////////////////////////////////////////////////////////
   // RV range
   def rvrangecheck(CCM_SADR:Long, CCM_SIZE:Int, addr:UInt) = {
     val REGION_BITS = 4;
@@ -223,6 +226,7 @@ trait el2_lib extends param{
     (in_region, in_range)
   }
 
+  ///////////////////////////////////////////////////////////////////
   def rvmaskandmatch(mask:UInt, data:UInt, masken:Bool):UInt={
     val matchvec = Wire(Vec(data.getWidth,UInt(1.W)))
     val masken_or_fullmask = masken & ~mask.andR
@@ -232,6 +236,15 @@ trait el2_lib extends param{
     matchvec.asUInt
   }
 
+  ///////////////////////////////////////////////////////////////////
+  def el2_configurable_gw(clk : Clock, rst:AsyncReset, extintsrc_req_sync : Bool, meigwctrl_polarity: Bool, meigwctrl_type: Bool, meigwclr: Bool)  = {
+    val din = WireInit(Bool(), 0.U)
+    val dout = withClockAndReset(clk, rst){RegNext(din, false.B)}
+    din := (extintsrc_req_sync ^ meigwctrl_polarity) | (dout & !meigwclr)
+    Mux(meigwctrl_type, (extintsrc_req_sync ^  meigwctrl_polarity) | dout, extintsrc_req_sync ^ meigwctrl_polarity)
+  }
+
+  ///////////////////////////////////////////////////////////////////
   // Move rvecc_encode to a proper trait
   def rvecc_encode(din:UInt):UInt = {
     def pat(y : List[Int]) = (0 until y.size).map(i=> din(y(i))).reduce(_^_)
