@@ -559,7 +559,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   io.lsu_nonblock_load_data_tag := Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & !buf_write(i) & (!buf_dual(i) | !buf_dualhi(i))) -> i.U))
   val lsu_nonblock_load_data_lo = Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & !buf_write(i) & (!buf_dual(i) | !buf_dualhi(i))) -> buf_data(i)))
   val lsu_nonblock_load_data_hi = Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & !buf_write(i) & (buf_dual(i) | buf_dualhi(i))) -> buf_data(i)))
-  val lsu_nonblock_addr_offset = indexing(buf_addr, io.lsu_nonblock_load_data_tag)
+  val lsu_nonblock_addr_offset = indexing(buf_addr, io.lsu_nonblock_load_data_tag)(1,0)
   val lsu_nonblock_sz = indexing(buf_sz, io.lsu_nonblock_load_data_tag)
   val lsu_nonblock_unsign = indexing(buf_unsign, io.lsu_nonblock_load_data_tag)
   val lsu_nonblock_dual = indexing(buf_dual.map(_.asUInt).reverse.reduce(Cat(_,_)), io.lsu_nonblock_load_data_tag)
