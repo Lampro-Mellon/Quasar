@@ -312,7 +312,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val lsu_bus_cntr_overflow = WireInit(Bool(), false.B)
   val bus_addr_match_pending = WireInit(Bool(), false.B)
   obuf_wr_en := ((ibuf_buf_byp & io.lsu_commit_r & !(io.is_sideeffects_r & bus_sideeffect_pend)) |
-    ((Mux1H((0 until math.pow(2,LSU_NUM_NBLOAD_WIDTH).asInstanceOf[Int]).map(i=>(Cmdptr0===1.U)->buf_state(i))) === cmd_C) &
+    ((indexing(buf_state, Cmdptr0) === cmd_C) &
       found_cmdptr0 & !indexing(buf_cmd_state_bus_en.map(_.asUInt).reverse.reduce(Cat(_,_)), Cmdptr0) & !(indexing(buf_sideeffect, Cmdptr0) & bus_sideeffect_pend) &
       (!(indexing(buf_dual.map(_.asUInt).reverse.reduce(Cat(_,_)), Cmdptr0) & indexing(buf_samedw.map(_.asUInt).reverse.reduce(Cat(_,_)), Cmdptr0) & !indexing(buf_write, Cmdptr0)) | found_cmdptr1 | indexing(buf_nomerge.map(_.asUInt).reverse.reduce(Cat(_,_)), Cmdptr0) |
         obuf_force_wr_en))) & (bus_cmd_ready | !obuf_valid | obuf_nosend) & !obuf_wr_wait & !lsu_bus_cntr_overflow & !bus_addr_match_pending & io.lsu_bus_clk_en
@@ -563,7 +563,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     (!lsu_nonblock_unsign & (lsu_nonblock_sz===0.U)) -> Cat(Fill(24,lsu_nonblock_data_unalgn(7)), lsu_nonblock_data_unalgn(7,0)),
     (!lsu_nonblock_unsign & (lsu_nonblock_sz===1.U)) -> Cat(Fill(16,lsu_nonblock_data_unalgn(15)), lsu_nonblock_data_unalgn(15,0)),
     (lsu_nonblock_sz===2.U)                          -> lsu_nonblock_data_unalgn))
-  bus_sideeffect_pend := Mux1H((0 until DEPTH).map(i=>(buf_state(i)===resp_C)->(buf_sideeffect(i) & io.dec_tlu_sideeffect_posted_disable)))
+  bus_sideeffect_pend := (0 until DEPTH).map(i=>(buf_state(i)===resp_C) & buf_sideeffect(i) & io.dec_tlu_sideeffect_posted_disable).reduce(_|_)
   bus_addr_match_pending := Mux1H((0 until DEPTH).map(i=>(buf_state(i)===resp_C)->
     (BUILD_AXI_NATIVE.B & obuf_valid & (obuf_addr(31,3)===buf_addr(i)(31,3)) & !((obuf_tag0===i.U) | (obuf_merge & (obuf_tag1===i.U))))))
 
