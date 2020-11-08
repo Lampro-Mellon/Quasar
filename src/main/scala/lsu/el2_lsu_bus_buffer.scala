@@ -461,7 +461,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
       (ibuf_byp & io.lsu_busreq_r & io.ldst_dual_r & (WrPtr1_r === i.U) & (WrPtr0_r === j.U)))) | buf_age(i)(j)).asUInt).reverse.reduce(Cat(_,_)))
   val buf_ageQ = Wire(Vec(DEPTH, UInt(DEPTH.W)))
   buf_ageQ := buf_ageQ.map(i=> 0.U)
-    buf_age := (0 until DEPTH).map(i=>(0 until DEPTH).map(j=>(buf_ageQ(i)(j) & ((buf_state(j)===cmd_C) & buf_cmd_state_bus_en(j))).asUInt).reverse.reduce(Cat(_,_)))
+    buf_age := (0 until DEPTH).map(i=>(0 until DEPTH).map(j=>(buf_ageQ(i)(j) & !((buf_state(j)===cmd_C) & buf_cmd_state_bus_en(j))).asUInt).reverse.reduce(Cat(_,_)))
     buf_age_younger := (0 until DEPTH).map(i=>(0 until DEPTH).map(j=>(Mux(i.U===j.U, 0.U, !buf_age(i)(j) & (buf_state(j)=/=idle_C))).asUInt).reverse.reduce(Cat(_,_)))
     buf_rsp_pickage := (0 until DEPTH).map(i=>(0 until DEPTH).map(j=>(buf_rspageQ(i)(j) & (buf_state(j)===done_wait_C)).asUInt).reverse.reduce(Cat(_,_)))
 
