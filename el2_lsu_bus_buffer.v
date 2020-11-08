@@ -2463,7 +2463,7 @@ module el2_lsu_bus_buffer(
   wire [3:0] buf_numvld_any = _T_4438 + _T_4445; // @[el2_lsu_bus_buffer.scala 580:169]
   wire  _T_4516 = io_ldst_dual_d & io_dec_lsu_valid_raw_d; // @[el2_lsu_bus_buffer.scala 586:52]
   wire  _T_4517 = buf_numvld_any >= 4'h3; // @[el2_lsu_bus_buffer.scala 586:92]
-  wire  _T_4518 = buf_numvld_any == 4'h3; // @[el2_lsu_bus_buffer.scala 586:119]
+  wire  _T_4518 = buf_numvld_any == 4'h4; // @[el2_lsu_bus_buffer.scala 586:121]
   wire  _T_4520 = |buf_state_0; // @[el2_lsu_bus_buffer.scala 587:52]
   wire  _T_4521 = |buf_state_1; // @[el2_lsu_bus_buffer.scala 587:52]
   wire  _T_4522 = |buf_state_2; // @[el2_lsu_bus_buffer.scala 587:52]

@@ -583,7 +583,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   buf_numvld_pend_any := (0 until DEPTH).map(i=>((buf_state(i)===wait_C) | ((buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i))).asUInt).reverse.reduce(_ +& _)
   any_done_wait_state := (0 until DEPTH).map(i=>buf_state(i)===done_wait_C).reverse.reduce(_|_)
   io.lsu_bus_buffer_pend_any := buf_numvld_pend_any.orR
-  io.lsu_bus_buffer_full_any := Mux(io.ldst_dual_d & io.dec_lsu_valid_raw_d, buf_numvld_any>=(DEPTH-1), buf_numvld_any===(DEPTH-1))
+  io.lsu_bus_buffer_full_any := Mux(io.ldst_dual_d & io.dec_lsu_valid_raw_d, buf_numvld_any>=(DEPTH-1).U, buf_numvld_any===DEPTH.U)
   io.lsu_bus_buffer_empty_any := !(buf_state.map(_.orR).reduce(_|_)) & !ibuf_valid & !obuf_valid
 
   io.lsu_nonblock_load_valid_m := io.lsu_busreq_m & io.lsu_pkt_m.valid & io.lsu_pkt_m.load & !io.flush_m_up & !io.ld_full_hit_m

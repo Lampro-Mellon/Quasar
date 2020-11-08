@@ -5954,7 +5954,7 @@ circuit el2_lsu_bus_buffer :
     io.lsu_bus_buffer_pend_any <= _T_4515 @[el2_lsu_bus_buffer.scala 585:30]
     node _T_4516 = and(io.ldst_dual_d, io.dec_lsu_valid_raw_d) @[el2_lsu_bus_buffer.scala 586:52]
     node _T_4517 = geq(buf_numvld_any, UInt<2>("h03")) @[el2_lsu_bus_buffer.scala 586:92]
-    node _T_4518 = eq(buf_numvld_any, UInt<2>("h03")) @[el2_lsu_bus_buffer.scala 586:119]
+    node _T_4518 = eq(buf_numvld_any, UInt<3>("h04")) @[el2_lsu_bus_buffer.scala 586:121]
     node _T_4519 = mux(_T_4516, _T_4517, _T_4518) @[el2_lsu_bus_buffer.scala 586:36]
     io.lsu_bus_buffer_full_any <= _T_4519 @[el2_lsu_bus_buffer.scala 586:30]
     node _T_4520 = orr(buf_state[0]) @[el2_lsu_bus_buffer.scala 587:52]
