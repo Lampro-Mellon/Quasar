@@ -175,7 +175,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val buf_rst = Wire(Vec(DEPTH, Bool()))
   buf_rst := buf_rst.map(i=> false.B)
   val ibuf_drainvec_vld = WireInit(UInt(DEPTH.W), 0.U)
-  val buf_byteen_in = Wire(Vec(DEPTH, UInt(3.W)))
+  val buf_byteen_in = Wire(Vec(DEPTH, UInt(DEPTH.W)))
   buf_byteen_in := buf_byteen_in.map(i=> 0.U)
   val buf_addr_in = Wire(Vec(DEPTH, UInt(32.W)))
   buf_addr_in := buf_addr_in.map(i=> 0.U)
@@ -476,7 +476,8 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
 
 
     ibuf_drainvec_vld := (0 until DEPTH).map(i=>(ibuf_drain_vld & (ibuf_tag === i.U)).asUInt).reverse.reduce(Cat(_,_))
-    buf_byteen_in := (0 until DEPTH).map(i=>Mux(ibuf_drainvec_vld(i), ibuf_byteen_out(3,0), Mux(ibuf_byp & io.ldst_dual_r & (WrPtr1_r===i.U), ldst_byteen_hi_r(3,0), ldst_byteen_lo_r(3,0))))
+    buf_byteen_in := (0 until DEPTH).map(i=>Mux(ibuf_drainvec_vld(i), ibuf_byteen_out(3,0),
+      Mux(ibuf_byp & io.ldst_dual_r & (WrPtr1_r===i.U), ldst_byteen_hi_r(3,0), ldst_byteen_lo_r(3,0))))
     buf_addr_in := (0 until DEPTH).map(i=>Mux(ibuf_drainvec_vld(i), ibuf_addr, Mux(ibuf_byp & io.ldst_dual_r & (WrPtr1_r===i.U), io.end_addr_r, io.lsu_addr_r)))
     buf_dual_in := (0 until DEPTH).map(i=>(Mux(ibuf_drainvec_vld(i), ibuf_dual, io.ldst_dual_r)).asUInt).reverse.reduce(Cat(_,_))
     buf_samedw_in := (0 until DEPTH).map(i=>(Mux(ibuf_drainvec_vld(i), ibuf_samedw, ldst_samedw_r)).asUInt).reverse.reduce(Cat(_,_))
