@@ -168,8 +168,8 @@
     "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_nonblock_load_tag_m",
     "sources":[
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_dual_r",
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_r"
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_r",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_dual_r"
     ]
   },
   {

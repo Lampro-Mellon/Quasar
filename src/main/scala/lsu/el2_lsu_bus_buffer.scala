@@ -419,11 +419,9 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   obuf_wr_timer := withClock(io.lsu_busm_clk){RegNext(obuf_wr_timer_in, 0.U)}
   val WrPtr0_m = WireInit(UInt(DEPTH_LOG2.W), 0.U)
 
-  val found_array1 = (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((ibuf_valid & (ibuf_tag===i.U)) |
-    (io.lsu_busreq_r & (WrPtr0_r === i.U)) |
-    (io.ldst_dual_r & (WrPtr1_r === i.U)))) -> i.U)
-
-  WrPtr0_m := MuxCase(0.U, found_array1)
+  WrPtr0_m := MuxCase(0.U, (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((ibuf_valid & (ibuf_tag===i.U)) |
+    (io.lsu_busreq_r & ((WrPtr0_r === i.U) |
+    (io.ldst_dual_r & (WrPtr1_r === i.U)))))) -> i.U))
   io.buf_state := buf_state.reduce(Cat(_,_))
 
   val WrPtr1_m = MuxCase(0.U, (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((ibuf_valid & (ibuf_tag===i.U)) |
