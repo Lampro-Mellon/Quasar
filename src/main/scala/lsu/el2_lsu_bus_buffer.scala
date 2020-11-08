@@ -195,6 +195,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val buf_unsign = WireInit(UInt(DEPTH.W), 0.U)
   val buf_error = WireInit(UInt(DEPTH.W), 0.U)
 
+  val ibuf_data = WireInit(UInt(32.W), 0.U)
   io.ld_byte_hit_buf_lo := (0 until 4).map(i => (ld_byte_hitvecfn_lo(i).orR | ld_byte_ibuf_hit_lo(i)).asUInt).reverse.reduce(Cat(_, _))
   io.ld_byte_hit_buf_hi := (0 until 4).map(i => (ld_byte_hitvecfn_hi(i).orR | ld_byte_ibuf_hit_hi(i)).asUInt).reverse.reduce(Cat(_, _))
 
@@ -225,12 +226,12 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   io.ld_fwddata_buf_lo := Cat((0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_lo(3)(i)) & buf_data(i)(31, 23)).reduce(_ | _),
     (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_lo(2)(i)) & buf_data(i)(23, 16)).reduce(_ | _),
     (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_lo(1)(i)) & buf_data(i)(15, 8)).reduce(_ | _),
-    (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_lo(0)(i)) & buf_data(i)(7, 0)).reduce(_ | _)) | ld_fwddata_buf_lo_initial
+    (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_lo(0)(i)) & buf_data(i)(7, 0)).reduce(_ | _)) | (ld_fwddata_buf_lo_initial & ibuf_data)
 
   io.ld_fwddata_buf_hi := Cat((0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(3)(i)) & buf_data(i)(31, 23)).reduce(_ | _),
     (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(2)(i)) & buf_data(i)(23, 16)).reduce(_ | _),
     (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(1)(i)) & buf_data(i)(15, 8)).reduce(_ | _),
-    (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(0)(i)) & buf_data(i)(7, 0)).reduce(_ | _)) | ld_fwddata_buf_hi_initial
+    (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(0)(i)) & buf_data(i)(7, 0)).reduce(_ | _)) | (ld_fwddata_buf_hi_initial & ibuf_data)
 
   val bus_coalescing_disable = io.dec_tlu_wb_coalescing_disable | BUILD_AHB_LITE.B
   val ldst_byteen_r = Mux1H(Seq(io.lsu_pkt_r.by   -> 1.U(4.W),
@@ -283,7 +284,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val ibuf_addr_in = Mux(io.ldst_dual_r, io.end_addr_r, io.lsu_addr_r)
   val ibuf_byteen_in = Mux(ibuf_merge_en & ibuf_merge_in, ibuf_byteen(3, 0) | ldst_byteen_lo_r(3, 0),
     Mux(io.ldst_dual_r, ldst_byteen_hi_r(3, 0), ldst_byteen_lo_r(3, 0)))
-  val ibuf_data = WireInit(UInt(32.W), 0.U)
+
 
   val ibuf_data_in = (0 until 4).map(i => Mux(ibuf_merge_en & ibuf_merge_in,
     Mux(ldst_byteen_lo_r(i), store_data_lo_r((8 * i) + 7, 8 * i), ibuf_data((8 * i) + 7, 8 * i)),
