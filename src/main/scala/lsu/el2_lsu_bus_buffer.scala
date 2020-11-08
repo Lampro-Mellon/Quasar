@@ -230,15 +230,31 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(0)(i)) & buf_data(i)(7, 0)).reduce(_ | _))
 
   val bus_coalescing_disable = io.dec_tlu_wb_coalescing_disable | BUILD_AHB_LITE.B
-  val ldst_byteen_r = Mux1H(Seq(io.lsu_pkt_r.by -> 1.U(4.W),
-    io.lsu_pkt_r.half -> 3.U(4.W),
-    io.lsu_pkt_r.word -> 15.U(4.W)))
-  val byteen = Cat(0.U(4.W), ldst_byteen_r) << io.lsu_addr_r(1, 0)
-  val ldst_byteen_hi_r = byteen(7, 4)
-  val ldst_byteen_lo_r = byteen(3, 0)
-  val store_data = Cat(0.U(32.W), io.store_data_r) << (8 * io.lsu_addr_r(1, 0))
-  val store_data_hi_r = store_data(63, 32)
-  val store_data_lo_r = store_data(31, 0)
+  val ldst_byteen_r = Mux1H(Seq(io.lsu_pkt_r.by   -> 1.U(4.W),
+                                io.lsu_pkt_r.half -> 3.U(4.W),
+                                io.lsu_pkt_r.word -> 15.U(4.W)))
+
+  val ldst_byteen_hi_r = Mux1H(Seq((io.lsu_addr_r(1,0)===0.U)->0.U(4.W),
+                                   (io.lsu_addr_r(1,0)===1.U)->Cat(0.U(3.W), ldst_byteen_r(3)),
+                                   (io.lsu_addr_r(1,0)===2.U)->Cat(0.U(2.W), ldst_byteen_r(3,2)),
+                                   (io.lsu_addr_r(1,0)===3.U)->Cat(0.U(1.W), ldst_byteen_r(3,1))))
+  val ldst_byteen_lo_r = Mux1H(Seq((io.lsu_addr_r(1,0)===0.U)->ldst_byteen_r,
+                                   (io.lsu_addr_r(1,0)===1.U)->Cat(ldst_byteen_r(2,0), 0.U),
+                                   (io.lsu_addr_r(1,0)===2.U)->Cat(ldst_byteen_r(1,0), 0.U(2.W)),
+                                   (io.lsu_addr_r(1,0)===3.U)->Cat(ldst_byteen_r(0)  , 0.U(3.W))))
+
+  val store_data_hi_r = Mux1H(Seq((io.lsu_addr_r(1,0)===0.U)->0.U(32.W),
+                                  (io.lsu_addr_r(1,0)===1.U)->Cat(0.U(8.W) , io.store_data_r(31,8)),
+                                  (io.lsu_addr_r(1,0)===2.U)->Cat(0.U(16.W), io.store_data_r(31,16)),
+                                  (io.lsu_addr_r(1,0)===3.U)->Cat(0.U(24.W), io.store_data_r(31,24))))
+
+  val store_data_lo_r = Mux1H(Seq((io.lsu_addr_r(1,0)===0.U)->io.store_data_r,
+                                  (io.lsu_addr_r(1,0)===1.U)->Cat(io.store_data_r(23,0), 0.U(8.W)),
+                                  (io.lsu_addr_r(1,0)===2.U)->Cat(io.store_data_r(15,0), 0.U(16.W)),
+                                  (io.lsu_addr_r(1,0)===3.U)->Cat(io.store_data_r(7 ,0)  , 0.U(24.W))))
+
+  io.test := ldst_byteen_r
+
   val ldst_samedw_r = io.lsu_addr_r(3) === io.end_addr_r(3)
   val is_aligned_r = Mux1H(Seq(io.lsu_pkt_r.word -> (io.lsu_addr_r(1, 0) === 0.U),
     io.lsu_pkt_r.half -> !io.lsu_addr_r(0),
@@ -551,7 +567,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     buf_data := (0 until DEPTH).map(i=>rvdffe(buf_data_in(i), buf_data_en(i), clock, io.scan_mode))
     buf_error := (0 until DEPTH).map(i=>(withClock(io.lsu_bus_buf_c1_clk){RegNext(Mux(buf_error_en(i), true.B, buf_error(i)) & !buf_rst(i), false.B)}).asUInt()).reverse.reduce(Cat(_,_))
   io.data_en := (0 until DEPTH).map(i=>buf_data_en(i).asUInt()).reverse.reduce(Cat(_,_))
-  io.test :=  (0 until DEPTH).map(i=>buf_data_in(i).asUInt()).reverse.reduce(Cat(_,_))
+
   val buf_numvld_any = (0 until DEPTH).map(i=>(buf_state(i)=/=idle_C).asUInt).reverse.reduce(_ +& _)
   buf_numvld_wrcmd_any := (0 until DEPTH).map(i=>(buf_write(i) & (buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(_ +& _)
   buf_numvld_cmd_any :=  (0 until DEPTH).map(i=>((buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(_ +& _)
