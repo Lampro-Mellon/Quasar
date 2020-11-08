@@ -213,10 +213,10 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val ld_addr_ibuf_hit_hi = (io.end_addr_m(31, 2) === ibuf_addr(31, 2)) & ibuf_write & ibuf_valid & io.lsu_busreq_m
 
   val ibuf_byteen = WireInit(UInt(4.W), 0.U)
-  for (i <- 0 until 4) {
-    ld_byte_ibuf_hit_lo := ld_addr_ibuf_hit_lo & ibuf_byteen(i) & ldst_byteen_lo_m(i)
-    ld_byte_ibuf_hit_hi := ld_addr_ibuf_hit_hi & ibuf_byteen(i) & ldst_byteen_hi_m(i)
-  }
+
+  ld_byte_ibuf_hit_lo := Fill(4, ld_addr_ibuf_hit_lo) & ibuf_byteen & ldst_byteen_lo_m
+  ld_byte_ibuf_hit_hi := Fill(4, ld_addr_ibuf_hit_hi) & ibuf_byteen & ldst_byteen_hi_m
+
   val buf_data = Wire(Vec(DEPTH, UInt(32.W)))
   buf_data := buf_data.map(i=> 0.U)
   val fwd_data = WireInit(UInt(32.W), 0.U)
