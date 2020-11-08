@@ -220,16 +220,17 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val buf_data = Wire(Vec(DEPTH, UInt(32.W)))
   buf_data := buf_data.map(i=> 0.U)
   val fwd_data = WireInit(UInt(32.W), 0.U)
-
+  val ld_fwddata_buf_lo_initial = (0 until 4).map(i=>Fill(8, ld_byte_ibuf_hit_lo(i))).reverse.reduce(Cat(_,_))
+  val ld_fwddata_buf_hi_initial = (0 until 4).map(i=>Fill(8, ld_byte_ibuf_hit_hi(i))).reverse.reduce(Cat(_,_))
   io.ld_fwddata_buf_lo := Cat((0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_lo(3)(i)) & buf_data(i)(31, 23)).reduce(_ | _),
     (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_lo(2)(i)) & buf_data(i)(23, 16)).reduce(_ | _),
     (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_lo(1)(i)) & buf_data(i)(15, 8)).reduce(_ | _),
-    (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_lo(0)(i)) & buf_data(i)(7, 0)).reduce(_ | _))
+    (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_lo(0)(i)) & buf_data(i)(7, 0)).reduce(_ | _)) | ld_fwddata_buf_lo_initial
 
   io.ld_fwddata_buf_hi := Cat((0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(3)(i)) & buf_data(i)(31, 23)).reduce(_ | _),
     (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(2)(i)) & buf_data(i)(23, 16)).reduce(_ | _),
     (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(1)(i)) & buf_data(i)(15, 8)).reduce(_ | _),
-    (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(0)(i)) & buf_data(i)(7, 0)).reduce(_ | _))
+    (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(0)(i)) & buf_data(i)(7, 0)).reduce(_ | _)) | ld_fwddata_buf_hi_initial
 
   val bus_coalescing_disable = io.dec_tlu_wb_coalescing_disable | BUILD_AHB_LITE.B
   val ldst_byteen_r = Mux1H(Seq(io.lsu_pkt_r.by   -> 1.U(4.W),
