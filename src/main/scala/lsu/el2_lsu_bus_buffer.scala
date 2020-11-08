@@ -283,7 +283,8 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val ibuf_data = WireInit(UInt(32.W), 0.U)
 
   val ibuf_data_in = (0 until 4).map(i => Mux(ibuf_merge_en & ibuf_merge_in,
-    Mux(ldst_byteen_lo_r(i), store_data_lo_r((8 * i) + 7, 8 * i), ibuf_data((8 * i) + 7, 8 * i)), ibuf_data((8 * i) + 7, 8 * i))).reverse.reduce(Cat(_, _))
+    Mux(ldst_byteen_lo_r(i), store_data_lo_r((8 * i) + 7, 8 * i), ibuf_data((8 * i) + 7, 8 * i)),
+    Mux(io.ldst_dual_r, store_data_hi_r((8 * i) + 7, 8 * i), store_data_lo_r((8 * i) + 7, 8 * i)))).reverse.reduce(Cat(_, _))
   val ibuf_timer_in = Mux(ibuf_wr_en, 0.U, Mux((ibuf_timer<TIMER_MAX.U).asBool(), ibuf_timer+1.U, ibuf_timer))
 
   ibuf_merge_en := io.lsu_busreq_r & io.lsu_commit_r & io.lsu_pkt_r.store & ibuf_valid & ibuf_write & (io.lsu_addr_r(31,2) === ibuf_addr(31,2)) & !io.is_sideeffects_r & !bus_coalescing_disable
