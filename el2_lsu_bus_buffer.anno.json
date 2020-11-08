@@ -1,6 +1,16 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_bus_buffer_full_any",
+    "sources":[
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_dual_d",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_dec_lsu_valid_raw_d",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_m",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_r"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_wdata_in",
     "sources":[
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_dual_r",
@@ -34,14 +44,6 @@
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_m",
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_byteen_ext_m",
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_end_addr_m"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_bus_buffer_full_any",
-    "sources":[
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_dual_d",
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_dec_lsu_valid_raw_d"
     ]
   },
   {
