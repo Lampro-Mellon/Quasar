@@ -109,6 +109,9 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     val data_hi = Output(UInt())
     val data_lo = Output(UInt())
     val data_en = Output(UInt())
+    val Cmdptr0 = Output(UInt())
+    val Cmdptr1 = Output(UInt())
+    val WrPtr1_r = Output(UInt())
   })
   def indexing(in : UInt, index : UInt) = Mux1H((0 until math.pow(2, index.getWidth).asInstanceOf[Int]).map(i=>(index===i.U)->in(i)))
   def indexing(in : Vec[UInt], index : UInt) = Mux1H((0 until math.pow(2, index.getWidth).asInstanceOf[Int]).map(i=>(index===i.U)->in(i)))
@@ -252,7 +255,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val ibuf_tag = WireInit(UInt(DEPTH_LOG2.W), 0.U)
   val WrPtr1_r = WireInit(UInt(DEPTH_LOG2.W), 0.U)
   val WrPtr0_r = WireInit(UInt(DEPTH_LOG2.W), 0.U)
-
+  io.WrPtr1_r := WrPtr1_r
   val ibuf_tag_in = Mux(ibuf_merge_en & ibuf_merge_in, ibuf_tag, Mux(io.ldst_dual_r, WrPtr1_r, WrPtr0_r))
   val ibuf_dualtag_in = WrPtr0_r
   val ibuf_sz_in = Cat(io.lsu_pkt_r.word, io.lsu_pkt_r.half)
@@ -290,6 +293,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val buf_nomerge = Wire(Vec(DEPTH, Bool()))
   buf_nomerge := buf_nomerge.map(i=> false.B)
   val Cmdptr0 = WireInit(UInt(LSU_NUM_NBLOAD_WIDTH.W), 0.U)
+  io.Cmdptr0 := Cmdptr0
   val buf_sideeffect = WireInit(UInt(LSU_NUM_NBLOAD.W), 0.U)
   val obuf_force_wr_en = WireInit(Bool(), false.B)
   val obuf_wr_en = WireInit(Bool(), false.B)
@@ -331,6 +335,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val obuf_merge_in = obuf_merge_en
   val obuf_tag0_in = Mux(ibuf_buf_byp, WrPtr0_r, Cmdptr0)
   val Cmdptr1 = WireInit(UInt(DEPTH_LOG2.W), 0.U)
+  io.Cmdptr1 := Cmdptr1
   val obuf_tag1_in = Mux(ibuf_buf_byp, WrPtr1_r, Cmdptr1)
   val obuf_cmd_done = WireInit(Bool(), false.B)
   val bus_wcmd_sent = WireInit(Bool(), false.B)
