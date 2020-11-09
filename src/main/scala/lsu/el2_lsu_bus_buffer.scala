@@ -421,13 +421,13 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   obuf_wr_timer := withClock(io.lsu_busm_clk){RegNext(obuf_wr_timer_in, 0.U)}
   val WrPtr0_m = WireInit(UInt(DEPTH_LOG2.W), 0.U)
 
-  WrPtr0_m := MuxCase(WrPtr0_r, (0 until DEPTH).map(i=>((buf_state(i)===idle_C) &
+  WrPtr0_m := MuxCase(3.U, (0 until DEPTH).map(i=>((buf_state(i)===idle_C) &
     !((ibuf_valid & (ibuf_tag===i.U)) | (io.lsu_busreq_r &
       ((WrPtr0_r === i.U) | (io.ldst_dual_r & (WrPtr1_r === i.U)))))) -> i.U))
   io.buf_state := buf_state.reverse.reduce(Cat(_,_))
 
   val WrPtr1_m = WireInit(UInt(DEPTH_LOG2.W), 0.U)
-  WrPtr1_m := MuxCase(WrPtr1_r, (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((ibuf_valid & (ibuf_tag===i.U)) |
+  WrPtr1_m := MuxCase(3.U, (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((ibuf_valid & (ibuf_tag===i.U)) |
     (io.lsu_busreq_m & (WrPtr0_m===i.U)) |
     (io.lsu_busreq_r & (((WrPtr0_r === i.U)) |
       (io.ldst_dual_r & (WrPtr1_r===i.U))))))           ->  i.U))
