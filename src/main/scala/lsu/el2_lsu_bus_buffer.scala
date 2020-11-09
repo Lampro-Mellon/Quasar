@@ -105,16 +105,6 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     val lsu_axi_arprot = Output(UInt(3.W))
     val lsu_axi_arqos = Output(UInt(4.W))
     val lsu_axi_rready = Output(Bool())
-    val test = Output(UInt())
-    val data_hi = Output(UInt())
-    val data_lo = Output(UInt())
-    val data_en = Output(UInt())
-    val Cmdptr0 = Output(UInt())
-    val Cmdptr1 = Output(UInt())
-    val WrPtr1_r = Output(UInt())
-    val WrPtr1_m = Output(UInt())
-    val wdata_in = Output(UInt())
-    val buf_state = Output(UInt())
   })
   def indexing(in : UInt, index : UInt) = Mux1H((0 until math.pow(2, index.getWidth).asInstanceOf[Int]).map(i=>(index===i.U)->in(i)))
   def indexing(in : Vec[UInt], index : UInt) = Mux1H((0 until math.pow(2, index.getWidth).asInstanceOf[Int]).map(i=>(index===i.U)->in(i)))
@@ -257,7 +247,6 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
                                   (io.lsu_addr_r(1,0)===2.U)->Cat(io.store_data_r(15,0), 0.U(16.W)),
                                   (io.lsu_addr_r(1,0)===3.U)->Cat(io.store_data_r(7 ,0)  , 0.U(24.W))))
 
-  io.test := ldst_byteen_r
 
   val ldst_samedw_r = io.lsu_addr_r(3) === io.end_addr_r(3)
   val is_aligned_r = Mux1H(Seq(io.lsu_pkt_r.word -> (io.lsu_addr_r(1, 0) === 0.U),
@@ -277,7 +266,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val ibuf_tag = WireInit(UInt(DEPTH_LOG2.W), 0.U)
   val WrPtr1_r = WireInit(UInt(DEPTH_LOG2.W), 0.U)
   val WrPtr0_r = WireInit(UInt(DEPTH_LOG2.W), 0.U)
-  io.WrPtr1_r := WrPtr1_r
+
   val ibuf_tag_in = Mux(ibuf_merge_en & ibuf_merge_in, ibuf_tag, Mux(io.ldst_dual_r, WrPtr1_r, WrPtr0_r))
   val ibuf_dualtag_in = WrPtr0_r
   val ibuf_sz_in = Cat(io.lsu_pkt_r.word, io.lsu_pkt_r.half)
@@ -357,7 +346,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val obuf_merge_in = obuf_merge_en
   val obuf_tag0_in = Mux(ibuf_buf_byp, WrPtr0_r, CmdPtr0)
   val Cmdptr1 = WireInit(UInt(DEPTH_LOG2.W), 0.U)
-  io.Cmdptr1 := Cmdptr1
+
   val obuf_tag1_in = Mux(ibuf_buf_byp, WrPtr1_r, Cmdptr1)
   val obuf_cmd_done = WireInit(Bool(), false.B)
   val bus_wcmd_sent = WireInit(Bool(), false.B)
@@ -392,7 +381,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     Mux(indexing(buf_addr, Cmdptr1)(2).asBool(), Cat(indexing(buf_data, Cmdptr1), 0.U(32.W)), Cat(0.U(32.W),indexing(buf_data, Cmdptr1))))
   val obuf_byteen_in = (0 until 8).map(i=>(obuf_byteen0_in(i) | (obuf_merge_en & obuf_byteen1_in(i))).asUInt).reverse.reduce(Cat(_,_))
   val obuf_data_in = (0 until 8).map(i=>Mux(obuf_merge_en & obuf_byteen1_in(i), obuf_data1_in((8*i)+7, 8*i), obuf_data0_in((8*i)+7, 8*i))).reverse.reduce(Cat(_,_))
-  io.wdata_in := obuf_data_in
+
   val buf_dualhi = Wire(Vec(DEPTH, Bool()))
   buf_dualhi := buf_dualhi.map(i=> false.B)
   obuf_merge_en := ((CmdPtr0 =/= Cmdptr1) & found_cmdptr0 & found_cmdptr1 & (indexing(buf_state, CmdPtr0) === cmd_C) & (indexing(buf_state, Cmdptr1) === cmd_C) &
@@ -424,7 +413,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   WrPtr0_m := MuxCase(3.U, (0 until DEPTH).map(i=>((buf_state(i)===idle_C) &
     !((ibuf_valid & (ibuf_tag===i.U)) | (io.lsu_busreq_r &
       ((WrPtr0_r === i.U) | (io.ldst_dual_r & (WrPtr1_r === i.U)))))) -> i.U))
-  io.buf_state := buf_state.reverse.reduce(Cat(_,_))
+
 
   val WrPtr1_m = WireInit(UInt(DEPTH_LOG2.W), 0.U)
   WrPtr1_m := MuxCase(3.U, (0 until DEPTH).map(i=>((buf_state(i)===idle_C) & !((ibuf_valid & (ibuf_tag===i.U)) |
@@ -432,7 +421,6 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     (io.lsu_busreq_r & (((WrPtr0_r === i.U)) |
       (io.ldst_dual_r & (WrPtr1_r===i.U))))))           ->  i.U))
 
-  io.WrPtr1_m := WrPtr1_m
   val buf_age = Wire(Vec(DEPTH, UInt(DEPTH.W)))
   buf_age := buf_age.map(i=> 0.U)
 
@@ -447,7 +435,6 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   def Enc8x3(in: UInt) : UInt = Cat(in(4)|in(5)|in(6)|in(7), in(2)|in(3)|in(6)|in(7), in(1)|in(3)|in(5)|in(7))
 
 
-  io.Cmdptr0 := CmdPtr0
   val CmdPtr1 = WireInit(UInt(DEPTH_LOG2.W), 0.U)
   val RspPtr = WireInit(UInt(DEPTH_LOG2.W), 0.U)
   CmdPtr0 := Enc8x3(Cat(Fill(8-DEPTH, 0.U),CmdPtr0Dec))
@@ -578,7 +565,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     buf_byteen := (0 until DEPTH).map(i=>withClock(io.lsu_bus_buf_c1_clk){RegEnable(buf_byteen_in(i), 0.U, buf_wr_en(i).asBool())})
     buf_data := (0 until DEPTH).map(i=>rvdffe(buf_data_in(i), buf_data_en(i), clock, io.scan_mode))
     buf_error := (0 until DEPTH).map(i=>(withClock(io.lsu_bus_buf_c1_clk){RegNext(Mux(buf_error_en(i), true.B, buf_error(i)) & !buf_rst(i), false.B)}).asUInt()).reverse.reduce(Cat(_,_))
-  io.data_en := (0 until DEPTH).map(i=>buf_data_en(i).asUInt()).reverse.reduce(Cat(_,_))
+
 
   val buf_numvld_any = (Mux(io.ldst_dual_m, Cat(io.lsu_busreq_m, 0.U),io.lsu_busreq_m) +& Mux(io.ldst_dual_r, Cat(io.lsu_busreq_r, 0.U),io.lsu_busreq_r) +& ibuf_valid) + buf_state.map(i=>(i=/=idle_C).asUInt).reduce(_+&_)
   buf_numvld_wrcmd_any := (0 until DEPTH).map(i=>(buf_write(i) & (buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(_ +& _)
@@ -604,8 +591,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val lsu_nonblock_unsign = indexing(buf_unsign, io.lsu_nonblock_load_data_tag)
   val lsu_nonblock_dual = indexing(buf_dual.map(_.asUInt).reverse.reduce(Cat(_,_)), io.lsu_nonblock_load_data_tag)
   val lsu_nonblock_data_unalgn = Cat(lsu_nonblock_load_data_hi, lsu_nonblock_load_data_lo) >> (lsu_nonblock_addr_offset * 8.U)
-  io.data_hi := lsu_nonblock_load_data_hi
-  io.data_lo := lsu_nonblock_load_data_lo
+
   io.lsu_nonblock_load_data_valid := lsu_nonblock_load_data_ready & !io.lsu_nonblock_load_data_error
   io.lsu_nonblock_load_data := Mux1H(Seq((lsu_nonblock_unsign & (lsu_nonblock_sz===0.U)) -> Cat(0.U(24.W),lsu_nonblock_data_unalgn(7,0)),
     (lsu_nonblock_unsign &  (lsu_nonblock_sz===1.U)) -> Cat(0.U(16.W),lsu_nonblock_data_unalgn(15,0)),
