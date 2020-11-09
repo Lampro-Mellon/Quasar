@@ -1500,7 +1500,7 @@ module el2_lsu_bus_buffer(
   reg [1:0] obuf_sz; // @[Reg.scala 27:20]
   reg [7:0] obuf_byteen; // @[Reg.scala 27:20]
   reg [63:0] obuf_data; // @[el2_lib.scala 491:16]
-  wire  _T_1874 = buf_state_0 == 3'h0; // @[el2_lsu_bus_buffer.scala 424:65]
+  wire  _T_1874 = buf_state_0 == 3'h0; // @[el2_lsu_bus_buffer.scala 424:70]
   wire  _T_1875 = ibuf_tag == 2'h0; // @[el2_lsu_bus_buffer.scala 425:30]
   wire  _T_1876 = ibuf_valid & _T_1875; // @[el2_lsu_bus_buffer.scala 425:19]
   wire  _T_1877 = WrPtr0_r == 2'h0; // @[el2_lsu_bus_buffer.scala 426:18]
@@ -1510,8 +1510,8 @@ module el2_lsu_bus_buffer(
   wire  _T_1881 = io_lsu_busreq_r & _T_1880; // @[el2_lsu_bus_buffer.scala 425:58]
   wire  _T_1882 = _T_1876 | _T_1881; // @[el2_lsu_bus_buffer.scala 425:39]
   wire  _T_1883 = ~_T_1882; // @[el2_lsu_bus_buffer.scala 425:5]
-  wire  _T_1884 = _T_1874 & _T_1883; // @[el2_lsu_bus_buffer.scala 424:76]
-  wire  _T_1885 = buf_state_1 == 3'h0; // @[el2_lsu_bus_buffer.scala 424:65]
+  wire  _T_1884 = _T_1874 & _T_1883; // @[el2_lsu_bus_buffer.scala 424:81]
+  wire  _T_1885 = buf_state_1 == 3'h0; // @[el2_lsu_bus_buffer.scala 424:70]
   wire  _T_1886 = ibuf_tag == 2'h1; // @[el2_lsu_bus_buffer.scala 425:30]
   wire  _T_1887 = ibuf_valid & _T_1886; // @[el2_lsu_bus_buffer.scala 425:19]
   wire  _T_1888 = WrPtr0_r == 2'h1; // @[el2_lsu_bus_buffer.scala 426:18]
@@ -1521,8 +1521,8 @@ module el2_lsu_bus_buffer(
   wire  _T_1892 = io_lsu_busreq_r & _T_1891; // @[el2_lsu_bus_buffer.scala 425:58]
   wire  _T_1893 = _T_1887 | _T_1892; // @[el2_lsu_bus_buffer.scala 425:39]
   wire  _T_1894 = ~_T_1893; // @[el2_lsu_bus_buffer.scala 425:5]
-  wire  _T_1895 = _T_1885 & _T_1894; // @[el2_lsu_bus_buffer.scala 424:76]
-  wire  _T_1896 = buf_state_2 == 3'h0; // @[el2_lsu_bus_buffer.scala 424:65]
+  wire  _T_1895 = _T_1885 & _T_1894; // @[el2_lsu_bus_buffer.scala 424:81]
+  wire  _T_1896 = buf_state_2 == 3'h0; // @[el2_lsu_bus_buffer.scala 424:70]
   wire  _T_1897 = ibuf_tag == 2'h2; // @[el2_lsu_bus_buffer.scala 425:30]
   wire  _T_1898 = ibuf_valid & _T_1897; // @[el2_lsu_bus_buffer.scala 425:19]
   wire  _T_1899 = WrPtr0_r == 2'h2; // @[el2_lsu_bus_buffer.scala 426:18]
@@ -1532,8 +1532,8 @@ module el2_lsu_bus_buffer(
   wire  _T_1903 = io_lsu_busreq_r & _T_1902; // @[el2_lsu_bus_buffer.scala 425:58]
   wire  _T_1904 = _T_1898 | _T_1903; // @[el2_lsu_bus_buffer.scala 425:39]
   wire  _T_1905 = ~_T_1904; // @[el2_lsu_bus_buffer.scala 425:5]
-  wire  _T_1906 = _T_1896 & _T_1905; // @[el2_lsu_bus_buffer.scala 424:76]
-  wire  _T_1907 = buf_state_3 == 3'h0; // @[el2_lsu_bus_buffer.scala 424:65]
+  wire  _T_1906 = _T_1896 & _T_1905; // @[el2_lsu_bus_buffer.scala 424:81]
+  wire  _T_1907 = buf_state_3 == 3'h0; // @[el2_lsu_bus_buffer.scala 424:70]
   wire  _T_1908 = ibuf_tag == 2'h3; // @[el2_lsu_bus_buffer.scala 425:30]
   wire  _T_1909 = ibuf_valid & _T_1908; // @[el2_lsu_bus_buffer.scala 425:19]
   wire  _T_1910 = WrPtr0_r == 2'h3; // @[el2_lsu_bus_buffer.scala 426:18]
@@ -1543,8 +1543,8 @@ module el2_lsu_bus_buffer(
   wire  _T_1914 = io_lsu_busreq_r & _T_1913; // @[el2_lsu_bus_buffer.scala 425:58]
   wire  _T_1915 = _T_1909 | _T_1914; // @[el2_lsu_bus_buffer.scala 425:39]
   wire  _T_1916 = ~_T_1915; // @[el2_lsu_bus_buffer.scala 425:5]
-  wire  _T_1917 = _T_1907 & _T_1916; // @[el2_lsu_bus_buffer.scala 424:76]
-  wire [1:0] _T_1918 = _T_1917 ? 2'h3 : 2'h0; // @[Mux.scala 98:16]
+  wire  _T_1917 = _T_1907 & _T_1916; // @[el2_lsu_bus_buffer.scala 424:81]
+  wire [1:0] _T_1918 = _T_1917 ? 2'h3 : WrPtr0_r; // @[Mux.scala 98:16]
   wire [1:0] _T_1919 = _T_1906 ? 2'h2 : _T_1918; // @[Mux.scala 98:16]
   wire [1:0] _T_1920 = _T_1895 ? 2'h1 : _T_1919; // @[Mux.scala 98:16]
   wire [1:0] WrPtr0_m = _T_1884 ? 2'h0 : _T_1920; // @[Mux.scala 98:16]
@@ -4022,8 +4022,6 @@ end // initial
       WrPtr0_r <= 2'h2;
     end else if (_T_1917) begin
       WrPtr0_r <= 2'h3;
-    end else begin
-      WrPtr0_r <= 2'h0;
     end
   end
   always @(posedge io_lsu_bus_ibuf_c1_clk or posedge reset) begin
