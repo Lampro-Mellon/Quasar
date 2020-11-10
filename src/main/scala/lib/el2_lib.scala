@@ -170,6 +170,8 @@ trait el2_lib extends param{
   val DATA_MEM_LINE = MEM_CAL
   val Tag_Word = MEM_CAL._4
 
+  implicit def bool2int(b:Boolean) = if (b) 1 else 0
+
   object rvsyncss {
     def apply(din:UInt,clk:Clock) =withClock(clk){RegNext(withClock(clk){RegNext(din,0.U)},0.U)}
   }

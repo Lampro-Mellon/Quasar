@@ -421,9 +421,9 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   bus_intf.io.end_addr_d                        := lsu_lsc_ctl.io.end_addr_d
   bus_intf.io.end_addr_m                        := lsu_lsc_ctl.io.end_addr_m
   bus_intf.io.end_addr_r                        := lsu_lsc_ctl.io.end_addr_r
-  bus_intf.io.store_data_r                         := dccm_ctl.io.store_data_r
-  bus_intf.io.lsu_pkt_m                          <> lsu_lsc_ctl.io.lsu_pkt_m
-  bus_intf.io.lsu_pkt_r                          <> lsu_lsc_ctl.io.lsu_pkt_r
+  bus_intf.io.store_data_r                      := dccm_ctl.io.store_data_r
+  bus_intf.io.lsu_pkt_m                         <> lsu_lsc_ctl.io.lsu_pkt_m
+  bus_intf.io.lsu_pkt_r                         <> lsu_lsc_ctl.io.lsu_pkt_r
   bus_intf.io.dec_tlu_force_halt                := io.dec_tlu_force_halt
   bus_intf.io.lsu_commit_r                      := lsu_lsc_ctl.io.lsu_commit_r
   bus_intf.io.is_sideeffects_m                  := lsu_lsc_ctl.io.is_sideeffects_m
