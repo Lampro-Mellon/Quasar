@@ -347,6 +347,7 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   ifu.reset := core_reset
   ifu.io.free_clk := free_clk
   ifu.io.active_clk := active_clk
+  ifu.io.iccm_rd_data_ecc := io.iccm_rd_data_ecc
   ifu.io.dec_i0_decode_d := dec.io.dec_i0_decode_d
   ifu.io.exu_flush_final := dec.io.exu_flush_final
   ifu.io.dec_tlu_i0_commit_cmt := dec.io.dec_tlu_i0_commit_cmt
