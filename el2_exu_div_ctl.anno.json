@@ -1,0 +1,30 @@
+[
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_exu_div_ctl|el2_exu_div_ctl>io_finish_dly",
+    "sources":[
+      "~el2_exu_div_ctl|el2_exu_div_ctl>io_cancel"
+    ]
+  },
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxResourceAnno",
+    "target":"el2_exu_div_ctl.TEC_RV_ICG",
+    "resourceId":"/vsrc/TEC_RV_ICG.v"
+  },
+  {
+    "class":"firrtl.options.TargetDirAnnotation",
+    "directory":"."
+  },
+  {
+    "class":"firrtl.options.OutputAnnotationFileAnnotation",
+    "file":"el2_exu_div_ctl"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"."
+  }
+]

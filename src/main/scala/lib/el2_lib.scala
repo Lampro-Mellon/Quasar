@@ -501,5 +501,25 @@ trait el2_lib extends param{
         RegNext(din,0.U.asTypeOf(din.cloneType))
       }
     }
+    def apply(din: SInt, en: Bool, clk: Clock, scan_mode: Bool): Bits with Num[_ >: SInt with UInt <: Bits with Num[_ >: SInt with UInt]] = {
+      val obj = Module(new rvclkhdr())
+      val l1clk = obj.io.l1clk
+      obj.io.clk := clk
+      obj.io.en := en
+      obj.io.scan_mode := scan_mode
+      withClock(l1clk) {
+        RegNext(din, 0.S)
+      }
+    }
   }
+
+  /////////////////////////////////////////////////////////
+  def rvtwoscomp(din:UInt) = {   //Done for verification and testing
+    val temp = Wire(Vec(din.getWidth-1,UInt(1.W)))
+    for(i <- 1 to din.getWidth-1){
+      temp(i-1) := Mux(din(i-1,0).orR ,~din(i),din(i))
+    }
+    Cat(temp.asUInt,din(0))
+  }
+
 }
