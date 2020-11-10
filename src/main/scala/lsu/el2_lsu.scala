@@ -27,8 +27,8 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
     val dec_tlu_mrac_ff                   = Input(UInt(32.W))
 
     //Outputs
-    //  val lsu_result_m                      = Output(UInt(32.W))
-    //  val lsu_result_corr_r                 = Output(UInt(32.W))
+    val lsu_result_m                      = Output(UInt(32.W))
+    val lsu_result_corr_r                 = Output(UInt(32.W))
     val lsu_load_stall_any                = Output(Bool())
     val lsu_store_stall_any               = Output(Bool())
     val lsu_fastint_stall_any             = Output(Bool())
@@ -152,6 +152,8 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   val lsu_raw_fwd_hi_r             = WireInit(0.U(1.W))
 
   val lsu_lsc_ctl    = Module(new el2_lsu_lsc_ctl )
+  io.lsu_result_m := lsu_lsc_ctl.io.lsu_result_m
+  io.lsu_result_corr_r := lsu_lsc_ctl.io.lsu_result_corr_r
   val dccm_ctl       = Module(new el2_lsu_dccm_ctl )
   val stbuf          = Module(new el2_lsu_stbuf )
   val ecc            = Module(new el2_lsu_ecc )

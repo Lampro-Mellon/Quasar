@@ -40,7 +40,6 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     val ldst_dual_m = Input(Bool())
     val ldst_dual_r = Input(Bool())
     val ldst_byteen_ext_m = Input(UInt(8.W))
-    val lsu_axi_awready = Input(Bool())
     val lsu_axi_wready = Input(Bool())
     val lsu_axi_bvalid = Input(Bool())
     val lsu_axi_bresp = Input(UInt(2.W))
@@ -77,7 +76,10 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     val lsu_pmu_bus_misaligned = Output(Bool())
     val lsu_pmu_bus_error = Output(Bool())
     val lsu_pmu_bus_busy = Output(Bool())
+
+    // AXI Signals
     val lsu_axi_awvalid = Output(Bool())
+    val lsu_axi_awready = Input(Bool())
     val lsu_axi_awid = Output(UInt(LSU_BUS_TAG.W))
     val lsu_axi_awaddr = Output(UInt(32.W))
     val lsu_axi_awregion = Output(UInt(4.W))

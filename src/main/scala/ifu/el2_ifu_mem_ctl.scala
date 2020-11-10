@@ -59,6 +59,8 @@ class mem_ctl_bundle extends Bundle with el2_lib{
   val ifu_pmu_bus_error = Output(Bool())
   val ifu_pmu_bus_busy = Output(Bool())
   val ifu_pmu_bus_trxn = Output(Bool())
+
+
   val ifu_axi_awvalid = Output(Bool())
   val ifu_axi_awid = Output(UInt(IFU_BUS_TAG.W))
   val ifu_axi_awaddr = Output(UInt(32.W))
