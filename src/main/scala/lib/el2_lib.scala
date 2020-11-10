@@ -59,7 +59,7 @@ trait param {
   val DCCM_INDEX_BITS        = 0xC  //.U(4.W)
   val DCCM_NUM_BANKS         = 0x04 //.U(5.W)
   val DCCM_REGION            = 15  //.U(4.W)
-  val DCCM_SADR              = 0xF0040000
+  val DCCM_SADR              = 0xF0040000L
   val DCCM_SIZE              = 0x040
   val DCCM_WIDTH_BITS        = 2 //.U(2.W)
   val DMA_BUF_DEPTH          = 5 //.U(3.W)
@@ -226,6 +226,13 @@ trait el2_lib extends param{
     (in_region, in_range)
   }
 
+  def rvlsadder(rs1:UInt,offset:UInt) = {
+    val w1 =  Cat(0.U(1.W),rs1(11,0)) + Cat(0.U(1.W),offset(11,0))  //w1[12] =cout  offset[11]=sign
+    val dout_upper = ((Fill(20, ~(offset(11) ^ w1(12)))) & rs1(31,12)) |
+      ((Fill(20, ~offset(11) & w1(12))) & (rs1(31,12)+1.U)) |
+      ((Fill(20, offset(11) & ~w1(12))) & (rs1(31,12)-1.U))
+    Cat(dout_upper,w1(11,0))
+  }
   ///////////////////////////////////////////////////////////////////
   def rvmaskandmatch(mask:UInt, data:UInt, masken:Bool):UInt={
     val matchvec = Wire(Vec(data.getWidth,UInt(1.W)))
@@ -477,6 +484,20 @@ trait el2_lib extends param{
       cg.io.scan_mode := scan_mode
       cg.io.l1clk
     }
+  }
+
+  def rvrangecheck_ch(addr:UInt,CCM_SADR:UInt, CCM_SIZE:Int=128) = {
+    val REGION_BITS = 4
+    val MASK_BITS   = 10 + log2Ceil(CCM_SIZE)
+    val start_addr  = CCM_SADR
+    val region  = start_addr(31,(32-REGION_BITS))
+    val in_region  = (addr(31,(32-REGION_BITS)) === region(REGION_BITS-1,0)).asUInt
+    val in_range   = Wire(UInt(1.W))
+    if(CCM_SIZE == 48)
+      in_range := (addr(31,MASK_BITS) === start_addr(31,MASK_BITS)).asUInt & ~(addr(MASK_BITS-1,MASK_BITS-2).andR.asUInt)
+    else
+      in_range := (addr(31,MASK_BITS) === start_addr(31,MASK_BITS)).asUInt
+    (in_range,in_region)
   }
 
   ////rvdffe ///////////////////////////////////////////////////////////////////////

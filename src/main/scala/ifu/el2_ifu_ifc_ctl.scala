@@ -130,7 +130,6 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
     rvrangecheck(ICCM_SADR, ICCM_SIZE, Cat(io.ifc_fetch_addr_bf,0.U))
   else (0.U, 0.U)
   io.ifc_iccm_access_bf := iccm_acc_in_range_bf
-
   io.ifc_dma_access_ok := ( (!io.ifc_iccm_access_bf |
     (fb_full_f & !(io.ifu_fb_consume2 | io.ifu_fb_consume1)) |
     (wfm  & !io.ifc_fetch_req_bf) | idle ) & !io.exu_flush_final) | dma_iccm_stall_any_f
@@ -141,7 +140,7 @@ class el2_ifu_ifc_ctl extends Module with el2_lib with RequireAsyncReset {
   io.ifc_fetch_req_f := withClock(io.active_clk){RegNext(io.ifc_fetch_req_bf, init=0.U)}
 
   io.ifc_fetch_addr_f := rvdffe(io.ifc_fetch_addr_bf, io.exu_flush_final|io.ifc_fetch_req_f, clock, io.scan_mode)
-
+  //rvdffe(io.ifc_fetch_addr_bf,(io.exu_flush_final|io.ifc_fetch_req_f).asBool,clock,io.scan_mode)
 }
 
 object ifu_ifc extends App {
