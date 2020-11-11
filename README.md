@@ -2,9 +2,9 @@
 
 This repository contains the SweRV-EL2 Core design in CHISEL
 
-## Back ground
+## Background
 
-The project is being made for learning purpose. Copy rights to the SweRV-EL2 belongs to Wrestern Digital
+Enter here
 
 ## Directory Structure
 
