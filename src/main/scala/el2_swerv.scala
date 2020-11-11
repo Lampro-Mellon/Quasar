@@ -6,7 +6,6 @@ import exu._
 import lsu._
 import lib._
 import include._
-import dmi._
 import dbg._
 
 class el2_swerv extends Module with RequireAsyncReset with el2_lib {
