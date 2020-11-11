@@ -127,7 +127,7 @@ class el2_dbg extends Module with el2_lib with RequireAsyncReset {
   val sb_free_clken = io.dmi_reg_en | sb_state_en | (sb_state =/= sb_state_t.sbidle) | io.clk_override;
   val dbg_free_clk = rvclkhdr(clock, dbg_free_clken, io.scan_mode) // dbg_free_cgc
   val sb_free_clk = rvclkhdr(clock, sb_free_clken, io.scan_mode) // sb_free_cgc
-  val dbg_dm_rst_l = io.dbg_rst_l & (dmcontrol_reg(0) | io.scan_mode)
+  val dbg_dm_rst_l = io.dbg_rst_l.asBool() & (dmcontrol_reg(0) | io.scan_mode)
   io.dbg_core_rst_l := (!dmcontrol_reg(1)).asBool()
   val sbcs_wren = (io.dmi_reg_addr === "h38".U) & io.dmi_reg_en & io.dmi_reg_wr_en & (sb_state === sb_state_t.sbidle)
   val sbcs_sbbusyerror_wren = (sbcs_wren & io.dmi_reg_wdata(22)) | ((sb_state =/= sb_state_t.sbidle) & io.dmi_reg_en &

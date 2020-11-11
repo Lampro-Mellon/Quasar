@@ -15,14 +15,14 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
     val rst_vec = Input(UInt(31.W))
     val nmi_int = Input(Bool())
     val nmi_vec = Input(UInt(31.W))
-    val core_rst_l = Output(Bool())
-    val trace_rv_i_insn_ip = Output(UInt(32.W))
-    val trace_rv_i_address_ip = Output(UInt(32.W))
-    val trace_rv_i_valid_ip = Output(UInt(2.W))
-    val trace_rv_i_exception_ip = Output(UInt(2.W))
-    val trace_rv_i_ecause_ip = Output(UInt(5.W))
-    val trace_rv_i_interrupt_ip = Output(UInt(2.W))
-    val trace_rv_i_tval_ip = Output(UInt(32.W))
+    val core_rst_l = Output(AsyncReset())
+//    val trace_rv_i_insn_ip = Output(UInt(32.W))
+//    val trace_rv_i_address_ip = Output(UInt(32.W))
+//    val trace_rv_i_valid_ip = Output(UInt(2.W))
+//    val trace_rv_i_exception_ip = Output(UInt(2.W))
+//    val trace_rv_i_ecause_ip = Output(UInt(5.W))
+//    val trace_rv_i_interrupt_ip = Output(UInt(2.W))
+//    val trace_rv_i_tval_ip = Output(UInt(32.W))
     val dccm_clk_override = Output(Bool())
     val icm_clk_override = Output(Bool())
     val dec_tlu_core_ecc_disable = Output(Bool())
@@ -148,7 +148,7 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
     val ifu_axi_awqos = Output(UInt(4.W))
     val ifu_axi_wvalid = Output(Bool())
     val ifu_axi_wready = Output(Bool())
-    val ifu_axi_wdata = Input(UInt(64.W))
+    val ifu_axi_wdata = Output(UInt(64.W))
     val ifu_axi_wstrb = Output(UInt(8.W))
     val ifu_axi_wlast = Output(Bool())
     val ifu_axi_bvalid = Input(Bool())
@@ -156,7 +156,7 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
     val ifu_axi_bresp = Input(UInt(2.W))
     val ifu_axi_bid = Input(UInt(IFU_BUS_TAG.W))
     val ifu_axi_arvalid = Output(Bool())
-    val ifu_axi_arready = Output(Bool())
+    val ifu_axi_arready = Input(Bool())
     val ifu_axi_arid = Output(UInt(IFU_BUS_TAG.W))
     val ifu_axi_araddr = Output(UInt(32.W))
     val ifu_axi_arregion = Output(UInt(4.W))
@@ -328,11 +328,11 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   val lsu = Module(new el2_lsu)
   val pic_ctl_inst = Module(new el2_pic_ctrl)
   val dma_ctrl = Module(new el2_dma_ctrl)
-  val lsu_axi4_to_ahb = Module(new axi4_to_ahb)
-  val ifu_axi4_to_ahb = Module(new axi4_to_ahb)
-  val sb_axi4_to_ahb = Module(new axi4_to_ahb)
+  //val lsu_axi4_to_ahb = Module(new axi4_to_ahb)
+  //val ifu_axi4_to_ahb = Module(new axi4_to_ahb)
+  //val sb_axi4_to_ahb = Module(new axi4_to_ahb)
 
-  val core_reset = (!(reset.asBool() & (dbg.io.dbg_core_rst_l.asBool() | io.scan_mode))).asAsyncReset()
+  io.core_rst_l := (!(reset.asBool() & (dbg.io.dbg_core_rst_l.asBool() | io.scan_mode))).asAsyncReset()
   val active_state = (!dec.io.dec_pause_state_cg | dec.io.dec_tlu_flush_lower_r) | dec.io.dec_tlu_misc_clk_override
   val free_clk = rvclkhdr(clock, true.B, io.scan_mode)
   val active_clk = rvclkhdr(clock, active_state, io.scan_mode)
@@ -344,7 +344,8 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
 
 
   // Lets start with IFU
-  ifu.reset := core_reset
+  ifu.reset := io.core_rst_l
+  ifu.io.scan_mode := io.scan_mode
   ifu.io.free_clk := free_clk
   ifu.io.active_clk := active_clk
   ifu.io.iccm_rd_data_ecc := io.iccm_rd_data_ecc
@@ -393,7 +394,7 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   ifu.io.dec_tlu_ic_diag_pkt <> dec.io.dec_tlu_ic_diag_pkt
 
   // Lets start with Dec
-  dec.reset := core_reset
+  dec.reset := io.core_rst_l
   dec.io.free_clk := free_clk
   dec.io.active_clk := active_clk
   dec.io.lsu_fastint_stall_any := lsu.io.lsu_fastint_stall_any
@@ -495,10 +496,11 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   dec.io.exu_i0_br_middle_r := exu.io.exu_i0_br_middle_r
   dec.io.exu_i0_br_way_r := exu.io.exu_i0_br_way_r
   dec.io.ifu_i0_cinst := ifu.io.ifu_i0_cinst
+  dec.io.timer_int := io.timer_int
   dec.io.scan_mode := io.scan_mode
 
   // EXU lets go
-  exu.reset := core_reset
+  exu.reset := io.core_rst_l
   exu.io.scan_mode := io.scan_mode
   exu.io.dec_data_en := dec.io.dec_data_en
   exu.io.dec_ctl_en := dec.io.dec_ctl_en
@@ -534,7 +536,7 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
 
 
   // LSU Lets go
-  lsu.reset := core_reset
+  lsu.reset := io.core_rst_l
   lsu.io.clk_override := dec.io.dec_tlu_lsu_clk_override
   lsu.io.dec_tlu_flush_lower_r := dec.io.dec_tlu_flush_lower_r
   lsu.io.dec_tlu_i0_kill_writeb_r := dec.io.dec_tlu_i0_kill_writeb_r
@@ -552,17 +554,17 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   lsu.io.trigger_pkt_any <> dec.io.trigger_pkt_any
   lsu.io.dccm_rd_data_lo := io.dccm_rd_data_lo
   lsu.io.dccm_rd_data_hi := io.dccm_rd_data_hi
-  lsu.io.lsu_axi_awready := io.lsu_axi_awready
-  lsu.io.lsu_axi_wready := io.lsu_axi_wready
-  lsu.io.lsu_axi_bvalid := io.lsu_axi_bvalid
-  lsu.io.lsu_axi_bresp := io.lsu_axi_bresp
-  lsu.io.lsu_axi_bid := io.lsu_axi_bid
-  lsu.io.lsu_axi_arready := io.lsu_axi_arready
-  lsu.io.lsu_axi_rvalid := io.lsu_axi_rvalid
-  lsu.io.lsu_axi_rid := io.lsu_axi_rid
-  lsu.io.lsu_axi_rdata := io.lsu_axi_rdata
-  lsu.io.lsu_axi_rresp := io.lsu_axi_rresp
-  lsu.io.lsu_axi_rlast := io.lsu_axi_rlast
+  lsu.io.lsu_axi_awready := Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_awready)
+  lsu.io.lsu_axi_wready :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_wready)
+  lsu.io.lsu_axi_bvalid :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_bvalid)
+  lsu.io.lsu_axi_bresp :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_bresp)
+  lsu.io.lsu_axi_bid :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_bid)
+  lsu.io.lsu_axi_arready :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_arready)
+  lsu.io.lsu_axi_rvalid :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_rvalid)
+  lsu.io.lsu_axi_rid :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_rid)
+  lsu.io.lsu_axi_rdata :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_rdata)
+  lsu.io.lsu_axi_rresp :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_rresp)
+  lsu.io.lsu_axi_rlast :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_rlast)
   lsu.io.lsu_bus_clk_en := io.lsu_bus_clk_en
   lsu.io.dma_dccm_req := dma_ctrl.io.dma_dccm_req
   lsu.io.dma_mem_tag := dma_ctrl.io.dma_mem_tag
@@ -574,7 +576,7 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   lsu.io.free_clk := free_clk
 
   // Debug lets go
-  dbg.reset := core_reset
+  dbg.reset := io.core_rst_l
   dbg.io.core_dbg_rddata := Mux(dma_ctrl.io.dma_dbg_cmd_done, dma_ctrl.io.dma_dbg_rddata, dec.io.dec_dbg_rddata)
   dbg.io.core_dbg_cmd_done := dma_ctrl.io.dma_dbg_cmd_done | dec.io.dec_dbg_cmd_done
   dbg.io.core_dbg_cmd_fail := dma_ctrl.io.dma_dbg_cmd_fail | dec.io.dec_dbg_cmd_fail
@@ -602,7 +604,7 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
 
 
   // DMA Lets go
-  dma_ctrl.reset := core_reset
+  dma_ctrl.reset := io.core_rst_l
   dma_ctrl.io.free_clk := free_clk
   dma_ctrl.io.dma_bus_clk_en := io.dma_bus_clk_en
   dma_ctrl.io.clk_override := dec.io.dec_tlu_misc_clk_override
@@ -637,10 +639,12 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   dma_ctrl.io.dma_axi_araddr := io.dma_axi_araddr
   dma_ctrl.io.dma_axi_arsize := io.dma_axi_arsize
   dma_ctrl.io.dma_axi_rready := io.dma_axi_rready
+  dma_ctrl.io.iccm_dma_ecc_error := ifu.io.iccm_dma_ecc_error
 
 
   // PIC lets go
-  pic_ctl_inst.reset := core_reset
+  pic_ctl_inst.io.scan_mode := io.scan_mode
+  pic_ctl_inst.reset := io.core_rst_l
   pic_ctl_inst.io.free_clk := free_clk
   pic_ctl_inst.io.active_clk := active_clk
   pic_ctl_inst.io.clk_override := dec.io.dec_tlu_pic_clk_override
@@ -653,11 +657,203 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   pic_ctl_inst.io.picm_mken := lsu.io.picm_mken
   pic_ctl_inst.io.meicurpl := dec.io.dec_tlu_meicurpl
   pic_ctl_inst.io.meipt := dec.io.dec_tlu_meipt
+  lsu.io.picm_rd_data := pic_ctl_inst.io.picm_rd_data
 
 
 
+  // Trace Packet
+  // ???
+
+  // Outputs
+  io.dccm_clk_override := dec.io.dec_tlu_dccm_clk_override
+  io.icm_clk_override := dec.io.dec_tlu_icm_clk_override
+  io.dec_tlu_core_ecc_disable := dec.io.dec_tlu_core_ecc_disable
+  io.o_cpu_halt_ack := dec.io.o_cpu_halt_ack
+  io.o_cpu_halt_status := dec.io.o_cpu_halt_status
+  io.o_cpu_run_ack := dec.io.o_cpu_run_ack
+  io.o_debug_mode_status := dec.io.o_debug_mode_status
+  io.mpc_debug_halt_ack := dec.io.mpc_debug_halt_ack
+  io.mpc_debug_run_ack := dec.io.mpc_debug_run_ack
+  io.debug_brkpt_status := dec.io.debug_brkpt_status
+  io.dec_tlu_perfcnt0 := dec.io.dec_tlu_perfcnt0
+  io.dec_tlu_perfcnt1 := dec.io.dec_tlu_perfcnt1
+  io.dec_tlu_perfcnt2 := dec.io.dec_tlu_perfcnt2
+  io.dec_tlu_perfcnt3 := dec.io.dec_tlu_perfcnt3
+  // LSU Outputs
+  io.dccm_wren := lsu.io.dccm_wren
+  io.dccm_rden := lsu.io.dccm_rden
+  io.dccm_wr_addr_lo := lsu.io.dccm_wr_addr_lo
+  io.dccm_wr_addr_hi := lsu.io.dccm_wr_addr_hi
+  io.dccm_rd_addr_lo := lsu.io.dccm_rd_addr_lo
+  io.dccm_rd_addr_hi := lsu.io.dccm_rd_addr_hi
+  io.dccm_wr_data_lo := lsu.io.dccm_wr_data_lo
+  io.dccm_wr_data_hi := lsu.io.dccm_wr_data_hi
+  // IFU Outputs
+  io.iccm_rw_addr := ifu.io.iccm_rw_addr
+  io.iccm_wren := ifu.io.iccm_wren
+  io.iccm_rden := ifu.io.iccm_rden
+  io.iccm_wr_size := ifu.io.iccm_wr_size
+  io.iccm_wr_data := ifu.io.iccm_wr_data
+  io.iccm_buf_correct_ecc := ifu.io.iccm_buf_correct_ecc
+  io.iccm_correction_state := ifu.io.iccm_correction_state
+  io.ic_rw_addr := ifu.io.ic_rw_addr
+  io.ic_tag_valid := ifu.io.ic_tag_valid
+  io.ic_wr_en := ifu.io.ic_wr_en
+  io.ic_rd_en := ifu.io.ic_rd_en
+  io.ic_wr_data := ifu.io.ic_wr_data
+  io.ic_debug_wr_data := ifu.io.ic_debug_wr_data
+  io.ic_premux_data := ifu.io.ic_premux_data
+  io.ic_sel_premux_data := ifu.io.ic_sel_premux_data
+  io.ic_debug_addr := ifu.io.ic_debug_addr
+  io.ic_debug_rd_en := ifu.io.ic_debug_rd_en
+  io.ic_debug_wr_en := ifu.io.ic_debug_wr_en
+  io.ic_debug_tag_array := ifu.io.ic_debug_tag_array
+  io.ic_debug_way := ifu.io.ic_debug_way
+
+  // AXI LSU SIDE
+  io.lsu_axi_awvalid := lsu.io.lsu_axi_awvalid
+  io.lsu_axi_awid := lsu.io.lsu_axi_awid
+  io.lsu_axi_awaddr := lsu.io.lsu_axi_awaddr
+  io.lsu_axi_awregion := lsu.io.lsu_axi_awregion
+  io.lsu_axi_awlen := lsu.io.lsu_axi_awlen
+  io.lsu_axi_awsize := lsu.io.lsu_axi_awsize
+  io.lsu_axi_awburst := lsu.io.lsu_axi_awburst
+  io.lsu_axi_awlock := lsu.io.lsu_axi_awlock
+  io.lsu_axi_awcache := lsu.io.lsu_axi_awcache
+  io.lsu_axi_awprot := lsu.io.lsu_axi_awprot
+  io.lsu_axi_awqos := lsu.io.lsu_axi_awqos
+  io.lsu_axi_wvalid := lsu.io.lsu_axi_wvalid
+  io.lsu_axi_wdata := lsu.io.lsu_axi_wdata
+  io.lsu_axi_wstrb := lsu.io.lsu_axi_wstrb
+  io.lsu_axi_wlast := lsu.io.lsu_axi_wlast
+  io.lsu_axi_bready := lsu.io.lsu_axi_bready
+  io.lsu_axi_arvalid := lsu.io.lsu_axi_arvalid
+  io.lsu_axi_arid := lsu.io.lsu_axi_arid
+  io.lsu_axi_araddr := lsu.io.lsu_axi_araddr
+  io.lsu_axi_arregion := lsu.io.lsu_axi_arregion
+  io.lsu_axi_arlen := lsu.io.lsu_axi_arlen
+  io.lsu_axi_arsize := lsu.io.lsu_axi_arsize
+  io.lsu_axi_arburst := lsu.io.lsu_axi_arburst
+  io.lsu_axi_arlock := lsu.io.lsu_axi_arlock
+  io.lsu_axi_arcache := lsu.io.lsu_axi_arcache
+  io.lsu_axi_arprot := lsu.io.lsu_axi_arprot
+  io.lsu_axi_arqos := lsu.io.lsu_axi_arqos
+  io.lsu_axi_rready := lsu.io.lsu_axi_rready
+
+  // AXI IFU
+  io.ifu_axi_awvalid := ifu.io.ifu_axi_awvalid
+  io.ifu_axi_awid := ifu.io.ifu_axi_awid
+  io.ifu_axi_awaddr := ifu.io.ifu_axi_awaddr
+  io.ifu_axi_awregion := ifu.io.ifu_axi_awregion
+  io.ifu_axi_awlen := ifu.io.ifu_axi_awlen
+  io.ifu_axi_awsize := ifu.io.ifu_axi_awsize
+  io.ifu_axi_awburst := ifu.io.ifu_axi_awburst
+  io.ifu_axi_awlock := ifu.io.ifu_axi_awlock
+  io.ifu_axi_awcache := ifu.io.ifu_axi_awcache
+  io.ifu_axi_awprot := ifu.io.ifu_axi_awprot
+  io.ifu_axi_awqos := ifu.io.ifu_axi_awqos
+  io.ifu_axi_wvalid := ifu.io.ifu_axi_wvalid
+  io.ifu_axi_wdata := ifu.io.ifu_axi_wdata
+  io.ifu_axi_wstrb := ifu.io.ifu_axi_wstrb
+  io.ifu_axi_wlast := ifu.io.ifu_axi_wlast
+  io.ifu_axi_bready := ifu.io.ifu_axi_bready
+  io.ifu_axi_arvalid := ifu.io.ifu_axi_arvalid
+  io.ifu_axi_arid := ifu.io.ifu_axi_arid
+  io.ifu_axi_araddr := ifu.io.ifu_axi_araddr
+  io.ifu_axi_arregion := ifu.io.ifu_axi_arregion
+  io.ifu_axi_arlen := ifu.io.ifu_axi_arlen
+  io.ifu_axi_arsize := ifu.io.ifu_axi_arsize
+  io.ifu_axi_arburst := ifu.io.ifu_axi_arburst
+  io.ifu_axi_arlock := ifu.io.ifu_axi_arlock
+  io.ifu_axi_arcache := ifu.io.ifu_axi_arcache
+  io.ifu_axi_arprot := ifu.io.ifu_axi_arprot
+  io.ifu_axi_arqos := ifu.io.ifu_axi_arqos
+  io.ifu_axi_rready := ifu.io.ifu_axi_rready
 
 
+  // AXI SB Signals
+  io.sb_axi_awvalid := dbg.io.sb_axi_awvalid
+  io.sb_axi_awid := dbg.io.sb_axi_awid
+  io.sb_axi_awaddr := dbg.io.sb_axi_awaddr
+  io.sb_axi_awregion := dbg.io.sb_axi_awregion
+  io.sb_axi_awlen := dbg.io.sb_axi_awlen
+  io.sb_axi_awsize := dbg.io.sb_axi_awsize
+  io.sb_axi_awburst := dbg.io.sb_axi_awburst
+  io.sb_axi_awlock := dbg.io.sb_axi_awlock
+  io.sb_axi_awcache := dbg.io.sb_axi_awcache
+  io.sb_axi_awprot := dbg.io.sb_axi_awprot
+  io.sb_axi_awqos := dbg.io.sb_axi_awqos
+  io.sb_axi_wvalid := dbg.io.sb_axi_wvalid
+  io.sb_axi_wdata := dbg.io.sb_axi_wdata
+  io.sb_axi_wstrb := dbg.io.sb_axi_wstrb
+  io.sb_axi_wlast := dbg.io.sb_axi_wlast
+  io.sb_axi_bready := dbg.io.sb_axi_bready
+  io.sb_axi_arvalid := dbg.io.sb_axi_arvalid
+  io.sb_axi_arid := dbg.io.sb_axi_arid
+  io.sb_axi_araddr := dbg.io.sb_axi_araddr
+  io.sb_axi_arregion := dbg.io.sb_axi_arregion
+  io.sb_axi_arlen := dbg.io.sb_axi_arlen
+  io.sb_axi_arsize := dbg.io.sb_axi_arsize
+  io.sb_axi_arburst := dbg.io.sb_axi_arburst
+  io.sb_axi_arlock := dbg.io.sb_axi_arlock
+  io.sb_axi_arcache := dbg.io.sb_axi_arcache
+  io.sb_axi_arprot := dbg.io.sb_axi_arprot
+  io.sb_axi_arqos := dbg.io.sb_axi_arqos
+  io.sb_axi_rready := dbg.io.sb_axi_rready
+
+  // DMA Output Signals
+  io.dma_axi_awready := dma_ctrl.io.dma_axi_awready
+  io.dma_axi_wready := dma_ctrl.io.dma_axi_wready
+  io.dma_axi_bvalid := dma_ctrl.io.dma_axi_bvalid
+  io.dma_axi_bresp := dma_ctrl.io.dma_axi_bresp
+  io.dma_axi_bid := dma_ctrl.io.dma_axi_bid
+  io.dma_axi_arready := dma_ctrl.io.dma_axi_arready
+  io.dma_axi_rvalid := dma_ctrl.io.dma_axi_rvalid
+  io.dma_axi_rid := dma_ctrl.io.dma_axi_rid
+  io.dma_axi_rdata := dma_ctrl.io.dma_axi_rdata
+  io.dma_axi_rresp := dma_ctrl.io.dma_axi_rresp
+  io.dma_axi_rlast := dma_ctrl.io.dma_axi_rlast
+
+  // AHB Signals
+  io.hburst := 0.U
+  io.hmastlock := 0.U
+  io.hprot := 0.U
+  io.hsize := 0.U
+  io.htrans := 0.U
+  io.hwrite := 0.U
+  io.haddr := 0.U
+
+  io.lsu_haddr := 0.U
+  io.lsu_hburst := 0.U
+  io.lsu_hmastlock := 0.U
+  io.lsu_hprot := 0.U
+  io.lsu_hsize := 0.U
+  io.lsu_htrans := 0.U
+  io.lsu_hwrite := 0.U
+  io.lsu_hwdata := 0.U
 
 
+  io.sb_haddr := 0.U
+  io.sb_hburst := 0.U
+  io.sb_hmastlock := 0.U
+  io.sb_hprot := 0.U
+  io.sb_hsize := 0.U
+  io.sb_htrans := 0.U
+  io.sb_hwrite := 0.U
+  io.sb_hwdata := 0.U
+
+  io.dma_hrdata := 0.U
+  io.dma_hreadyout := 0.U
+  io.dma_hresp := 0.U
+
+  io.ifu_axi_wready := 0.U
+
+  io.dma_hresp := 0.U //dbg.io.dma_hresp
+
+  io.dmi_reg_rdata := 0.U
+
+}
+
+object SWERV extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_swerv()))
 }

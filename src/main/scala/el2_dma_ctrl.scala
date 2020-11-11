@@ -6,7 +6,6 @@ import lib._
 class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
   val io = IO(new Bundle {
     val free_clk              = Input(Clock())
-    val rst_l                 = Input(Bool())
     val dma_bus_clk_en        = Input(Bool())     // slave bus clock enable
     val clk_override          = Input(Bool())
     val scan_mode             = Input(Bool())

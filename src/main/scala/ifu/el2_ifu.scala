@@ -85,6 +85,7 @@ class el2_ifu extends Module with el2_lib with RequireAsyncReset {
     val ifu_ic_debug_rd_data = Output(UInt(71.W))
     val ic_eccerr = Input(UInt(ICACHE_BANKS_WAY.W))
     val ic_parerr = Input(UInt(ICACHE_BANKS_WAY.W))
+    val ic_premux_data = Output(UInt(64.W))
     val ic_sel_premux_data = Output(Bool())
     val ic_debug_addr = Output(UInt((ICACHE_INDEX_HI-2).W))
     val ic_debug_rd_en = Output(Bool())
@@ -335,6 +336,7 @@ class el2_ifu extends Module with el2_lib with RequireAsyncReset {
   io.ifu_ic_debug_rd_data_valid := mem_ctl_ch.io.ifu_ic_debug_rd_data_valid
   io.iccm_buf_correct_ecc := mem_ctl_ch.io.iccm_buf_correct_ecc
   io.iccm_correction_state := mem_ctl_ch.io.iccm_correction_state
+  io.ic_premux_data := mem_ctl_ch.io.ic_premux_data
 }
 
 object ifu_comp extends App {
