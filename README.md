@@ -31,7 +31,7 @@ Enter here
     │           ├── el2_dma_ctrl.scala      #   
     │           ├── el2_pic_ctl.scala       # 
     │           └── el2_swerv.scala         #       
-    │     └── test/scala/lib                #     
+    │   └── test/scala/lib                  #     
     ├── target                              #
         ├── scala-2.12                      #
         └── streams                         #    
