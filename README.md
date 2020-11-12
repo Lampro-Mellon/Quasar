@@ -115,4 +115,3 @@ cmark_iccm        - the same as above with preloaded code to ICCM.
 
 **Building an FPGA speed optimized model:**  
 
-Use ``-set=fpga_optimize=1`` option to ``swerv.config`` to build a model that is removes clock gating logic from flop model so that the FPGA builds can run a higher speeds.
