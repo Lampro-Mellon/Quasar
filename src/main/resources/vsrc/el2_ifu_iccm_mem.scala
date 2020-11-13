@@ -1,118 +1,333 @@
-package ifu
-import chisel3._
-import chisel3.util._
-import lib._
-import scala.math.pow
+//********************************************************************************
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2020 Western Digital Corporation or it's affiliates.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//********************************************************************************
 
-class el2_ifu_iccm_mem extends Module with el2_lib with RequireAsyncReset {
-  val io = IO(new Bundle{
-    val clk_override = Input(Bool())
-    val iccm_wren = Input(Bool())
-    val iccm_rden = Input(Bool())
-    val iccm_rw_addr = Input(UInt((ICCM_BITS-1).W))
-    val iccm_buf_correct_ecc = Input(Bool())
-    val iccm_correction_state = Input(Bool())
-    val iccm_wr_size = Input(UInt(3.W))
-    val iccm_wr_data = Input(UInt(78.W))
-    val iccm_rd_data = Output(UInt(64.W))
-    val iccm_rd_data_ecc = Output(UInt(78.W))
-    val scan_mode = Input(Bool())
-   // val iccm_bank_addr = Output(Vec(ICCM_NUM_BANKS, UInt()))
-  })
-  io.iccm_rd_data := 0.U
-  io.iccm_rd_data_ecc := 0.U
-  val addr_inc = Mux((io.iccm_wr_size(1,0)===3.U).asBool, 2.U(2.W), 1.U(2.W))
-  val addr_bank_inc = io.iccm_rw_addr(ICCM_BITS-2,0) + addr_inc
+//********************************************************************************
+// Icache closely coupled memory --- ICCM
+//********************************************************************************
 
-  val iccm_bank_wr_data_vec = Wire(Vec(ICCM_NUM_BANKS, UInt(39.W)))
-  for(i<- 0 until ICCM_NUM_BANKS/2){
-    iccm_bank_wr_data_vec(2*i) := io.iccm_wr_data(38,0)
-    iccm_bank_wr_data_vec((2*i)+1) := io.iccm_wr_data(77,39)
-  }
+module el2_ifu_iccm_mem
+#(
+   parameter ICCM_BITS,
+   parameter ICCM_BANK_INDEX_LO,
+   parameter ICCM_INDEX_BITS,
+   parameter ICCM_BANK_HI,
+   parameter ICCM_NUM_BANKS,
+   parameter ICCM_BANK_BITS )(
+   input logic                                        clk,
+   input logic                                        rst_l,
+   input logic                                        clk_override,
 
-  val wren_bank = (0 until ICCM_NUM_BANKS).map(i=> io.iccm_wren&((io.iccm_rw_addr(ICCM_BANK_HI-1,1)===i.U)|(addr_bank_inc(ICCM_BANK_HI-1,1)===i.U)))
-  val iccm_bank_wr_data = iccm_bank_wr_data_vec
-  val rden_bank = (0 until ICCM_NUM_BANKS).map(i=> io.iccm_rden&(io.iccm_rw_addr(ICCM_BANK_HI-1,1)===i.U)|(addr_bank_inc(ICCM_BANK_HI-1,1)===i.U))
-  val iccm_clken = for(i<- 0 until ICCM_NUM_BANKS) yield  wren_bank(i) | rden_bank(i) | io.clk_override
-
-  val addr_bank = Wire(Vec(ICCM_NUM_BANKS, UInt((ICCM_BITS-ICCM_BANK_INDEX_LO).W)))
-  for(i<-0 until ICCM_NUM_BANKS) {addr_bank(i) := Mux(wren_bank(i).asBool, io.iccm_rw_addr(ICCM_BITS-2, ICCM_BANK_INDEX_LO-1),
-    Mux((addr_bank_inc(ICCM_BANK_HI-1,1)===i.U),addr_bank_inc(ICCM_BITS-2,ICCM_BANK_INDEX_LO-1),io.iccm_rw_addr(ICCM_BITS-2,ICCM_BANK_INDEX_LO-1)))}
-
-  val iccm_mem = new Array[SyncReadMem[UInt]](ICCM_NUM_BANKS)
-  for(i<-0 until ICCM_NUM_BANKS) iccm_mem(i) = SyncReadMem(pow(2, ICCM_INDEX_BITS).intValue, UInt(39.W))
-  //val iccm_mem = VecInit.tabulate(ICCM_NUM_BANKS)(i=>Mem(pow(2, ICCM_INDEX_BITS).intValue, UInt(39.W))))
-  //val iccm_mem = Mem(pow(2, ICCM_INDEX_BITS).intValue, Vec(ICCM_NUM_BANKS, UInt(39.W)))
-
-  val write_vec = VecInit.tabulate(ICCM_NUM_BANKS)(i=>iccm_clken(i)&wren_bank(i))
-  val read_enable = VecInit.tabulate(ICCM_NUM_BANKS)(i=>iccm_clken(i)&(!wren_bank(i)))
-
-  val iccm_bank_dout = Wire(Vec(ICCM_NUM_BANKS, UInt(39.W)))
-  //val inter = Wire(Vec(ICCM_NUM_BANKS, UInt(39.W)))
+   input logic                                        iccm_wren,
+   input logic                                        iccm_rden,
+   input logic [ICCM_BITS-1:1]                     iccm_rw_addr,
+   input logic                                        iccm_buf_correct_ecc,                // ICCM is doing a single bit error correct cycle
+   input logic                                        iccm_correction_state,               // We are under a correction - This is needed to guard replacements when hit
+   input logic [2:0]                                  iccm_wr_size,
+   input logic [77:0]                                 iccm_wr_data,
 
 
-  for(i<-0 until ICCM_NUM_BANKS)  when(write_vec(i)) {iccm_mem(i)(addr_bank(i)) := iccm_bank_wr_data(i)}
+   output logic [63:0]                                iccm_rd_data,
+   output logic [77:0]                                iccm_rd_data_ecc,
+   input  logic                                       scan_mode
 
-  for(i<-0 until ICCM_NUM_BANKS) {iccm_bank_dout(i) := RegEnable(iccm_mem(i)(addr_bank(i)),0.U,read_enable(i))}
-
-
-
-
-  val redundant_valid = WireInit(UInt(2.W), init = 0.U)
-  val redundant_address = Wire(Vec(2, UInt((ICCM_BITS-2).W)))
-  redundant_address := (0 until 2).map(i=>0.U)
-
-  val sel_red1 = (0 until ICCM_NUM_BANKS).map(i=> (redundant_valid(1) & ((io.iccm_rw_addr(ICCM_BITS-2,1)===redundant_address(1)(ICCM_BITS-3,0)) & (io.iccm_rw_addr(2,1) === i.U)) |
-      ((addr_bank_inc(ICCM_BITS-2,1)===redundant_address(1)(ICCM_BITS-3,0)) & (addr_bank_inc(2,1) === i.U))).asUInt).reverse.reduce(Cat(_,_))
-  val sel_red0 = (0 until ICCM_NUM_BANKS).map(i=> (redundant_valid(0) & ((io.iccm_rw_addr(ICCM_BITS-2,1)===redundant_address(0)(ICCM_BITS-3,0)) & (io.iccm_rw_addr(2,1) === i.U)) |
-      ((addr_bank_inc(ICCM_BITS-2,1)===redundant_address(0)(ICCM_BITS-3,0)) & (addr_bank_inc(2,1) === i.U))).asUInt).reverse.reduce(Cat(_,_))
-
-  val sel_red0_q = RegNext(sel_red0, init = 0.U)
-  val sel_red1_q = RegNext(sel_red1, init = 0.U)
-  val redundant_data = Wire(Vec(2, UInt(39.W)))
-  redundant_data := (0 until 2).map(i=>0.U)
-  val iccm_bank_dout_fn = (0 until ICCM_NUM_BANKS).map(i=>
-                          Mux1H(Seq(sel_red1_q(i).asBool->redundant_data(1),
-                                    sel_red0_q(i).asBool->redundant_data(0),
-                                  (~sel_red0_q(i) & ~sel_red1_q(i)).asBool -> iccm_bank_dout(i))))
-  val redundant_lru = WireInit(Bool(), init = 0.U)
-  val r0_addr_en = !redundant_lru & io.iccm_buf_correct_ecc
-  val r1_addr_en = redundant_lru  & io.iccm_buf_correct_ecc
-  val redundant_lru_en = io.iccm_buf_correct_ecc | ((sel_red0.orR | sel_red1.orR) & io.iccm_rden & io.iccm_correction_state)
-  val redundant_lru_in = Mux(io.iccm_buf_correct_ecc, !redundant_lru, Mux(sel_red0.orR, 1.U, 0.U))
-  redundant_lru := RegEnable(redundant_lru_in, 0.U, redundant_lru_en)
-  redundant_address(0) := RegEnable(io.iccm_rw_addr(ICCM_BITS-2,1), 0.U, r0_addr_en)
-  redundant_address(1) := RegEnable(io.iccm_rw_addr(ICCM_BITS-2,1), 0.U, r1_addr_en.asBool)
-  redundant_valid := Cat(RegEnable(1.U, 0.U, r1_addr_en.asBool),RegEnable(1.U, 0.U, r0_addr_en))
-
-  val redundant_data0_en = ((io.iccm_rw_addr(ICCM_BITS-2,2) === redundant_address(0)(ICCM_BITS-3,1)) &
-    ((io.iccm_rw_addr(1) & redundant_address(0)(0))| (io.iccm_wr_size(1,0)===3.U)) & redundant_valid(0) & io.iccm_wren) |
-    (!redundant_lru & io.iccm_buf_correct_ecc)
-  val redundant_data0_in = Mux(((io.iccm_rw_addr(1)&redundant_address(0)(0)) |(redundant_address(0)(0) & (io.iccm_wr_size(1,0)===3.U))).asBool,
-    io.iccm_wr_data(77,39), io.iccm_wr_data(38,0))
-  redundant_data(0) := RegEnable(redundant_data0_in, 0.U, redundant_data0_en.asBool)
-
-  val redundant_data1_en = ((io.iccm_rw_addr(ICCM_BITS-2,2) === redundant_address(1)(ICCM_BITS-3,1)) &
-    ((io.iccm_rw_addr(1) & redundant_address(1)(0))| (io.iccm_wr_size(1,0)===3.U)) & redundant_valid(1) & io.iccm_wren) |
-    (!redundant_lru & io.iccm_buf_correct_ecc)
-  val redundant_data1_in = Mux(((io.iccm_rw_addr(1)&redundant_address(1)(0)) |(redundant_address(1)(0) & (io.iccm_wr_size(1,0)===3.U))).asBool,
-    io.iccm_wr_data(77,39), io.iccm_wr_data(38,0))
-  redundant_data(1) := RegEnable(redundant_data1_in, 0.U, redundant_data1_en.asBool)
-
-  val iccm_rd_addr_lo_q = RegNext(RegEnable(io.iccm_rw_addr(ICCM_BANK_HI-1,0), 0.U, 1.U.asBool), 0.U)
-  val iccm_rd_addr_hi_q = RegNext(addr_bank_inc(ICCM_BANK_HI-1,1), 0.U)
-  //val hig_q_vec = (0 until ICCM_NUM_BANKS)
-  val iccm_rd_data_pre = Cat(Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-1,1)===i.U)->iccm_bank_dout_fn(if(i==3) 0 else i+1)(31,0))),
-  Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-1,1)===i.U)->iccm_bank_dout_fn(i)(31,0))))
-
-  io.iccm_rd_data := Mux(iccm_rd_addr_lo_q(0).asBool(),Cat(Fill(16,0.U),iccm_rd_data_pre(63,16)) ,iccm_rd_data_pre)
-  io.iccm_rd_data_ecc :=Cat(Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_hi_q===i.U)->iccm_bank_dout_fn(i))),
-    Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-2,0)===i.U)->iccm_bank_dout_fn(i))))
-  io.iccm_rd_data_ecc := Cat(Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-1,1)===i.U)->iccm_bank_dout_fn(if(i==3) 0 else i+1)(38,0))),
-    Mux1H((0 until ICCM_NUM_BANKS).map(i=>(iccm_rd_addr_lo_q(ICCM_BANK_HI-1,1)===i.U)->iccm_bank_dout_fn(i)(38,0))))
-}
+);
 
 
-object ifu_iccm extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_iccm_mem()))
-}
+   logic [ICCM_NUM_BANKS-1:0]                                                wren_bank;
+   logic [ICCM_NUM_BANKS-1:0]                                                rden_bank;
+   logic [ICCM_NUM_BANKS-1:0]                                                iccm_clken;
+   logic [ICCM_NUM_BANKS-1:0] [ICCM_BITS-1:ICCM_BANK_INDEX_LO] addr_bank;
+
+   logic [ICCM_NUM_BANKS-1:0] [38:0]  iccm_bank_dout, iccm_bank_dout_fn;
+   logic [ICCM_NUM_BANKS-1:0] [38:0]  iccm_bank_wr_data;
+   logic [ICCM_BITS-1:1]              addr_bank_inc;
+   logic [ICCM_BANK_HI : 2]           iccm_rd_addr_hi_q;
+   logic [ICCM_BANK_HI : 1]           iccm_rd_addr_lo_q;
+   logic             [63:0]              iccm_rd_data_pre;
+   logic             [63:0]              iccm_data;
+   logic [1:0]                           addr_incr;
+   logic [ICCM_NUM_BANKS-1:0] [38:0]  iccm_bank_wr_data_vec;
+
+   // logic to handle hard persisten faults
+   logic [1:0] [ICCM_BITS-1:2]        redundant_address;
+   logic [1:0] [38:0]                    redundant_data;
+   logic [1:0]                           redundant_valid;
+   logic [ICCM_NUM_BANKS-1:0]         sel_red1, sel_red0, sel_red1_q, sel_red0_q;
+
+
+   logic [38:0]                          redundant_data0_in, redundant_data1_in;
+   logic                                 redundant_lru, redundant_lru_in, redundant_lru_en;
+   logic                                 redundant_data0_en;
+   logic                                 redundant_data1_en;
+   logic                                 r0_addr_en, r1_addr_en;
+
+   assign addr_incr[1:0]                    = (iccm_wr_size[1:0] == 2'b11) ?  2'b10: 2'b01;
+   assign addr_bank_inc[ICCM_BITS-1 : 1] = iccm_rw_addr[ICCM_BITS-1 : 1] + addr_incr[1:0];
+
+   for (genvar i=0; i<32'(ICCM_NUM_BANKS)/2; i++) begin: mem_bank_data
+      assign iccm_bank_wr_data_vec[(2*i)]   = iccm_wr_data[38:0];
+      assign iccm_bank_wr_data_vec[(2*i)+1] = iccm_wr_data[77:39];
+   end
+
+   for (genvar i=0; i<32'(ICCM_NUM_BANKS); i++) begin: mem_bank
+      assign wren_bank[i]         = iccm_wren & ((iccm_rw_addr[ICCM_BANK_HI:2] == i) | (addr_bank_inc[ICCM_BANK_HI:2] == i));
+      assign iccm_bank_wr_data[i] = iccm_bank_wr_data_vec[i];
+      assign rden_bank[i]         = iccm_rden & ( (iccm_rw_addr[ICCM_BANK_HI:2] == i) | (addr_bank_inc[ICCM_BANK_HI:2] == i));
+      assign iccm_clken[i]        =  wren_bank[i] | rden_bank[i] | clk_override;
+      assign addr_bank[i][ICCM_BITS-1 : ICCM_BANK_INDEX_LO] = wren_bank[i] ? iccm_rw_addr[ICCM_BITS-1 : ICCM_BANK_INDEX_LO] :
+                                                                                      ((addr_bank_inc[ICCM_BANK_HI:2] == i) ?
+                                                                                                    addr_bank_inc[ICCM_BITS-1 : ICCM_BANK_INDEX_LO] :
+                                                                                                    iccm_rw_addr[ICCM_BITS-1 : ICCM_BANK_INDEX_LO]);
+ `ifdef VERILATOR
+
+    el2_ram #(.depth(1<<ICCM_INDEX_BITS), .width(39)) iccm_bank (
+                                     // Primary ports
+                                     .ME(iccm_clken[i]),
+                                     .CLK(clk),
+                                     .WE(wren_bank[i]),
+                                     .ADR(addr_bank[i]),
+                                     .D(iccm_bank_wr_data[i][38:0]),
+                                     .Q(iccm_bank_dout[i][38:0])
+
+                                      );
+ `else
+
+     if (ICCM_INDEX_BITS == 6 ) begin : iccm
+               ram_64x39 iccm_bank (
+                                     // Primary ports
+                                     .CLK(clk),
+                                     .ME(iccm_clken[i]),
+                                     .WE(wren_bank[i]),
+                                     .ADR(addr_bank[i]),
+                                     .D(iccm_bank_wr_data[i][38:0]),
+                                     .Q(iccm_bank_dout[i][38:0])
+
+                                      );
+     end // block: iccm
+
+   else if (ICCM_INDEX_BITS == 7 ) begin : iccm
+               ram_128x39 iccm_bank (
+                                     // Primary ports
+                                     .CLK(clk),
+                                     .ME(iccm_clken[i]),
+                                     .WE(wren_bank[i]),
+                                     .ADR(addr_bank[i]),
+                                     .D(iccm_bank_wr_data[i][38:0]),
+                                     .Q(iccm_bank_dout[i][38:0])
+
+                                      );
+     end // block: iccm
+
+     else if (ICCM_INDEX_BITS == 8 ) begin : iccm
+               ram_256x39 iccm_bank (
+                                     // Primary ports
+                                     .CLK(clk),
+                                     .ME(iccm_clken[i]),
+                                     .WE(wren_bank[i]),
+                                     .ADR(addr_bank[i]),
+                                     .D(iccm_bank_wr_data[i][38:0]),
+                                     .Q(iccm_bank_dout[i][38:0])
+
+                                      );
+     end // block: iccm
+     else if (ICCM_INDEX_BITS == 9 ) begin : iccm
+               ram_512x39 iccm_bank (
+                                     // Primary ports
+                                     .CLK(clk),
+                                     .ME(iccm_clken[i]),
+                                     .WE(wren_bank[i]),
+                                     .ADR(addr_bank[i]),
+                                     .D(iccm_bank_wr_data[i][38:0]),
+                                     .Q(iccm_bank_dout[i][38:0])
+
+                                      );
+     end // block: iccm
+     else if (ICCM_INDEX_BITS == 10 ) begin : iccm
+               ram_1024x39 iccm_bank (
+                                     // Primary ports
+                                     .CLK(clk),
+                                     .ME(iccm_clken[i]),
+                                     .WE(wren_bank[i]),
+                                     .ADR(addr_bank[i]),
+                                     .D(iccm_bank_wr_data[i][38:0]),
+                                     .Q(iccm_bank_dout[i][38:0])
+
+                                      );
+     end // block: iccm
+     else if (ICCM_INDEX_BITS == 11 ) begin : iccm
+               ram_2048x39 iccm_bank (
+                                     // Primary ports
+                                     .CLK(clk),
+                                     .ME(iccm_clken[i]),
+                                     .WE(wren_bank[i]),
+                                     .ADR(addr_bank[i]),
+                                     .D(iccm_bank_wr_data[i][38:0]),
+                                     .Q(iccm_bank_dout[i][38:0])
+
+                                      );
+     end // block: iccm
+     else if (ICCM_INDEX_BITS == 12 ) begin : iccm
+               ram_4096x39 iccm_bank (
+                                     // Primary ports
+                                     .CLK(clk),
+                                     .ME(iccm_clken[i]),
+                                     .WE(wren_bank[i]),
+                                     .ADR(addr_bank[i]),
+                                     .D(iccm_bank_wr_data[i][38:0]),
+                                     .Q(iccm_bank_dout[i][38:0])
+
+                                      );
+     end // block: iccm
+     else if (ICCM_INDEX_BITS == 13 ) begin : iccm
+               ram_8192x39 iccm_bank (
+                                     // Primary ports
+                                     .CLK(clk),
+                                     .ME(iccm_clken[i]),
+                                     .WE(wren_bank[i]),
+                                     .ADR(addr_bank[i]),
+                                     .D(iccm_bank_wr_data[i][38:0]),
+                                     .Q(iccm_bank_dout[i][38:0])
+
+                                      );
+     end // block: iccm
+     else if (ICCM_INDEX_BITS == 14 ) begin : iccm
+               ram_16384x39 iccm_bank (
+                                     // Primary ports
+                                     .CLK(clk),
+                                     .ME(iccm_clken[i]),
+                                     .WE(wren_bank[i]),
+                                     .ADR(addr_bank[i]),
+                                     .D(iccm_bank_wr_data[i][38:0]),
+                                     .Q(iccm_bank_dout[i][38:0])
+
+                                      );
+     end // block: iccm
+     else begin : iccm
+               ram_32768x39 iccm_bank (
+                                     // Primary ports
+                                     .CLK(clk),
+                                     .ME(iccm_clken[i]),
+                                     .WE(wren_bank[i]),
+                                     .ADR(addr_bank[i]),
+                                     .D(iccm_bank_wr_data[i][38:0]),
+                                     .Q(iccm_bank_dout[i][38:0])
+
+                                      );
+     end // block: iccm
+`endif
+
+   // match the redundant rows
+   assign sel_red1[i]  = (redundant_valid[1]  & (((iccm_rw_addr[ICCM_BITS-1:2] == redundant_address[1][ICCM_BITS-1:2]) & (iccm_rw_addr[3:2] == i)) |
+                                                 ((addr_bank_inc[ICCM_BITS-1:2]== redundant_address[1][ICCM_BITS-1:2]) & (addr_bank_inc[3:2] == i))));
+
+   assign sel_red0[i]  = (redundant_valid[0]  & (((iccm_rw_addr[ICCM_BITS-1:2] == redundant_address[0][ICCM_BITS-1:2]) & (iccm_rw_addr[3:2] == i)) |
+                                                 ((addr_bank_inc[ICCM_BITS-1:2]== redundant_address[0][ICCM_BITS-1:2]) & (addr_bank_inc[3:2] == i))));
+
+   rvdff #(1) selred0  (.*,
+                   .clk(clk),
+                   .din(sel_red0[i]),
+                   .dout(sel_red0_q[i]));
+
+   rvdff #(1) selred1  (.*,
+                   .clk(clk),
+                   .din(sel_red1[i]),
+                   .dout(sel_red1_q[i]));
+
+
+  // muxing out the memory data with the redundant data if the address matches
+    assign iccm_bank_dout_fn[i][38:0] = ({39{sel_red1_q[i]}}                         & redundant_data[1][38:0]) |
+                                        ({39{sel_red0_q[i]}}                         & redundant_data[0][38:0]) |
+                                        ({39{~sel_red0_q[i] & ~sel_red1_q[i]}}       & iccm_bank_dout[i][38:0]);
+
+
+  end : mem_bank
+// This section does the redundancy for tolerating single bit errors
+// 2x 39 bit data values with address[hi:2] and a valid bit is needed to CAM and sub out the reads/writes to the particular locations
+// Also a LRU flop is kept to decide which of the redundant element to replace.
+   assign r0_addr_en              = ~redundant_lru & iccm_buf_correct_ecc;
+   assign r1_addr_en              = redundant_lru  & iccm_buf_correct_ecc;
+   assign redundant_lru_en         = iccm_buf_correct_ecc | (((|sel_red0[ICCM_NUM_BANKS-1:0]) | (|sel_red1[ICCM_NUM_BANKS-1:0])) & iccm_rden & iccm_correction_state);
+   assign redundant_lru_in        = iccm_buf_correct_ecc ? ~redundant_lru : (|sel_red0[ICCM_NUM_BANKS-1:0]) ? 1'b1 : 1'b0;
+
+   rvdffs #() red_lru  (.*,                               // LRU flop for the redundant replacements
+                   .clk(clk),
+                   .en(redundant_lru_en),
+                   .din(redundant_lru_in),
+                   .dout(redundant_lru));
+
+    rvdffs #(ICCM_BITS-2) r0_address  (.*,                 // Redundant Row 0 address
+                   .clk(clk),
+                   .en(r0_addr_en),
+                   .din(iccm_rw_addr[ICCM_BITS-1:2]),
+                   .dout(redundant_address[0][ICCM_BITS-1:2]));
+
+   rvdffs #(ICCM_BITS-2) r1_address  (.*,                   // Redundant Row 0 address
+                   .clk(clk),
+                   .en(r1_addr_en),
+                   .din(iccm_rw_addr[ICCM_BITS-1:2]),
+                   .dout(redundant_address[1][ICCM_BITS-1:2]));
+
+    rvdffs #(1) r0_valid  (.*,
+                   .clk(clk),                                  // Redundant Row 0 Valid
+                   .en(r0_addr_en),
+                   .din(1'b1),
+                   .dout(redundant_valid[0]));
+
+   rvdffs #(1) r1_valid  (.*,                                   // Redundant Row 1 Valid
+                   .clk(clk),
+                   .en(r1_addr_en),
+                   .din(1'b1),
+                   .dout(redundant_valid[1]));
+
+
+
+   // We will have to update the Redundant copies in addition to the memory on subsequent writes to this memory location.
+   // The data gets updated on : 1) correction cycle, 2) Future writes - this could be W writes from DMA ( match up till addr[2]) or DW writes ( match till address[3])
+   // The data to pick also depends on the current address[2], size and the addr[2] stored in the address field of the redundant flop. Correction cycle is always W write and the data is splat on both legs, so choosing lower Word
+
+    assign redundant_data0_en      = ((iccm_rw_addr[ICCM_BITS-1:3] == redundant_address[0][ICCM_BITS-1:3]) & ((iccm_rw_addr[2] == redundant_address[0][2]) | (iccm_wr_size[1:0] == 2'b11)) & redundant_valid[0] & iccm_wren) |
+                                      (~redundant_lru & iccm_buf_correct_ecc);
+
+    assign redundant_data0_in[38:0] = (((iccm_rw_addr[2] == redundant_address[0][2]) & iccm_rw_addr[2]) | (redundant_address[0][2] & (iccm_wr_size[1:0] == 2'b11))) ? iccm_wr_data[77:39]  : iccm_wr_data[38:0];
+
+    rvdffs #(39) r0_data  (.*,                                 // Redundant Row 1 data
+                   .clk(clk),
+                   .en(redundant_data0_en),
+                   .din(redundant_data0_in[38:0]),
+                   .dout(redundant_data[0][38:0]));
+
+   assign redundant_data1_en      =  ((iccm_rw_addr[ICCM_BITS-1:3] == redundant_address[1][ICCM_BITS-1:3]) & ((iccm_rw_addr[2] == redundant_address[1][2]) | (iccm_wr_size[1:0] == 2'b11)) & redundant_valid[1] & iccm_wren) |
+                                     (redundant_lru & iccm_buf_correct_ecc);
+
+   assign redundant_data1_in[38:0] = (((iccm_rw_addr[2] == redundant_address[1][2]) & iccm_rw_addr[2]) | (redundant_address[1][2] & (iccm_wr_size[1:0] == 2'b11))) ? iccm_wr_data[77:39]  : iccm_wr_data[38:0];
+
+    rvdffs #(39) r1_data  (.*,                                  // Redundant Row 1 data
+                   .clk(clk),
+                   .en(redundant_data1_en),
+                   .din(redundant_data1_in[38:0]),
+                   .dout(redundant_data[1][38:0]));
+
+
+   rvdffs  #(ICCM_BANK_HI)   rd_addr_lo_ff (.*, .din(iccm_rw_addr [ICCM_BANK_HI:1]), .dout(iccm_rd_addr_lo_q[ICCM_BANK_HI:1]), .en(1'b1));   // bit 0 of address is always 0
+   rvdffs  #(ICCM_BANK_BITS) rd_addr_hi_ff (.*, .din(addr_bank_inc[ICCM_BANK_HI:2]), .dout(iccm_rd_addr_hi_q[ICCM_BANK_HI:2]), .en(1'b1));
+
+   assign iccm_rd_data_pre[63:0] = {iccm_bank_dout_fn[iccm_rd_addr_hi_q][31:0], iccm_bank_dout_fn[iccm_rd_addr_lo_q[ICCM_BANK_HI:2]][31:0]};
+   assign iccm_data[63:0]        = 64'({16'b0, (iccm_rd_data_pre[63:0] >> (16*iccm_rd_addr_lo_q[1]))});
+   assign iccm_rd_data[63:0]     = {iccm_data[63:0]};
+   assign iccm_rd_data_ecc[77:0] = {iccm_bank_dout_fn[iccm_rd_addr_hi_q][38:0], iccm_bank_dout_fn[iccm_rd_addr_lo_q[ICCM_BANK_HI:2]][38:0]};
+
+endmodule // el2_ifu_iccm_mem
