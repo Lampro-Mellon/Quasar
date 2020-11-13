@@ -1,277 +1,1868 @@
-package ifu
-import lib._
-import chisel3.{util, _}
-import chisel3.util._
+//********************************************************************************
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2020 Western Digital Corporation or it's affiliates.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//********************************************************************************
+////////////////////////////////////////////////////
+//   ICACHE DATA & TAG MODULE WRAPPER              //
+/////////////////////////////////////////////////////
+module el2_ifu_ic_mem
+ #(
+   parameter ICACHE_BEAT_BITS,
+   parameter ICACHE_NUM_WAYS,
+   parameter ICACHE_BANK_BITS,
+   parameter ICACHE_BEAT_ADDR_HI,
+   parameter ICACHE_BANKS_WAY,
+   parameter ICACHE_INDEX_HI,
+   parameter ICACHE_BANK_HI,
+   parameter ICACHE_BANK_LO,
+   parameter ICACHE_TAG_LO,
+   parameter ICACHE_DATA_INDEX_LO,
+   parameter ICACHE_ECC,
+   parameter ICACHE_TAG_DEPTH,
+   parameter ICACHE_WAYPACK,
+   parameter ICACHE_TAG_INDEX_LO,
+   parameter ICACHE_DATA_DEPTH )
+  (
+      input logic                                   clk,
+      input logic                                   rst_l,
+      input logic                                   clk_override,
+      input logic                                   dec_tlu_core_ecc_disable,
 
-class el2_ifu_ic_mem extends Module with param{
-  val io = IO(new Bundle{
-    val scan_mode = Input(Bool())
-    val clk_override = Input(Bool())
-    val dec_tlu_core_ecc_disable = Input(Bool())
-    val ic_rw_addr = Input(UInt(31.W))
-    val ic_wr_en = Input(UInt(ICACHE_NUM_WAYS.W))
-    val ic_rd_en = Input(Bool())
-    val ic_debug_addr = Input(UInt((ICACHE_INDEX_HI-3).W))
-    val ic_debug_rd_en = Input(Bool())
-    val ic_debug_wr_en = Input(Bool())
-    val ic_debug_tag_array = Input(Bool())
-    val ic_debug_way = Input(UInt(ICACHE_NUM_WAYS.W))
-    val ic_premux_data = Input(UInt(64.W))
-    val ic_sel_premux_data = Input(Bool())
-    val ic_tag_valid = Input(UInt(ICACHE_NUM_WAYS.W))
-    val ic_debug_wr_data = Input(UInt(71.W))
-    val ic_wr_data = Input(Vec(ICACHE_BANKS_WAY, Input(UInt(71.W))))
+      input logic [31:1]                            ic_rw_addr,
+      input logic [ICACHE_NUM_WAYS-1:0]          ic_wr_en  ,         // Which way to write
+      input logic                                   ic_rd_en  ,         // Read enable
+      input logic [ICACHE_INDEX_HI:3]            ic_debug_addr,      // Read/Write addresss to the Icache.
+      input logic                                   ic_debug_rd_en,     // Icache debug rd
+      input logic                                   ic_debug_wr_en,     // Icache debug wr
+      input logic                                   ic_debug_tag_array, // Debug tag array
+      input logic [ICACHE_NUM_WAYS-1:0]          ic_debug_way,       // Debug way. Rd or Wr.
+      input logic [63:0]                            ic_premux_data,     // Premux data to be muxed with each way of the Icache.
+      input logic                                   ic_sel_premux_data, // Select the pre_muxed data
 
-    val ic_rd_data = Output(UInt(64.W))
-    val ic_debug_rd_data = Output(UInt(71.W))
-    val ictag_debug_rd_data = Output(UInt(26.W))
-    val ic_eccerr = Output(UInt(ICACHE_BANKS_WAY.W))
-    val ic_parerr = Output(UInt(ICACHE_BANKS_WAY.W))
-    val ic_rd_hit = Output(UInt(ICACHE_NUM_WAYS.W))
-    val ic_tag_perr = Output(Bool())
+      input  logic [ICACHE_BANKS_WAY-1:0][70:0]  ic_wr_data,         // Data to fill to the Icache. With ECC
+      output logic [63:0]                           ic_rd_data ,        // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
+      output logic [70:0]                           ic_debug_rd_data ,  // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
+      output logic [25:0]                           ictag_debug_rd_data,// Debug icache tag.
+      input logic  [70:0]                           ic_debug_wr_data,   // Debug wr cache.
 
-  })
-  io.ic_tag_perr := 0.U
-  io.ic_rd_hit := 0.U
-  io.ic_parerr := 0.U
-  io.ic_eccerr := 0.U
-  io.ictag_debug_rd_data := 0.U
-  io.ic_debug_rd_data := 0.U
-  io.ic_rd_data := 0.U
-  val ic_tag_inst = Module(new EL2_IC_TAG())
-  //ic_tag_inst.io <> io
-  ic_tag_inst.io.ic_tag_valid := io.ic_tag_valid
-  ic_tag_inst.io.dec_tlu_core_ecc_disable := io.dec_tlu_core_ecc_disable
-  ic_tag_inst.io.clk_override := io.clk_override
-  ic_tag_inst.io.ic_rw_addr := io.ic_rw_addr
-  ic_tag_inst.io.ic_wr_en := io.ic_wr_en
-  ic_tag_inst.io.ic_rd_en := io.ic_rd_en
-  ic_tag_inst.io.ic_debug_addr := io.ic_debug_addr
-  ic_tag_inst.io.ic_debug_rd_en := io.ic_debug_rd_en
-  ic_tag_inst.io.ic_debug_wr_en := io.ic_debug_wr_en
-  ic_tag_inst.io.ic_debug_tag_array := io.ic_debug_tag_array
-  ic_tag_inst.io.ic_debug_way := io.ic_debug_way
-  io.ictag_debug_rd_data := ic_tag_inst.io.ictag_debug_rd_data // Output
-  ic_tag_inst.io.ic_debug_wr_data := io.ic_debug_wr_data
-  io.ic_rd_hit := ic_tag_inst.io.ic_rd_hit // Output
-  io.ic_tag_perr := ic_tag_inst.io.ic_tag_perr // Output
-  ic_tag_inst.io.scan_mode := io.scan_mode
-  val ic_data_inst = Module(new EL2_IC_DATA())
-  ic_data_inst.io.clk_override := io.clk_override
+      output logic [ICACHE_BANKS_WAY-1:0]        ic_eccerr,                 // ecc error per bank
+      output logic [ICACHE_BANKS_WAY-1:0]        ic_parerr,                 // ecc error per bank
+      input logic [ICACHE_NUM_WAYS-1:0]          ic_tag_valid,              // Valid from the I$ tag valid outside (in flops).
 
-  ic_data_inst.io.ic_rw_addr :=io.ic_rw_addr
-  ic_data_inst.io.ic_wr_en := io.ic_wr_en
-  ic_data_inst.io.ic_rd_en := io.ic_rd_en
-
-  ic_data_inst.io.ic_wr_data := io.ic_wr_data
-  io.ic_rd_data := ic_data_inst.io.ic_rd_data
-  ic_data_inst.io.ic_debug_wr_data := io.ic_debug_wr_data
-  io.ic_debug_rd_data := ic_data_inst.io.ic_debug_rd_data
-  io.ic_parerr := ic_data_inst.io.ic_parerr
-  io.ic_eccerr := ic_data_inst.io.ic_eccerr
-  ic_data_inst.io.ic_debug_addr := io.ic_debug_addr
-  ic_data_inst.io.ic_debug_rd_en := io.ic_debug_rd_en
-  ic_data_inst.io.ic_debug_wr_en := io.ic_debug_wr_en
-  ic_data_inst.io.ic_debug_tag_array := io.ic_debug_tag_array
-  ic_data_inst.io.ic_debug_way := io.ic_debug_way
-  ic_data_inst.io.ic_premux_data := io.ic_premux_data
-  ic_data_inst.io.ic_sel_premux_data := io.ic_sel_premux_data
-
-  ic_data_inst.io.ic_rd_hit :=io.ic_rd_hit
-    ic_data_inst.io.scan_mode := io.scan_mode
-}
-
-/////////// ICACHE TAG
-class EL2_IC_TAG extends Module with el2_lib with param {
-  val io = IO(new Bundle{
-    val scan_mode                 = Input(Bool())
-    val clk_override              = Input(Bool())
-    val dec_tlu_core_ecc_disable  = Input(Bool())
-    val ic_rw_addr                = Input(UInt(29.W)) // 32:3
-    val ic_wr_en                  = Input(UInt(ICACHE_NUM_WAYS.W))
-    val ic_tag_valid              = Input(UInt(ICACHE_NUM_WAYS.W))
-    val ic_rd_en                  = Input(Bool())
-    val ic_debug_addr             = Input(UInt((ICACHE_INDEX_HI-2).W)) // 12-2 = 10-bit value
-    val ic_debug_rd_en            = Input(Bool())
-    val ic_debug_wr_en            = Input(Bool())
-    val ic_debug_tag_array        = Input(Bool())
-    val ic_debug_way              = Input(UInt(ICACHE_NUM_WAYS.W))
-    val ictag_debug_rd_data       = Output(UInt(26.W))
-    val ic_debug_wr_data          = Input(UInt(71.W))
-    val ic_rd_hit                 = Output(UInt(ICACHE_NUM_WAYS.W))
-    val ic_tag_perr               = Output(Bool())
-  })
-  io.ictag_debug_rd_data := 0.U
-  io.ic_rd_hit := 0.U
-  io.ic_tag_perr := 0.U
-  val ic_debug_wr_way_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
-  val ic_debug_rd_way_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
-
-  val ic_tag_wren = io.ic_wr_en & Fill(ICACHE_NUM_WAYS, io.ic_rw_addr(ICACHE_BEAT_ADDR_HI-3,1)=== Fill(ICACHE_NUM_WAYS-1, 1.U))
-  val ic_tag_clken = Fill(ICACHE_NUM_WAYS, io.ic_rd_en|io.clk_override) | io.ic_wr_en | ic_debug_wr_way_en | ic_debug_rd_way_en
-
-  val ic_rd_en_ff = RegNext(io.ic_rd_en, 0.U)
-  val ic_rw_addr_ff = RegNext(io.ic_rw_addr(31-ICACHE_TAG_LO, 0), 0.U)
-
-  val PAD_BITS = 21 - (32 - ICACHE_TAG_LO)
-
-  ic_debug_rd_way_en := Fill(ICACHE_NUM_WAYS, io.ic_debug_rd_en & io.ic_debug_tag_array) & io.ic_debug_way
-  ic_debug_wr_way_en := Fill(ICACHE_NUM_WAYS, io.ic_debug_wr_en & io.ic_debug_tag_array) & io.ic_debug_way
-
-  val ic_tag_wren_q = ic_tag_wren | ic_debug_wr_way_en
-
-  val ic_tag_ecc = if(ICACHE_ECC) rvecc_encode(Cat(Fill(ICACHE_TAG_LO,0.U),io.ic_rw_addr(31-3, ICACHE_TAG_LO-3))) else 0.U
-
-  val ic_tag_parity = if(ICACHE_ECC) rveven_paritygen(Cat(Fill(ICACHE_TAG_LO,0.U),io.ic_rw_addr(31-3, ICACHE_TAG_LO-3))) else 0.U
-
-  val ic_tag_wr_data = if(ICACHE_TAG_LO==1)Mux(io.ic_debug_wr_en & io.ic_debug_tag_array, Cat(if(ICACHE_ECC) io.ic_debug_wr_data(68,64) else io.ic_debug_wr_data(64), io.ic_debug_wr_data(31,11)),
-    Cat(if(ICACHE_ECC) ic_tag_ecc(4,0) else ic_tag_parity, io.ic_rw_addr(31-3,ICACHE_TAG_LO-3)))
-  else Mux(io.ic_debug_wr_en & io.ic_debug_tag_array, Cat(if(ICACHE_ECC) io.ic_debug_wr_data(68,64) else io.ic_debug_wr_data(64), io.ic_debug_wr_data(31,11)),
-    Cat(if(ICACHE_ECC) Cat(ic_tag_ecc(4,0),Fill(PAD_BITS,0.U)) else Cat(ic_tag_parity,Fill(PAD_BITS,0.U)), io.ic_rw_addr(31-3,ICACHE_TAG_LO-3)))
-
-  val ic_rw_addr_q = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en).asBool,io.ic_debug_addr(ICACHE_INDEX_HI-3,ICACHE_TAG_INDEX_LO-3),io.ic_rw_addr)
-
-  val ic_debug_rd_way_en_ff = RegNext(ic_debug_rd_way_en, 0.U)
-
-  val tag_mem = Mem(ICACHE_TAG_DEPTH, Vec(ICACHE_NUM_WAYS, UInt(Tag_Word.W)))
-
-  val write_vec = VecInit.tabulate(ICACHE_NUM_WAYS)(i=>ic_tag_wren_q(i)&ic_tag_clken(i))
-  tag_mem.write(ic_rw_addr_q, VecInit.tabulate(ICACHE_NUM_WAYS)(i=>ic_tag_wr_data), write_vec)
-
-  val read_enable = VecInit.tabulate(ICACHE_NUM_WAYS)(i=>(!ic_tag_wren_q(i))&ic_tag_clken(i))
-
-  val ic_tag_data_raw = (0 until ICACHE_NUM_WAYS).map(i=>Fill(Tag_Word,read_enable(i))&tag_mem.read(ic_rw_addr_q)(i))
-
-  val w_tout = if(ICACHE_ECC) VecInit.tabulate(ICACHE_NUM_WAYS)(i=>Cat(ic_tag_data_raw(i)(25,21), ic_tag_data_raw(i)(31-ICACHE_TAG_LO,0)))
-  else VecInit.tabulate(ICACHE_NUM_WAYS)(i=>Cat(ic_tag_data_raw(i)(21), ic_tag_data_raw(i)(31-ICACHE_TAG_LO,0)))
-
-  val ic_tag_corrected_ecc_unc = Wire(Vec(ICACHE_NUM_WAYS, UInt(7.W)))
-  val ic_tag_corrected_data_unc = Wire(Vec(ICACHE_NUM_WAYS, UInt(32.W)))
-  val ic_tag_single_ecc_error = Wire(Vec(ICACHE_NUM_WAYS, UInt(1.W)))
-  val ic_tag_double_ecc_error = Wire(Vec(ICACHE_NUM_WAYS, UInt(1.W)))
-  for(i<- 0 until ICACHE_NUM_WAYS){
-    val decoded_ecc = if(ICACHE_ECC) rvecc_decode(~io.dec_tlu_core_ecc_disable & ic_rd_en_ff, Cat(0.U(11.W),ic_tag_data_raw(i)(20,0)), Cat(0.U(2.W),ic_tag_data_raw(i)(25,21)), 1.U)
-    else (0.U, 0.U, 0.U, 0.U)
-    ic_tag_corrected_ecc_unc(i) := decoded_ecc._1
-    ic_tag_corrected_data_unc(i) := decoded_ecc._2
-    ic_tag_single_ecc_error(i):= decoded_ecc._3
-    ic_tag_double_ecc_error(i) := decoded_ecc._4
-  }
-
-  val ic_tag_way_perr = if(ICACHE_ECC)ic_tag_single_ecc_error.reverse.reduce(Cat(_,_)) | ic_tag_double_ecc_error.reverse.reduce(Cat(_,_))
-  else (0 until ICACHE_NUM_WAYS).map(i=>rveven_paritycheck(ic_tag_data_raw(i)(31-ICACHE_TAG_LO,0), ic_tag_data_raw(i)(21))).reverse.reduce(Cat(_,_))
-
-  io.ictag_debug_rd_data := (0 until ICACHE_NUM_WAYS).map(i=> if(ICACHE_ECC) Fill(26, ic_debug_rd_way_en_ff(i))&ic_tag_data_raw(i) else Cat(0.U(4.W), Fill(22, ic_debug_rd_way_en_ff(i)),ic_tag_data_raw(i)(21,0))).reduce(_|_)
-  io.ic_rd_hit := (0 until ICACHE_NUM_WAYS).map(i=>((w_tout(i)(31-ICACHE_TAG_LO,0)===ic_rw_addr_ff)&io.ic_tag_valid(i)).asUInt()).reverse.reduce(Cat(_,_))
-  io.ic_tag_perr := (ic_tag_way_perr & io.ic_tag_valid).orR()
-}
+      output logic [ICACHE_NUM_WAYS-1:0]         ic_rd_hit,   // ic_rd_hit[3:0]
+      output logic                                  ic_tag_perr, // Tag Parity error
+      input  logic                                  scan_mode
+      ) ;
 
 
-////////////////////////////////////////////////
+   EL2_IC_TAG #(
+   .ICACHE_BEAT_BITS(ICACHE_BEAT_BITS),
+   .ICACHE_NUM_WAYS(ICACHE_NUM_WAYS),
+   .ICACHE_BANK_BITS(ICACHE_BANK_BITS),
+   .ICACHE_BEAT_ADDR_HI(ICACHE_BEAT_ADDR_HI),
+   .ICACHE_BANKS_WAY(ICACHE_BANKS_WAY),
+   .ICACHE_INDEX_HI(ICACHE_INDEX_HI),
+   .ICACHE_BANK_HI(ICACHE_BANK_HI),
+   .ICACHE_BANK_LO(ICACHE_BANK_LO),
+   .ICACHE_TAG_LO(ICACHE_TAG_LO),
+   .ICACHE_DATA_INDEX_LO(ICACHE_DATA_INDEX_LO),
+   .ICACHE_ECC(ICACHE_ECC),
+   .ICACHE_TAG_DEPTH(ICACHE_TAG_DEPTH),
+   .ICACHE_WAYPACK(ICACHE_WAYPACK),
+   .ICACHE_TAG_INDEX_LO(ICACHE_TAG_INDEX_LO),
+   .ICACHE_DATA_DEPTH(ICACHE_DATA_DEPTH)) ic_tag_inst
+          (
+           .*,
+           .ic_wr_en     (ic_wr_en[ICACHE_NUM_WAYS-1:0]),
+           .ic_debug_addr(ic_debug_addr[ICACHE_INDEX_HI:3]),
+           .ic_rw_addr   (ic_rw_addr[31:3])
+           ) ;
 
-class EL2_IC_DATA extends Module with el2_lib {
-  val io = IO (new Bundle{
-    val clk_override        = Input(Bool())
-    val ic_rw_addr          = Input(UInt(ICACHE_INDEX_HI.W))
-    val ic_wr_en            = Input(UInt(ICACHE_NUM_WAYS.W))
-    val ic_rd_en            = Input(Bool())
-    val ic_wr_data          = Input(Vec(ICACHE_NUM_WAYS, UInt(71.W)))
-    val ic_rd_data          = Output(UInt(64.W))
-    val ic_debug_wr_data    = Input(UInt(71.W))
-    val ic_debug_rd_data    = Output(UInt(71.W))
-    val ic_parerr           = Output(UInt(ICACHE_NUM_WAYS.W))
-    val ic_eccerr           = Output(UInt(ICACHE_BANKS_WAY.W))
-    val ic_debug_addr       = Input(UInt((ICACHE_INDEX_HI-3).W))
-    val ic_debug_rd_en      = Input(Bool())
-    val ic_debug_wr_en      = Input(Bool())
-    val ic_debug_tag_array  = Input(Bool())
-    val ic_debug_way        = Input(UInt(ICACHE_NUM_WAYS.W))
-    val ic_premux_data      = Input(UInt(64.W))
-    val ic_sel_premux_data  = Input(Bool())
-    val ic_rd_hit           = Input(UInt(ICACHE_NUM_WAYS.W))
-    val scan_mode           = Input(UInt(1.W))
-  })
+   EL2_IC_DATA #(
+   .ICACHE_BEAT_BITS(ICACHE_BEAT_BITS),
+   .ICACHE_NUM_WAYS(ICACHE_NUM_WAYS),
+   .ICACHE_BANK_BITS(ICACHE_BANK_BITS),
+   .ICACHE_BEAT_ADDR_HI(ICACHE_BEAT_ADDR_HI),
+   .ICACHE_BANKS_WAY(ICACHE_BANKS_WAY),
+   .ICACHE_INDEX_HI(ICACHE_INDEX_HI),
+   .ICACHE_BANK_HI(ICACHE_BANK_HI),
+   .ICACHE_BANK_LO(ICACHE_BANK_LO),
+   .ICACHE_TAG_LO(ICACHE_TAG_LO),
+   .ICACHE_DATA_INDEX_LO(ICACHE_DATA_INDEX_LO),
+   .ICACHE_ECC(ICACHE_ECC),
+   .ICACHE_TAG_DEPTH(ICACHE_TAG_DEPTH),
+   .ICACHE_WAYPACK(ICACHE_WAYPACK),
+   .ICACHE_TAG_INDEX_LO(ICACHE_TAG_INDEX_LO),
+   .ICACHE_DATA_DEPTH(ICACHE_DATA_DEPTH)) ic_data_inst
+          (
+           .*,
+           .ic_wr_en     (ic_wr_en[ICACHE_NUM_WAYS-1:0]),
+           .ic_debug_addr(ic_debug_addr[ICACHE_INDEX_HI:3]),
+           .ic_rw_addr   (ic_rw_addr[ICACHE_INDEX_HI:1])
+           ) ;
 
-  val ic_debug_rd_way_en = Fill(ICACHE_NUM_WAYS, io.ic_debug_rd_en & !io.ic_debug_tag_array) & io.ic_debug_way
-  val ic_debug_wr_way_en = Fill(ICACHE_NUM_WAYS, io.ic_debug_wr_en & !io.ic_debug_tag_array) & io.ic_debug_way
+ endmodule
 
-  val ic_bank_wr_data = Wire(Vec(ICACHE_BANKS_WAY,UInt(71.W)))
-  val ic_rd_en_with_debug = WireInit(Bool(), 0.U)
 
-  val ic_rw_addr_q = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en).asBool, Cat(io.ic_debug_addr,0.U(2.W)), io.ic_rw_addr)
+/////////////////////////////////////////////////
+////// ICACHE DATA MODULE    ////////////////////
+/////////////////////////////////////////////////
+module EL2_IC_DATA
+#(
+   parameter ICACHE_BEAT_BITS,
+   parameter ICACHE_NUM_WAYS,
+   parameter ICACHE_BANK_BITS,
+   parameter ICACHE_BEAT_ADDR_HI,
+   parameter ICACHE_BANKS_WAY,
+   parameter ICACHE_INDEX_HI,
+   parameter ICACHE_BANK_HI,
+   parameter ICACHE_BANK_LO,
+   parameter ICACHE_TAG_LO,
+   parameter ICACHE_DATA_INDEX_LO,
+   parameter ICACHE_ECC,
+   parameter ICACHE_TAG_DEPTH,
+   parameter ICACHE_WAYPACK,
+   parameter ICACHE_TAG_INDEX_LO,
+   parameter ICACHE_DATA_DEPTH )
+     (
+      input logic clk,
+      input logic rst_l,
+      input logic clk_override,
 
-  val ic_rw_addr_q_inc = ic_rw_addr_q(ICACHE_TAG_LO-2,ICACHE_DATA_INDEX_LO-1) + 1.U
-  val ic_b_sb_wren = (0 until ICACHE_NUM_WAYS).map(i=>
-    io.ic_wr_en | ic_debug_wr_way_en & Fill(ICACHE_NUM_WAYS, io.ic_debug_addr(ICACHE_BANK_HI-3,ICACHE_BANK_LO-3)===i.U))
-  val ic_debug_sel_sb = (0 until ICACHE_NUM_WAYS).map(i=> (io.ic_debug_addr(ICACHE_BANK_HI-3,ICACHE_BANK_LO-3)===i.U).asUInt).reverse.reduce(Cat(_,_))
-  val ic_sb_wr_data = (0 until ICACHE_NUM_WAYS).map(i=> Mux((ic_debug_sel_sb(i)&io.ic_debug_wr_en).asBool, io.ic_debug_wr_data, ic_bank_wr_data(i)))
-  val ic_b_rden = (0 until ICACHE_NUM_WAYS).map(i=>
-    (Mux1H(Seq(!ic_rw_addr_q(ICACHE_BANK_HI-1).asBool -> (i.U === 0.U),
-                            (ic_rw_addr_q(ICACHE_BANK_HI-1)).asBool -> ((ic_rw_addr_q(1,0)===3.U)&(i.U===0.U)),
-                             ic_rw_addr_q(ICACHE_BANK_HI-1).asBool -> (i.U === 1.U),
-                            (!ic_rw_addr_q(ICACHE_BANK_HI-1)).asBool -> ((ic_rw_addr_q(1,0)===3.U)&(i.U === 1.U)))) & ic_rd_en_with_debug).asUInt).reverse.reduce(Cat(_,_))
-  val ic_b_sb_rden = (0 until ic_b_rden.getWidth).map(i=>Fill(ICACHE_NUM_WAYS, ic_b_rden(i)))
-  val ic_bank_way_clken = (0 until ICACHE_BANKS_WAY).map(i=>(0 until ICACHE_NUM_WAYS).map(j=>
-    (ic_b_sb_rden(i)(j) | io.clk_override | ic_b_sb_wren(i)(j)).asUInt).reduce(Cat(_,_)))
+      input logic [ICACHE_INDEX_HI:1]  ic_rw_addr,
+      input logic [ICACHE_NUM_WAYS-1:0]ic_wr_en,
+      input logic                          ic_rd_en,           // Read enable
 
-  ic_rd_en_with_debug := io.ic_rd_en | io.ic_debug_rd_en & (!io.ic_wr_en.orR)
+      input  logic [ICACHE_BANKS_WAY-1:0][70:0]    ic_wr_data,         // Data to fill to the Icache. With ECC
+      output logic [63:0]                             ic_rd_data ,                                 // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
+      input  logic [70:0]                             ic_debug_wr_data,   // Debug wr cache.
+      output logic [70:0]                             ic_debug_rd_data ,  // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
+      output logic [ICACHE_BANKS_WAY-1:0] ic_parerr,
+      output logic [ICACHE_BANKS_WAY-1:0] ic_eccerr,    // ecc error per bank
+      input logic [ICACHE_INDEX_HI:3]     ic_debug_addr,     // Read/Write addresss to the Icache.
+      input logic                            ic_debug_rd_en,      // Icache debug rd
+      input logic                            ic_debug_wr_en,      // Icache debug wr
+      input logic                            ic_debug_tag_array,  // Debug tag array
+      input logic [ICACHE_NUM_WAYS-1:0]   ic_debug_way,        // Debug way. Rd or Wr.
+      input logic [63:0]                     ic_premux_data,      // Premux data to be muxed with each way of the Icache.
+      input logic                            ic_sel_premux_data,  // Select the pre_muxed data
 
-  val ic_rw_addr_wrap = ic_rw_addr_q(ICACHE_BANK_HI-1) & (ic_rw_addr_q(1,0) === 3.U) & ic_rd_en_with_debug & !(io.ic_wr_en.orR)
+      input logic [ICACHE_NUM_WAYS-1:0]ic_rd_hit,
+      input  logic                         scan_mode
 
-  val ic_rw_addr_bank_q = VecInit(Mux((!ic_rw_addr_wrap).asBool,ic_rw_addr_q(ICACHE_INDEX_HI-1,ICACHE_DATA_INDEX_LO-1),
-    Cat(ic_rw_addr_q(ICACHE_INDEX_HI-1, ICACHE_TAG_INDEX_LO-1) , ic_rw_addr_q_inc(ICACHE_TAG_INDEX_LO-2,ICACHE_DATA_INDEX_LO-1))),
-    ic_rw_addr_q(ICACHE_INDEX_HI-1,ICACHE_DATA_INDEX_LO-1))
+      ) ;
 
-  val ic_b_rden_ff = RegNext(ic_b_rden, 0.U)
-  val ic_rw_addr_ff = RegNext(ic_rw_addr_q(ICACHE_TAG_INDEX_LO-2,0), 0.U)
-  val ic_debug_rd_way_en_ff = RegNext(ic_debug_rd_way_en, 0.U)
-  val ic_debug_rd_en_ff = RegNext(io.ic_debug_rd_en, 0.U)
+   logic [ICACHE_TAG_INDEX_LO-1:1]                                             ic_rw_addr_ff;
+   logic [ICACHE_BANKS_WAY-1:0][ICACHE_NUM_WAYS-1:0]                        ic_b_sb_wren;    //bank x ways
+   logic [ICACHE_BANKS_WAY-1:0][ICACHE_NUM_WAYS-1:0]                        ic_b_sb_rden;    //bank x ways
+   logic [ICACHE_BANKS_WAY-1:0]                                                ic_b_rden;       //bank
+   logic [ICACHE_BANKS_WAY-1:0]                                                ic_b_rden_ff;    //bank
+   logic [ICACHE_BANKS_WAY-1:0]                                                ic_debug_sel_sb;
 
-  val ic_cacheline_wrap_ff = ic_rw_addr_ff(ICACHE_TAG_INDEX_LO-2,ICACHE_BANK_LO-1) === Fill(ICACHE_TAG_INDEX_LO-ICACHE_BANK_LO, 1.U)
+   logic [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0][70:0]                  wb_dout ;       //  ways x bank
+   logic [ICACHE_BANKS_WAY-1:0][70:0]                                          ic_sb_wr_data, ic_bank_wr_data, wb_dout_ecc_bank;
+   logic [ICACHE_NUM_WAYS-1:0] [141:0]                                         wb_dout_way_pre;
+   logic [ICACHE_NUM_WAYS-1:0] [63:0]                                          wb_dout_way, wb_dout_way_with_premux;
+   logic [141:0]                                                                  wb_dout_ecc;
 
-//////////////////////////////////////////// Memory stated
-  val (data_mem_word, tag_mem_word, ecc_offset, tag_word) = DATA_MEM_LINE
-  val wb_dout = Wire(Vec(ICACHE_BANKS_WAY,Vec(ICACHE_NUM_WAYS, UInt(data_mem_word.W))))
-  val data_mem = Mem(ICACHE_DATA_DEPTH, Vec(ICACHE_BANKS_WAY,Vec(ICACHE_NUM_WAYS, UInt(data_mem_word.W))))
-  for(i<-0 until ICACHE_NUM_WAYS; k<-0 until ICACHE_BANKS_WAY){
-    wb_dout(i)(k) := 0.U
-    val WE = if(ICACHE_WAYPACK) ic_b_sb_wren(k).orR else ic_b_sb_wren(k)(i)
-    val ME = if(ICACHE_WAYPACK) ic_bank_way_clken(k).orR else ic_bank_way_clken(k)(i)
-    when((ic_b_sb_wren(k)(i) & ic_bank_way_clken(k)(i)).asBool){
-      data_mem(ic_rw_addr_bank_q(k))(k)(i) := ic_sb_wr_data(k)
-    }.elsewhen((!ic_b_sb_wren(k)(i)&ic_bank_way_clken(k)(i)).asBool){
-      wb_dout(i)(k) := data_mem(ic_rw_addr_bank_q(k))(k)(i)
-    }
-  }
-  val ic_rd_hit_q = Mux(ic_debug_rd_en_ff.asBool, ic_debug_rd_way_en_ff, io.ic_rd_hit)
-  ic_bank_wr_data := (0 until ICACHE_BANKS_WAY).map(io.ic_wr_data(_))
+   logic [ICACHE_BANKS_WAY-1:0]                                                bank_check_en;
 
-  val wb_dout_way_pre = (0 until ICACHE_BANKS_WAY).map(i=>Cat(
-    Mux1H((0 until ICACHE_BANKS_WAY).map(j=>(ic_rw_addr_ff(ICACHE_BANK_HI-1, ICACHE_BANK_LO-1)===j.U).asBool->wb_dout(i)(j))),
-    Mux1H((0 until ICACHE_BANKS_WAY).map(j=>(ic_rw_addr_ff(ICACHE_BANK_HI-1, ICACHE_BANK_LO-1)===(j.U-1.U)).asBool->wb_dout(i)(j)))))
+   logic [ICACHE_BANKS_WAY-1:0][ICACHE_NUM_WAYS-1:0]                        ic_bank_way_clken;  // ;
+   logic [ICACHE_NUM_WAYS-1:0]                                                 ic_debug_rd_way_en;    // debug wr_way
+   logic [ICACHE_NUM_WAYS-1:0]                                                 ic_debug_rd_way_en_ff; // debug wr_way
+   logic [ICACHE_NUM_WAYS-1:0]                                                 ic_debug_wr_way_en;    // debug wr_way
+   logic [ICACHE_INDEX_HI:1]                                                   ic_rw_addr_q;
+   logic [ICACHE_BANKS_WAY-1:0] [ICACHE_INDEX_HI : ICACHE_DATA_INDEX_LO] ic_rw_addr_bank_q;
+   logic [ICACHE_TAG_LO-1 : ICACHE_DATA_INDEX_LO]                           ic_rw_addr_q_inc;
+   logic [ICACHE_NUM_WAYS-1:0]                                                 ic_rd_hit_q;
 
-  val wb_dout_way = (0 until ICACHE_NUM_WAYS).map(i=>Mux1H(Seq((ic_rw_addr_ff(1,0)===0.U).asBool->wb_dout_way_pre(i)(63,0),
-    (ic_rw_addr_ff(1,0)===1.U).asBool->Cat(wb_dout_way_pre(i)(data_mem_word+15,data_mem_word),wb_dout_way_pre(i)(63,16)),
-    (ic_rw_addr_ff(1,0)===2.U).asBool->Cat(wb_dout_way_pre(i)(data_mem_word+31,data_mem_word),wb_dout_way_pre(i)(63,32)),
-    (ic_rw_addr_ff(1,0)===3.U).asBool->Cat(wb_dout_way_pre(i)(data_mem_word+47,data_mem_word),wb_dout_way_pre(i)(63,48)))))
+   logic                                                                          ic_rd_en_with_debug;
+   logic                                                                          ic_rw_addr_wrap, ic_cacheline_wrap_ff;
+   logic                                                                          ic_debug_rd_en_ff;
 
-  val wb_dout_way_with_premux = (0 until ICACHE_NUM_WAYS).map(i=>Mux(io.ic_sel_premux_data.asBool,io.ic_premux_data, wb_dout_way(i)))
 
-  io.ic_rd_data := Mux1H((0 until ICACHE_NUM_WAYS).map(i=>(ic_rd_hit_q(i) | io.ic_sel_premux_data).asBool->wb_dout_way_with_premux(i)))
-  io.ic_debug_rd_data := Mux1H((0 until ICACHE_NUM_WAYS).map(i=>ic_rd_hit_q(i).asBool->wb_dout_way_pre(i)(70,0)))
-  val wb_dout_ecc = Mux1H((0 until ICACHE_NUM_WAYS).map(i=>ic_rd_hit_q(i).asBool->wb_dout_way_pre(i)))
+//-----------------------------------------------------------
+// ----------- Logic section starts here --------------------
+//-----------------------------------------------------------
+   assign  ic_debug_rd_way_en[ICACHE_NUM_WAYS-1:0] =  {ICACHE_NUM_WAYS{ic_debug_rd_en & ~ic_debug_tag_array}} & ic_debug_way[ICACHE_NUM_WAYS-1:0] ;
+   assign  ic_debug_wr_way_en[ICACHE_NUM_WAYS-1:0] =  {ICACHE_NUM_WAYS{ic_debug_wr_en & ~ic_debug_tag_array}} & ic_debug_way[ICACHE_NUM_WAYS-1:0] ;
 
-  val bank_check_en = for(i<-0 until ICACHE_BANKS_WAY) yield io.ic_rd_hit.orR & ((i.U==0.U).asBool | (!ic_cacheline_wrap_ff & (ic_b_rden_ff(ICACHE_BANKS_WAY-1,0) === Fill(ICACHE_BANKS_WAY,1.U))))
-  val wb_dout_ecc_bank = (0 until ICACHE_BANKS_WAY).map(i=> wb_dout_ecc((data_mem_word*i)+data_mem_word-1,data_mem_word*i))
+   always_comb begin : clkens
+      ic_bank_way_clken  = '0;
 
-  // TODO: RVECC
-  io.ic_eccerr := (0 until ICACHE_NUM_WAYS).map(i=>rvecc_decode_64(bank_check_en(i),wb_dout_ecc_bank(i)(63,0),wb_dout_ecc_bank(i)(70,64)).asUInt).reverse.reduce(Cat(_,_))
-  val ic_parerr_bank = Wire(Vec(ICACHE_NUM_WAYS, Vec(4, UInt(1.W))))
-  for(i<-0 until ICACHE_NUM_WAYS; j<-0 until 4){ic_parerr_bank(i)(j):=rveven_paritycheck(wb_dout_ecc_bank(i)(16*(j+1)-1, 16*j), wb_dout_ecc_bank(i)(64+j))}
+      for ( int i=0; i<ICACHE_BANKS_WAY; i++) begin: wr_ens
+       ic_b_sb_wren[i]        =  ic_wr_en[ICACHE_NUM_WAYS-1:0]  |
+                                       (ic_debug_wr_way_en[ICACHE_NUM_WAYS-1:0] & {ICACHE_NUM_WAYS{ic_debug_addr[ICACHE_BANK_HI : ICACHE_BANK_LO] == i}}) ;
+       ic_debug_sel_sb[i]     = (ic_debug_addr[ICACHE_BANK_HI : ICACHE_BANK_LO] == i );
+       ic_sb_wr_data[i]       = (ic_debug_sel_sb[i] & ic_debug_wr_en) ? ic_debug_wr_data : ic_bank_wr_data[i] ;
+       ic_b_rden[i]           =  ic_rd_en_with_debug & ( ( ~ic_rw_addr_q[ICACHE_BANK_HI] & (i==0)) |
+                                                         (( ic_rw_addr_q[ICACHE_BANK_HI] & ic_rw_addr_q[2:1] == 2'b11) & (i==0)) |
+                                                         (  ic_rw_addr_q[ICACHE_BANK_HI] & (i==1)) |
+                                                         ((~ic_rw_addr_q[ICACHE_BANK_HI] & ic_rw_addr_q[2:1] == 2'b11) & (i==1)) ) ;
 
-  io.ic_parerr := Cat(ic_parerr_bank(0).reduce(_|_) & bank_check_en(0), ic_parerr_bank(1).reduce(_|_) & bank_check_en(1))
-}
 
-object ifu_ic extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_ic_mem()))
-}
+
+       ic_b_sb_rden[i]        =  {ICACHE_NUM_WAYS{ic_b_rden[i]}}   ;
+
+       for ( int j=0; j<ICACHE_NUM_WAYS; j++) begin: way_clkens
+         ic_bank_way_clken[i][j] |= ic_b_sb_rden[i][j] | clk_override | ic_b_sb_wren[i][j];
+       end
+     end // block: wr_ens
+   end // block: clkens
+
+// bank read enables
+  assign ic_rd_en_with_debug                          = (ic_rd_en   | ic_debug_rd_en ) & ~(|ic_wr_en);
+  assign ic_rw_addr_q[ICACHE_INDEX_HI:1] = (ic_debug_rd_en | ic_debug_wr_en) ?
+                                              {ic_debug_addr[ICACHE_INDEX_HI:3],2'b0} :
+                                              ic_rw_addr[ICACHE_INDEX_HI:1] ;
+
+   assign ic_rw_addr_q_inc[ICACHE_TAG_LO-1:ICACHE_DATA_INDEX_LO] = ic_rw_addr_q[ICACHE_TAG_LO-1 : ICACHE_DATA_INDEX_LO] + 1 ;
+   assign ic_rw_addr_wrap                                        = ic_rw_addr_q[ICACHE_BANK_HI] & (ic_rw_addr_q[2:1] == 2'b11) & ic_rd_en_with_debug & ~(|ic_wr_en[ICACHE_NUM_WAYS-1:0]);
+   assign ic_cacheline_wrap_ff                                   = ic_rw_addr_ff[ICACHE_TAG_INDEX_LO-1:ICACHE_BANK_LO] == {(ICACHE_TAG_INDEX_LO - ICACHE_BANK_LO){1'b1}};
+
+
+   assign ic_rw_addr_bank_q[0] = ~ic_rw_addr_wrap ? ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO] : {ic_rw_addr_q[ICACHE_INDEX_HI: ICACHE_TAG_INDEX_LO] , ic_rw_addr_q_inc[ICACHE_TAG_INDEX_LO-1: ICACHE_DATA_INDEX_LO] } ;
+   assign ic_rw_addr_bank_q[1] = ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO];
+
+
+   rvdff #((ICACHE_BANKS_WAY )) rd_b_en_ff (.*,
+                    .din ({ic_b_rden[ICACHE_BANKS_WAY-1:0]}),
+                    .dout({ic_b_rden_ff[ICACHE_BANKS_WAY-1:0]})) ;
+
+
+   rvdff #((ICACHE_TAG_INDEX_LO - 1)) adr_ff (.*,
+                    .din ({ic_rw_addr_q[ICACHE_TAG_INDEX_LO-1:1]}),
+                    .dout({ic_rw_addr_ff[ICACHE_TAG_INDEX_LO-1:1]}));
+
+   rvdff #(1+ICACHE_NUM_WAYS) debug_rd_wy_ff (.*,
+                    .din ({ic_debug_rd_way_en[ICACHE_NUM_WAYS-1:0], ic_debug_rd_en}),
+                    .dout({ic_debug_rd_way_en_ff[ICACHE_NUM_WAYS-1:0], ic_debug_rd_en_ff}));
+
+ if (ICACHE_WAYPACK == 0 ) begin : PACKED_0
+   for (genvar i=0; i<32'(ICACHE_NUM_WAYS); i++) begin: WAYS
+      // rvclkhdr bank_way_c1_cgc  ( .en(ic_bank_way_clken[i]), .l1clk(ic_bank_way_clk[i]), .* );
+      for (genvar k=0; k<32'(ICACHE_BANKS_WAY); k++) begin: BANKS_WAY   // 16B subbank
+      if (ICACHE_ECC) begin : ECC1
+        if ($clog2(ICACHE_DATA_DEPTH) == 13 )   begin : size_8192
+           ram_8192x71 ic_bank_sb_way_data (
+                                     .CLK(clk),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][70:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k]),
+                                     .ME (ic_bank_way_clken[k][i])
+                                    );
+        end
+
+        else if ($clog2(ICACHE_DATA_DEPTH) == 12 )   begin : size_4096
+           ram_4096x71 ic_bank_sb_way_data (
+                                     .CLK(clk),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][70:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k]),
+                                     .ME (ic_bank_way_clken[k][i])
+                                    );
+        end
+
+        else if ($clog2(ICACHE_DATA_DEPTH) == 11 ) begin : size_2048
+           ram_2048x71 ic_bank_sb_way_data (
+                                     .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][70:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k]),
+                                     .CLK (clk)
+                                    );
+        end // if ($clog2(ICACHE_DATA_DEPTH) == 11 )
+
+        else if ( $clog2(ICACHE_DATA_DEPTH) == 10 ) begin : size_1024
+           ram_1024x71 ic_bank_sb_way_data (
+                                     .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][70:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k]),
+                                     .CLK (clk)
+                                    );
+        end // if ( $clog2(ICACHE_DATA_DEPTH) == 10 )
+
+         else if ( $clog2(ICACHE_DATA_DEPTH) == 9 ) begin : size_512
+           ram_512x71 ic_bank_sb_way_data ( .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][70:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k]),
+                                     .CLK (clk)
+                                    );
+         end // if ( $clog2(ICACHE_DATA_DEPTH) == 9 )
+
+         else if ( $clog2(ICACHE_DATA_DEPTH) == 8 ) begin : size_256
+           ram_256x71 ic_bank_sb_way_data ( .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][70:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k]),
+                                     .CLK (clk)
+                                    );
+         end // if ( $clog2(ICACHE_DATA_DEPTH) == 8 )
+
+         else if ( $clog2(ICACHE_DATA_DEPTH) == 7 ) begin : size_128
+           ram_128x71 ic_bank_sb_way_data ( .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][70:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k]),
+                                     .CLK (clk)
+                                    );
+         end // if ( $clog2(ICACHE_DATA_DEPTH) == 7 )
+
+         else  begin : size_64
+           ram_64x71 ic_bank_sb_way_data (
+                                     .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][70:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k]),
+                                     .CLK (clk)
+                                    );
+         end // block: icache_6
+      end // if (ICACHE_ECC)
+
+     else  begin  : ECC0
+        if ($clog2(ICACHE_DATA_DEPTH) == 13 ) begin : size_8192
+           ram_8192x68 ic_bank_sb_way_data (
+                                     .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][67:0] ),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k][67:0]),
+                                     .CLK (clk)
+                                    );
+        end // if ($clog2(ICACHE_DATA_DEPTH) == 13 )
+
+        else if ($clog2(ICACHE_DATA_DEPTH) == 12 ) begin : size_4096
+           ram_4096x68 ic_bank_sb_way_data (
+                                     .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][67:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k][67:0]),
+                                     .CLK (clk)
+                                    );
+        end // if ($clog2(ICACHE_DATA_DEPTH) == 12 )
+
+        else if ($clog2(ICACHE_DATA_DEPTH) == 11 ) begin : size_2048
+           ram_2048x68 ic_bank_sb_way_data ( .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][67:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k][67:0]),
+                                     .CLK (clk)
+                                    );
+        end // if ($clog2(ICACHE_DATA_DEPTH) == 11 )
+
+        else if ( $clog2(ICACHE_DATA_DEPTH) == 10 ) begin : size_1024
+           ram_1024x68 ic_bank_sb_way_data (.ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][67:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k][67:0]),
+                                     .CLK (clk)
+                                    );
+        end // if ( $clog2(ICACHE_DATA_DEPTH) == 10 )
+
+
+         else if ( $clog2(ICACHE_DATA_DEPTH) == 9 ) begin : size_512
+           ram_512x68 ic_bank_sb_way_data ( .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][67:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k][67:0]),
+                                     .CLK (clk)
+                                    );
+         end
+         else if ( $clog2(ICACHE_DATA_DEPTH) == 8 ) begin : size_256
+           ram_256x68 ic_bank_sb_way_data ( .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][67:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k][67:0]),
+                                     .CLK (clk)
+                                    );
+         end
+         else if ( $clog2(ICACHE_DATA_DEPTH) == 7 ) begin : size_128
+           ram_128x68 ic_bank_sb_way_data ( .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][67:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k][67:0]),
+                                     .CLK (clk)
+                                    );
+         end // if ( $clog2(ICACHE_DATA_DEPTH) == 7 )
+
+         else  begin : size_64
+           ram_64x68 ic_bank_sb_way_data (
+                                     .ME(ic_bank_way_clken[k][i]),
+                                     .WE (ic_b_sb_wren[k][i]),
+                                     .D  (ic_sb_wr_data[k][67:0]),
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q  (wb_dout[i][k][67:0]),
+                                     .CLK (clk)
+                                    );
+         end // block: size_64
+      end // else: !if(ICACHE_ECC)
+      end // block: BANKS_WAY
+   end // block: WAYS
+
+ end // block: PACKED_0
+
+ // WAY PACKED
+ else begin : PACKED_1
+  for (genvar k=0; k<ICACHE_BANKS_WAY; k++) begin: BANKS_WAY   // 16B subbank
+     if (ICACHE_ECC) begin : ECC1
+        logic [ICACHE_BANKS_WAY-1:0] [(71*ICACHE_NUM_WAYS)-1 :0]   wb_packeddout, ic_b_sb_bit_en_vec;           // data and its bit enables
+        for (genvar i=0; i<ICACHE_NUM_WAYS; i++) begin: BITEN
+           assign ic_b_sb_bit_en_vec[k][(71*i)+70:71*i] = {71{ic_b_sb_wren[k][i]}};
+        end
+        if ($clog2(ICACHE_DATA_DEPTH) == 13 )   begin : size_8192
+           if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_8192x284 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+
+           else   begin : WAYS
+                             ram_be_8192x142 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_8192
+
+
+
+        else if ($clog2(ICACHE_DATA_DEPTH) == 12 )   begin : size_4096
+           if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_4096x284 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_4096x142 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_4096
+
+
+        else if ($clog2(ICACHE_DATA_DEPTH) == 11 ) begin : size_2048
+           if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_2048x284 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_2048x142 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_2048
+
+        else if ( $clog2(ICACHE_DATA_DEPTH) == 10 ) begin : size_1024
+                   if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_1024x284 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_1024x142 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_1024
+
+        else if ( $clog2(ICACHE_DATA_DEPTH) == 9 ) begin : size_512
+                   if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_512x284 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_512x142 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_512
+
+        else if ( $clog2(ICACHE_DATA_DEPTH) == 8 ) begin : size_256
+                   if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_256x284 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_256x142 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_256
+
+        else if ( $clog2(ICACHE_DATA_DEPTH) == 7 ) begin : size_128
+                   if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_128x284 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_128x142 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_128
+
+        else  begin : size_64
+                   if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_64x284 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_64x142 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 284 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][70:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_64
+
+
+       for (genvar i=0; i<ICACHE_NUM_WAYS; i++) begin: WAYS
+          assign wb_dout[i][k][70:0]  = wb_packeddout[k][(71*i)+70:71*i];
+       end : WAYS
+
+       end // if (ICACHE_ECC)
+
+
+     else  begin  : ECC0
+        logic [ICACHE_BANKS_WAY-1:0] [(68*ICACHE_NUM_WAYS)-1 :0]   wb_packeddout, ic_b_sb_bit_en_vec;           // data and its bit enables
+        for (genvar i=0; i<ICACHE_NUM_WAYS; i++) begin: BITEN
+           assign ic_b_sb_bit_en_vec[k][(68*i)+67:68*i] = {68{ic_b_sb_wren[k][i]}};
+        end
+        if ($clog2(ICACHE_DATA_DEPTH) == 13 )   begin : size_8192
+           if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_8192x272 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                             ram_be_8192x136 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_8192
+
+
+
+        else if ($clog2(ICACHE_DATA_DEPTH) == 12 )   begin : size_4096
+           if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_4096x272 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_4096x136 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_4096
+
+
+        else if ($clog2(ICACHE_DATA_DEPTH) == 11 ) begin : size_2048
+           if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_2048x272 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_2048x136 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_2048
+
+        else if ( $clog2(ICACHE_DATA_DEPTH) == 10 ) begin : size_1024
+                   if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_1024x272 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_1024x136 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_1024
+
+        else if ( $clog2(ICACHE_DATA_DEPTH) == 9 ) begin : size_512
+                   if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_512x272 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_512x136 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_512
+
+        else if ( $clog2(ICACHE_DATA_DEPTH) == 8 ) begin : size_256
+                   if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_256x272 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_256x136 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_256
+
+        else if ( $clog2(ICACHE_DATA_DEPTH) == 7 ) begin : size_128
+                   if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_128x272 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_128x136 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_128
+
+        else  begin : size_64
+                   if (ICACHE_NUM_WAYS == 4) begin : WAYS
+                     ram_be_64x272 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+           else   begin : WAYS
+                     ram_be_64x136 ic_bank_sb_way_data (
+                                     .CLK   (clk),
+                                     .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank
+                                     .WEM   (ic_b_sb_bit_en_vec[k]),                                               // 272 bits of bit enables
+                                     .D     ({ICACHE_NUM_WAYS{ic_sb_wr_data[k][67:0]}}),
+                                     .ADR   (ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),
+                                     .Q     (wb_packeddout[k]),
+                                     .ME    (|ic_bank_way_clken[k])
+                                    );
+           end // block: WAYS
+        end // block: size_64
+
+       for (genvar i=0; i<ICACHE_NUM_WAYS; i++) begin: WAYS
+          assign wb_dout[i][k][67:0]  = wb_packeddout[k][(68*i)+67:68*i];
+       end
+     end // block: ECC0
+     end // block: BANKS_WAY
+ end // block: PACKED_1
+
+
+   assign ic_rd_hit_q[ICACHE_NUM_WAYS-1:0] = ic_debug_rd_en_ff ? ic_debug_rd_way_en_ff[ICACHE_NUM_WAYS-1:0] : ic_rd_hit[ICACHE_NUM_WAYS-1:0] ;
+
+
+ if ( ICACHE_ECC ) begin : ECC1_MUX
+
+   assign ic_bank_wr_data[1] = ic_wr_data[1][70:0];
+   assign ic_bank_wr_data[0] = ic_wr_data[0][70:0];
+
+    always_comb begin : rd_mux
+      wb_dout_way_pre[ICACHE_NUM_WAYS-1:0] = '0;
+
+      for ( int i=0; i<ICACHE_NUM_WAYS; i++) begin : num_ways
+        for ( int j=0; j<ICACHE_BANKS_WAY; j++) begin : banks
+         wb_dout_way_pre[i][70:0]      |=  ({71{(ic_rw_addr_ff[ICACHE_BANK_HI : ICACHE_BANK_LO] == (ICACHE_BANK_BITS)'(j))}}   &  wb_dout[i][j]);
+         wb_dout_way_pre[i][141 : 71]  |=  ({71{(ic_rw_addr_ff[ICACHE_BANK_HI : ICACHE_BANK_LO] == (ICACHE_BANK_BITS)'(j-1))}} &  wb_dout[i][j]);
+        end
+      end
+    end
+
+    for ( genvar i=0; i<32'(ICACHE_NUM_WAYS); i++) begin : num_ways_mux1
+      assign wb_dout_way[i][63:0] = (ic_rw_addr_ff[2:1] == 2'b00) ? wb_dout_way_pre[i][63:0]   :
+                                    (ic_rw_addr_ff[2:1] == 2'b01) ?{wb_dout_way_pre[i][86:71], wb_dout_way_pre[i][63:16]} :
+                                    (ic_rw_addr_ff[2:1] == 2'b10) ?{wb_dout_way_pre[i][102:71],wb_dout_way_pre[i][63:32]} :
+                                                                   {wb_dout_way_pre[i][119:71],wb_dout_way_pre[i][63:48]};
+
+      assign wb_dout_way_with_premux[i][63:0]  =  ic_sel_premux_data ? ic_premux_data[63:0] : wb_dout_way[i][63:0] ;
+   end
+
+   always_comb begin : rd_out
+      ic_debug_rd_data[70:0]     = '0;
+      ic_rd_data[63:0]           = '0;
+      wb_dout_ecc[141:0]         = '0;
+      for ( int i=0; i<32'(ICACHE_NUM_WAYS); i++) begin : num_ways_mux2
+         ic_rd_data[63:0]       |= ({64{ic_rd_hit_q[i] | ic_sel_premux_data}}) &  wb_dout_way_with_premux[i][63:0];
+         ic_debug_rd_data[70:0] |= ({71{ic_rd_hit_q[i]}}) & wb_dout_way_pre[i][70:0];
+         wb_dout_ecc[141:0]     |= {142{ic_rd_hit_q[i]}}  & wb_dout_way_pre[i];
+      end
+   end
+
+
+ for (genvar i=0; i < 32'(ICACHE_BANKS_WAY) ; i++) begin : ic_ecc_error
+    assign bank_check_en[i]    = |ic_rd_hit[ICACHE_NUM_WAYS-1:0] & ((i==0) | (~ic_cacheline_wrap_ff & (ic_b_rden_ff[ICACHE_BANKS_WAY-1:0] == {ICACHE_BANKS_WAY{1'b1}})));  // always check the lower address bank, and drop the upper address bank on a CL wrap
+    assign wb_dout_ecc_bank[i] = wb_dout_ecc[(71*i)+70:(71*i)];
+
+   rvecc_decode_64  ecc_decode_64 (
+                           .en               (bank_check_en[i]),
+                           .din              (wb_dout_ecc_bank[i][63 : 0]),                  // [134:71],  [63:0]
+                           .ecc_in           (wb_dout_ecc_bank[i][70 : 64]),               // [141:135] [70:64]
+                           .ecc_error        (ic_eccerr[i]));
+
+   // or the sb and db error detects into 1 signal called aligndataperr[i] where i corresponds to 2B position
+  assign  ic_parerr[i]  = '0 ;
+  end // block: ic_ecc_error
+
+end // if ( ICACHE_ECC )
+
+else  begin : ECC0_MUX
+   assign ic_bank_wr_data[1][67:0] = ic_wr_data[1][67:0];
+   assign ic_bank_wr_data[0][67:0] = ic_wr_data[0][67:0];
+
+   always_comb begin : rd_mux
+      wb_dout_way_pre[ICACHE_NUM_WAYS-1:0] = '0;
+
+   for ( int i=0; i<ICACHE_NUM_WAYS; i++) begin : num_ways
+     for ( int j=0; j<ICACHE_BANKS_WAY; j++) begin : banks
+         wb_dout_way_pre[i][67:0]         |=  ({68{(ic_rw_addr_ff[ICACHE_BANK_HI : ICACHE_BANK_LO] == (ICACHE_BANK_BITS)'(j))}}   &  wb_dout[i][j]);
+         wb_dout_way_pre[i][135 : 68]     |=  ({68{(ic_rw_addr_ff[ICACHE_BANK_HI : ICACHE_BANK_LO] == (ICACHE_BANK_BITS)'(j-1))}} &  wb_dout[i][j]);
+      end
+     end
+   end
+   // When we straddle the banks like this - the ECC we capture is not correct ??
+   for ( genvar i=0; i<ICACHE_NUM_WAYS; i++) begin : num_ways_mux1
+      assign wb_dout_way[i][63:0] = (ic_rw_addr_ff[2:1] == 2'b00) ? wb_dout_way_pre[i][63:0]   :
+                                    (ic_rw_addr_ff[2:1] == 2'b01) ?{wb_dout_way_pre[i][83:68],  wb_dout_way_pre[i][63:16]} :
+                                    (ic_rw_addr_ff[2:1] == 2'b10) ?{wb_dout_way_pre[i][99:68],  wb_dout_way_pre[i][63:32]} :
+                                                                   {wb_dout_way_pre[i][115:68], wb_dout_way_pre[i][63:48]};
+
+      assign wb_dout_way_with_premux[i][63:0]      =  ic_sel_premux_data ? ic_premux_data[63:0]  : wb_dout_way[i][63:0] ;
+   end
+
+   always_comb begin : rd_out
+      ic_rd_data[63:0]   = '0;
+      ic_debug_rd_data[70:0]   = '0;
+      wb_dout_ecc[135:0] = '0;
+
+      for ( int i=0; i<ICACHE_NUM_WAYS; i++) begin : num_ways_mux2
+         ic_rd_data[63:0]   |= ({64{ic_rd_hit_q[i] | ic_sel_premux_data}} &  wb_dout_way_with_premux[i][63:0]);
+         ic_debug_rd_data[70:0] |= ({71{ic_rd_hit_q[i]}}) & {4'b0,wb_dout_way_pre[i][67:0]};
+         wb_dout_ecc[135:0] |= {136{ic_rd_hit_q[i]}}  & wb_dout_way_pre[i];
+      end
+   end
+
+   assign wb_dout_ecc_bank[0] =  wb_dout_ecc[67:0];
+   assign wb_dout_ecc_bank[1] =  wb_dout_ecc[135:68];
+
+   logic [ICACHE_BANKS_WAY-1:0][3:0] ic_parerr_bank;
+
+  for (genvar i=0; i < ICACHE_BANKS_WAY ; i++) begin : ic_par_error
+    assign bank_check_en[i]    = |ic_rd_hit[ICACHE_NUM_WAYS-1:0] & ((i==0) | (~ic_cacheline_wrap_ff & (ic_b_rden_ff[ICACHE_BANKS_WAY-1:0] == {ICACHE_BANKS_WAY{1'b1}})));  // always check the lower address bank, and drop the upper address bank on a CL wrap
+     for (genvar j=0; j<4; j++)  begin : parity
+      rveven_paritycheck pchk (
+                           .data_in   (wb_dout_ecc_bank[i][16*(j+1)-1: 16*j]),
+                           .parity_in (wb_dout_ecc_bank[i][64+j]),
+                           .parity_err(ic_parerr_bank[i][j] )
+                           );
+        end
+     assign ic_eccerr [i] = '0 ;
+  end
+
+     assign ic_parerr[1] = (|ic_parerr_bank[1][3:0]) & bank_check_en[1];
+     assign ic_parerr[0] = (|ic_parerr_bank[0][3:0]) & bank_check_en[0];
+
+end // else: !if( ICACHE_ECC )
+
+
+endmodule // EL2_IC_DATA
+
+//=============================================================================================================================================================
+///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ END OF IC DATA MODULE \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//=============================================================================================================================================================
+
+/////////////////////////////////////////////////
+////// ICACHE TAG MODULE     ////////////////////
+/////////////////////////////////////////////////
+module EL2_IC_TAG
+ #(
+   parameter ICACHE_BEAT_BITS,
+   parameter ICACHE_NUM_WAYS,
+   parameter ICACHE_BANK_BITS,
+   parameter ICACHE_BEAT_ADDR_HI,
+   parameter ICACHE_BANKS_WAY,
+   parameter ICACHE_INDEX_HI,
+   parameter ICACHE_BANK_HI,
+   parameter ICACHE_BANK_LO,
+   parameter ICACHE_TAG_LO,
+   parameter ICACHE_DATA_INDEX_LO,
+   parameter ICACHE_ECC,
+   parameter ICACHE_TAG_DEPTH,
+   parameter ICACHE_WAYPACK,
+   parameter ICACHE_TAG_INDEX_LO,
+   parameter ICACHE_DATA_DEPTH )
+     (
+      input logic                                                   clk,
+      input logic                                                   rst_l,
+      input logic                                                   clk_override,
+      input logic                                                   dec_tlu_core_ecc_disable,
+
+      input logic [31:3]                                            ic_rw_addr,
+
+      input logic [ICACHE_NUM_WAYS-1:0]                         ic_wr_en,             // way
+      input logic [ICACHE_NUM_WAYS-1:0]                         ic_tag_valid,
+      input logic                                                  ic_rd_en,
+
+      input logic [ICACHE_INDEX_HI:3]                           ic_debug_addr,        // Read/Write addresss to the Icache.
+      input logic                                                  ic_debug_rd_en,       // Icache debug rd
+      input logic                                                  ic_debug_wr_en,       // Icache debug wr
+      input logic                                                  ic_debug_tag_array,   // Debug tag array
+      input logic [ICACHE_NUM_WAYS-1:0]                         ic_debug_way,         // Debug way. Rd or Wr.
+
+      output logic [25:0]                                          ictag_debug_rd_data,
+      input  logic [70:0]                                          ic_debug_wr_data,     // Debug wr cache.
+
+      output logic [ICACHE_NUM_WAYS-1:0]                        ic_rd_hit,
+      output logic                                                 ic_tag_perr,
+      input  logic                                                 scan_mode
+   ) ;
+
+
+   logic [ICACHE_NUM_WAYS-1:0] [25:0]                           ic_tag_data_raw;
+   logic [ICACHE_NUM_WAYS-1:0] [36:ICACHE_TAG_LO]            w_tout;
+   logic [25:0]                                                    ic_tag_wr_data ;
+   logic [ICACHE_NUM_WAYS-1:0] [31:0]                           ic_tag_corrected_data_unc;
+   logic [ICACHE_NUM_WAYS-1:0] [06:0]                           ic_tag_corrected_ecc_unc;
+   logic [ICACHE_NUM_WAYS-1:0]                                  ic_tag_single_ecc_error;
+   logic [ICACHE_NUM_WAYS-1:0]                                  ic_tag_double_ecc_error;
+   logic [6:0]                                                     ic_tag_ecc;
+
+   logic [ICACHE_NUM_WAYS-1:0]                                  ic_tag_way_perr ;
+   logic [ICACHE_NUM_WAYS-1:0]                                  ic_debug_rd_way_en ;
+   logic [ICACHE_NUM_WAYS-1:0]                                  ic_debug_rd_way_en_ff ;
+
+   logic [ICACHE_INDEX_HI: ICACHE_TAG_INDEX_LO]              ic_rw_addr_q;
+   logic [31:ICACHE_TAG_LO]                                     ic_rw_addr_ff;
+   logic [ICACHE_NUM_WAYS-1:0]                                  ic_tag_wren;          // way
+   logic [ICACHE_NUM_WAYS-1:0]                                  ic_tag_wren_q;        // way
+   logic [ICACHE_NUM_WAYS-1:0]                                  ic_tag_clken;
+   logic [ICACHE_NUM_WAYS-1:0]                                  ic_debug_wr_way_en;   // debug wr_way
+   logic                                                           ic_rd_en_ff;
+   logic                                                           ic_tag_parity;
+
+   assign  ic_tag_wren [ICACHE_NUM_WAYS-1:0]  = ic_wr_en[ICACHE_NUM_WAYS-1:0] & {ICACHE_NUM_WAYS{(ic_rw_addr[ICACHE_BEAT_ADDR_HI:4] == {ICACHE_BEAT_BITS-1{1'b1}})}} ;
+   assign  ic_tag_clken[ICACHE_NUM_WAYS-1:0]  = {ICACHE_NUM_WAYS{ic_rd_en | clk_override}} | ic_wr_en[ICACHE_NUM_WAYS-1:0] | ic_debug_wr_way_en[ICACHE_NUM_WAYS-1:0] | ic_debug_rd_way_en[ICACHE_NUM_WAYS-1:0];
+
+   rvdff #(1) rd_en_ff (.*,
+                    .din (ic_rd_en),
+                    .dout(ic_rd_en_ff)) ;
+
+
+   rvdff #(32-ICACHE_TAG_LO) adr_ff (.*,
+                    .din ({ic_rw_addr[31:ICACHE_TAG_LO]}),
+                    .dout({ic_rw_addr_ff[31:ICACHE_TAG_LO]}));
+
+   localparam PAD_BITS = 21 - (32 - ICACHE_TAG_LO);  // sizing for a max tag width.
+
+   // tags
+   assign  ic_debug_rd_way_en[ICACHE_NUM_WAYS-1:0] =  {ICACHE_NUM_WAYS{ic_debug_rd_en & ic_debug_tag_array}} & ic_debug_way[ICACHE_NUM_WAYS-1:0] ;
+   assign  ic_debug_wr_way_en[ICACHE_NUM_WAYS-1:0] =  {ICACHE_NUM_WAYS{ic_debug_wr_en & ic_debug_tag_array}} & ic_debug_way[ICACHE_NUM_WAYS-1:0] ;
+
+   assign  ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]  =  ic_tag_wren[ICACHE_NUM_WAYS-1:0]          |
+                                  ic_debug_wr_way_en[ICACHE_NUM_WAYS-1:0]   ;
+
+if (ICACHE_TAG_LO == 11) begin: SMALLEST
+ if (ICACHE_ECC) begin : ECC1_W
+           rvecc_encode  tag_ecc_encode (
+                                  .din    ({{ICACHE_TAG_LO{1'b0}}, ic_rw_addr[31:ICACHE_TAG_LO]}),
+                                  .ecc_out({ ic_tag_ecc[6:0]}));
+
+   assign  ic_tag_wr_data[25:0] = (ic_debug_wr_en & ic_debug_tag_array) ?
+                                  {ic_debug_wr_data[68:64], ic_debug_wr_data[31:11]} :
+                                  {ic_tag_ecc[4:0], ic_rw_addr[31:ICACHE_TAG_LO]} ;
+ end
+
+ else begin : ECC0_W
+           rveven_paritygen #(32-ICACHE_TAG_LO) pargen  (.data_in   (ic_rw_addr[31:ICACHE_TAG_LO]),
+                                                 .parity_out(ic_tag_parity));
+
+   assign  ic_tag_wr_data[21:0] = (ic_debug_wr_en & ic_debug_tag_array) ?
+                                  {ic_debug_wr_data[64], ic_debug_wr_data[31:11]} :
+                                  {ic_tag_parity, ic_rw_addr[31:ICACHE_TAG_LO]} ;
+ end // else: !if(ICACHE_ECC)
+
+end // block: SMALLEST
+
+
+else begin: OTHERS
+  if(ICACHE_ECC) begin :ECC1_W
+           rvecc_encode  tag_ecc_encode (
+                                  .din    ({{ICACHE_TAG_LO{1'b0}}, ic_rw_addr[31:ICACHE_TAG_LO]}),
+                                  .ecc_out({ ic_tag_ecc[6:0]}));
+
+   assign  ic_tag_wr_data[25:0] = (ic_debug_wr_en & ic_debug_tag_array) ?
+                                  {ic_debug_wr_data[68:64],ic_debug_wr_data[31:11]} :
+                                  {ic_tag_ecc[4:0], {PAD_BITS{1'b0}},ic_rw_addr[31:ICACHE_TAG_LO]} ;
+
+  end
+  else  begin :ECC0_W
+   logic   ic_tag_parity ;
+           rveven_paritygen #(32-ICACHE_TAG_LO) pargen  (.data_in   (ic_rw_addr[31:ICACHE_TAG_LO]),
+                                                 .parity_out(ic_tag_parity));
+   assign  ic_tag_wr_data[21:0] = (ic_debug_wr_en & ic_debug_tag_array) ?
+                                  {ic_debug_wr_data[64], ic_debug_wr_data[31:11]} :
+                                  {ic_tag_parity, {PAD_BITS{1'b0}},ic_rw_addr[31:ICACHE_TAG_LO]} ;
+  end // else: !if(ICACHE_ECC)
+
+end // block: OTHERS
+
+
+    assign ic_rw_addr_q[ICACHE_INDEX_HI: ICACHE_TAG_INDEX_LO] = (ic_debug_rd_en | ic_debug_wr_en) ?
+                                                ic_debug_addr[ICACHE_INDEX_HI: ICACHE_TAG_INDEX_LO] :
+                                                ic_rw_addr[ICACHE_INDEX_HI: ICACHE_TAG_INDEX_LO] ;
+
+   rvdff #(ICACHE_NUM_WAYS) tag_rd_wy_ff (.*,
+                    .din ({ic_debug_rd_way_en[ICACHE_NUM_WAYS-1:0]}),
+                    .dout({ic_debug_rd_way_en_ff[ICACHE_NUM_WAYS-1:0]}));
+
+ if (ICACHE_WAYPACK == 0 ) begin : PACKED_0
+
+   for (genvar i=0; i<32'(ICACHE_NUM_WAYS); i++) begin: WAYS
+
+   if (ICACHE_ECC) begin  : ECC1
+      if (ICACHE_TAG_DEPTH == 32)   begin : size_32
+         ram_32x26  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[25:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][25:0]),
+                                .CLK (clk)
+
+                               );
+      end // if (ICACHE_TAG_DEPTH == 32)
+      if (ICACHE_TAG_DEPTH == 64)   begin : size_64
+         ram_64x26  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[25:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][25:0]),
+                                .CLK (clk)
+
+                               );
+      end // if (ICACHE_TAG_DEPTH == 64)
+      if (ICACHE_TAG_DEPTH == 128)   begin : size_128
+         ram_128x26  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[25:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][25:0]),
+                                .CLK (clk)
+
+                               );
+      end // if (ICACHE_TAG_DEPTH == 128)
+       if (ICACHE_TAG_DEPTH == 256)   begin : size_256
+         ram_256x26  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[25:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][25:0]),
+                                .CLK (clk)
+
+                               );
+       end // if (ICACHE_TAG_DEPTH == 256)
+       if (ICACHE_TAG_DEPTH == 512)   begin : size_512
+         ram_512x26  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[25:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][25:0]),
+                                .CLK (clk)
+
+                               );
+       end // if (ICACHE_TAG_DEPTH == 512)
+       if (ICACHE_TAG_DEPTH == 1024)   begin : size_1024
+         ram_1024x26  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[25:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][25:0]),
+                                .CLK (clk)
+
+                               );
+       end // if (ICACHE_TAG_DEPTH == 1024)
+
+
+       if (ICACHE_TAG_DEPTH == 2048)   begin : size_2048
+         ram_2048x26  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[25:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][25:0]),
+                                .CLK (clk)
+
+                               );
+       end // if (ICACHE_TAG_DEPTH == 2048)
+
+       if (ICACHE_TAG_DEPTH == 4096)   begin  : size_4096
+         ram_4096x26  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[25:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][25:0]),
+                                .CLK (clk)
+
+                               );
+       end // if (ICACHE_TAG_DEPTH == 4096)
+
+         assign w_tout[i][31:ICACHE_TAG_LO] = ic_tag_data_raw[i][31-ICACHE_TAG_LO:0] ;
+         assign w_tout[i][36:32]              = ic_tag_data_raw[i][25:21] ;
+
+         rvecc_decode  ecc_decode (
+                           .en(~dec_tlu_core_ecc_disable & ic_rd_en_ff),
+                           .sed_ded ( 1'b1 ),    // 1 : means only detection
+                           .din({11'b0,ic_tag_data_raw[i][20:0]}),
+                           .ecc_in({2'b0, ic_tag_data_raw[i][25:21]}),
+                           .dout(ic_tag_corrected_data_unc[i][31:0]),
+                           .ecc_out(ic_tag_corrected_ecc_unc[i][6:0]),
+                           .single_ecc_error(ic_tag_single_ecc_error[i]),
+                           .double_ecc_error(ic_tag_double_ecc_error[i]));
+
+          assign ic_tag_way_perr[i]= ic_tag_single_ecc_error[i] | ic_tag_double_ecc_error[i]  ;
+      end
+      else  begin : ECC0
+          if (ICACHE_TAG_DEPTH == 32)   begin : size_32
+                   ram_32x22  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[21:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][21:0]),
+                                .CLK (clk)
+                               );
+          end // if (ICACHE_TAG_DEPTH == 32)
+          if (ICACHE_TAG_DEPTH == 64)   begin : size_64
+                   ram_64x22  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[21:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][21:0]),
+                                .CLK (clk)
+
+                               );
+          end // if (ICACHE_TAG_DEPTH == 64)
+           if (ICACHE_TAG_DEPTH == 128)   begin : size_128
+                   ram_128x22  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[21:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][21:0]),
+                                .CLK (clk)
+
+                               );
+           end // if (ICACHE_TAG_DEPTH == 128)
+           if (ICACHE_TAG_DEPTH == 256)   begin : size_256
+                   ram_256x22  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[21:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][21:0]),
+                                .CLK (clk)
+
+                               );
+           end // if (ICACHE_TAG_DEPTH == 256)
+           if (ICACHE_TAG_DEPTH == 512)   begin : size_512
+                   ram_512x22  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[21:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][21:0]),
+                                .CLK (clk)
+
+                               );
+           end // if (ICACHE_TAG_DEPTH == 512)
+           if (ICACHE_TAG_DEPTH == 1024)   begin : size_1024
+                   ram_1024x22  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[21:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][21:0]),
+                                .CLK (clk)
+
+                               );
+           end // if (ICACHE_TAG_DEPTH == 1024)
+
+       if (ICACHE_TAG_DEPTH == 2048)   begin : size_2048
+         ram_2048x22  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[21:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][21:0]),
+                                .CLK (clk)
+
+                               );
+       end // if (ICACHE_TAG_DEPTH == 2048)
+
+       if (ICACHE_TAG_DEPTH == 4096)   begin : size_4096
+         ram_4096x22  ic_way_tag (
+                                .ME(ic_tag_clken[i]),
+                                .WE (ic_tag_wren_q[i]),
+                                .D  (ic_tag_wr_data[21:0]),
+                                .ADR(ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q  (ic_tag_data_raw[i][21:0]),
+                                .CLK (clk)
+
+                               );
+       end // if (ICACHE_TAG_DEPTH == 4096)
+
+         assign w_tout[i][31:ICACHE_TAG_LO] = ic_tag_data_raw[i][31-ICACHE_TAG_LO:0] ;
+         assign w_tout[i][32]                 = ic_tag_data_raw[i][21] ;
+
+         rveven_paritycheck #(32-ICACHE_TAG_LO) parcheck(.data_in   (w_tout[i][31:ICACHE_TAG_LO]),
+                                                   .parity_in (w_tout[i][32]),
+                                                   .parity_err(ic_tag_way_perr[i]));
+      end // else: !if(ICACHE_ECC)
+
+   end // block: WAYS
+ end // block: PACKED_0
+
+
+ else begin : PACKED_1
+    logic [(26*ICACHE_NUM_WAYS)-1 :0]  ic_tag_data_raw_packed, ic_tag_wren_biten_vec;           // data and its bit enables
+    for (genvar i=0; i<ICACHE_NUM_WAYS; i++) begin: BITEN
+        assign ic_tag_wren_biten_vec[(26*i)+25:26*i] = {26{ic_tag_wren_q[i]}};
+     end
+
+
+   if (ICACHE_ECC) begin  : ECC1
+      if (ICACHE_TAG_DEPTH == 32)   begin : size_32
+        if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_32x104  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_32x52  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // if (ICACHE_TAG_DEPTH == 32
+
+      if (ICACHE_TAG_DEPTH == 64)   begin : size_64
+        if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_64x104  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_64x52  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_64
+
+      if (ICACHE_TAG_DEPTH == 128)   begin : size_128
+       if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_128x104  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_128x52  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_128
+
+      if (ICACHE_TAG_DEPTH == 256)   begin : size_256
+       if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_256x104  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_256x52  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_256
+
+      if (ICACHE_TAG_DEPTH == 512)   begin : size_512
+       if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_512x104  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_512x52  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_512
+
+      if (ICACHE_TAG_DEPTH == 1024)   begin : size_1024
+         if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_1024x104  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_1024x52  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+                               );
+        end // block: WAYS
+      end // block: size_1024
+
+      if (ICACHE_TAG_DEPTH == 2048)   begin : size_2048
+       if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_2048x104  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_2048x52  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_2048
+
+      if (ICACHE_TAG_DEPTH == 4096)   begin  : size_4096
+       if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_4096x104  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_4096x52  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(26*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[25:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(26*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_4096
+
+        for (genvar i=0; i<ICACHE_NUM_WAYS; i++) begin
+          assign ic_tag_data_raw[i]  = ic_tag_data_raw_packed[(26*i)+25:26*i];
+          assign w_tout[i][31:ICACHE_TAG_LO] = ic_tag_data_raw[i][31-ICACHE_TAG_LO:0] ;
+          assign w_tout[i][36:32]              = ic_tag_data_raw[i][25:21] ;
+          rvecc_decode  ecc_decode (
+                           .en(~dec_tlu_core_ecc_disable & ic_rd_en_ff),
+                           .sed_ded ( 1'b1 ),    // 1 : means only detection
+                           .din({11'b0,ic_tag_data_raw[i][20:0]}),
+                           .ecc_in({2'b0, ic_tag_data_raw[i][25:21]}),
+                           .dout(ic_tag_corrected_data_unc[i][31:0]),
+                           .ecc_out(ic_tag_corrected_ecc_unc[i][6:0]),
+                           .single_ecc_error(ic_tag_single_ecc_error[i]),
+                           .double_ecc_error(ic_tag_double_ecc_error[i]));
+
+          assign ic_tag_way_perr[i]= ic_tag_single_ecc_error[i] | ic_tag_double_ecc_error[i]  ;
+     end // for (genvar i=0; i<ICACHE_NUM_WAYS; i++)
+
+   end // block: ECC1
+
+
+   else  begin : ECC0
+      if (ICACHE_TAG_DEPTH == 32)   begin : size_32
+        if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_32x88  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_32x44  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // if (ICACHE_TAG_DEPTH == 32
+
+      if (ICACHE_TAG_DEPTH == 64)   begin : size_64
+        if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_64x88  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_64x44  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_64
+
+      if (ICACHE_TAG_DEPTH == 128)   begin : size_128
+       if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_128x88  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_128x44  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_128
+
+      if (ICACHE_TAG_DEPTH == 256)   begin : size_256
+       if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_256x88  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_256x44  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_256
+
+      if (ICACHE_TAG_DEPTH == 512)   begin : size_512
+       if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_512x88  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_512x44  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_512
+
+      if (ICACHE_TAG_DEPTH == 1024)   begin : size_1024
+         if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_1024x88  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_1024x44  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_1024
+
+      if (ICACHE_TAG_DEPTH == 2048)   begin : size_2048
+       if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_2048x88  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_2048x44  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_2048
+
+      if (ICACHE_TAG_DEPTH == 4096)   begin  : size_4096
+       if (ICACHE_NUM_WAYS == 4) begin : WAYS
+         ram_be_4096x88  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      else begin : WAYS
+                  ram_be_4096x44  ic_way_tag (
+                                .ME  (|ic_tag_clken[ICACHE_NUM_WAYS-1:0]),
+                                .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),
+                                .WEM (ic_tag_wren_biten_vec[(22*ICACHE_NUM_WAYS)-1 :0]),                                               // all bits of bit enables
+
+                                .D   ({ICACHE_NUM_WAYS{ic_tag_wr_data[21:0]}}),
+                                .ADR (ic_rw_addr_q[ICACHE_INDEX_HI:ICACHE_TAG_INDEX_LO]),
+                                .Q   (ic_tag_data_raw_packed[(22*ICACHE_NUM_WAYS)-1 :0]),
+                                .CLK (clk)
+
+                               );
+        end // block: WAYS
+      end // block: size_4096
+
+      for (genvar i=0; i<ICACHE_NUM_WAYS; i++) begin
+          assign ic_tag_data_raw[i]  = ic_tag_data_raw_packed[(22*i)+21:22*i];
+          assign w_tout[i][31:ICACHE_TAG_LO] = ic_tag_data_raw[i][31-ICACHE_TAG_LO:0] ;
+          assign w_tout[i][32]                 = ic_tag_data_raw[i][21] ;
+          rveven_paritycheck #(32-ICACHE_TAG_LO) parcheck(.data_in   (w_tout[i][31:ICACHE_TAG_LO]),
+                                                   .parity_in (w_tout[i][32]),
+                                                   .parity_err(ic_tag_way_perr[i]));
+      end
+
+
+   end // block: ECC0
+ end // block: PACKED_1
+
+
+   always_comb begin : tag_rd_out
+      ictag_debug_rd_data[25:0] = '0;
+      for ( int j=0; j<ICACHE_NUM_WAYS; j++) begin: debug_rd_out
+         ictag_debug_rd_data[25:0] |=  ICACHE_ECC ? ({26{ic_debug_rd_way_en_ff[j]}} & ic_tag_data_raw[j] ) : {4'b0, ({22{ic_debug_rd_way_en_ff[j]}} & ic_tag_data_raw[j][21:0])};
+      end
+   end
+
+
+   for ( genvar i=0; i<32'(ICACHE_NUM_WAYS); i++) begin : ic_rd_hit_loop
+      assign ic_rd_hit[i] = (w_tout[i][31:ICACHE_TAG_LO] == ic_rw_addr_ff[31:ICACHE_TAG_LO]) & ic_tag_valid[i];
+   end
+
+   assign  ic_tag_perr  = | (ic_tag_way_perr[ICACHE_NUM_WAYS-1:0] & ic_tag_valid[ICACHE_NUM_WAYS-1:0] ) ;
+endmodule // EL2_IC_TAG
