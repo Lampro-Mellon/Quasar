@@ -1,6 +1,24 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ld_fwddata_buf_lo",
+    "sources":[
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_byteen_ext_m",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_m",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_addr_m"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ld_fwddata_buf_hi",
+    "sources":[
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_byteen_ext_m",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_m",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_end_addr_m"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_nonblock_load_valid_m",
     "sources":[
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ld_full_hit_m",
@@ -20,6 +38,15 @@
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_axi_awready",
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_axi_wvalid",
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_axi_wready"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ld_byte_hit_buf_hi",
+    "sources":[
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_byteen_ext_m",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_m",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_end_addr_m"
     ]
   },
   {
@@ -63,17 +90,10 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_axi_araddr",
-    "sources":[
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_axi_awaddr"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ld_byte_hit_buf_lo",
     "sources":[
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_m",
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_byteen_ext_m",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_m",
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_addr_m"
     ]
   },
@@ -88,21 +108,14 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_axi_arsize",
-    "sources":[
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_axi_awsize"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_bus_buffer_full_any",
     "sources":[
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_dual_d",
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_dec_lsu_valid_raw_d",
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_m",
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_dual_m",
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_r",
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_dual_r"
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_m",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_dual_r",
+      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_r"
     ]
   },
   {
@@ -129,26 +142,10 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_axi_arcache",
-    "sources":[
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_axi_awcache"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_nonblock_load_tag_m",
     "sources":[
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_r",
       "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_dual_r"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ld_byte_hit_buf_hi",
-    "sources":[
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_busreq_m",
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_ldst_byteen_ext_m",
-      "~el2_lsu_bus_buffer|el2_lsu_bus_buffer>io_lsu_addr_m"
     ]
   },
   {
@@ -161,6 +158,11 @@
   {
     "class":"firrtl.EmitCircuitAnnotation",
     "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxResourceAnno",
+    "target":"el2_lsu_bus_buffer.gated_latch",
+    "resourceId":"/vsrc/gated_latch.v"
   },
   {
     "class":"firrtl.options.TargetDirAnnotation",

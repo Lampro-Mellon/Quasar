@@ -4,10 +4,12 @@ import scala.collection._
 import chisel3.util._
 import include._
 import lib._
+import chisel3.experimental.chiselName
 
-class el2_exu extends Module with param{
+@chiselName
+class el2_exu extends Module with el2_lib with RequireAsyncReset{
   val io=IO(new el2_exu_IO)
-  val PREDPIPESIZE 			= BTB_ADDR_HI - BTB_ADDR_LO + BHT_GHR_SIZE + BTB_BTAG_SIZE
+  val PREDPIPESIZE 			= BTB_ADDR_HI - BTB_ADDR_LO + BHT_GHR_SIZE + BTB_BTAG_SIZE +1
   val ghr_x_ns 				= Wire(UInt(BHT_GHR_SIZE.W))
   val ghr_d_ns 				= Wire(UInt(BHT_GHR_SIZE.W))
   val ghr_d	 				= Wire(UInt(BHT_GHR_SIZE.W))
@@ -18,7 +20,7 @@ class el2_exu extends Module with param{
   val data_gate_en			=Wire(UInt(1.W))
   val csr_rs1_in_d			=Wire(UInt(32.W))
   val i0_predict_newp_d 		=Wire(new el2_predict_pkt_t)
-  val i0_flush_path_d			=Wire(UInt(32.W))
+  val i0_flush_path_d			=Wire(UInt(31.W))
   val i0_predict_p_d			=Wire(new el2_predict_pkt_t)
   val i0_pp_r					=Wire(new el2_predict_pkt_t)
   val i0_predict_p_x			=Wire(new el2_predict_pkt_t)
@@ -30,6 +32,8 @@ class el2_exu extends Module with param{
   io.exu_mp_pkt.br_start_error:=0.U
   io.exu_mp_pkt.br_error		:=0.U
   io.exu_mp_pkt.valid			:=0.U
+  i0_pp_r.toffset := 0.U
+
   val x_data_en                =  io.dec_data_en(1)
   val r_data_en                =  io.dec_data_en(0)
   val x_ctl_en                 =  io.dec_ctl_en(1)
@@ -37,31 +41,31 @@ class el2_exu extends Module with param{
   val predpipe_d    = Cat(io.i0_predict_fghr_d, io.i0_predict_index_d, io.i0_predict_btag_d)
 
 
-  val i0_flush_path_x 	 	=rvdffe(i0_flush_path_d,x_data_en.asBool,io.clk,io.scan_mode)
-  io.exu_csr_rs1_x			:=rvdffe(csr_rs1_in_d,x_data_en.asBool,io.clk,io.scan_mode)
-  i0_predict_p_x				:=rvdffe(i0_predict_p_d,x_data_en.asBool,io.clk,io.scan_mode)
-  val predpipe_x   		 	=rvdffe(predpipe_d,x_data_en.asBool,io.clk,io.scan_mode)
-  val predpipe_r			 	=rvdffe(predpipe_x ,r_data_en.asBool,io.clk,io.scan_mode)
-  val ghr_x					=rvdffe(ghr_x_ns ,x_ctl_en.asBool,io.clk,io.scan_mode)
-  val i0_pred_correct_upper_x	=rvdffe(i0_pred_correct_upper_d ,x_ctl_en.asBool,io.clk,io.scan_mode)
-  val i0_flush_upper_x		=rvdffe(i0_flush_upper_d ,x_ctl_en.asBool,io.clk,io.scan_mode)
-  val i0_taken_x				=rvdffe(i0_taken_d ,x_ctl_en.asBool,io.clk,io.scan_mode)
-  val i0_valid_x				=rvdffe(i0_valid_d ,x_ctl_en.asBool,io.clk,io.scan_mode)
-  i0_pp_r                     :=rvdffe(i0_predict_p_x,r_ctl_en.asBool,io.clk,io.scan_mode)
-  val pred_temp1		        =rvdffe(io.pred_correct_npc_x(5,0) ,r_ctl_en.asBool,io.clk,io.scan_mode)
-  val i0_pred_correct_upper_r	=rvdffe(i0_pred_correct_upper_x ,r_ctl_en.asBool,io.clk,io.scan_mode)
-  val i0_flush_path_upper_r	=rvdffe(i0_flush_path_x ,r_data_en.asBool,io.clk,io.scan_mode)
-  val pred_temp2				=rvdffe(io.pred_correct_npc_x(30,6) ,r_data_en.asBool,io.clk,io.scan_mode)
+  val i0_flush_path_x 	 	=rvdffe(i0_flush_path_d,x_data_en.asBool,clock,io.scan_mode)
+  io.exu_csr_rs1_x			:=rvdffe(csr_rs1_in_d,x_data_en.asBool,clock,io.scan_mode)
+  i0_predict_p_x				:=rvdffe(i0_predict_p_d,x_data_en.asBool,clock,io.scan_mode)
+  val predpipe_x   		 	=rvdffe(predpipe_d,x_data_en.asBool,clock,io.scan_mode)
+  val predpipe_r			 	=rvdffe(predpipe_x ,r_data_en.asBool,clock,io.scan_mode)
+  val ghr_x					=rvdffe(ghr_x_ns ,x_ctl_en.asBool,clock,io.scan_mode)
+  val i0_pred_correct_upper_x	=rvdffe(i0_pred_correct_upper_d ,x_ctl_en.asBool,clock,io.scan_mode)
+  val i0_flush_upper_x		=rvdffe(i0_flush_upper_d ,x_ctl_en.asBool,clock,io.scan_mode)
+  val i0_taken_x				=rvdffe(i0_taken_d ,x_ctl_en.asBool,clock,io.scan_mode)
+  val i0_valid_x				=rvdffe(i0_valid_d ,x_ctl_en.asBool,clock,io.scan_mode)
+  i0_pp_r                     :=rvdffe(i0_predict_p_x,r_ctl_en.asBool,clock,io.scan_mode)
+  val pred_temp1		        =rvdffe(io.pred_correct_npc_x(5,0) ,r_ctl_en.asBool,clock,io.scan_mode)
+  val i0_pred_correct_upper_r	=rvdffe(i0_pred_correct_upper_x ,r_ctl_en.asBool,clock,io.scan_mode)
+  val i0_flush_path_upper_r	=rvdffe(i0_flush_path_x ,r_data_en.asBool,clock,io.scan_mode)
+  val pred_temp2				=rvdffe(io.pred_correct_npc_x(30,6) ,r_data_en.asBool,clock,io.scan_mode)
   pred_correct_npc_r			:=Cat(pred_temp2,pred_temp1)
 
   when (BHT_SIZE.asUInt===32.U || BHT_SIZE.asUInt===64.U){
-    ghr_d			:=withClock(io.clk){RegEnable(ghr_d_ns,0.U,data_gate_en.asBool)}
-    mul_valid_x		:=withClock(io.clk){RegEnable(io.mul_p.valid,0.U,data_gate_en.asBool)}
-    flush_lower_ff	:=withClock(io.clk){RegEnable(io.dec_tlu_flush_lower_r,0.U,data_gate_en.asBool)}
+    ghr_d			:=RegEnable(ghr_d_ns,0.U,data_gate_en.asBool)
+    mul_valid_x		:=RegEnable(io.mul_p.valid,0.U,data_gate_en.asBool)
+    flush_lower_ff	:=RegEnable(io.dec_tlu_flush_lower_r,0.U,data_gate_en.asBool)
   }.otherwise{
-    ghr_d			:=rvdffe(ghr_d_ns ,data_gate_en.asBool,io.clk,io.scan_mode)
-    mul_valid_x		:=rvdffe(io.mul_p.valid ,data_gate_en.asBool,io.clk,io.scan_mode)
-    flush_lower_ff	:=rvdffe(io.dec_tlu_flush_lower_r ,data_gate_en.asBool,io.clk,io.scan_mode)
+    ghr_d			:=rvdffe(ghr_d_ns ,data_gate_en.asBool,clock,io.scan_mode)
+    mul_valid_x		:=rvdffe(io.mul_p.valid ,data_gate_en.asBool,clock,io.scan_mode)
+    flush_lower_ff	:=rvdffe(io.dec_tlu_flush_lower_r ,data_gate_en.asBool,clock,io.scan_mode)
   }
 
 
@@ -86,11 +90,12 @@ class el2_exu extends Module with param{
     (~i0_rs1_bypass_en_d & ~io.dec_debug_wdata_rs1_d & io.dec_i0_rs1_en_d).asBool 	-> io.gpr_i0_rs1_d
   ))
 
-  val i0_rs2_d=Mux1H(Seq(
+  val i0_rs2_d = Mux1H(Seq(
     (~i0_rs2_bypass_en_d & io.dec_i0_rs2_en_d).asBool 	-> io.gpr_i0_rs2_d,
     (~i0_rs2_bypass_en_d).asBool						-> io.dec_i0_immed_d,
     (i0_rs2_bypass_en_d).asBool							-> i0_rs2_bypass_data_d
   ))
+  dontTouch(i0_rs2_d)
 
   io.exu_lsu_rs1_d:=Mux1H(Seq(
     (~i0_rs1_bypass_en_d & ~io.dec_extint_stall & io.dec_i0_rs1_en_d).asBool	 	-> io.gpr_i0_rs1_d,
@@ -124,7 +129,7 @@ class el2_exu extends Module with param{
   i_alu.io.valid_in		:=io.dec_i0_alu_decode_d
   i_alu.io.flush_upper_x	:=i0_flush_upper_x
   i_alu.io.flush_lower_r	:=io.dec_tlu_flush_lower_r
-  i_alu.io.a_in			:=i0_rs1_d
+  i_alu.io.a_in			:=i0_rs1_d.asSInt
   i_alu.io.b_in			:=i0_rs2_d
   i_alu.io.pc_in			:=io.dec_i0_pc_d
   i_alu.io.brimm_in		:=io.dec_i0_br_immed_d
@@ -139,7 +144,6 @@ class el2_exu extends Module with param{
   io.exu_i0_pc_x			:=i_alu.io.pc_ff
 
   val i_mul=Module(new el2_exu_mul_ctl)
-
   i_mul.io.scan_mode		:=io.scan_mode
   i_mul.io.mul_p			:=io.mul_p
   i_mul.io.rs1_in			:=muldiv_rs1_d
@@ -147,7 +151,6 @@ class el2_exu extends Module with param{
   val mul_result_x		 =i_mul.io.result_x
 
   val i_div=Module(new el2_exu_div_ctl)
-
   i_div.io.scan_mode		:=io.scan_mode
   i_div.io.cancel			:=io.dec_div_cancel
   i_div.io.dp				:=io.div_p
@@ -183,12 +186,12 @@ class el2_exu extends Module with param{
   io.exu_i0_br_valid_r             :=  i0_pp_r.valid
   io.exu_i0_br_mp_r                :=  i0_pp_r.misp
   io.exu_i0_br_way_r               :=  i0_pp_r.way
-  io.exu_i0_br_hist_r		 		       :=  i0_pp_r.hist
+  io.exu_i0_br_hist_r		 		 :=  i0_pp_r.hist
   io.exu_i0_br_error_r          	 :=  i0_pp_r.br_error
   io.exu_i0_br_middle_r            :=  i0_pp_r.pc4 ^ i0_pp_r.boffset
   io.exu_i0_br_start_error_r       :=  i0_pp_r.br_start_error
   io.exu_i0_br_fghr_r		 		 :=  predpipe_r(PREDPIPESIZE-1,BTB_ADDR_HI+BTB_BTAG_SIZE-BTB_ADDR_LO+1)
-  io.exu_i0_br_index_r		 	 :=  predpipe_r(BTB_ADDR_HI+BTB_BTAG_SIZE-BTB_ADDR_LO,BTB_BTAG_SIZE+1)
+  io.exu_i0_br_index_r		 	 :=  predpipe_r(BTB_ADDR_HI+BTB_BTAG_SIZE-BTB_ADDR_LO,BTB_BTAG_SIZE)
   final_predict_mp		 		 :=  Mux(i0_flush_upper_x===1.U,i0_predict_p_x,0.U.asTypeOf(i0_predict_p_x))
   val final_predpipe_mp		  	  =  Mux(i0_flush_upper_x===1.U,predpipe_x,0.U)
 
@@ -213,8 +216,6 @@ class el2_exu extends Module with param{
   io.exu_npc_r			 		 := Mux(i0_pred_correct_upper_r===1.U,  pred_correct_npc_r, i0_flush_path_upper_r)
 }
 class el2_exu_IO extends Bundle with param{
-  val		clk						=Input(Clock())                              // Top level clock
-  val  	rst_l					=Input(Bool())                              // Reset
   val		scan_mode				=Input(Bool())                              // Scan control
 
   val   	dec_data_en				=Input(UInt(2.W))                           // Clock enable {x,r}, one cycle pulse
@@ -226,7 +227,7 @@ class el2_exu_IO extends Bundle with param{
   val  	dec_i0_predict_p_d		=Input(new el2_predict_pkt_t)               // DEC branch predict packet
 
   val		i0_predict_fghr_d		=Input(UInt(BHT_GHR_SIZE.W))                // DEC predict fghr
-  val		i0_predict_index_d		=Input(UInt((BTB_ADDR_HI-BTB_ADDR_LO).W))   // DEC predict index
+  val		i0_predict_index_d		=Input(UInt(((BTB_ADDR_HI-BTB_ADDR_LO)+1).W))   // DEC predict index
   val		i0_predict_btag_d		=Input(UInt(BTB_BTAG_SIZE.W))               // DEC predict branch tag
 
   val		dec_i0_rs1_en_d			=Input(UInt(1.W))                           // Qualify GPR RS1 data
@@ -272,7 +273,7 @@ class el2_exu_IO extends Bundle with param{
   val		exu_i0_br_hist_r		=Output(UInt(2.W))                          // to DEC  I0 branch history
   val		exu_i0_br_error_r		=Output(UInt(1.W))                          // to DEC  I0 branch error
   val		exu_i0_br_start_error_r	=Output(UInt(1.W))                       	// to DEC  I0 branch start error
-  val		exu_i0_br_index_r		=Output(UInt((BTB_ADDR_HI-BTB_ADDR_LO).W))  // to DEC  I0 branch index
+  val		exu_i0_br_index_r		=Output(UInt(((BTB_ADDR_HI-BTB_ADDR_LO)+1).W))  // to DEC  I0 branch index
   val		exu_i0_br_valid_r		=Output(UInt(1.W))                          // to DEC  I0 branch valid
   val		exu_i0_br_mp_r			=Output(UInt(1.W))                          // to DEC  I0 branch mispredict
   val		exu_i0_br_middle_r		=Output(UInt(1.W))                          // to DEC  I0 branch middle
@@ -281,7 +282,7 @@ class el2_exu_IO extends Bundle with param{
   val		exu_mp_pkt				=Output(new el2_predict_pkt_t)              // Mispredict branch packet
   val		exu_mp_eghr				=Output(UInt(BHT_GHR_SIZE.W))               // Mispredict global history
   val		exu_mp_fghr				=Output(UInt(BHT_GHR_SIZE.W))               // Mispredict fghr
-  val		exu_mp_index			=Output(UInt((BTB_ADDR_HI-BTB_ADDR_LO).W))  // Mispredict index
+  val		exu_mp_index			=Output(UInt(((BTB_ADDR_HI-BTB_ADDR_LO)+1).W))  // Mispredict index
   val		exu_mp_btag				=Output(UInt(BTB_BTAG_SIZE.W))              // Mispredict btag
 
 

@@ -27,12 +27,12 @@ class el2_exu_mul_ctl extends Module with RequireAsyncReset with el2_lib {
   rs2_ext_in := Cat(io.mul_p.rs2_sign & io.rs2_in(31),io.rs2_in).asSInt
 
   // --------------------------- Multiply       ----------------------------------
- // val gated_clock = rvclkhdr(clock,mul_x_enable.asBool(),io.scan_mode)
- // withClock(gated_clock) {
-   // low_x := RegNext(io.mul_p.low, 0.U)
-    //rs1_x := RegNext(rs1_ext_in, 0.S)
-   // rs2_x := RegNext(rs2_ext_in, 0.S)
- // }
+  // val gated_clock = rvclkhdr(clock,mul_x_enable.asBool(),io.scan_mode)
+  // withClock(gated_clock) {
+  // low_x := RegNext(io.mul_p.low, 0.U)
+  //rs1_x := RegNext(rs1_ext_in, 0.S)
+  // rs2_x := RegNext(rs2_ext_in, 0.S)
+  // }
   low_x := rvdffe (io.mul_p.low, mul_x_enable.asBool,clock,io.scan_mode)
   rs1_x := rvdffe(rs1_ext_in, mul_x_enable.asBool,clock,io.scan_mode)
   rs2_x := rvdffe (rs2_ext_in, mul_x_enable.asBool,clock,io.scan_mode)

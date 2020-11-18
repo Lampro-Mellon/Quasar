@@ -17,8 +17,6 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
 
     val out                = Output(UInt(32.W))
     val finish_dly         = Output(UInt(1.W))
-    //   val out_s              = Output(UInt(33.W))
-    //   val test               = Output(UInt(6.W))
   })
   // val exu_div_clk          = Wire(Clock())
   val run_state            = WireInit(0.U(1.W))
@@ -48,7 +46,6 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
   val count_in             = WireInit(0.U(6.W))
   val dividend_eff         = WireInit(0.U(32.W))
   val a_shift              = WireInit(0.U(33.W))
- // val scan_mode            = WireInit(0.U(1.W))
 
   io.out := 0.U
   io.finish_dly := 0.U
@@ -151,9 +148,6 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
   val shortq_enable =  valid_ff_x & (m_ff(31,0) =/= 0.U(32.W)) & (shortq_raw =/= 0.U(4.W))
   val shortq_shift = Fill(4,shortq_enable) & shortq_raw
 
-  //  shortq_enable_ff := RegEnable(shortq_enable,0.U,div_clken.asBool)
-  //  shortq_shift_xx  := RegEnable(shortq_shift,0.U,div_clken.asBool)
-
   val shortq_shift_ff = Mux1H(Seq (
     shortq_shift_xx(3).asBool -> "b11111".U,
     shortq_shift_xx(2).asBool -> "b11000".U,
@@ -178,7 +172,7 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
     (run_state & !(valid_ff_x | shortq_enable_ff)).asBool -> Cat(q_ff(31,0),!a_in(32))
   ))
   val qff_enable   =  io.dp.valid | (run_state & !shortq_enable)
-  dividend_eff := Mux((sign_ff & dividend_neg_ff).asBool,rvtwoscomp(q_ff(31,0)),q_ff(31,0))
+  dividend_eff := Mux((sign_ff & dividend_neg_ff).asBool, rvtwoscomp(q_ff(31,0)),q_ff(31,0))
 
 
   m_eff := Mux(add.asBool , m_ff, ~m_ff )
@@ -223,9 +217,6 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
   q_ff := rvdffe(q_in, qff_enable.asBool,clock,io.scan_mode)
   a_ff := rvdffe(a_in, aff_enable.asBool,clock,io.scan_mode)
   m_ff := rvdffe(Cat(!io.dp.unsign & io.divisor(31), io.divisor), io.dp.valid.asBool,clock,io.scan_mode)
- // q_ff := RegEnable (q_in, 0.U, qff_enable.asBool)
- // a_ff := RegEnable (a_in, 0.U, aff_enable.asBool)
- // m_ff := RegEnable (Cat(!io.dp.unsign & io.divisor(31), io.divisor), 0.U, io.dp.valid.asBool)
 
 }
 object div_main extends App{

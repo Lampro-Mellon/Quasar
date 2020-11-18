@@ -17,7 +17,7 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
     val lsu_free_c2_clk      = Input(Clock())  //tbd
     val lsu_c1_r_clk         = Input(Clock())
     val lsu_store_c1_r_clk   = Input(Clock())
-   // val clk                  = Input(Clock())   //tbd
+    // val clk                  = Input(Clock())   //tbd
 
     val lsu_pkt_d            = Input(new el2_lsu_pkt_t())
     val lsu_pkt_m            = Input(new el2_lsu_pkt_t())
@@ -219,13 +219,13 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
   io.dccm_rd_addr_hi := io.end_addr_d(DCCM_BITS-1,0)
 
   io.dccm_wr_data_lo := Mux(io.ld_single_ecc_error_r_ff.asBool,
-    Mux(ld_single_ecc_error_lo_r_ff===0.U,Cat(io.sec_data_ecc_lo_r_ff(DCCM_ECC_WIDTH-1,0),io.sec_data_lo_r_ff(DCCM_DATA_WIDTH-1,0))  ,
+    Mux(ld_single_ecc_error_lo_r_ff===1.U,Cat(io.sec_data_ecc_lo_r_ff(DCCM_ECC_WIDTH-1,0),io.sec_data_lo_r_ff(DCCM_DATA_WIDTH-1,0))  ,
       Cat(io.sec_data_ecc_hi_r_ff(DCCM_ECC_WIDTH-1,0),io.sec_data_hi_r_ff(DCCM_DATA_WIDTH-1,0))) ,
     Mux(io.dma_dccm_wen.asBool,Cat(io.dma_dccm_wdata_ecc_lo(DCCM_ECC_WIDTH-1,0),io.dma_dccm_wdata_lo(DCCM_DATA_WIDTH-1,0)),
       Cat(io.stbuf_ecc_any(DCCM_ECC_WIDTH-1,0),io.stbuf_data_any(DCCM_DATA_WIDTH-1,0))))
 
   io.dccm_wr_data_hi := Mux(io.ld_single_ecc_error_r_ff.asBool,
-    Mux(ld_single_ecc_error_hi_r_ff===0.U, Cat(io.sec_data_ecc_hi_r_ff(DCCM_ECC_WIDTH-1,0),io.sec_data_hi_r_ff(DCCM_DATA_WIDTH-1,0)),
+    Mux(ld_single_ecc_error_hi_r_ff===1.U, Cat(io.sec_data_ecc_hi_r_ff(DCCM_ECC_WIDTH-1,0),io.sec_data_hi_r_ff(DCCM_DATA_WIDTH-1,0)),
       Cat(io.sec_data_ecc_lo_r_ff(DCCM_ECC_WIDTH-1,0),io.sec_data_lo_r_ff(DCCM_DATA_WIDTH-1,0))),
     Mux(io.dma_dccm_wen.asBool, Cat(io.dma_dccm_wdata_ecc_hi(DCCM_ECC_WIDTH-1,0),io.dma_dccm_wdata_hi(DCCM_DATA_WIDTH-1,0)),
       Cat(io.stbuf_ecc_any(DCCM_ECC_WIDTH-1,0),io.stbuf_data_any(DCCM_DATA_WIDTH-1,0))))
@@ -239,9 +239,9 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
     (Fill(4,io.lsu_pkt_r.half)  & 3.U(4.W))  |
     (Fill(4,io.lsu_pkt_r.word)  & 15.U(4.W)))
   val store_byteen_ext_m = WireInit(UInt(8.W),0.U)
-      store_byteen_ext_m := store_byteen_m(3,0) << io.lsu_addr_m(1,0)      // The packet in m
+  store_byteen_ext_m := store_byteen_m(3,0) << io.lsu_addr_m(1,0)      // The packet in m
   val store_byteen_ext_r = WireInit(UInt(8.W),0.U)
-      store_byteen_ext_r := store_byteen_r(3,0) << io.lsu_addr_r(1,0)
+  store_byteen_ext_r := store_byteen_r(3,0) << io.lsu_addr_r(1,0)
 
   //LM: If store buffer addr matches with the address in the m-stage then there will be bypassed
   val dccm_wr_bypass_d_m_lo   = (io.stbuf_addr_any(DCCM_BITS-1,2) === io.lsu_addr_m(DCCM_BITS-1,2)) & io.addr_in_dccm_m
@@ -283,7 +283,7 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
     io.store_data_lo_r      := withClock(io.lsu_store_c1_r_clk){RegNext(Reverse(Cat(VecInit.tabulate(4)(i=> Reverse(Mux(store_byteen_ext_m(i).asBool,  store_data_lo_m((8*i)+7,8*i), Mux((io.lsu_stbuf_commit_any &  dccm_wr_bypass_d_m_lo).asBool, io.stbuf_data_any((8*i)+7,8*i),io.sec_data_lo_m((8*i)+7,8*i))))))),0.U)}
     io.store_data_hi_r      := withClock(io.lsu_store_c1_r_clk){RegNext(Reverse(Cat(VecInit.tabulate(4)(i=> Reverse(Mux(store_byteen_ext_m(i+4).asBool,store_data_hi_m((8*i)+7,8*i), Mux((io.lsu_stbuf_commit_any &  dccm_wr_bypass_d_m_hi).asBool, io.stbuf_data_any((8*i)+7,8*i),io.sec_data_hi_m((8*i)+7,8*i))))))),0.U)}
     io.store_datafn_lo_r    := Reverse(Cat(VecInit.tabulate(4)(i=> Reverse(Mux((io.lsu_stbuf_commit_any & dccm_wr_bypass_d_r_lo & !store_byteen_ext_r(i)).asBool,io.stbuf_data_any((8*i)+7,8*i),io.store_data_lo_r((8*i)+7,8*i))))))
-    io.store_datafn_hi_r    := Reverse(Cat(VecInit.tabulate(4)(i=> Reverse(Mux((io.lsu_stbuf_commit_any & dccm_wr_bypass_d_r_lo & !store_byteen_ext_r(i)).asBool,io.stbuf_data_any((8*i)+7,8*i),io.store_data_hi_r((8*i)+7,8*i))))))
+    io.store_datafn_hi_r    := Reverse(Cat(VecInit.tabulate(4)(i=> Reverse(Mux((io.lsu_stbuf_commit_any & dccm_wr_bypass_d_r_hi & !store_byteen_ext_r(i+4)).asBool,io.stbuf_data_any((8*i)+7,8*i),io.store_data_hi_r((8*i)+7,8*i))))))
     io.store_data_r         := (Cat(io.store_data_hi_r(31,0),io.store_data_lo_r(31,0)) >> 8.U*io.lsu_addr_r(1,0)) & Reverse(Cat(VecInit.tabulate(4)(i=> Fill(8,store_byteen_r(i)))))
   }
   io.dccm_rdata_lo_m      := io.dccm_rd_data_lo(DCCM_DATA_WIDTH-1,0)  //4 lines
@@ -294,8 +294,8 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
   io.picm_wren            := (io.lsu_pkt_r.valid & io.lsu_pkt_r.store & io.addr_in_pic_r & io.lsu_commit_r) | io.dma_pic_wen
   io.picm_rden            := io.lsu_pkt_d.valid  & io.lsu_pkt_d.load  & io.addr_in_pic_d
   io.picm_mken            := io.lsu_pkt_d.valid  & io.lsu_pkt_d.store & io.addr_in_pic_d
-  io.picm_rdaddr          := PIC_BASE_ADDR | Cat(Fill(32-PIC_BITS,0.U),io.lsu_addr_d(PIC_BITS-1,0))
-  io.picm_wraddr          := PIC_BASE_ADDR | Cat(Fill(32-PIC_BITS,0.U),Mux(io.dma_pic_wen.asBool,io.dma_mem_addr(PIC_BITS-1,0),io.lsu_addr_r(PIC_BITS-1,0)))
+  io.picm_rdaddr          := aslong(PIC_BASE_ADDR).U | Cat(Fill(32-PIC_BITS,0.U),io.lsu_addr_d(PIC_BITS-1,0))
+  io.picm_wraddr          := aslong(PIC_BASE_ADDR).U | Cat(Fill(32-PIC_BITS,0.U),Mux(io.dma_pic_wen.asBool,io.dma_mem_addr(PIC_BITS-1,0),io.lsu_addr_r(PIC_BITS-1,0)))
   io.picm_mask_data_m     := picm_rd_data_m(31,0)
   io.picm_wr_data         := Mux(io.dma_pic_wen.asBool,io.dma_mem_wdata(31,0),io.store_datafn_lo_r(31,0))
 

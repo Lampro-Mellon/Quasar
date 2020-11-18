@@ -27,13 +27,13 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
     val dec_tlu_mrac_ff                   = Input(UInt(32.W))
 
     //Outputs
-    //  val lsu_result_m                      = Output(UInt(32.W))
-    //  val lsu_result_corr_r                 = Output(UInt(32.W))
+    val lsu_result_m                      = Output(UInt(32.W))
+    val lsu_result_corr_r                 = Output(UInt(32.W))
     val lsu_load_stall_any                = Output(Bool())
     val lsu_store_stall_any               = Output(Bool())
     val lsu_fastint_stall_any             = Output(Bool())
     val lsu_idle_any                      = Output(Bool())
-    val lsu_fir_addr                      = Output(UInt(32.W))
+    val lsu_fir_addr                      = Output(UInt(31.W))
     val lsu_fir_error                     = Output(UInt(2.W))
     val lsu_single_ecc_error_incr         = Output(Bool())
     val lsu_error_pkt_r                   = Output(new el2_lsu_error_pkt_t)
@@ -147,11 +147,13 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   val dma_dccm_wdata               = WireInit(0.U(64.W))
   val dma_dccm_wdata_lo            = WireInit(0.U(32.W))
   val dma_dccm_wdata_hi            = WireInit(0.U(32.W))
-  val dma_mem_tag_m                = WireInit(0.U(32.W))
+  val dma_mem_tag_m                = WireInit(0.U(3.W))
   val lsu_raw_fwd_lo_r             = WireInit(0.U(1.W))
   val lsu_raw_fwd_hi_r             = WireInit(0.U(1.W))
 
   val lsu_lsc_ctl    = Module(new el2_lsu_lsc_ctl )
+  io.lsu_result_m := lsu_lsc_ctl.io.lsu_result_m
+  io.lsu_result_corr_r := lsu_lsc_ctl.io.lsu_result_corr_r
   val dccm_ctl       = Module(new el2_lsu_dccm_ctl )
   val stbuf          = Module(new el2_lsu_stbuf )
   val ecc            = Module(new el2_lsu_ecc )
@@ -421,7 +423,9 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   bus_intf.io.end_addr_d                        := lsu_lsc_ctl.io.end_addr_d
   bus_intf.io.end_addr_m                        := lsu_lsc_ctl.io.end_addr_m
   bus_intf.io.end_addr_r                        := lsu_lsc_ctl.io.end_addr_r
-//  bus_intf.io.store_data_m                      := lsu_lsc_ctl.io.store_data_m
+  bus_intf.io.store_data_r                      := dccm_ctl.io.store_data_r
+  bus_intf.io.lsu_pkt_m                         <> lsu_lsc_ctl.io.lsu_pkt_m
+  bus_intf.io.lsu_pkt_r                         <> lsu_lsc_ctl.io.lsu_pkt_r
   bus_intf.io.dec_tlu_force_halt                := io.dec_tlu_force_halt
   bus_intf.io.lsu_commit_r                      := lsu_lsc_ctl.io.lsu_commit_r
   bus_intf.io.is_sideeffects_m                  := lsu_lsc_ctl.io.is_sideeffects_m

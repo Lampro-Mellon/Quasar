@@ -17,7 +17,7 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
     val                  valid_in          = Input(UInt(1.W))  // Valid
     val                  ap                = Input( new el2_alu_pkt_t )                // predecodes
     val                  csr_ren_in        = Input(UInt(1.W))           // extra decode
-    val                  a_in              = Input(UInt(32.W))               // A operand
+    val                  a_in              = Input(SInt(32.W))               // A operand
     val                  b_in              = Input(UInt(32.W))               // B operand
     val                  pc_in             = Input(UInt(31.W))              // for pc=pc+2,4 calculations
     val                  pp_in             = Input(new el2_predict_pkt_t)              // Predicted branch structure
@@ -44,7 +44,7 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
 
   val ov  = (~io.a_in(31) & ~bm(31) &  aout(31)) | ( io.a_in(31) &  bm(31) & ~aout(31) ) //overflow check from last bits
 
-  val eq                  = (io.a_in === io.b_in)
+  val eq                  = (io.a_in === io.b_in.asSInt)
   val ne                  = ~eq
   val neg                 =  aout(31)// check for the last signed bit (for neg)
   val lt                  = (~io.ap.unsign & (neg ^ ov)) |  ( io.ap.unsign & ~cout)  //if alu packet sends unsigned and there is no cout(i.e no overflow and unsigned pkt)
@@ -52,10 +52,10 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
 
 
   val lout                =  Mux1H(Seq(
-    io.csr_ren_in.asBool ->              io.b_in,  //read enable read rs2
-    io.ap.land.asBool    ->  (io.a_in &  io.b_in),  //and rs1 and 2
-    io.ap.lor.asBool     ->  (io.a_in |  io.b_in),
-    io.ap.lxor.asBool    ->  (io.a_in ^  io.b_in)))
+    io.csr_ren_in.asBool ->              io.b_in.asSInt,  //read enable read rs2
+    io.ap.land.asBool    ->  (io.a_in &  io.b_in.asSInt),  //and rs1 and 2
+    io.ap.lor.asBool     ->  (io.a_in |  io.b_in.asSInt),
+    io.ap.lxor.asBool    ->  (io.a_in ^  io.b_in.asSInt)))
 
   val shift_amount   = Mux1H(Seq (
     io.ap.sll.asBool   -> (32.U(6.W) - Cat(0.U(1.W),io.b_in(4,0))),    // [5] unused
@@ -69,7 +69,7 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
   shift_extend :=  Cat((repl(31,io.ap.sra) & repl(31,io.a_in(31))) | (repl(31,io.ap.sll) & io.a_in(30,0)),io.a_in)
 
   val shift_long = WireInit(UInt(63.W),0.U)
-  shift_long := ( shift_extend >> shift_amount );   // 62-32 unused
+  shift_long := ( shift_extend >> shift_amount(4,0) );   // 62-32 unused
 
   val sout  = ( shift_long(31,0) & shift_mask(31,0) ); //incase of sra shift_mask is 1
 
@@ -77,7 +77,7 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
   val sel_shift           =  io.ap.sll  | io.ap.srl | io.ap.sra
   val sel_adder           = (io.ap.add  | io.ap.sub) & ~io.ap.slt
   val sel_pc              =  io.ap.jal  | io.pp_in.pcall | io.pp_in.pja | io.pp_in.pret
-  val csr_write_data      = Mux(io.ap.csr_imm.asBool, io.b_in, io.a_in)
+  val csr_write_data      = Mux(io.ap.csr_imm.asBool, io.b_in.asSInt, io.a_in)
 
   val slt_one             =  io.ap.slt & lt
 
@@ -129,5 +129,7 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
 }
 
 object alu extends App{
-  chisel3.Driver execute(args, () =>new el2_exu_alu_ctl())
+  println("Generate Verilog")
+  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_exu_alu_ctl()))
 }
+

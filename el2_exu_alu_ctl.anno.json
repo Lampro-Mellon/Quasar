@@ -40,8 +40,8 @@
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_beq",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_bne",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_a_in",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_unsign",
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_sub"
     ]
   },
@@ -82,19 +82,19 @@
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_flush_upper_x",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_jal",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pp_in_pret",
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pp_in_prett",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_predict_t",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_predict_nt",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pp_in_prett",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_bge",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pp_in_pja",
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_sub",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_blt",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pp_in_pcall",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_beq",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_bne",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_sub",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_a_in",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_unsign"
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_unsign",
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in"
     ]
   },
   {
@@ -118,8 +118,8 @@
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_beq",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_bne",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_a_in",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_unsign",
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_sub"
     ]
   },
@@ -139,19 +139,19 @@
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_flush_upper_x",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_jal",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pp_in_pret",
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pp_in_prett",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_predict_t",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_predict_nt",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pp_in_prett",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_bge",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pp_in_pja",
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_sub",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_blt",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pp_in_pcall",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_beq",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_bne",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_sub",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_a_in",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_unsign"
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_unsign",
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in"
     ]
   },
   {
@@ -165,8 +165,8 @@
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_sub",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pc_in",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_brimm_in",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_a_in",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in"
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in",
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_a_in"
     ]
   },
   {
@@ -184,12 +184,12 @@
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_blt",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_jal",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_pp_in_pcall",
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_sub",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_beq",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_bne",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_a_in",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_unsign",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_sub"
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in"
     ]
   },
   {
@@ -208,8 +208,8 @@
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_beq",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_bne",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_a_in",
-      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_unsign",
+      "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_b_in",
       "~el2_exu_alu_ctl|el2_exu_alu_ctl>io_ap_sub"
     ]
   },
@@ -223,6 +223,11 @@
   {
     "class":"firrtl.EmitCircuitAnnotation",
     "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxResourceAnno",
+    "target":"el2_exu_alu_ctl.gated_latch",
+    "resourceId":"/vsrc/gated_latch.v"
   },
   {
     "class":"firrtl.options.TargetDirAnnotation",

@@ -222,15 +222,15 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset with el2_lib
   val store_data_m_in       = Mux(io.lsu_pkt_d.store_data_bypass_d.asBool,io.lsu_result_m(31,0),store_data_d(31,0))
 
   val store_data_pre_m      =  withClock(io.lsu_store_c1_m_clk){RegNext(store_data_m_in,0.U)}
-      io.lsu_addr_m        :=  withClock(io.lsu_c1_m_clk){RegNext(io.lsu_addr_d,0.U)}
-      io.lsu_addr_r        :=  withClock(io.lsu_c1_r_clk){RegNext(io.lsu_addr_m,0.U)}
-      io.end_addr_m        :=  withClock(io.lsu_c1_m_clk){RegNext(io.end_addr_d,0.U)}
-      io.end_addr_r        :=  withClock(io.lsu_c1_r_clk){RegNext(io.end_addr_m,0.U)}
-      io.addr_in_dccm_m    :=  withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_dccm_d,0.U)}
-      io.addr_in_dccm_r    :=  withClock(io.lsu_c1_r_clk){RegNext(io.addr_in_dccm_m,0.U)}
-      io.addr_in_pic_m     :=  withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_pic_d,0.U)}
-      io.addr_in_pic_r     :=  withClock(io.lsu_c1_r_clk){RegNext(io.addr_in_pic_m,0.U)}
-      io.addr_external_m   :=  withClock(io.lsu_c1_m_clk){RegNext(addr_external_d,0.U)}
+  io.lsu_addr_m        :=  withClock(io.lsu_c1_m_clk){RegNext(io.lsu_addr_d,0.U)}
+  io.lsu_addr_r        :=  withClock(io.lsu_c1_r_clk){RegNext(io.lsu_addr_m,0.U)}
+  io.end_addr_m        :=  withClock(io.lsu_c1_m_clk){RegNext(io.end_addr_d,0.U)}
+  io.end_addr_r        :=  withClock(io.lsu_c1_r_clk){RegNext(io.end_addr_m,0.U)}
+  io.addr_in_dccm_m    :=  withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_dccm_d,0.U)}
+  io.addr_in_dccm_r    :=  withClock(io.lsu_c1_r_clk){RegNext(io.addr_in_dccm_m,0.U)}
+  io.addr_in_pic_m     :=  withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_pic_d,0.U)}
+  io.addr_in_pic_r     :=  withClock(io.lsu_c1_r_clk){RegNext(io.addr_in_pic_m,0.U)}
+  io.addr_external_m   :=  withClock(io.lsu_c1_m_clk){RegNext(addr_external_d,0.U)}
   val addr_external_r       =  withClock(io.lsu_c1_r_clk){RegNext(io.addr_external_m,0.U)}
   val bus_read_data_r       =  withClock(io.lsu_c1_r_clk){RegNext(io.bus_read_data_m,0.U)}
   // Fast interrupt address
