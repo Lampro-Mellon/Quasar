@@ -19,7 +19,7 @@ class el2_lsu_ecc extends Module with el2_lib with RequireAsyncReset {
 
     val lsu_addr_r	   	           = Input(UInt(DCCM_BITS.W))
     val end_addr_r	   	           = Input(UInt(DCCM_BITS.W))
-    val lsu_addr_m	   	           = Input(UInt(DCCM_BITS.W))
+    val lsu_addr_m	   	           = Input(UInt(DCCM_BITS.W))//6fba5e03053441e71b7d54f50a77e3b496d56173
     val end_addr_m	   	           = Input(UInt(DCCM_BITS.W))
 
     val dccm_rdata_hi_r   	       = Input(UInt(DCCM_DATA_WIDTH.W))
