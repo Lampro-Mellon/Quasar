@@ -342,7 +342,7 @@ class el2_swerv_wrapper extends Module with el2_lib with RequireAsyncReset {
   val dma_hresp = Output(Bool())
   */
 })
-  val mem = Module(new waleed.el2_mem())
+  val mem = Module(new quasar.el2_mem())
   val dmi_wrapper = Module(new dmi_wrapper())
   val swerv = Module(new el2_swerv())
   dmi_wrapper.io.trst_n := io.jtag_trst_n

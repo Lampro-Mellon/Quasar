@@ -55,7 +55,7 @@ class Mem_bundle extends Bundle with el2_lib {
   val iccm_rd_data = Output(UInt(64.W))
 
 }
-object waleed extends el2_lib {
+object quasar extends el2_lib {
   class el2_mem extends BlackBox(Map("DCCM_BITS" -> DCCM_BITS,
     "DCCM_FDATA_WIDTH" -> DCCM_FDATA_WIDTH,
     "ICCM_BITS" -> ICCM_BITS,
@@ -92,7 +92,7 @@ object waleed extends el2_lib {
 }
 class blackbox_mem extends Module with el2_lib {
   val io = IO(new Mem_bundle)
-  val it = Module(new waleed.el2_mem)
+  val it = Module(new quasar.el2_mem)
   io <> it.io
 }
 
