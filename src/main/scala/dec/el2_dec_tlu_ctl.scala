@@ -89,7 +89,7 @@ class el2_dec_tlu_ctl_IO extends Bundle with el2_lib {
 
   val     iccm_dma_sb_error  = Input(UInt(1.W))      // I side dma single bit error
 
-  val     lsu_error_pkt_r  = Input(new el2_lsu_error_pkt_t)// lsu precise exception/error packet
+  val     lsu_error_pkt_r  = Flipped(Valid(new el2_lsu_error_pkt_t))// lsu precise exception/error packet
   val     lsu_single_ecc_error_incr = Input(UInt(1.W)) // LSU inc SB error counter
 
   val         dec_pause_state = Input(UInt(1.W)) // Pause counter not zero
@@ -188,7 +188,7 @@ class el2_dec_tlu_ctl_IO extends Bundle with el2_lib {
   val  dec_tlu_meipt              = Output(UInt(4.W)) // to PIC
   val  dec_csr_rddata_d           = Output(UInt(32.W))      // csr read data at wb
   val dec_csr_legal_d             = Output(UInt(1.W))              // csr indicates legal operation
-  val dec_tlu_br0_r_pkt           = Output(new el2_br_tlu_pkt_t) // branch pkt to bp
+  val dec_tlu_br0_r_pkt           = Valid(new el2_br_tlu_pkt_t) // branch pkt to bp
   val dec_tlu_i0_kill_writeb_wb   = Output(UInt(1.W))    // I0 is flushed, don't writeback any results to arch state
   val dec_tlu_flush_lower_wb      = Output(UInt(1.W))       // commit has a flush (exception, int, mispredict at e4)
   val dec_tlu_i0_commit_cmt       = Output(UInt(1.W))        // committed an instruction
@@ -389,7 +389,7 @@ class el2_dec_tlu_ctl extends Module with el2_lib with RequireAsyncReset with CS
 
   // for CSRs that have inpipe writes only
   val csr_wr_clk=rvclkhdr(clock,(dec_csr_wen_r_mod | clk_override).asBool,io.scan_mode)
-  val lsu_r_wb_clk=rvclkhdr(clock,(io.lsu_error_pkt_r.exc_valid | lsu_exc_valid_r_d1 | clk_override).asBool,io.scan_mode)
+  val lsu_r_wb_clk=rvclkhdr(clock,(io.lsu_error_pkt_r.valid | lsu_exc_valid_r_d1 | clk_override).asBool,io.scan_mode)
 
   val e4_valid = io.dec_tlu_i0_valid_r
   val e4e5_valid = e4_valid | e5_valid
@@ -685,20 +685,20 @@ class el2_dec_tlu_ctl extends Module with el2_lib with RequireAsyncReset with CS
   val lsu_single_ecc_error_r 		=io.lsu_single_ecc_error_incr
   mdseac_locked_f					:=withClock(io.free_clk){RegNext(mdseac_locked_ns,0.U)}
   val lsu_single_ecc_error_r_d1	=withClock(io.free_clk){RegNext(lsu_single_ecc_error_r,0.U)}
-  val lsu_error_pkt_addr_r		 	=io.lsu_error_pkt_r.addr
-  val lsu_exc_valid_r_raw = io.lsu_error_pkt_r.exc_valid & ~io.dec_tlu_flush_lower_wb
-  lsu_i0_exc_r_raw :=  io.lsu_error_pkt_r.exc_valid
+  val lsu_error_pkt_addr_r		 	=io.lsu_error_pkt_r.bits.addr
+  val lsu_exc_valid_r_raw = io.lsu_error_pkt_r.valid & ~io.dec_tlu_flush_lower_wb
+  lsu_i0_exc_r_raw :=  io.lsu_error_pkt_r.valid
   val lsu_i0_exc_r = lsu_i0_exc_r_raw & lsu_exc_valid_r_raw & ~i0_trigger_hit_r & ~rfpc_i0_r
   val lsu_exc_valid_r = lsu_i0_exc_r
   lsu_exc_valid_r_d1			:=withClock(lsu_r_wb_clk){RegNext(lsu_exc_valid_r,0.U)}
   val lsu_i0_exc_r_d1			=withClock(lsu_r_wb_clk){RegNext(lsu_i0_exc_r,0.U)}
-  val lsu_exc_ma_r  =  lsu_i0_exc_r & ~io.lsu_error_pkt_r.exc_type
-  val lsu_exc_acc_r =  lsu_i0_exc_r & io.lsu_error_pkt_r.exc_type
-  val lsu_exc_st_r  =  lsu_i0_exc_r & io.lsu_error_pkt_r.inst_type
+  val lsu_exc_ma_r  =  lsu_i0_exc_r & ~io.lsu_error_pkt_r.bits.exc_type
+  val lsu_exc_acc_r =  lsu_i0_exc_r & io.lsu_error_pkt_r.bits.exc_type
+  val lsu_exc_st_r  =  lsu_i0_exc_r & io.lsu_error_pkt_r.bits.inst_type
 
   // Single bit ECC errors on loads are RFNPC corrected, with the corrected data written to the GPR.
   // LSU turns the load into a store and patches the data in the DCCM
-  val lsu_i0_rfnpc_r = io.dec_tlu_i0_valid_r & ~i0_trigger_hit_r & (~io.lsu_error_pkt_r.inst_type & io.lsu_error_pkt_r.single_ecc_error)
+  val lsu_i0_rfnpc_r = io.dec_tlu_i0_valid_r & ~i0_trigger_hit_r & (~io.lsu_error_pkt_r.bits.inst_type & io.lsu_error_pkt_r.bits.single_ecc_error)
 
   //  Final commit valids
   val tlu_i0_commit_cmt = io.dec_tlu_i0_valid_r & ~rfpc_i0_r & ~lsu_i0_exc_r &  ~inst_acc_r & ~io.dec_tlu_dbg_halted & ~request_debug_mode_r_d1 & ~i0_trigger_hit_r
@@ -727,12 +727,12 @@ class el2_dec_tlu_ctl extends Module with el2_lib with RequireAsyncReset with CS
   val dec_tlu_br0_v_r = io.exu_i0_br_valid_r & io.dec_tlu_i0_valid_r & ~tlu_flush_lower_r_d1 & (~io.exu_i0_br_mp_r | ~io.exu_pmu_i0_br_ataken)
 
 
-  io.dec_tlu_br0_r_pkt.hist 			:= io.exu_i0_br_hist_r
-  io.dec_tlu_br0_r_pkt.br_error 		:= dec_tlu_br0_error_r
-  io.dec_tlu_br0_r_pkt.br_start_error 	:= dec_tlu_br0_start_error_r
+  io.dec_tlu_br0_r_pkt.bits.hist 			:= io.exu_i0_br_hist_r
+  io.dec_tlu_br0_r_pkt.bits.br_error 		:= dec_tlu_br0_error_r
+  io.dec_tlu_br0_r_pkt.bits.br_start_error 	:= dec_tlu_br0_start_error_r
   io.dec_tlu_br0_r_pkt.valid 			:= dec_tlu_br0_v_r
-  io.dec_tlu_br0_r_pkt.way 			:= io.exu_i0_br_way_r
-  io.dec_tlu_br0_r_pkt.middle 			:= io.exu_i0_br_middle_r
+  io.dec_tlu_br0_r_pkt.bits.way 			:= io.exu_i0_br_way_r
+  io.dec_tlu_br0_r_pkt.bits.middle 			:= io.exu_i0_br_middle_r
 
 
   ebreak_r  :=  (io.dec_tlu_packet_r.pmu_i0_itype === EBREAK)  & io.dec_tlu_i0_valid_r & ~i0_trigger_hit_r & ~dcsr(DCSR_EBREAKM) & ~rfpc_i0_r
@@ -1343,7 +1343,7 @@ class el2_CSR_IO extends Bundle with el2_lib {
   val dec_tlu_external_ldfwd_disable    = Output(UInt(1.W))
   val dec_tlu_dma_qos_prty              = Output(UInt(3.W))
   val dec_illegal_inst                  = Input(UInt(32.W))
-  val lsu_error_pkt_r                   = Input(new el2_lsu_error_pkt_t)
+  val lsu_error_pkt_r                   = Flipped(Valid(new el2_lsu_error_pkt_t))
   val mexintpend                        = Input(UInt(1.W))
   val exu_npc_r                         = Input(UInt(31.W))
   val mpc_reset_run_req                 = Input(UInt(1.W))
@@ -1741,7 +1741,7 @@ class csr_tlu extends Module with el2_lib with CSRs {
   val ifu_mscause =  Mux((io.dec_tlu_packet_r.icaf_type === 0.U(2.W)), "b1001".U, Cat(0.U(2.W) , io.dec_tlu_packet_r.icaf_type))
 
   val mscause_type = Mux1H( Seq(
-    io.lsu_i0_exc_r.asBool                 -> io.lsu_error_pkt_r.mscause,
+    io.lsu_i0_exc_r.asBool                 -> io.lsu_error_pkt_r.bits.mscause,
     io.i0_trigger_hit_r.asBool             -> "b0001".U,
     io.ebreak_r.asBool                     -> "b0010".U,
     io.inst_acc_r.asBool                   -> ifu_mscause ))

@@ -24,8 +24,8 @@ class  el2_lsu_bus_intf extends Module with RequireAsyncReset with el2_lib {
     val dec_lsu_valid_raw_d = Input(Bool())
     val lsu_busreq_m        = Input(Bool())
 
-    val lsu_pkt_m           = Input(new el2_lsu_pkt_t)
-    val lsu_pkt_r           = Input(new el2_lsu_pkt_t)
+    val lsu_pkt_m           = Flipped(Valid(new el2_lsu_pkt_t))
+    val lsu_pkt_r           = Flipped(Valid(new el2_lsu_pkt_t))
 
     val lsu_addr_d          = Input(UInt(32.W))
     val lsu_addr_m          = Input(UInt(32.W))
@@ -273,12 +273,12 @@ class  el2_lsu_bus_intf extends Module with RequireAsyncReset with el2_lib {
 
 
 
-  ldst_byteen_m           := Mux1H(Seq(io.lsu_pkt_m.word.asBool -> 15.U(4.W), io.lsu_pkt_m.half.asBool -> 3.U(4.W), io.lsu_pkt_m.by.asBool -> 1.U(4.W)))
+  ldst_byteen_m           := Mux1H(Seq(io.lsu_pkt_m.bits.word.asBool -> 15.U(4.W), io.lsu_pkt_m.bits.half.asBool -> 3.U(4.W), io.lsu_pkt_m.bits.by.asBool -> 1.U(4.W)))
   ldst_dual_d             := io.lsu_addr_d(2) =/= io.end_addr_d(2)
   addr_match_dw_lo_r_m    := (io.lsu_addr_r(31,3) === io.lsu_addr_m(31,3))
   addr_match_word_lo_r_m  := addr_match_dw_lo_r_m & !(io.lsu_addr_r(2)^io.lsu_addr_m(2))
-  no_word_merge_r         := io.lsu_busreq_r & !ldst_dual_r & io.lsu_busreq_m & (io.lsu_pkt_m.load | !addr_match_word_lo_r_m)
-  no_dword_merge_r        := io.lsu_busreq_r & !ldst_dual_r & io.lsu_busreq_m & (io.lsu_pkt_m.load | !addr_match_dw_lo_r_m)
+  no_word_merge_r         := io.lsu_busreq_r & !ldst_dual_r & io.lsu_busreq_m & (io.lsu_pkt_m.bits.load | !addr_match_word_lo_r_m)
+  no_dword_merge_r        := io.lsu_busreq_r & !ldst_dual_r & io.lsu_busreq_m & (io.lsu_pkt_m.bits.load | !addr_match_dw_lo_r_m)
 
   ldst_byteen_ext_m       := ldst_byteen_m(3,0) << io.lsu_addr_m(1,0)
   ldst_byteen_ext_r       := ldst_byteen_r(3,0) << io.lsu_addr_r(1,0)
@@ -290,10 +290,10 @@ class  el2_lsu_bus_intf extends Module with RequireAsyncReset with el2_lib {
 
   store_data_hi_r         := store_data_ext_r(63,32)
   store_data_lo_r         := store_data_ext_r(31,0)
-  ld_addr_rhit_lo_lo      := (io.lsu_addr_m(31,2) === io.lsu_addr_r(31,2)) & io.lsu_pkt_r.valid & io.lsu_pkt_r.store & io.lsu_busreq_m
-  ld_addr_rhit_lo_hi      := (io.end_addr_m(31,2) === io.lsu_addr_r(31,2)) & io.lsu_pkt_r.valid & io.lsu_pkt_r.store & io.lsu_busreq_m
-  ld_addr_rhit_hi_lo      := (io.lsu_addr_m(31,2) === io.end_addr_r(31,2)) & io.lsu_pkt_r.valid & io.lsu_pkt_r.store & io.lsu_busreq_m
-  ld_addr_rhit_hi_hi      := (io.end_addr_m(31,2) === io.end_addr_r(31,2)) & io.lsu_pkt_r.valid & io.lsu_pkt_r.store & io.lsu_busreq_m
+  ld_addr_rhit_lo_lo      := (io.lsu_addr_m(31,2) === io.lsu_addr_r(31,2)) & io.lsu_pkt_r.valid & io.lsu_pkt_r.bits.store & io.lsu_busreq_m
+  ld_addr_rhit_lo_hi      := (io.end_addr_m(31,2) === io.lsu_addr_r(31,2)) & io.lsu_pkt_r.valid & io.lsu_pkt_r.bits.store & io.lsu_busreq_m
+  ld_addr_rhit_hi_lo      := (io.lsu_addr_m(31,2) === io.end_addr_r(31,2)) & io.lsu_pkt_r.valid & io.lsu_pkt_r.bits.store & io.lsu_busreq_m
+  ld_addr_rhit_hi_hi      := (io.end_addr_m(31,2) === io.end_addr_r(31,2)) & io.lsu_pkt_r.valid & io.lsu_pkt_r.bits.store & io.lsu_busreq_m
 
   ld_byte_rhit_lo_lo      := (0 until 4).map(i =>(ld_addr_rhit_lo_lo & ldst_byteen_lo_r(i) & ldst_byteen_lo_m(i)).asUInt).reverse.reduce(Cat(_,_))
   ld_byte_rhit_lo_hi      := (0 until 4).map(i =>(ld_addr_rhit_lo_hi & ldst_byteen_lo_r(i) & ldst_byteen_hi_m(i)).asUInt).reverse.reduce(Cat(_,_))
@@ -310,7 +310,7 @@ class  el2_lsu_bus_intf extends Module with RequireAsyncReset with el2_lib {
   ld_fwddata_hi           := (0 until 4).map(i =>(Mux(ld_byte_rhit_hi(i), ld_fwddata_rpipe_hi((8*i)+7,(8*i)), ld_fwddata_buf_hi((8*i)+7,(8*i)))).asUInt).reverse.reduce(Cat(_,_))
   ld_full_hit_lo_m        := (0 until 4).map(i =>((ld_byte_hit_lo(i) | !ldst_byteen_lo_m(i))).asUInt).reduce(_&_)
   ld_full_hit_hi_m        := (0 until 4).map(i =>((ld_byte_hit_hi(i) | !ldst_byteen_hi_m(i))).asUInt).reduce(_&_)
-  ld_full_hit_m           := ld_full_hit_lo_m & ld_full_hit_hi_m & io.lsu_busreq_m & io.lsu_pkt_m.load & !io.is_sideeffects_m
+  ld_full_hit_m           := ld_full_hit_lo_m & ld_full_hit_hi_m & io.lsu_busreq_m & io.lsu_pkt_m.bits.load & !io.is_sideeffects_m
   ld_fwddata_m            := Cat(ld_fwddata_hi(31,0), ld_fwddata_lo(31,0)) >> (8.U*io.lsu_addr_m(1,0))
   io.bus_read_data_m      := ld_fwddata_m(31,0)
 

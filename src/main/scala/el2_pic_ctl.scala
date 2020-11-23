@@ -29,16 +29,8 @@ class el2_pic_ctrl extends Module with RequireAsyncReset with el2_lib {
 
   })
 
-  //def el2_cmp_and_mux (a_id : UInt, a_priority : UInt, b_id : UInt, b_priority : UInt) =
-   // (Mux(a_priority<b_priority, b_id, a_id), Mux(a_priority<b_priority, b_priority, a_priority))
-
-  def el2_cmp_and_mux (a_id : UInt, a_priority : UInt, b_id : UInt, b_priority : UInt) = {
-    val out_id = WireInit(UInt(ID_BITS.W),init= 0.U)
-    val out_priority = WireInit(UInt(INTPRIORITY_BITS.W),init= 0.U)
-    out_id := Mux(a_priority<b_priority, b_id, a_id)
-    out_priority := Mux(a_priority<b_priority, b_priority, a_priority)
-    (out_id,out_priority)
-  }
+  def el2_cmp_and_mux (a_id : UInt, a_priority : UInt, b_id : UInt, b_priority : UInt) =
+    (Mux(a_priority<b_priority, b_id, a_id), Mux(a_priority<b_priority, b_priority, a_priority))
 
   def el2_configurable_gw (extintsrc_req_sync : UInt, meigwctrl_polarity : UInt, meigwctrl_type : UInt, meigwclr : UInt) = {
     val gw_int_pending = WireInit(UInt(1.W),0.U)

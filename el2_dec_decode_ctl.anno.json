@@ -1,53 +1,64 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_pmu_decode_stall",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_sra",
     "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_decode_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_load_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dma_dccm_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_store_stall_any",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_any_unq_d",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_csr_write",
     "sources":[
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_sub",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_wen_unq_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
@@ -57,80 +68,27 @@
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_alu_decode_d",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_mul_p_bits_rs2_sign",
     "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_valid",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_decode_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_load_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dma_dccm_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_store_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
@@ -142,128 +100,94 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_csr_write",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_bits_word",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_predict_nt",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_bits_prett",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_prett"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_bits_fast_int",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_any_unq_d",
     "sources":[
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_add",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_bits_way",
     "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_way"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_pja",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_bypass_data_d",
     "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_lsu_valid_raw_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dma_dccm_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_result_m",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_p_valid",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_wen",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_waddr",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_load_ldst_bypass_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_i0_kill_writeb_r",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
@@ -282,32 +206,65 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_mul_p_rs2_sign",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_p_valid",
     "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_unsign",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_lsu_offset_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_add",
     "sources":[
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
@@ -326,19 +283,63 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_br_immed_d",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_lor",
     "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_predict_nt",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_pc4_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_bits_unsign",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_select_pc_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_mul_p_bits_rs1_sign",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
@@ -357,33 +358,57 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_predict_nt",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_pmu_presync_stall",
     "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_half",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_valid",
     "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_decode_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_load_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dma_dccm_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_store_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
     ]
   },
   {
@@ -395,38 +420,93 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_valid",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_bypass_en_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_wen",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_waddr",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_i0_kill_writeb_r",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_bits_by",
     "sources":[
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_decode_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_bits_br_error",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_decode_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_load_stall_any",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dma_dccm_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_store_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_bits_load_ldst_bypass_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
@@ -436,176 +516,12 @@
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_unsign",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_store_data_bypass_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_br_error",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_decode_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_load_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dma_dccm_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_store_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_toffset",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_store_data_bypass_m",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_blt",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_word",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_pmu_presync_stall",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_load",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_bne",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
@@ -617,17 +533,115 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_pcall",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_bne",
     "sources":[
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_pmu_i0_br_unpred",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_land",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_bypass_en_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_wen",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_waddr",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_i0_kill_writeb_r",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_mul_p_valid",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_waddr",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_beq",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
@@ -646,121 +660,22 @@
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_mul_p_low",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_lsu_offset_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_pc4",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_pc4_d"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_immed_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_rddata_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_pmu_i0_br_unpred",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_sub",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_waddr",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_select_pc_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
     ]
   },
   {
@@ -775,104 +690,6 @@
     "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_d",
     "sources":[
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_bypass_en_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_wen",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_waddr",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_i0_kill_writeb_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_way",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_way"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_mul_p_rs1_sign",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_slt",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_bypass_data_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_result_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_wen",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_waddr",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_i0_kill_writeb_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_land",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
     ]
   },
   {
@@ -895,18 +712,492 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_by",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_bits_br_start_error",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_decode_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_load_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dma_dccm_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_store_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_bits_store_data_bypass_m",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_icaf",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_wrdata_r",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_result_corr_r"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_icaf_f1",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_bits_pret",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_p_bits_rem",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_i0trigger",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_bits_store",
     "sources":[
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_lsu_valid_raw_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dma_dccm_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_bits_store_data_bypass_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_pmu_lsu_misaligned",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_pmu_decode_stall",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_decode_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_load_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dma_dccm_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_store_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_immed_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_rddata_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_unsign",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_bits_load",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_p_bits_unsign",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_srl",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_mul_p_bits_low",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_bits_half",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_wen_r",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_i0_kill_writeb_r",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_bits_pcall",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_valid",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_decode_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_load_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dma_dccm_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_store_stall_any",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_legal",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_bits_toffset",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_predict_t",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_bypass_data_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_result_m",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_wen",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_waddr",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_i0_kill_writeb_r",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_alu_decode_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_csr_imm",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_sll",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
@@ -926,19 +1217,19 @@
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
@@ -946,9 +1237,63 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_icaf",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_jal",
     "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_rdaddr_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_ren_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_bits_hist",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_br_immed_d",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_predict_nt",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_pc4_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset"
     ]
   },
   {
@@ -969,387 +1314,22 @@
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_wen_unq_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_prett",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_prett"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_p_rem",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_wrdata_r",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_result_corr_r"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_hist",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_lxor",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_icaf_f1",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_sll",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_bypass_data_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_result_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_wen",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_waddr",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_i0_kill_writeb_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_i0trigger",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_jal",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_p_unsign",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_pmu_lsu_misaligned",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_beq",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_store",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_csr_imm",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_ren_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_wen_r",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_i0_kill_writeb_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_packet_r_legal",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_bge",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_bypass_en_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_wen",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_nonblock_load_waddr",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_i0_kill_writeb_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_wb",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_p_fast_int",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_srl",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_br_start_error",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_decode_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_load_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dma_dccm_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_store_stall_any",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_rdaddr_d",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_lor",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_sra",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
     ]
   },
   {
@@ -1361,34 +1341,9 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_mul_p_valid",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_bits_pc4",
     "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_csr_legal_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_ib0_valid_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_flush_lower_r",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_div_active",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_pc4_d"
     ]
   },
   {
@@ -1404,32 +1359,17 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_pret",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_lxor",
     "sources":[
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_predict_t",
-    "sources":[
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset"
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {
@@ -1450,22 +1390,82 @@
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs1_en_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_div_waddr_wb",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_rs2_en_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_debug_stall",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_pipelining_disable",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_valid_m",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_br_error",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_debug_fence_d",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_extint_stall",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dbg_cmd_wrdata",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_tlu_presync_d",
-      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_hist",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_valid",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_error",
       "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_lsu_nonblock_load_data_tag"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_blt",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_slt",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_i0_ap_bge",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_predict_p_d_bits_pja",
+    "sources":[
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_icaf_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_dbecc_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_instr_d",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_start_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_br_error",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_ret",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_valid",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_toffset",
+      "~el2_dec_decode_ctl|el2_dec_decode_ctl>io_dec_i0_brp_bits_hist"
     ]
   },
   {

@@ -122,17 +122,17 @@ class el2_ifu extends Module with el2_lib with RequireAsyncReset {
     val ifu_i0_pc4 = Output(Bool())
     val ifu_miss_state_idle = Output(Bool())
     // Aligner branch data
-    val i0_brp = Output(new el2_br_pkt_t)
+    val i0_brp = Valid(new el2_br_pkt_t)
     val ifu_i0_bp_index         = Output(UInt((BTB_ADDR_HI-BTB_ADDR_LO+1).W))
     val ifu_i0_bp_fghr          = Output(UInt(BHT_GHR_SIZE.W))
     val ifu_i0_bp_btag          = Output(UInt(BTB_BTAG_SIZE.W))
     // BP Inputs
-    val exu_mp_pkt = Input(new el2_predict_pkt_t)
+    val exu_mp_pkt = Flipped(Valid(new el2_predict_pkt_t))
     val exu_mp_eghr = Input(UInt(BHT_GHR_SIZE.W))
     val exu_mp_fghr = Input(UInt(BHT_GHR_SIZE.W))
     val exu_mp_index = Input(UInt((BTB_ADDR_HI-BTB_ADDR_LO+1).W)) // Misprediction index
     val exu_mp_btag = Input(UInt(BTB_BTAG_SIZE.W))
-    val dec_tlu_br0_r_pkt = Input(new el2_br_tlu_pkt_t)
+    val dec_tlu_br0_r_pkt = Flipped(Valid(new el2_br_tlu_pkt_t))
     val exu_i0_br_fghr_r = Input(UInt(BHT_GHR_SIZE.W)) // Updated GHR from the exu
     val exu_i0_br_index_r = Input(UInt((BTB_ADDR_HI-BTB_ADDR_LO+1).W))
     val dec_tlu_flush_lower_wb = Input(Bool())

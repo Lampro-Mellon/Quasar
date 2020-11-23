@@ -20,7 +20,7 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
     val                  a_in              = Input(SInt(32.W))               // A operand
     val                  b_in              = Input(UInt(32.W))               // B operand
     val                  pc_in             = Input(UInt(31.W))              // for pc=pc+2,4 calculations
-    val                  pp_in             = Input(new el2_predict_pkt_t)              // Predicted branch structure
+    val                  pp_in             = Flipped(Valid(new el2_predict_pkt_t))              // Predicted branch structure
     val                  brimm_in          = Input(UInt(12.W))           // Branch offset
     //////////  Outputs  /////////
     val                  result_ff         = Output(UInt(32.W))          // final result
@@ -29,7 +29,7 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
     val                  flush_path_out    = Output(UInt(31.W)) // Branch flush PC
     val                  pc_ff             = Output(UInt(31.W)) // flopped PC
     val                  pred_correct_out  = Output(UInt(1.W)) // NPC control
-    val                  predict_p_out     = Output(new el2_predict_pkt_t)     // Predicted branch structure
+    val                  predict_p_out     = Valid(new el2_predict_pkt_t)     // Predicted branch structure
   })
 
   io.pc_ff := rvdffe(io.pc_in,io.enable,clock,io.scan_mode.asBool) // any PC is run through here - doesn't have to be alu
@@ -42,13 +42,13 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
   aout := Mux(io.ap.sub.asBool,(Cat(0.U(1.W),io.a_in) + Cat(0.U(1.W),~io.b_in) + Cat(0.U(32.W),io.ap.sub)), (Cat(0.U(1.W),io.a_in) + Cat(0.U(1.W), io.b_in) + Cat(0.U(32.W),io.ap.sub)))
   val cout = aout(32)
 
-  val ov  = (~io.a_in(31) & ~bm(31) &  aout(31)) | ( io.a_in(31) &  bm(31) & ~aout(31) ) //overflow check from last bits
+  val ov  = (!io.a_in(31) & !bm(31) &  aout(31)) | ( io.a_in(31) &  bm(31) & !aout(31) ) //overflow check from last bits
 
   val eq                  = (io.a_in === io.b_in.asSInt)
   val ne                  = ~eq
   val neg                 =  aout(31)// check for the last signed bit (for neg)
-  val lt                  = (~io.ap.unsign & (neg ^ ov)) |  ( io.ap.unsign & ~cout)  //if alu packet sends unsigned and there is no cout(i.e no overflow and unsigned pkt)
-  val ge                  = ~lt // if not less then
+  val lt                  = (!io.ap.unsign & (neg ^ ov)) |  ( io.ap.unsign & !cout)  //if alu packet sends unsigned and there is no cout(i.e no overflow and unsigned pkt)
+  val ge                  = !lt // if not less then
 
 
   val lout                =  Mux1H(Seq(
@@ -75,8 +75,8 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
 
 
   val sel_shift           =  io.ap.sll  | io.ap.srl | io.ap.sra
-  val sel_adder           = (io.ap.add  | io.ap.sub) & ~io.ap.slt
-  val sel_pc              =  io.ap.jal  | io.pp_in.pcall | io.pp_in.pja | io.pp_in.pret
+  val sel_adder           = (io.ap.add  | io.ap.sub) & !io.ap.slt
+  val sel_pc              =  io.ap.jal  | io.pp_in.bits.pcall | io.pp_in.bits.pja | io.pp_in.bits.pret
   val csr_write_data      = Mux(io.ap.csr_imm.asBool, io.b_in.asSInt, io.a_in)
 
   val slt_one             =  io.ap.slt & lt
@@ -94,9 +94,9 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
   // *** branch handling ***
 
   val any_jal             =  io.ap.jal      | //jal
-    io.pp_in.pcall | //branch is a call inst
-    io.pp_in.pja   | //branch is a jump always
-    io.pp_in.pret //return inst
+    io.pp_in.bits.pcall | //branch is a call inst
+    io.pp_in.bits.pja   | //branch is a jump always
+    io.pp_in.bits.pret //return inst
 
   val actual_taken        = (io.ap.beq & eq) | (io.ap.bne & ne.asUInt) | (io.ap.blt & lt) | (io.ap.bge & ge) | any_jal
 
@@ -111,7 +111,7 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
   val cond_mispredict   = (io.ap.predict_t  & !actual_taken) | (io.ap.predict_nt &  actual_taken.asUInt)
 
   // target mispredicts on ret's
-  val target_mispredict   =  io.pp_in.pret & (io.pp_in.prett =/= aout(31,1)) //predicted return target != aout
+  val target_mispredict   =  io.pp_in.bits.pret & (io.pp_in.bits.prett =/= aout(31,1)) //predicted return target != aout
 
   io.flush_upper_out     :=   (io.ap.jal | cond_mispredict | target_mispredict) & io.valid_in & !io.flush_upper_x   & !io.flush_lower_r
   //there was no entire pipe flush (& previous cycle flush ofc(why check?)) therfore signAL 1 to flush instruction before X stage
@@ -119,13 +119,13 @@ class el2_exu_alu_ctl extends Module with el2_lib with RequireAsyncReset{
   //there was entire pipe flush or (there is mispred or a jal) therfore signAL 1 to flush entire pipe
 
   val  newhist = WireInit(UInt(2.W),0.U)
-  newhist    := Cat((io.pp_in.hist(1) &  io.pp_in.hist(0)) | (~io.pp_in.hist(0) & actual_taken),//newhist[1]
-    (~io.pp_in.hist(1) & ~actual_taken)  | (io.pp_in.hist(1) & actual_taken))   //newhist[0]
+  newhist    := Cat((io.pp_in.bits.hist(1) &  io.pp_in.bits.hist(0)) | (!io.pp_in.bits.hist(0) & actual_taken),//newhist[1]
+    (!io.pp_in.bits.hist(1) & !actual_taken)  | (io.pp_in.bits.hist(1) & actual_taken))   //newhist[0]
 
   io.predict_p_out           :=  io.pp_in
-  io.predict_p_out.misp      := ~io.flush_upper_x & ~io.flush_lower_r & (cond_mispredict | target_mispredict);// if 1 tells that it was a	misprediction becauseprevious cycle was not a flush and these was no master flush(lower pipe flush) and ifu predicted taken but actually its nt
-  io.predict_p_out.ataken    :=  actual_taken; // send a control signal telling it branch taken or not
-  io.predict_p_out.hist      :=  newhist
+  io.predict_p_out.bits.misp      := !io.flush_upper_x & !io.flush_lower_r & (cond_mispredict | target_mispredict)// if 1 tells that it was a	misprediction becauseprevious cycle was not a flush and these was no master flush(lower pipe flush) and ifu predicted taken but actually its nt
+  io.predict_p_out.bits.ataken    :=  actual_taken; // send a control signal telling it branch taken or not
+  io.predict_p_out.bits.hist      :=  newhist
 }
 
 object alu extends App{

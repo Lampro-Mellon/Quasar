@@ -20,7 +20,7 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
     val exu_lsu_rs1_d                     = Input(UInt(32.W))
     val exu_lsu_rs2_d                     = Input(UInt(32.W))
     val dec_lsu_offset_d                  = Input(UInt(12.W))
-    val lsu_p                             = Input(new el2_lsu_pkt_t)
+    val lsu_p                             = Flipped(Valid(new el2_lsu_pkt_t))
     val trigger_pkt_any                   = Input(Vec(4, new el2_trigger_pkt_t))
 
     val dec_lsu_valid_raw_d               = Input(Bool())
@@ -36,7 +36,7 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
     val lsu_fir_addr                      = Output(UInt(31.W))
     val lsu_fir_error                     = Output(UInt(2.W))
     val lsu_single_ecc_error_incr         = Output(Bool())
-    val lsu_error_pkt_r                   = Output(new el2_lsu_error_pkt_t)
+    val lsu_error_pkt_r                   = Valid(new el2_lsu_error_pkt_t)
     val lsu_imprecise_error_load_any      = Output(Bool())
     val lsu_imprecise_error_store_any     = Output(Bool())
     val lsu_imprecise_error_addr_any      = Output(UInt(32.W))
@@ -172,7 +172,7 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   // Ready to accept dma trxns
   // There can't be any inpipe forwarding from non-dma packet to dma packet since they can be flushed so we can't have st in r when dma is in m
   val dma_mem_tag_d  = io.dma_mem_tag
-  val ldst_nodma_mtor = lsu_lsc_ctl.io.lsu_pkt_m.valid & !lsu_lsc_ctl.io.lsu_pkt_m.dma & (lsu_lsc_ctl.io.addr_in_dccm_m | lsu_lsc_ctl.io.addr_in_pic_m) & lsu_lsc_ctl.io.lsu_pkt_m.store
+  val ldst_nodma_mtor = lsu_lsc_ctl.io.lsu_pkt_m.valid & !lsu_lsc_ctl.io.lsu_pkt_m.bits.dma & (lsu_lsc_ctl.io.addr_in_dccm_m | lsu_lsc_ctl.io.addr_in_pic_m) & lsu_lsc_ctl.io.lsu_pkt_m.bits.store
   io.dccm_ready := !(io.dec_lsu_valid_raw_d | ldst_nodma_mtor | dccm_ctl.io.ld_single_ecc_error_r_ff)
   val dma_dccm_wen = io.dma_dccm_req & io.dma_mem_write & lsu_lsc_ctl.io.addr_in_dccm_d
   val dma_pic_wen  = io.dma_dccm_req & io.dma_mem_write & lsu_lsc_ctl.io.addr_in_pic_d
@@ -187,17 +187,17 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   // Indicates non-idle if there is a instruction valid in d-r or read/write buffers are non-empty since they can come with error
   // Store buffer now have only non-dma dccm stores
   // stbuf_empty not needed since it has only dccm stores
-  io.lsu_idle_any := !((lsu_lsc_ctl.io.lsu_pkt_m.valid & !lsu_lsc_ctl.io.lsu_pkt_m.dma) | (lsu_lsc_ctl.io.lsu_pkt_r.valid & !lsu_lsc_ctl.io.lsu_pkt_r.dma)) & bus_intf.io.lsu_bus_buffer_empty_any & bus_intf.io.lsu_bus_idle_any
+  io.lsu_idle_any := !((lsu_lsc_ctl.io.lsu_pkt_m.valid & !lsu_lsc_ctl.io.lsu_pkt_m.bits.dma) | (lsu_lsc_ctl.io.lsu_pkt_r.valid & !lsu_lsc_ctl.io.lsu_pkt_r.bits.dma)) & bus_intf.io.lsu_bus_buffer_empty_any & bus_intf.io.lsu_bus_idle_any
   // Instantiate the store buffer
-  val store_stbuf_reqvld_r = lsu_lsc_ctl.io.lsu_pkt_r.valid & lsu_lsc_ctl.io.lsu_pkt_r.store & lsu_lsc_ctl.io.addr_in_dccm_r & !flush_r & !lsu_lsc_ctl.io.lsu_pkt_r.dma
+  val store_stbuf_reqvld_r = lsu_lsc_ctl.io.lsu_pkt_r.valid & lsu_lsc_ctl.io.lsu_pkt_r.bits.store & lsu_lsc_ctl.io.addr_in_dccm_r & !flush_r & !lsu_lsc_ctl.io.lsu_pkt_r.bits.dma
   // Disable Forwarding for now
-  val lsu_cmpen_m = lsu_lsc_ctl.io.lsu_pkt_m.valid & (lsu_lsc_ctl.io.lsu_pkt_m.load | lsu_lsc_ctl.io.lsu_pkt_m.store) & (lsu_lsc_ctl.io.addr_in_dccm_m | lsu_lsc_ctl.io.addr_in_pic_m)
+  val lsu_cmpen_m = lsu_lsc_ctl.io.lsu_pkt_m.valid & (lsu_lsc_ctl.io.lsu_pkt_m.bits.load | lsu_lsc_ctl.io.lsu_pkt_m.bits.store) & (lsu_lsc_ctl.io.addr_in_dccm_m | lsu_lsc_ctl.io.addr_in_pic_m)
   // Bus signals
-  val lsu_busreq_m = lsu_lsc_ctl.io.lsu_pkt_m.valid & ((lsu_lsc_ctl.io.lsu_pkt_m.load | lsu_lsc_ctl.io.lsu_pkt_m.store) & lsu_lsc_ctl.io.addr_external_m) & !flush_m_up & !lsu_lsc_ctl.io.lsu_exc_m & !lsu_lsc_ctl.io.lsu_pkt_m.fast_int
+  val lsu_busreq_m = lsu_lsc_ctl.io.lsu_pkt_m.valid & ((lsu_lsc_ctl.io.lsu_pkt_m.bits.load | lsu_lsc_ctl.io.lsu_pkt_m.bits.store) & lsu_lsc_ctl.io.addr_external_m) & !flush_m_up & !lsu_lsc_ctl.io.lsu_exc_m & !lsu_lsc_ctl.io.lsu_pkt_m.bits.fast_int
   // PMU signals
-  io.lsu_pmu_misaligned_m := lsu_lsc_ctl.io.lsu_pkt_m.valid & ((lsu_lsc_ctl.io.lsu_pkt_m.half & lsu_lsc_ctl.io.lsu_addr_m(0)) | (lsu_lsc_ctl.io.lsu_pkt_m.word & lsu_lsc_ctl.io.lsu_addr_m(1,0).orR))
-  io.lsu_pmu_load_external_m  := lsu_lsc_ctl.io.lsu_pkt_m.valid & lsu_lsc_ctl.io.lsu_pkt_m.load & lsu_lsc_ctl.io.addr_external_m
-  io.lsu_pmu_store_external_m := lsu_lsc_ctl.io.lsu_pkt_m.valid & lsu_lsc_ctl.io.lsu_pkt_m.store & lsu_lsc_ctl.io.addr_external_m
+  io.lsu_pmu_misaligned_m := lsu_lsc_ctl.io.lsu_pkt_m.valid & ((lsu_lsc_ctl.io.lsu_pkt_m.bits.half & lsu_lsc_ctl.io.lsu_addr_m(0)) | (lsu_lsc_ctl.io.lsu_pkt_m.bits.word & lsu_lsc_ctl.io.lsu_addr_m(1,0).orR))
+  io.lsu_pmu_load_external_m  := lsu_lsc_ctl.io.lsu_pkt_m.valid & lsu_lsc_ctl.io.lsu_pkt_m.bits.load & lsu_lsc_ctl.io.addr_external_m
+  io.lsu_pmu_store_external_m := lsu_lsc_ctl.io.lsu_pkt_m.valid & lsu_lsc_ctl.io.lsu_pkt_m.bits.store & lsu_lsc_ctl.io.addr_external_m
 
   //LSU_LSC_Control
   //Inputs
@@ -217,7 +217,7 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   lsu_lsc_ctl.io.flush_r                     := flush_r
   lsu_lsc_ctl.io.exu_lsu_rs1_d               := io.exu_lsu_rs1_d
   lsu_lsc_ctl.io.exu_lsu_rs2_d               := io.exu_lsu_rs2_d
-  lsu_lsc_ctl.io.lsu_p                       := io.lsu_p
+  lsu_lsc_ctl.io.lsu_p                       <> io.lsu_p
   lsu_lsc_ctl.io.dec_lsu_valid_raw_d         := io.dec_lsu_valid_raw_d
   lsu_lsc_ctl.io.dec_lsu_offset_d            := io.dec_lsu_offset_d
   lsu_lsc_ctl.io.picm_mask_data_m            := dccm_ctl.io.picm_mask_data_m
@@ -232,9 +232,9 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   //Outputs
 
   io.lsu_single_ecc_error_incr                  := lsu_lsc_ctl.io.lsu_single_ecc_error_incr
-  io.lsu_error_pkt_r                            := lsu_lsc_ctl.io.lsu_error_pkt_r
-  io.lsu_fir_addr                               := lsu_lsc_ctl.io.lsu_fir_addr
-  io.lsu_fir_error                              := lsu_lsc_ctl.io.lsu_fir_error
+  io.lsu_error_pkt_r                            <> lsu_lsc_ctl.io.lsu_error_pkt_r
+  io.lsu_fir_addr                               <> lsu_lsc_ctl.io.lsu_fir_addr
+  io.lsu_fir_error                              <> lsu_lsc_ctl.io.lsu_fir_error
   // DCCM Control
   //Inputs
   dccm_ctl.io.lsu_c2_m_clk                   := clkdomain.io.lsu_c2_m_clk
@@ -243,9 +243,9 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   dccm_ctl.io.lsu_c1_r_clk                   := clkdomain.io.lsu_free_c2_clk
   dccm_ctl.io.lsu_store_c1_r_clk             := clkdomain.io.lsu_c1_r_clk
   //dccm_ctl.io.clk                            := clock
-  dccm_ctl.io.lsu_pkt_d                      := lsu_lsc_ctl.io.lsu_pkt_d
-  dccm_ctl.io.lsu_pkt_m                      := lsu_lsc_ctl.io.lsu_pkt_m
-  dccm_ctl.io.lsu_pkt_r                      := lsu_lsc_ctl.io.lsu_pkt_r
+  dccm_ctl.io.lsu_pkt_d                      <> lsu_lsc_ctl.io.lsu_pkt_d
+  dccm_ctl.io.lsu_pkt_m                      <> lsu_lsc_ctl.io.lsu_pkt_m
+  dccm_ctl.io.lsu_pkt_r                      <> lsu_lsc_ctl.io.lsu_pkt_r
   dccm_ctl.io.addr_in_dccm_d                 := lsu_lsc_ctl.io.addr_in_dccm_d
   dccm_ctl.io.addr_in_dccm_m                 := lsu_lsc_ctl.io.addr_in_dccm_m
   dccm_ctl.io.addr_in_dccm_r                 := lsu_lsc_ctl.io.addr_in_dccm_r
@@ -320,8 +320,8 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   stbuf.io.lsu_c1_r_clk        	               := clkdomain.io.lsu_c1_m_clk
   stbuf.io.lsu_stbuf_c1_clk       	             := clkdomain.io.lsu_stbuf_c1_clk
   stbuf.io.lsu_free_c2_clk        	             := clkdomain.io.lsu_free_c2_clk
-  stbuf.io.lsu_pkt_m           	               := lsu_lsc_ctl.io.lsu_pkt_m
-  stbuf.io.lsu_pkt_r           	               := lsu_lsc_ctl.io.lsu_pkt_r
+  stbuf.io.lsu_pkt_m           	               <> lsu_lsc_ctl.io.lsu_pkt_m
+  stbuf.io.lsu_pkt_r           	               <> lsu_lsc_ctl.io.lsu_pkt_r
   stbuf.io.store_stbuf_reqvld_r	               := store_stbuf_reqvld_r
   stbuf.io.lsu_commit_r                         := lsu_lsc_ctl.io.lsu_commit_r
   stbuf.io.dec_lsu_valid_raw_d                  := io.dec_lsu_valid_raw_d
@@ -344,8 +344,8 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   // ECC
   //Inputs
   ecc.io.lsu_c2_r_clk        	                   := clkdomain.io.lsu_c2_r_clk
-  ecc.io.lsu_pkt_m           	                   := lsu_lsc_ctl.io.lsu_pkt_m
-  ecc.io.lsu_pkt_r           	                   := lsu_lsc_ctl.io.lsu_pkt_r
+  ecc.io.lsu_pkt_m           	                   <> lsu_lsc_ctl.io.lsu_pkt_m
+  ecc.io.lsu_pkt_r           	                   <> lsu_lsc_ctl.io.lsu_pkt_r
   ecc.io.stbuf_data_any	   	                     := stbuf.io.stbuf_data_any
   ecc.io.dec_tlu_core_ecc_disable                := io.dec_tlu_core_ecc_disable
   ecc.io.lsu_dccm_rden_r        	               := dccm_ctl.io.lsu_dccm_rden_r
@@ -373,8 +373,8 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
 
   //Trigger
   //Inputs
-  trigger.io.trigger_pkt_any                     := io.trigger_pkt_any
-  trigger.io.lsu_pkt_m                           := lsu_lsc_ctl.io.lsu_pkt_m
+  trigger.io.trigger_pkt_any                     <> io.trigger_pkt_any
+  trigger.io.lsu_pkt_m                           <> lsu_lsc_ctl.io.lsu_pkt_m
   trigger.io.lsu_addr_m                          := lsu_lsc_ctl.io.lsu_addr_m
   trigger.io.store_data_m                        := lsu_lsc_ctl.io.store_data_m
   //Outputs
@@ -395,9 +395,9 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   clkdomain.io.lsu_stbuf_empty_any               := stbuf.io.lsu_stbuf_empty_any
   clkdomain.io.lsu_bus_clk_en                    := io.lsu_bus_clk_en
   clkdomain.io.lsu_p                             := io.lsu_p
-  clkdomain.io.lsu_pkt_d                         := lsu_lsc_ctl.io.lsu_pkt_d
-  clkdomain.io.lsu_pkt_m                         := lsu_lsc_ctl.io.lsu_pkt_m
-  clkdomain.io.lsu_pkt_r                         :=  lsu_lsc_ctl.io.lsu_pkt_r
+  clkdomain.io.lsu_pkt_d                         <> lsu_lsc_ctl.io.lsu_pkt_d
+  clkdomain.io.lsu_pkt_m                         <> lsu_lsc_ctl.io.lsu_pkt_m
+  clkdomain.io.lsu_pkt_r                         <>  lsu_lsc_ctl.io.lsu_pkt_r
   clkdomain.io.scan_mode                         := io.scan_mode
 
   //Bus Interface

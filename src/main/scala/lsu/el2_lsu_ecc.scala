@@ -10,8 +10,8 @@ class el2_lsu_ecc extends Module with el2_lib with RequireAsyncReset {
   val io = IO(new Bundle{
 
     val lsu_c2_r_clk        	     = Input(Clock())
-    val lsu_pkt_m           	     = Input(new el2_lsu_pkt_t)
-    val lsu_pkt_r           	     = Input(new el2_lsu_pkt_t)
+    val lsu_pkt_m           	     = Flipped(Valid(new el2_lsu_pkt_t))
+    val lsu_pkt_r           	     = Flipped(Valid(new el2_lsu_pkt_t))
     val stbuf_data_any	   	       = Input(UInt(DCCM_DATA_WIDTH.W))
     val dec_tlu_core_ecc_disable   = Input(Bool())
     val lsu_dccm_rden_r        	   = Input(Bool())
@@ -19,7 +19,7 @@ class el2_lsu_ecc extends Module with el2_lib with RequireAsyncReset {
 
     val lsu_addr_r	   	           = Input(UInt(DCCM_BITS.W))
     val end_addr_r	   	           = Input(UInt(DCCM_BITS.W))
-    val lsu_addr_m	   	           = Input(UInt(DCCM_BITS.W))//6fba5e03053441e71b7d54f50a77e3b496d56173
+    val lsu_addr_m	   	           = Input(UInt(DCCM_BITS.W))
     val end_addr_m	   	           = Input(UInt(DCCM_BITS.W))
 
     val dccm_rdata_hi_r   	       = Input(UInt(DCCM_DATA_WIDTH.W))
@@ -102,9 +102,9 @@ class el2_lsu_ecc extends Module with el2_lib with RequireAsyncReset {
 
   when (LOAD_TO_USE_PLUS1.B) {
     ldst_dual_r := io.lsu_addr_r(2) =/= io.end_addr_r(2)
-    is_ldst_r := io.lsu_pkt_r.valid & (io.lsu_pkt_r.load | io.lsu_pkt_r.store) & io.addr_in_dccm_r & io.lsu_dccm_rden_r
+    is_ldst_r := io.lsu_pkt_r.valid & (io.lsu_pkt_r.bits.load | io.lsu_pkt_r.bits.store) & io.addr_in_dccm_r & io.lsu_dccm_rden_r
     is_ldst_lo_r := is_ldst_r & !io.dec_tlu_core_ecc_disable
-    is_ldst_hi_r := is_ldst_r & (ldst_dual_r | io.lsu_pkt_r.dma) & !io.dec_tlu_core_ecc_disable
+    is_ldst_hi_r := is_ldst_r & (ldst_dual_r | io.lsu_pkt_r.bits.dma) & !io.dec_tlu_core_ecc_disable
     is_ldst_hi_any  := is_ldst_hi_r
     dccm_rdata_hi_any  := io.dccm_rdata_hi_r
     dccm_data_ecc_hi_any := io.dccm_data_ecc_hi_r
@@ -122,9 +122,9 @@ class el2_lsu_ecc extends Module with el2_lib with RequireAsyncReset {
   }
     .otherwise {
       ldst_dual_m := io.lsu_addr_m(2) =/= io.end_addr_m(2)
-      is_ldst_m := io.lsu_pkt_m.valid & (io.lsu_pkt_m.load | io.lsu_pkt_m.store) & io.addr_in_dccm_m & io.lsu_dccm_rden_m
+      is_ldst_m := io.lsu_pkt_m.valid & (io.lsu_pkt_m.bits.load | io.lsu_pkt_m.bits.store) & io.addr_in_dccm_m & io.lsu_dccm_rden_m
       is_ldst_lo_m := is_ldst_m & !io.dec_tlu_core_ecc_disable
-      is_ldst_hi_m := is_ldst_m & (ldst_dual_m | io.lsu_pkt_m.dma) & !io.dec_tlu_core_ecc_disable
+      is_ldst_hi_m := is_ldst_m & (ldst_dual_m | io.lsu_pkt_m.bits.dma) & !io.dec_tlu_core_ecc_disable
       is_ldst_hi_any  := is_ldst_hi_m
       dccm_rdata_hi_any  := io.dccm_rdata_hi_m
       dccm_data_ecc_hi_any := io.dccm_data_ecc_hi_m

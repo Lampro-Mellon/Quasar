@@ -5,17 +5,17 @@ import chisel3.util._
 
 
 class rvdff(WIDTH:Int=1,SHORT:Int=0) extends Module{
-  val io = IO(new Bundle{
-    val din  = Input(UInt(WIDTH.W))
-    val dout = Output(UInt(WIDTH.W))
-  })
+ val io = IO(new Bundle{
+val din  = Input(UInt(WIDTH.W))
+val dout = Output(UInt(WIDTH.W))
+})
 
-  val flop = RegNext(io.din,0.U)
+val flop = RegNext(io.din,0.U)
 
-  if(SHORT == 1)
-  {io.dout := io.din}
-  else
-  {io.dout := flop}
+if(SHORT == 1)
+{io.dout := io.din}
+else
+{io.dout := flop}
 }
 
 class rvdffsc extends Module with el2_lib {

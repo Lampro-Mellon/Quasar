@@ -1,6 +1,7 @@
 package lib
 import chisel3._
 import chisel3.util._
+import el2_mem.waleed.{DCCM_ENABLE, ICACHE_ECC, ICACHE_WAYPACK, ICCM_ENABLE, bool2int}
 trait param {
   val BHT_ADDR_HI            = 9
   val BHT_ADDR_LO            = 2
@@ -176,7 +177,6 @@ trait el2_lib extends param{
     def apply(din:UInt,clk:Clock) =withClock(clk){RegNext(withClock(clk){RegNext(din,0.U)},0.U)}
   }
 
-
   ///////////////////////////////////////////////////////////////////
   def el2_btb_tag_hash(pc : UInt) =
     VecInit.tabulate(3)(i => pc(BTB_ADDR_HI-1+((i+1)*(BTB_BTAG_SIZE)),BTB_ADDR_HI+(i*BTB_BTAG_SIZE))).reduce(_^_)
@@ -203,23 +203,23 @@ trait el2_lib extends param{
   def rveven_paritygen(data_in : UInt) =
     data_in.xorR.asUInt
   ///////////////////////////////////////////////////////////////////
-  //rvbradder(Cat(pc, 0.U), Cat(offset, 0.U))
+//rvbradder(Cat(pc, 0.U), Cat(offset, 0.U))
   def rvbradder (pc:UInt, offset:UInt) = {
     val dout_lower = pc(12,1) +& offset(12,1)
     val pc_inc = pc(31,13)+1.U
     val pc_dec = pc(31,13)-1.U
     val sign = offset(12)
     Cat(Mux1H(Seq(( sign ^ !dout_lower(dout_lower.getWidth-1)).asBool -> pc(31,13),
-      (!sign &  dout_lower(dout_lower.getWidth-1)).asBool -> pc_inc,
-      ( sign & !dout_lower(dout_lower.getWidth-1)).asBool -> pc_dec)), dout_lower(11,0), 0.U)
+                  (!sign &  dout_lower(dout_lower.getWidth-1)).asBool -> pc_inc,
+                  ( sign & !dout_lower(dout_lower.getWidth-1)).asBool -> pc_dec)), dout_lower(11,0), 0.U)
   }
 
   ///////////////////////////////////////////////////////////////////
   // RV range
-  def rvrangecheck(CCM_SADR:Long, CCM_SIZE:Int, addr:UInt) = {
+  def rvrangecheck(CCM_SADR:Int, CCM_SIZE:Int, addr:UInt) = {
     val REGION_BITS = 4;
     val MASK_BITS = 10 + log2Ceil(CCM_SIZE)
-    val start_addr = CCM_SADR.U(32.W)
+    val start_addr = aslong(CCM_SADR).U(32.W)
     val region = start_addr(31,32-REGION_BITS)
     val in_region = addr(31,(32-REGION_BITS)) === region
     val in_range = if(CCM_SIZE==48)
@@ -241,7 +241,7 @@ trait el2_lib extends param{
     val masken_or_fullmask = masken & ~mask.andR
     matchvec(0)  :=  masken_or_fullmask | (mask(0) === data(0)).asUInt
     for(i <- 1 to data.getWidth-1)
-      matchvec(i) := Mux(mask(i-1,0).andR & masken_or_fullmask,"b1".U,(mask(i) === data(i)).asUInt)
+    matchvec(i) := Mux(mask(i-1,0).andR & masken_or_fullmask,"b1".U,(mask(i) === data(i)).asUInt)
     matchvec.asUInt
   }
 
@@ -544,5 +544,7 @@ trait el2_lib extends param{
     }
     Cat(temp.asUInt,din(0))
   }
+
+  //implicit def bool2int(b:Boolean): Int = if (b) 1 else 0
 
 }

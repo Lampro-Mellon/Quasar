@@ -10,7 +10,7 @@ import lib._
 class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
   val io = IO(new Bundle{
     val scan_mode          = Input(Bool())
-    val dp                 = Input(new el2_div_pkt_t )
+    val dp                 = Flipped(Valid(new el2_div_pkt_t ))
     val dividend           = Input(UInt(32.W))
     val divisor            = Input(UInt(32.W))
     val cancel             = Input(UInt(1.W))
@@ -163,7 +163,7 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
   //io.test := count_in
 
   io.finish_dly  :=  finish_ff & !io.cancel
-  val sign_eff   = !io.dp.unsign & (io.divisor =/= 0.U(32.W))
+  val sign_eff   = !io.dp.bits.unsign & (io.divisor =/= 0.U(32.W))
 
 
   q_in := Mux1H(Seq(
@@ -208,7 +208,7 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
     dividend_neg_ff := RegEnable(io.dividend(31), 0.U, io.dp.valid.asBool)
     divisor_neg_ff := RegEnable(io.divisor(31), 0.U, io.dp.valid.asBool)
     sign_ff := RegEnable(sign_eff, 0.U, io.dp.valid.asBool)
-    rem_ff := RegEnable(io.dp.rem, 0.U, io.dp.valid.asBool)
+    rem_ff := RegEnable(io.dp.bits.rem, 0.U, io.dp.valid.asBool)
     smallnum_case_ff := RegNext(smallnum_case, 0.U)
     smallnum_ff := RegNext(smallnum, 0.U)
     shortq_enable_ff := RegNext(shortq_enable, 0.U)
@@ -216,7 +216,7 @@ class el2_exu_div_ctl extends Module with RequireAsyncReset with el2_lib {
   }
   q_ff := rvdffe(q_in, qff_enable.asBool,clock,io.scan_mode)
   a_ff := rvdffe(a_in, aff_enable.asBool,clock,io.scan_mode)
-  m_ff := rvdffe(Cat(!io.dp.unsign & io.divisor(31), io.divisor), io.dp.valid.asBool,clock,io.scan_mode)
+  m_ff := rvdffe(Cat(!io.dp.bits.unsign & io.divisor(31), io.divisor), io.dp.valid.asBool,clock,io.scan_mode)
 
 }
 object div_main extends App{

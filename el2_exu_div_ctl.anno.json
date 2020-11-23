@@ -12,8 +12,8 @@
   },
   {
     "class":"firrtl.transforms.BlackBoxResourceAnno",
-    "target":"el2_exu_div_ctl.TEC_RV_ICG",
-    "resourceId":"/vsrc/TEC_RV_ICG.v"
+    "target":"el2_exu_div_ctl.gated_latch",
+    "resourceId":"/vsrc/gated_latch.v"
   },
   {
     "class":"firrtl.options.TargetDirAnnotation",

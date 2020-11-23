@@ -9,7 +9,7 @@ import lib._
 class el2_exu_mul_ctl extends Module with RequireAsyncReset with el2_lib {
   val io = IO(new Bundle{
     val scan_mode          = Input(Bool())
-    val mul_p              = Input(new el2_mul_pkt_t )
+    val mul_p              = Flipped(Valid(new el2_mul_pkt_t ))
     val rs1_in             = Input(UInt(32.W))
     val rs2_in             = Input(UInt(32.W))
     val result_x           = Output(UInt(32.W))
@@ -23,17 +23,10 @@ class el2_exu_mul_ctl extends Module with RequireAsyncReset with el2_lib {
   val low_x                = WireInit(0.U(1.W))
 
   val mul_x_enable         = io.mul_p.valid
-  rs1_ext_in := Cat(io.mul_p.rs1_sign & io.rs1_in(31),io.rs1_in).asSInt
-  rs2_ext_in := Cat(io.mul_p.rs2_sign & io.rs2_in(31),io.rs2_in).asSInt
+  rs1_ext_in := Cat(io.mul_p.bits.rs1_sign & io.rs1_in(31),io.rs1_in).asSInt
+  rs2_ext_in := Cat(io.mul_p.bits.rs2_sign & io.rs2_in(31),io.rs2_in).asSInt
 
-  // --------------------------- Multiply       ----------------------------------
-  // val gated_clock = rvclkhdr(clock,mul_x_enable.asBool(),io.scan_mode)
-  // withClock(gated_clock) {
-  // low_x := RegNext(io.mul_p.low, 0.U)
-  //rs1_x := RegNext(rs1_ext_in, 0.S)
-  // rs2_x := RegNext(rs2_ext_in, 0.S)
-  // }
-  low_x := rvdffe (io.mul_p.low, mul_x_enable.asBool,clock,io.scan_mode)
+  low_x := rvdffe (io.mul_p.bits.low, mul_x_enable.asBool,clock,io.scan_mode)
   rs1_x := rvdffe(rs1_ext_in, mul_x_enable.asBool,clock,io.scan_mode)
   rs2_x := rvdffe (rs2_ext_in, mul_x_enable.asBool,clock,io.scan_mode)
 

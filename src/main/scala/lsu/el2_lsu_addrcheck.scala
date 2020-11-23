@@ -13,7 +13,7 @@ class el2_lsu_addrcheck extends Module with RequireAsyncReset with el2_lib
 
   val start_addr_d        = Input(UInt(32.W))
   val end_addr_d          = Input(UInt(32.W))
-  val lsu_pkt_d           = Input(new el2_lsu_pkt_t)
+  val lsu_pkt_d           = Flipped(Valid(new el2_lsu_pkt_t))
   val dec_tlu_mrac_ff     = Input(UInt(32.W))
   val rs1_region_d        = Input(UInt(4.W))
   val rs1_d               = Input(UInt(32.W))
@@ -58,8 +58,8 @@ class el2_lsu_addrcheck extends Module with RequireAsyncReset with el2_lib
 
   io.addr_external_d         := ~(start_addr_in_dccm_region_d | start_addr_in_pic_region_d); //if start address does not belong to dccm/pic
   val csr_idx                = Cat(io.start_addr_d(31,28),1.U)
-  val is_sideeffects_d       = io.dec_tlu_mrac_ff(csr_idx) & !(start_addr_in_dccm_region_d | start_addr_in_pic_region_d | addr_in_iccm) & io.lsu_pkt_d.valid & (io.lsu_pkt_d.store | io.lsu_pkt_d.load)  //every region has the 2 LSB indicating ( 1: sideeffects/no_side effects, and 0: cacheable ). Ignored in internal regions
-  val is_aligned_d           = (io.lsu_pkt_d.word & (io.start_addr_d(1,0) === 0.U)) | (io.lsu_pkt_d.half & (io.start_addr_d(0) === 0.U)) | io.lsu_pkt_d.by
+  val is_sideeffects_d       = io.dec_tlu_mrac_ff(csr_idx) & !(start_addr_in_dccm_region_d | start_addr_in_pic_region_d | addr_in_iccm) & io.lsu_pkt_d.valid & (io.lsu_pkt_d.bits.store | io.lsu_pkt_d.bits.load)  //every region has the 2 LSB indicating ( 1: sideeffects/no_side effects, and 0: cacheable ). Ignored in internal regions
+  val is_aligned_d           = (io.lsu_pkt_d.bits.word & (io.start_addr_d(1,0) === 0.U)) | (io.lsu_pkt_d.bits.half & (io.start_addr_d(0) === 0.U)) | io.lsu_pkt_d.bits.by
 
 
   val non_dccm_access_ok     = (!(Cat(DATA_ACCESS_ENABLE0.B ,DATA_ACCESS_ENABLE1.B ,DATA_ACCESS_ENABLE2.B ,DATA_ACCESS_ENABLE3.B ,
@@ -83,7 +83,7 @@ class el2_lsu_addrcheck extends Module with RequireAsyncReset with el2_lib
         (DATA_ACCESS_ENABLE7.B & ((io.end_addr_d(31,0)   | aslong(DATA_ACCESS_MASK7).U)) === (aslong(DATA_ACCESS_ADDR7).U | aslong(DATA_ACCESS_MASK7).U))))
 
   val regpred_access_fault_d  = (start_addr_dccm_or_pic ^ base_reg_dccm_or_pic)
-  val picm_access_fault_d     = (io.addr_in_pic_d & ((io.start_addr_d(1,0) =/= 0.U(2.W)) | !io.lsu_pkt_d.word))
+  val picm_access_fault_d     = (io.addr_in_pic_d & ((io.start_addr_d(1,0) =/= 0.U(2.W)) | !io.lsu_pkt_d.bits.word))
 
   val unmapped_access_fault_d = WireInit(1.U(1.W))
   val mpu_access_fault_d      = WireInit(1.U(1.W))
@@ -108,15 +108,15 @@ class el2_lsu_addrcheck extends Module with RequireAsyncReset with el2_lib
   }
 
   //check width of  access_fault_mscause_d
-  io.access_fault_d := (unmapped_access_fault_d | mpu_access_fault_d | picm_access_fault_d | regpred_access_fault_d) & io.lsu_pkt_d.valid & !io.lsu_pkt_d.dma
+  io.access_fault_d := (unmapped_access_fault_d | mpu_access_fault_d | picm_access_fault_d | regpred_access_fault_d) & io.lsu_pkt_d.valid & !io.lsu_pkt_d.bits.dma
   val access_fault_mscause_d = Mux(unmapped_access_fault_d.asBool,2.U(4.W), Mux(mpu_access_fault_d.asBool,3.U(4.W), Mux(regpred_access_fault_d.asBool,5.U(4.W), Mux(picm_access_fault_d.asBool,6.U(4.W),0.U(4.W)))))
   val regcross_misaligned_fault_d = (io.start_addr_d(31,28) =/= io.end_addr_d(31,28))
   val sideeffect_misaligned_fault_d = (is_sideeffects_d & !is_aligned_d)
-  io.misaligned_fault_d := (regcross_misaligned_fault_d | (sideeffect_misaligned_fault_d & io.addr_external_d)) & io.lsu_pkt_d.valid & !io.lsu_pkt_d.dma
+  io.misaligned_fault_d := (regcross_misaligned_fault_d | (sideeffect_misaligned_fault_d & io.addr_external_d)) & io.lsu_pkt_d.valid & !io.lsu_pkt_d.bits.dma
   val misaligned_fault_mscause_d = Mux(regcross_misaligned_fault_d,2.U(4.W),Mux(sideeffect_misaligned_fault_d.asBool,1.U(4.W),0.U(4.W)))
   io.exc_mscause_d  := Mux(io.misaligned_fault_d.asBool, misaligned_fault_mscause_d(3,0), access_fault_mscause_d(3,0))
-  io.fir_dccm_access_error_d  := ((start_addr_in_dccm_region_d & !start_addr_in_dccm_d)|(end_addr_in_dccm_region_d   & !end_addr_in_dccm_d)) & io.lsu_pkt_d.valid & io.lsu_pkt_d.fast_int
-  io.fir_nondccm_access_error_d := !(start_addr_in_dccm_region_d & end_addr_in_dccm_region_d) & io.lsu_pkt_d.valid & io.lsu_pkt_d.fast_int
+  io.fir_dccm_access_error_d  := ((start_addr_in_dccm_region_d & !start_addr_in_dccm_d)|(end_addr_in_dccm_region_d   & !end_addr_in_dccm_d)) & io.lsu_pkt_d.valid & io.lsu_pkt_d.bits.fast_int
+  io.fir_nondccm_access_error_d := !(start_addr_in_dccm_region_d & end_addr_in_dccm_region_d) & io.lsu_pkt_d.valid & io.lsu_pkt_d.bits.fast_int
 
   withClock(io.lsu_c2_m_clk){io.is_sideeffects_m := RegNext(is_sideeffects_d,0.U)} //TBD for clock and reset
 }

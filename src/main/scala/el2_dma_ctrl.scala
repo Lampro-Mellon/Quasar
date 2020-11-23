@@ -234,15 +234,15 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
 
   // DCCM Address check
 
-  val (dma_mem_addr_in_dccm,dma_mem_addr_in_dccm_region_nc) = rvrangecheck_ch(dma_mem_addr_int(31,0),DCCM_SADR.U,DCCM_SIZE)
+  val (dma_mem_addr_in_dccm,dma_mem_addr_in_dccm_region_nc) = rvrangecheck_ch(dma_mem_addr_int(31,0),aslong(DCCM_SADR).U,DCCM_SIZE)
 
   // PIC memory address check
 
-  val (dma_mem_addr_in_pic,dma_mem_addr_in_pic_region_nc) = rvrangecheck_ch(dma_mem_addr_int(31,0),PIC_BASE_ADDR.U,PIC_SIZE)
+  val (dma_mem_addr_in_pic,dma_mem_addr_in_pic_region_nc) = rvrangecheck_ch(dma_mem_addr_int(31,0),aslong(PIC_BASE_ADDR).U,PIC_SIZE)
 
   //  ICCM Address check
 
-  val (dma_mem_addr_in_iccm,dma_mem_addr_in_iccm_region_nc) = if(ICCM_ENABLE) rvrangecheck_ch(dma_mem_addr_int(31,0),ICCM_SADR.U,ICCM_SIZE) else (0.U,0.U)
+  val (dma_mem_addr_in_iccm,dma_mem_addr_in_iccm_region_nc) = if(ICCM_ENABLE) rvrangecheck_ch(dma_mem_addr_int(31,0),aslong(ICCM_SADR).U,ICCM_SIZE) else (0.U,0.U)
 
   // FIFO inputs
 

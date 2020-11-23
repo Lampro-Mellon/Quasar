@@ -26,10 +26,10 @@ class el2_lsu_clkdomain extends Module  with RequireAsyncReset with el2_lib{
 
     val lsu_bus_clk_en            = Input(Bool())      // bus clock enable
 
-    val lsu_p                     = Input(new el2_lsu_pkt_t)  // lsu packet in decode
-    val lsu_pkt_d                 = Input(new el2_lsu_pkt_t)  // lsu packet in d
-    val lsu_pkt_m                 = Input(new el2_lsu_pkt_t)  // lsu packet in m
-    val lsu_pkt_r                 = Input(new el2_lsu_pkt_t)  // lsu packet in r
+    val lsu_p                     = Flipped(Valid(new el2_lsu_pkt_t))  // lsu packet in decode
+    val lsu_pkt_d                 = Flipped(Valid(new el2_lsu_pkt_t))  // lsu packet in d
+    val lsu_pkt_m                 = Flipped(Valid(new el2_lsu_pkt_t))  // lsu packet in m
+    val lsu_pkt_r                 = Flipped(Valid(new el2_lsu_pkt_t))  // lsu packet in r
 
     // Outputs
     val lsu_c1_m_clk              = Output(Clock())    // m pipe single pulse clock
@@ -67,8 +67,8 @@ class el2_lsu_clkdomain extends Module  with RequireAsyncReset with el2_lib{
   val lsu_c2_m_clken         = lsu_c1_m_clken | lsu_c1_m_clken_q | io.clk_override
   val lsu_c2_r_clken         = lsu_c1_r_clken | lsu_c1_r_clken_q | io.clk_override
 
-  val lsu_store_c1_m_clken   = ((lsu_c1_m_clken & io.lsu_pkt_d.store) | io.clk_override)
-  val lsu_store_c1_r_clken   = ((lsu_c1_r_clken & io.lsu_pkt_m.store) | io.clk_override)
+  val lsu_store_c1_m_clken   = ((lsu_c1_m_clken & io.lsu_pkt_d.bits.store) | io.clk_override)
+  val lsu_store_c1_r_clken   = ((lsu_c1_r_clken & io.lsu_pkt_m.bits.store) | io.clk_override)
   val lsu_stbuf_c1_clken     = io.ldst_stbuf_reqvld_r | io.stbuf_reqvld_any | io.stbuf_reqvld_flushed_any | io.clk_override
   val lsu_bus_ibuf_c1_clken  = io.lsu_busreq_r  | io.clk_override
   val lsu_bus_obuf_c1_clken  = (io.lsu_bus_buffer_pend_any  | io.lsu_busreq_r | io.clk_override) & io.lsu_bus_clk_en
