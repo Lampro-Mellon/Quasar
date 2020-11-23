@@ -7,331 +7,329 @@ import lsu._
 import lib._
 import include._
 import dbg._
+class el2_swerv_bundle extends Bundle with  el2_lib{
+  val dbg_rst_l = Input(AsyncReset())
+  val rst_vec = Input(UInt(31.W))
+  val nmi_int = Input(Bool())
+  val nmi_vec = Input(UInt(31.W))
+  val core_rst_l = Output(AsyncReset())
+  val trace_rv_i_insn_ip = Output(UInt(32.W))
+  val trace_rv_i_address_ip = Output(UInt(32.W))
+  val trace_rv_i_valid_ip = Output(UInt(2.W))
+  val trace_rv_i_exception_ip = Output(UInt(2.W))
+  val trace_rv_i_ecause_ip = Output(UInt(5.W))
+  val trace_rv_i_interrupt_ip = Output(UInt(2.W))
+  val trace_rv_i_tval_ip = Output(UInt(32.W))
+  val dccm_clk_override = Output(Bool())
+  val icm_clk_override = Output(Bool())
+  val dec_tlu_core_ecc_disable = Output(Bool())
+  val i_cpu_halt_req = Input(Bool())
+  val i_cpu_run_req = Input(Bool())
+  val o_cpu_halt_ack = Output(Bool())
+  val o_cpu_halt_status = Output(Bool())
+  val o_cpu_run_ack = Output(Bool())
+  val o_debug_mode_status = Output(Bool())
+  val core_id = Input(UInt(28.W))
+  val mpc_debug_halt_req = Input(Bool())
+  val mpc_debug_run_req = Input(Bool())
+  val mpc_reset_run_req = Input(Bool())
+  val mpc_debug_halt_ack = Output(Bool())
+  val mpc_debug_run_ack = Output(Bool())
+  val debug_brkpt_status = Output(Bool())
+  val dec_tlu_perfcnt0 = Output(Bool())
+  val dec_tlu_perfcnt1 = Output(Bool())
+  val dec_tlu_perfcnt2 = Output(Bool())
+  val dec_tlu_perfcnt3 = Output(Bool())
+  val dccm_wren = Output(Bool())
+  val dccm_rden = Output(Bool())
+  val dccm_wr_addr_lo = Output(UInt(DCCM_BITS.W))
+  val dccm_wr_addr_hi = Output(UInt(DCCM_BITS.W))
+  val dccm_rd_addr_lo = Output(UInt(DCCM_BITS.W))
+  val dccm_rd_addr_hi = Output(UInt(DCCM_BITS.W))
 
+  val dccm_wr_data_lo = Output(UInt(DCCM_FDATA_WIDTH.W))
+  val dccm_wr_data_hi = Output(UInt(DCCM_FDATA_WIDTH.W))
+  val dccm_rd_data_lo = Input(UInt(DCCM_FDATA_WIDTH.W))
+  val dccm_rd_data_hi = Input(UInt(DCCM_FDATA_WIDTH.W))
+
+  val iccm_rw_addr = Output(UInt((ICCM_BITS-1).W))
+  val iccm_wren = Output(Bool())
+  val iccm_rden = Output(Bool())
+  val iccm_wr_size = Output(UInt(3.W))
+  val iccm_wr_data = Output(UInt(78.W))
+  val iccm_buf_correct_ecc = Output(Bool())
+  val iccm_correction_state = Output(Bool())
+
+  val iccm_rd_data = Input(UInt(64.W))
+  val iccm_rd_data_ecc = Input(UInt(78.W))
+
+  val ic_rw_addr = Output(UInt(31.W))
+  val ic_tag_valid = Output(UInt(ICACHE_NUM_WAYS.W))
+  val ic_wr_en = Output(UInt(ICACHE_NUM_WAYS.W))
+  val ic_rd_en = Output(Bool())
+  val ic_wr_data = Output(Vec(ICACHE_BANKS_WAY, UInt(71.W)))
+  val ic_rd_data = Input(UInt(64.W))
+  val ic_debug_rd_data = Input(UInt(71.W))
+  val ictag_debug_rd_data = Input(UInt(26.W))
+  val ic_debug_wr_data = Output(UInt(71.W))
+
+  val ic_eccerr = Input(UInt(ICACHE_BANKS_WAY.W))
+  val ic_parerr = Input(UInt(ICACHE_BANKS_WAY.W))
+  val ic_premux_data = Output(UInt(64.W))
+  val ic_sel_premux_data = Output(Bool())
+
+  val ic_debug_addr = Output(UInt((ICACHE_INDEX_HI-2).W))
+  val ic_debug_rd_en = Output(Bool())
+  val ic_debug_wr_en = Output(Bool())
+  val ic_debug_tag_array = Output(Bool())
+  val ic_debug_way = Output(UInt(ICACHE_NUM_WAYS.W))
+  val ic_rd_hit = Input(UInt(ICACHE_NUM_WAYS.W))
+  val ic_tag_perr = Input(Bool())
+
+  // AXI Signals
+  val lsu_axi_awvalid = Output(Bool())
+  val lsu_axi_awready = Input(Bool())
+  val lsu_axi_awid = Output(UInt(LSU_BUS_TAG.W))
+  val lsu_axi_awaddr = Output(UInt(32.W))
+  val lsu_axi_awregion = Output(UInt(4.W))
+  val lsu_axi_awlen = Output(UInt(8.W))
+  val lsu_axi_awsize = Output(UInt(3.W))
+  val lsu_axi_awburst = Output(UInt(2.W))
+  val lsu_axi_awlock = Output(Bool())
+  val lsu_axi_awcache = Output(UInt(4.W))
+  val lsu_axi_awprot = Output(UInt(3.W))
+  val lsu_axi_awqos = Output(UInt(4.W))
+  val lsu_axi_wvalid = Output(Bool())
+  val lsu_axi_wready = Input(Bool())
+  val lsu_axi_wdata = Output(UInt(64.W))
+  val lsu_axi_wstrb = Output(UInt(8.W))
+  val lsu_axi_wlast = Output(Bool())
+  val lsu_axi_bvalid = Input(Bool())
+  val lsu_axi_bready = Output(Bool())
+  val lsu_axi_bresp = Input(UInt(2.W))
+  val lsu_axi_bid = Input(UInt(LSU_BUS_TAG.W))
+
+
+  val lsu_axi_arvalid = Output(Bool())
+  val lsu_axi_arready = Input(Bool())
+  val lsu_axi_arid = Output(UInt(LSU_BUS_TAG.W))
+  val lsu_axi_araddr = Output(UInt(32.W))
+  val lsu_axi_arregion = Output(UInt(4.W))
+  val lsu_axi_arlen = Output(UInt(8.W))
+  val lsu_axi_arsize = Output(UInt(3.W))
+  val lsu_axi_arburst = Output(UInt(2.W))
+  val lsu_axi_arlock = Output(Bool())
+  val lsu_axi_arcache = Output(UInt(4.W))
+  val lsu_axi_arprot = Output(UInt(3.W))
+  val lsu_axi_arqos = Output(UInt(4.W))
+  val lsu_axi_rvalid = Input(Bool())
+  val lsu_axi_rready = Output(Bool())
+  val lsu_axi_rid = Input(UInt(LSU_BUS_TAG.W))
+  val lsu_axi_rdata = Input(UInt(64.W))
+  val lsu_axi_rresp = Input(UInt(2.W))
+  val lsu_axi_rlast = Input(Bool())
+
+
+  // AXI IFU Signals
+  val ifu_axi_awvalid = Output(Bool())
+  val ifu_axi_awready = Input(Bool())
+  val ifu_axi_awid = Output(UInt(IFU_BUS_TAG.W))
+  val ifu_axi_awaddr = Output(UInt(32.W))
+  val ifu_axi_awregion = Output(UInt(4.W))
+  val ifu_axi_awlen = Output(UInt(8.W))
+  val ifu_axi_awsize = Output(UInt(3.W))
+  val ifu_axi_awburst = Output(UInt(2.W))
+  val ifu_axi_awlock = Output(Bool())
+  val ifu_axi_awcache = Output(UInt(4.W))
+  val ifu_axi_awprot = Output(UInt(3.W))
+  val ifu_axi_awqos = Output(UInt(4.W))
+  val ifu_axi_wvalid = Output(Bool())
+  val ifu_axi_wready = Input(Bool())
+  val ifu_axi_wdata = Output(UInt(64.W))
+  val ifu_axi_wstrb = Output(UInt(8.W))
+  val ifu_axi_wlast = Output(Bool())
+  val ifu_axi_bvalid = Input(Bool())
+  val ifu_axi_bready = Output(Bool())
+  val ifu_axi_bresp = Input(UInt(2.W))
+  val ifu_axi_bid = Input(UInt(IFU_BUS_TAG.W))
+  val ifu_axi_arvalid = Output(Bool())
+  val ifu_axi_arready = Input(Bool())
+  val ifu_axi_arid = Output(UInt(IFU_BUS_TAG.W))
+  val ifu_axi_araddr = Output(UInt(32.W))
+  val ifu_axi_arregion = Output(UInt(4.W))
+  val ifu_axi_arlen = Output(UInt(8.W))
+  val ifu_axi_arsize = Output(UInt(3.W))
+  val ifu_axi_arburst = Output(UInt(2.W))
+  val ifu_axi_arlock = Output(Bool())
+  val ifu_axi_arcache = Output(UInt(4.W))
+  val ifu_axi_arprot = Output(UInt(3.W))
+  val ifu_axi_arqos = Output(UInt(4.W))
+  val ifu_axi_rvalid = Input(Bool())
+  val ifu_axi_rready = Output(Bool())
+  val ifu_axi_rid = Input(UInt(IFU_BUS_TAG.W))
+  val ifu_axi_rdata = Input(UInt(64.W))
+  val ifu_axi_rresp = Input(UInt(2.W))
+  val ifu_axi_rlast = Input(Bool())
+
+  // SB AXI Signals
+  val sb_axi_awvalid = Output(Bool())
+  val sb_axi_awready = Input(Bool())
+  val sb_axi_awid = Output(UInt(SB_BUS_TAG.W))
+  val sb_axi_awaddr = Output(UInt(32.W))
+  val sb_axi_awregion = Output(UInt(4.W))
+  val sb_axi_awlen = Output(UInt(8.W))
+  val sb_axi_awsize = Output(UInt(3.W))
+  val sb_axi_awburst = Output(UInt(2.W))
+  val sb_axi_awlock = Output(Bool())
+  val sb_axi_awcache = Output(UInt(4.W))
+  val sb_axi_awprot = Output(UInt(3.W))
+  val sb_axi_awqos = Output(UInt(4.W))
+  val sb_axi_wvalid = Output(Bool())
+  val sb_axi_wready = Input(Bool())
+  val sb_axi_wdata = Output(UInt(64.W))
+  val sb_axi_wstrb = Output(UInt(8.W))
+  val sb_axi_wlast = Output(Bool())
+  val sb_axi_bvalid = Input(Bool())
+  val sb_axi_bready = Output(Bool())
+  val sb_axi_bresp = Input(UInt(2.W))
+  val sb_axi_bid = Input(UInt(SB_BUS_TAG.W))
+  val sb_axi_arvalid = Output(Bool())
+  val sb_axi_arready = Input(Bool())
+  val sb_axi_arid = Output(UInt(SB_BUS_TAG.W))
+  val sb_axi_araddr = Output(UInt(32.W))
+  val sb_axi_arregion = Output(UInt(4.W))
+  val sb_axi_arlen = Output(UInt(8.W))
+  val sb_axi_arsize = Output(UInt(3.W))
+  val sb_axi_arburst = Output(UInt(2.W))
+  val sb_axi_arlock = Output(Bool())
+  val sb_axi_arcache = Output(UInt(4.W))
+  val sb_axi_arprot = Output(UInt(3.W))
+  val sb_axi_arqos = Output(UInt(4.W))
+  val sb_axi_rvalid = Input(Bool())
+  val sb_axi_rready = Output(Bool())
+  val sb_axi_rid = Input(UInt(SB_BUS_TAG.W))
+  val sb_axi_rdata = Input(UInt(64.W))
+  val sb_axi_rresp = Input(UInt(2.W))
+  val sb_axi_rlast = Input(Bool())
+  // DMA signals
+  val dma_axi_awvalid       = Input(Bool())
+  val dma_axi_awready       = Output(Bool())
+  val dma_axi_awid          = Input(UInt(DMA_BUS_TAG.W))
+  val dma_axi_awaddr        = Input(UInt(32.W))
+  val dma_axi_awsize        = Input(UInt(3.W))
+  val dma_axi_awprot        = Input(UInt(3.W))
+  val dma_axi_awlen = Input(UInt(8.W))
+  val dma_axi_awburst = Input(UInt(2.W))
+  val dma_axi_wvalid        = Input(Bool())
+  val dma_axi_wready        = Output(Bool())
+  val dma_axi_wdata         = Input(UInt(64.W))
+  val dma_axi_wstrb         = Input(UInt(8.W))
+  val dma_axi_wlast   = Input(Bool())
+  val dma_axi_bvalid        = Output(Bool())
+  val dma_axi_bready        = Input(Bool())
+  val dma_axi_bresp         = Output(UInt(2.W))
+  val dma_axi_bid           = Output(UInt(DMA_BUS_TAG.W))
+
+  // AXI Read Channels
+  val dma_axi_arvalid       = Input(Bool())
+  val dma_axi_arready       = Output(Bool())
+  val dma_axi_arid          = Input(UInt(DMA_BUS_TAG.W))
+
+  val dma_axi_araddr        = Input(UInt(32.W))
+  val dma_axi_arsize        = Input(UInt(3.W))
+
+  val dma_axi_arprot = Input(UInt(3.W))
+  val dma_axi_arlen = Input(UInt(8.W))
+  val dma_axi_arburst = Input(UInt(2.W))
+  val dma_axi_rvalid        = Output(Bool())
+  val dma_axi_rready        = Input(Bool())
+
+  val dma_axi_rid           = Output(UInt(DMA_BUS_TAG.W))
+  val dma_axi_rdata         = Output(UInt(64.W))
+  val dma_axi_rresp         = Output(UInt(2.W))
+  val dma_axi_rlast         = Output(Bool())
+
+  // AHB Lite Bus
+  val haddr = Output(UInt(32.W))
+  val hburst = Output(UInt(3.W))
+  val hmastlock = Output(Bool())
+  val hprot = Output(UInt(4.W))
+  val hsize = Output(UInt(3.W))
+  val htrans = Output(UInt(2.W))
+  val hwrite = Output(Bool())
+  val hrdata = Input(UInt(64.W))
+  val hready = Input(Bool())
+  val hresp = Input(Bool())
+
+  // AHB Master
+  val lsu_haddr = Output(UInt(32.W))
+  val lsu_hburst = Output(UInt(3.W))
+  val lsu_hmastlock = Output(Bool())
+  val lsu_hprot = Output(UInt(4.W))
+  val lsu_hsize = Output(UInt(3.W))
+  val lsu_htrans = Output(UInt(2.W))
+  val lsu_hwrite = Output(Bool())
+  val lsu_hwdata = Output(UInt(64.W))
+  val lsu_hrdata = Input(UInt(64.W))
+  val lsu_hready = Input(Bool())
+  val lsu_hresp = Input(Bool())
+
+  // System Bus Debug Master
+  val sb_haddr = Output(UInt(32.W))
+  val sb_hburst = Output(UInt(3.W))
+  val sb_hmastlock = Output(Bool())
+  val sb_hprot = Output(UInt(4.W))
+  val sb_hsize = Output(UInt(3.W))
+  val sb_htrans = Output(UInt(2.W))
+  val sb_hwrite = Output(Bool())
+  val sb_hwdata = Output(UInt(64.W))
+  val sb_hrdata = Input(UInt(64.W))
+  val sb_hready = Input(Bool())
+  val sb_hresp = Input(Bool())
+
+  // DMA slave
+  val dma_hsel = Input(Bool())
+  val dma_haddr = Input(UInt(32.W))
+  val dma_hburst = Input(UInt(3.W))
+  val dma_hmastlock = Input(Bool())
+  val dma_hprot = Input(UInt(4.W))
+  val dma_hsize = Input(UInt(3.W))
+  val dma_htrans = Input(UInt(2.W))
+  val dma_hwrite = Input(Bool())
+  val dma_hwdata = Input(UInt(64.W))
+  val dma_hreadyin = Input(Bool())
+  val dma_hrdata = Output(UInt(64.W))
+  val dma_hreadyout = Output(Bool())
+  val dma_hresp = Output(Bool())
+  val lsu_bus_clk_en = Input(Bool())
+  val ifu_bus_clk_en = Input(Bool())
+  val dbg_bus_clk_en = Input(Bool())
+  val dma_bus_clk_en = Input(Bool())
+  val dmi_reg_en = Input(Bool())
+  val dmi_reg_addr = Input(UInt(7.W))
+  val dmi_reg_wr_en = Input(Bool())
+  val dmi_reg_wdata = Input(UInt(32.W))
+  val dmi_reg_rdata = Output(UInt(32.W))
+  val dmi_hard_reset = Input(Bool())
+  val extintsrc_req = Input(UInt(PIC_TOTAL_INT.W))
+  val timer_int = Input(Bool())
+  val soft_int = Input(Bool())
+  val scan_mode = Input(Bool())
+}
 class el2_swerv extends Module with RequireAsyncReset with el2_lib {
-  val io = IO (new Bundle{
-    val dbg_rst_l = Input(Bool())
-    val rst_vec = Input(UInt(31.W))
-    val nmi_int = Input(Bool())
-    val nmi_vec = Input(UInt(31.W))
-    val core_rst_l = Output(AsyncReset())
-    val trace_rv_i_insn_ip = Output(UInt(32.W))
-    val trace_rv_i_address_ip = Output(UInt(32.W))
-    val trace_rv_i_valid_ip = Output(UInt(2.W))
-    val trace_rv_i_exception_ip = Output(UInt(2.W))
-    val trace_rv_i_ecause_ip = Output(UInt(5.W))
-    val trace_rv_i_interrupt_ip = Output(UInt(2.W))
-    val trace_rv_i_tval_ip = Output(UInt(32.W))
-    val dccm_clk_override = Output(Bool())
-    val icm_clk_override = Output(Bool())
-    val dec_tlu_core_ecc_disable = Output(Bool())
-    val i_cpu_halt_req = Input(Bool())
-    val i_cpu_run_req = Input(Bool())
-    val o_cpu_halt_ack = Output(Bool())
-    val o_cpu_halt_status = Output(Bool())
-    val o_cpu_run_ack = Output(Bool())
-    val o_debug_mode_status = Output(Bool())
-    val core_id = Input(UInt(28.W))
-    val mpc_debug_halt_req = Input(Bool())
-    val mpc_debug_run_req = Input(Bool())
-    val mpc_reset_run_req = Input(Bool())
-    val mpc_debug_halt_ack = Output(Bool())
-    val mpc_debug_run_ack = Output(Bool())
-    val debug_brkpt_status = Output(Bool())
-    val dec_tlu_perfcnt0 = Output(Bool())
-    val dec_tlu_perfcnt1 = Output(Bool())
-    val dec_tlu_perfcnt2 = Output(Bool())
-    val dec_tlu_perfcnt3 = Output(Bool())
-    val dccm_wren = Output(Bool())
-    val dccm_rden = Output(Bool())
-    val dccm_wr_addr_lo = Output(UInt(DCCM_BITS.W))
-    val dccm_wr_addr_hi = Output(UInt(DCCM_BITS.W))
-    val dccm_rd_addr_lo = Output(UInt(DCCM_BITS.W))
-    val dccm_rd_addr_hi = Output(UInt(DCCM_BITS.W))
-
-    val dccm_wr_data_lo = Output(UInt(DCCM_FDATA_WIDTH.W))
-    val dccm_wr_data_hi = Output(UInt(DCCM_FDATA_WIDTH.W))
-    val dccm_rd_data_lo = Input(UInt(DCCM_FDATA_WIDTH.W))
-    val dccm_rd_data_hi = Input(UInt(DCCM_FDATA_WIDTH.W))
-
-    val iccm_rw_addr = Output(UInt(ICCM_BITS.W))
-    val iccm_wren = Output(Bool())
-    val iccm_rden = Output(Bool())
-    val iccm_wr_size = Output(UInt(3.W))
-    val iccm_wr_data = Output(UInt(78.W))
-    val iccm_buf_correct_ecc = Output(Bool())
-    val iccm_correction_state = Output(Bool())
-
-    val iccm_rd_data = Input(UInt(64.W))
-    val iccm_rd_data_ecc = Input(UInt(78.W))
-
-    val ic_rw_addr = Output(UInt(31.W))
-    val ic_tag_valid = Output(UInt(ICACHE_NUM_WAYS.W))
-    val ic_wr_en = Output(UInt(ICACHE_NUM_WAYS.W))
-    val ic_rd_en = Output(Bool())
-    val ic_wr_data = Output(Vec(ICACHE_BANKS_WAY, UInt(71.W)))
-    val ic_rd_data = Input(UInt(64.W))
-    val ic_debug_rd_data = Input(UInt(71.W))
-    val ictag_debug_rd_data = Input(UInt(26.W))
-    val ic_debug_wr_data = Output(UInt(71.W))
-
-    val ic_eccerr = Input(UInt(ICACHE_BANKS_WAY.W))
-    val ic_parerr = Input(UInt(ICACHE_BANKS_WAY.W))
-    val ic_premux_data = Output(UInt(64.W))
-    val ic_sel_premux_data = Output(Bool())
-
-    val ic_debug_addr = Output(UInt((ICACHE_INDEX_HI-2).W))
-    val ic_debug_rd_en = Output(Bool())
-    val ic_debug_wr_en = Output(Bool())
-    val ic_debug_tag_array = Output(Bool())
-    val ic_debug_way = Output(UInt(ICACHE_NUM_WAYS.W))
-    val ic_rd_hit = Input(UInt(ICACHE_NUM_WAYS.W))
-    val ic_tag_perr = Input(Bool())
-
-    // AXI Signals
-    val lsu_axi_awvalid = Output(Bool())
-    val lsu_axi_awready = Input(Bool())
-    val lsu_axi_awid = Output(UInt(LSU_BUS_TAG.W))
-    val lsu_axi_awaddr = Output(UInt(32.W))
-    val lsu_axi_awregion = Output(UInt(4.W))
-    val lsu_axi_awlen = Output(UInt(8.W))
-    val lsu_axi_awsize = Output(UInt(3.W))
-    val lsu_axi_awburst = Output(UInt(2.W))
-    val lsu_axi_awlock = Output(Bool())
-    val lsu_axi_awcache = Output(UInt(4.W))
-    val lsu_axi_awprot = Output(UInt(3.W))
-    val lsu_axi_awqos = Output(UInt(4.W))
-    val lsu_axi_wvalid = Output(Bool())
-    val lsu_axi_wready = Input(Bool())
-    val lsu_axi_wdata = Output(UInt(64.W))
-    val lsu_axi_wstrb = Output(UInt(8.W))
-    val lsu_axi_wlast = Output(Bool())
-    val lsu_axi_bvalid = Input(Bool())
-    val lsu_axi_bready = Output(Bool())
-    val lsu_axi_bresp = Input(UInt(2.W))
-    val lsu_axi_bid = Input(UInt(LSU_BUS_TAG.W))
-
-
-    val lsu_axi_arvalid = Output(Bool())
-    val lsu_axi_arready = Input(Bool())
-    val lsu_axi_arid = Output(UInt(LSU_BUS_TAG.W))
-    val lsu_axi_araddr = Output(UInt(32.W))
-    val lsu_axi_arregion = Output(UInt(4.W))
-    val lsu_axi_arlen = Output(UInt(8.W))
-    val lsu_axi_arsize = Output(UInt(3.W))
-    val lsu_axi_arburst = Output(UInt(2.W))
-    val lsu_axi_arlock = Output(Bool())
-    val lsu_axi_arcache = Output(UInt(4.W))
-    val lsu_axi_arprot = Output(UInt(3.W))
-    val lsu_axi_arqos = Output(UInt(4.W))
-    val lsu_axi_rvalid = Input(Bool())
-    val lsu_axi_rready = Output(Bool())
-    val lsu_axi_rid = Input(UInt(LSU_BUS_TAG.W))
-    val lsu_axi_rdata = Input(UInt(64.W))
-    val lsu_axi_rresp = Input(UInt(2.W))
-    val lsu_axi_rlast = Input(Bool())
-
-
-    // AXI IFU Signals
-    val ifu_axi_awvalid = Output(Bool())
-    val ifu_axi_awready = Input(Bool())
-    val ifu_axi_awid = Output(UInt(IFU_BUS_TAG.W))
-    val ifu_axi_awaddr = Output(UInt(32.W))
-    val ifu_axi_awregion = Output(UInt(4.W))
-    val ifu_axi_awlen = Output(UInt(8.W))
-    val ifu_axi_awsize = Output(UInt(3.W))
-    val ifu_axi_awburst = Output(UInt(2.W))
-    val ifu_axi_awlock = Output(Bool())
-    val ifu_axi_awcache = Output(UInt(4.W))
-    val ifu_axi_awprot = Output(UInt(3.W))
-    val ifu_axi_awqos = Output(UInt(4.W))
-    val ifu_axi_wvalid = Output(Bool())
-    val ifu_axi_wready = Output(Bool())
-    val ifu_axi_wdata = Output(UInt(64.W))
-    val ifu_axi_wstrb = Output(UInt(8.W))
-    val ifu_axi_wlast = Output(Bool())
-    val ifu_axi_bvalid = Input(Bool())
-    val ifu_axi_bready = Output(Bool())
-    val ifu_axi_bresp = Input(UInt(2.W))
-    val ifu_axi_bid = Input(UInt(IFU_BUS_TAG.W))
-    val ifu_axi_arvalid = Output(Bool())
-    val ifu_axi_arready = Input(Bool())
-    val ifu_axi_arid = Output(UInt(IFU_BUS_TAG.W))
-    val ifu_axi_araddr = Output(UInt(32.W))
-    val ifu_axi_arregion = Output(UInt(4.W))
-    val ifu_axi_arlen = Output(UInt(8.W))
-    val ifu_axi_arsize = Output(UInt(3.W))
-    val ifu_axi_arburst = Output(UInt(2.W))
-    val ifu_axi_arlock = Output(Bool())
-    val ifu_axi_arcache = Output(UInt(4.W))
-    val ifu_axi_arprot = Output(UInt(3.W))
-    val ifu_axi_arqos = Output(UInt(4.W))
-    val ifu_axi_rvalid = Input(Bool())
-    val ifu_axi_rready = Output(Bool())
-    val ifu_axi_rid = Input(UInt(IFU_BUS_TAG.W))
-    val ifu_axi_rdata = Input(UInt(64.W))
-    val ifu_axi_rresp = Input(UInt(2.W))
-    val ifu_axi_rlast = Input(Bool())
-
-    // SB AXI Signals
-    val sb_axi_awvalid = Output(Bool())
-    val sb_axi_awready = Input(Bool())
-    val sb_axi_awid = Output(UInt(SB_BUS_TAG.W))
-    val sb_axi_awaddr = Output(UInt(32.W))
-    val sb_axi_awregion = Output(UInt(4.W))
-    val sb_axi_awlen = Output(UInt(8.W))
-    val sb_axi_awsize = Output(UInt(3.W))
-    val sb_axi_awburst = Output(UInt(2.W))
-    val sb_axi_awlock = Output(Bool())
-    val sb_axi_awcache = Output(UInt(4.W))
-    val sb_axi_awprot = Output(UInt(3.W))
-    val sb_axi_awqos = Output(UInt(4.W))
-    val sb_axi_wvalid = Output(Bool())
-    val sb_axi_wready = Input(Bool())
-    val sb_axi_wdata = Output(UInt(64.W))
-    val sb_axi_wstrb = Output(UInt(8.W))
-    val sb_axi_wlast = Output(Bool())
-    val sb_axi_bvalid = Input(Bool())
-    val sb_axi_bready = Output(Bool())
-    val sb_axi_bresp = Input(UInt(2.W))
-    val sb_axi_bid = Input(UInt(SB_BUS_TAG.W))
-    val sb_axi_arvalid = Output(Bool())
-    val sb_axi_arready = Input(Bool())
-    val sb_axi_arid = Output(UInt(SB_BUS_TAG.W))
-    val sb_axi_araddr = Output(UInt(32.W))
-    val sb_axi_arregion = Output(UInt(4.W))
-    val sb_axi_arlen = Output(UInt(8.W))
-    val sb_axi_arsize = Output(UInt(3.W))
-    val sb_axi_arburst = Output(UInt(2.W))
-    val sb_axi_arlock = Output(Bool())
-    val sb_axi_arcache = Output(UInt(4.W))
-    val sb_axi_arprot = Output(UInt(3.W))
-    val sb_axi_arqos = Output(UInt(4.W))
-    val sb_axi_rvalid = Input(Bool())
-    val sb_axi_rready = Output(Bool())
-    val sb_axi_rid = Input(UInt(SB_BUS_TAG.W))
-    val sb_axi_rdata = Input(UInt(64.W))
-    val sb_axi_rresp = Input(UInt(2.W))
-    val sb_axi_rlast = Input(Bool())
-    // DMA signals
-    val dma_axi_awvalid       = Input(Bool())
-    val dma_axi_awready       = Output(Bool())
-    val dma_axi_awid          = Input(UInt(DMA_BUS_TAG.W))
-    val dma_axi_awaddr        = Input(UInt(32.W))
-    val dma_axi_awsize        = Input(UInt(3.W))
-    val dma_axi_awprot        = Input(UInt(3.W))
-    val dma_axi_awlen = Input(UInt(8.W))
-    val dma_axi_awburst = Input(UInt(2.W))
-    val dma_axi_wvalid        = Input(Bool())
-    val dma_axi_wready        = Output(Bool())
-    val dma_axi_wdata         = Input(UInt(64.W))
-    val dma_axi_wstrb         = Input(UInt(8.W))
-    val dma_axi_wlast   = Input(Bool())
-    val dma_axi_bvalid        = Output(Bool())
-    val dma_axi_bready        = Input(Bool())
-    val dma_axi_bresp         = Output(UInt(2.W))
-    val dma_axi_bid           = Output(UInt(DMA_BUS_TAG.W))
-
-    // AXI Read Channels
-    val dma_axi_arvalid       = Input(Bool())
-    val dma_axi_arready       = Output(Bool())
-    val dma_axi_arid          = Input(UInt(DMA_BUS_TAG.W))
-
-    val dma_axi_araddr        = Input(UInt(32.W))
-    val dma_axi_arsize        = Input(UInt(3.W))
-
-    val dma_axi_arprot = Input(UInt(3.W))
-    val dma_axi_arlen = Input(UInt(8.W))
-    val dma_axi_arburst = Input(UInt(2.W))
-    val dma_axi_rvalid        = Output(Bool())
-    val dma_axi_rready        = Input(Bool())
-
-    val dma_axi_rid           = Output(UInt(DMA_BUS_TAG.W))
-    val dma_axi_rdata         = Output(UInt(64.W))
-    val dma_axi_rresp         = Output(UInt(2.W))
-    val dma_axi_rlast         = Output(Bool())
-
-    // AHB Lite Bus
-    val haddr = Output(UInt(32.W))
-    val hburst = Output(UInt(3.W))
-    val hmastlock = Output(Bool())
-    val hprot = Output(UInt(4.W))
-    val hsize = Output(UInt(3.W))
-    val htrans = Output(UInt(2.W))
-    val hwrite = Output(Bool())
-    val hrdata = Input(UInt(64.W))
-    val hready = Input(Bool())
-    val hresp = Input(Bool())
-
-    // AHB Master
-    val lsu_haddr = Output(UInt(32.W))
-    val lsu_hburst = Output(UInt(3.W))
-    val lsu_hmastlock = Output(Bool())
-    val lsu_hprot = Output(UInt(4.W))
-    val lsu_hsize = Output(UInt(3.W))
-    val lsu_htrans = Output(UInt(2.W))
-    val lsu_hwrite = Output(Bool())
-    val lsu_hwdata = Output(UInt(64.W))
-    val lsu_hrdata = Input(UInt(64.W))
-    val lsu_hready = Input(Bool())
-    val lsu_hresp = Input(Bool())
-
-    // System Bus Debug Master
-    val sb_haddr = Output(UInt(32.W))
-    val sb_hburst = Output(UInt(3.W))
-    val sb_hmastlock = Output(Bool())
-    val sb_hprot = Output(UInt(4.W))
-    val sb_hsize = Output(UInt(3.W))
-    val sb_htrans = Output(UInt(2.W))
-    val sb_hwrite = Output(Bool())
-    val sb_hwdata = Output(UInt(64.W))
-    val sb_hrdata = Input(UInt(64.W))
-    val sb_hready = Input(Bool())
-    val sb_hresp = Input(Bool())
-
-    // DMA slave
-    val dma_hsel = Input(Bool())
-    val dma_haddr = Input(UInt(32.W))
-    val dma_hburst = Input(UInt(3.W))
-    val dma_hmastlock = Input(Bool())
-    val dma_hprot = Input(UInt(4.W))
-    val dma_hsize = Input(UInt(3.W))
-    val dma_htrans = Input(UInt(2.W))
-    val dma_hwrite = Input(Bool())
-    val dma_hwdata = Input(UInt(64.W))
-    val dma_hreadyin = Input(Bool())
-    val dma_hrdata = Output(UInt(64.W))
-    val dma_hreadyout = Output(Bool())
-    val dma_hresp = Output(Bool())
-    val lsu_bus_clk_en = Input(Bool())
-    val ifu_bus_clk_en = Input(Bool())
-    val dbg_bus_clk_en = Input(Bool())
-    val dma_bus_clk_en = Input(Bool())
-    val dmi_reg_en = Input(Bool())
-    val dmi_reg_addr = Input(UInt(7.W))
-    val dmi_reg_wr_en = Input(Bool())
-    val dmi_reg_wdata = Input(UInt(32.W))
-    val dmi_reg_rdata = Output(UInt(32.W))
-    val dmi_hard_reset = Input(Bool())
-    val extintsrc_req = Input(UInt(PIC_TOTAL_INT.W))
-    val timer_int = Input(Bool())
-    val soft_int = Input(Bool())
-    val scan_mode = Input(Bool())
-  })
-
-
+  val io = IO (new el2_swerv_bundle)
   val ifu = Module(new el2_ifu)
   val dec = Module(new el2_dec)
   val dbg = Module(new el2_dbg)
   val exu = Module(new el2_exu)
   val lsu = Module(new el2_lsu)
-  val pic_ctl_inst = Module(new el2_pic_ctrl)
+  val pic_ctrl_inst = Module(new el2_pic_ctrl)
   val dma_ctrl = Module(new el2_dma_ctrl)
   //val lsu_axi4_to_ahb = Module(new axi4_to_ahb)
   //val ifu_axi4_to_ahb = Module(new axi4_to_ahb)
   //val sb_axi4_to_ahb = Module(new axi4_to_ahb)
 
-  io.core_rst_l := (!(reset.asBool() & (dbg.io.dbg_core_rst_l.asBool() | io.scan_mode))).asAsyncReset()
+  io.core_rst_l := (reset.asBool() & (dbg.io.dbg_core_rst_l.asBool() | io.scan_mode)).asAsyncReset()
   val active_state = (!dec.io.dec_pause_state_cg | dec.io.dec_tlu_flush_lower_r) | dec.io.dec_tlu_misc_clk_override
   val free_clk = rvclkhdr(clock, true.B, io.scan_mode)
   val active_clk = rvclkhdr(clock, active_state, io.scan_mode)
@@ -477,11 +475,11 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   dec.io.ifu_i0_pc := ifu.io.ifu_i0_pc
   dec.io.ifu_i0_pc4 := ifu.io.ifu_i0_pc4
   dec.io.exu_i0_pc_x := exu.io.exu_i0_pc_x
-  dec.io.mexintpend := pic_ctl_inst.io.mexintpend
+  dec.io.mexintpend := pic_ctrl_inst.io.mexintpend
   dec.io.soft_int := io.soft_int
-  dec.io.pic_claimid := pic_ctl_inst.io.claimid
-  dec.io.pic_pl := pic_ctl_inst.io.pl
-  dec.io.mhwakeup := pic_ctl_inst.io.mhwakeup
+  dec.io.pic_claimid := pic_ctrl_inst.io.claimid
+  dec.io.pic_pl := pic_ctrl_inst.io.pl
+  dec.io.mhwakeup := pic_ctrl_inst.io.mhwakeup
   dec.io.ifu_ic_debug_rd_data := ifu.io.ifu_ic_debug_rd_data
   dec.io.ifu_ic_debug_rd_data_valid := ifu.io.ifu_ic_debug_rd_data_valid
   dec.io.dbg_halt_req := dbg.io.dbg_halt_req
@@ -597,7 +595,7 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   dbg.io.sb_axi_rdata := io.sb_axi_rdata
   dbg.io.sb_axi_rresp := io.sb_axi_rresp
   dbg.io.dbg_bus_clk_en := io.dbg_bus_clk_en
-  dbg.io.dbg_rst_l := io.dbg_rst_l
+  dbg.io.dbg_rst_l := io.dbg_rst_l.asBool()
   dbg.io.clk_override := dec.io.dec_tlu_misc_clk_override
   dbg.io.scan_mode := io.scan_mode
 
@@ -642,21 +640,21 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
 
 
   // PIC lets go
-  pic_ctl_inst.io.scan_mode := io.scan_mode
-  pic_ctl_inst.reset := io.core_rst_l
-  pic_ctl_inst.io.free_clk := free_clk
-  pic_ctl_inst.io.active_clk := active_clk
-  pic_ctl_inst.io.clk_override := dec.io.dec_tlu_pic_clk_override
-  pic_ctl_inst.io.extintsrc_req := io.extintsrc_req
-  pic_ctl_inst.io.picm_rdaddr := lsu.io.picm_rdaddr
-  pic_ctl_inst.io.picm_wraddr := lsu.io.picm_wraddr
-  pic_ctl_inst.io.picm_wr_data := lsu.io.picm_wr_data
-  pic_ctl_inst.io.picm_wren := lsu.io.picm_wren
-  pic_ctl_inst.io.picm_rden := lsu.io.picm_rden
-  pic_ctl_inst.io.picm_mken := lsu.io.picm_mken
-  pic_ctl_inst.io.meicurpl := dec.io.dec_tlu_meicurpl
-  pic_ctl_inst.io.meipt := dec.io.dec_tlu_meipt
-  lsu.io.picm_rd_data := pic_ctl_inst.io.picm_rd_data
+  pic_ctrl_inst.io.scan_mode := io.scan_mode
+  pic_ctrl_inst.reset := io.core_rst_l
+  pic_ctrl_inst.io.free_clk := free_clk
+  pic_ctrl_inst.io.active_clk := active_clk
+  pic_ctrl_inst.io.clk_override := dec.io.dec_tlu_pic_clk_override
+  pic_ctrl_inst.io.extintsrc_req := io.extintsrc_req
+  pic_ctrl_inst.io.picm_rdaddr := lsu.io.picm_rdaddr
+  pic_ctrl_inst.io.picm_wraddr := lsu.io.picm_wraddr
+  pic_ctrl_inst.io.picm_wr_data := lsu.io.picm_wr_data
+  pic_ctrl_inst.io.picm_wren := lsu.io.picm_wren
+  pic_ctrl_inst.io.picm_rden := lsu.io.picm_rden
+  pic_ctrl_inst.io.picm_mken := lsu.io.picm_mken
+  pic_ctrl_inst.io.meicurpl := dec.io.dec_tlu_meicurpl
+  pic_ctrl_inst.io.meipt := dec.io.dec_tlu_meipt
+  lsu.io.picm_rd_data := pic_ctrl_inst.io.picm_rd_data
 
 
 
@@ -853,7 +851,7 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   io.dma_hreadyout := 0.U
   io.dma_hresp := 0.U
 
-  io.ifu_axi_wready := 0.U
+  //io.ifu_axi_wready := 0.U
 
   io.dma_hresp := 0.U //dbg.io.dma_hresp
 
@@ -864,6 +862,5 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
 object SWERV extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_swerv()))
 }
-
 
 

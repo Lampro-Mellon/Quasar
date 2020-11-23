@@ -1,0 +1,23 @@
+[
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxResourceAnno",
+    "target":"dmi_wrapper_module.dmi_wrapper",
+    "resourceId":"/vsrc/dmi_wrapper.sv"
+  },
+  {
+    "class":"firrtl.options.TargetDirAnnotation",
+    "directory":"."
+  },
+  {
+    "class":"firrtl.options.OutputAnnotationFileAnnotation",
+    "file":"dmi_wrapper_module"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"."
+  }
+]
