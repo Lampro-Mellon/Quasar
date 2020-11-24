@@ -1248,8 +1248,8 @@ module el2_dec_decode_ctl(
   wire  _T_505 = i0_postsync | _T_504; // @[el2_dec_decode_ctl.scala 570:54]
   wire  _T_506 = io_dec_i0_decode_d & _T_505; // @[el2_dec_decode_ctl.scala 570:39]
   reg  postsync_stall; // @[el2_dec_decode_ctl.scala 568:53]
-  reg  x_d_valid; // @[el2_lib.scala 524:16]
-  wire  _T_507 = postsync_stall & x_d_valid; // @[el2_dec_decode_ctl.scala 570:88]
+  reg  x_d_i0valid; // @[el2_lib.scala 524:16]
+  wire  _T_507 = postsync_stall & x_d_i0valid; // @[el2_dec_decode_ctl.scala 570:88]
   wire  ps_stall_in = _T_506 | _T_507; // @[el2_dec_decode_ctl.scala 570:69]
   wire  _T_12 = ps_stall_in ^ postsync_stall; // @[el2_dec_decode_ctl.scala 217:32]
   wire  _T_13 = _T_11 | _T_12; // @[el2_dec_decode_ctl.scala 216:56]
@@ -1392,34 +1392,34 @@ module el2_dec_decode_ctl(
   wire [2:0] _T_86 = _GEN_128 | _T_83; // @[Mux.scala 27:72]
   wire [3:0] _GEN_129 = {{1'd0}, _T_86}; // @[Mux.scala 27:72]
   wire [3:0] cam_wen = _GEN_129 | _T_84; // @[Mux.scala 27:72]
-  reg  x_d_bits_i0load; // @[el2_lib.scala 524:16]
-  reg [4:0] x_d_bits_i0rd; // @[el2_lib.scala 524:16]
-  wire [4:0] nonblock_load_rd = x_d_bits_i0load ? x_d_bits_i0rd : 5'h0; // @[el2_dec_decode_ctl.scala 314:31]
+  reg  x_d_i0load; // @[el2_lib.scala 524:16]
+  reg [4:0] x_d_i0rd; // @[el2_lib.scala 524:16]
+  wire [4:0] nonblock_load_rd = x_d_i0load ? x_d_i0rd : 5'h0; // @[el2_dec_decode_ctl.scala 314:31]
   reg [2:0] _T_701; // @[el2_dec_decode_ctl.scala 652:72]
   wire [3:0] i0_pipe_en = {io_dec_i0_decode_d,_T_701}; // @[Cat.scala 29:58]
   wire  _T_707 = |i0_pipe_en[2:1]; // @[el2_dec_decode_ctl.scala 655:49]
   wire  i0_r_ctl_en = _T_707 | io_clk_override; // @[el2_dec_decode_ctl.scala 655:53]
   reg  nonblock_load_valid_m_delay; // @[Reg.scala 27:20]
-  reg  r_d_bits_i0load; // @[el2_lib.scala 524:16]
-  wire  i0_load_kill_wen_r = nonblock_load_valid_m_delay & r_d_bits_i0load; // @[el2_dec_decode_ctl.scala 319:56]
+  reg  r_d_i0load; // @[el2_lib.scala 524:16]
+  wire  i0_load_kill_wen_r = nonblock_load_valid_m_delay & r_d_i0load; // @[el2_dec_decode_ctl.scala 319:56]
   wire [2:0] _GEN_130 = {{1'd0}, io_lsu_nonblock_load_inv_tag_r}; // @[el2_dec_decode_ctl.scala 321:66]
   wire  _T_91 = _GEN_130 == cam_raw_0_bits_tag; // @[el2_dec_decode_ctl.scala 321:66]
   wire  _T_92 = io_lsu_nonblock_load_inv_r & _T_91; // @[el2_dec_decode_ctl.scala 321:45]
   wire  cam_inv_reset_val_0 = _T_92 & cam_0_valid; // @[el2_dec_decode_ctl.scala 321:87]
-  reg  r_d_bits_i0v; // @[el2_lib.scala 524:16]
-  wire  _T_743 = ~io_dec_tlu_flush_lower_wb; // @[el2_dec_decode_ctl.scala 687:51]
-  wire  r_d_in_bits_i0v = r_d_bits_i0v & _T_743; // @[el2_dec_decode_ctl.scala 687:49]
-  wire  _T_754 = ~io_dec_tlu_i0_kill_writeb_r; // @[el2_dec_decode_ctl.scala 695:47]
-  wire  i0_wen_r = r_d_in_bits_i0v & _T_754; // @[el2_dec_decode_ctl.scala 695:45]
-  reg [4:0] r_d_bits_i0rd; // @[el2_lib.scala 524:16]
+  reg  r_d_i0v; // @[el2_lib.scala 524:16]
+  wire  _T_743 = ~io_dec_tlu_flush_lower_wb; // @[el2_dec_decode_ctl.scala 687:41]
+  wire  r_d_in_i0v = r_d_i0v & _T_743; // @[el2_dec_decode_ctl.scala 687:39]
+  wire  _T_754 = ~io_dec_tlu_i0_kill_writeb_r; // @[el2_dec_decode_ctl.scala 695:42]
+  wire  i0_wen_r = r_d_in_i0v & _T_754; // @[el2_dec_decode_ctl.scala 695:40]
+  reg [4:0] r_d_i0rd; // @[el2_lib.scala 524:16]
   reg [4:0] cam_raw_0_bits_rd; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_103 = r_d_bits_i0rd == cam_raw_0_bits_rd; // @[el2_dec_decode_ctl.scala 334:85]
+  wire  _T_103 = r_d_i0rd == cam_raw_0_bits_rd; // @[el2_dec_decode_ctl.scala 334:80]
   wire  _T_104 = i0_wen_r & _T_103; // @[el2_dec_decode_ctl.scala 334:64]
   reg  cam_raw_0_bits_wb; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_106 = _T_104 & cam_raw_0_bits_wb; // @[el2_dec_decode_ctl.scala 334:105]
+  wire  _T_106 = _T_104 & cam_raw_0_bits_wb; // @[el2_dec_decode_ctl.scala 334:100]
   wire  _T_107 = cam_inv_reset_val_0 | _T_106; // @[el2_dec_decode_ctl.scala 334:44]
-  wire  _GEN_52 = _T_107 ? 1'h0 : cam_0_valid; // @[el2_dec_decode_ctl.scala 334:131]
-  wire  _GEN_55 = _T_107 ? 1'h0 : cam_raw_0_bits_wb; // @[el2_dec_decode_ctl.scala 334:131]
+  wire  _GEN_52 = _T_107 ? 1'h0 : cam_0_valid; // @[el2_dec_decode_ctl.scala 334:126]
+  wire  _GEN_55 = _T_107 ? 1'h0 : cam_raw_0_bits_wb; // @[el2_dec_decode_ctl.scala 334:126]
   wire  _GEN_56 = cam_wen[0] | _GEN_52; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _GEN_57 = cam_wen[0] ? 1'h0 : _GEN_55; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _T_110 = nonblock_load_valid_m_delay & _T_91; // @[el2_dec_decode_ctl.scala 339:44]
@@ -1429,13 +1429,13 @@ module el2_dec_decode_ctl(
   wire  _T_118 = io_lsu_nonblock_load_inv_r & _T_117; // @[el2_dec_decode_ctl.scala 321:45]
   wire  cam_inv_reset_val_1 = _T_118 & cam_1_valid; // @[el2_dec_decode_ctl.scala 321:87]
   reg [4:0] cam_raw_1_bits_rd; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_129 = r_d_bits_i0rd == cam_raw_1_bits_rd; // @[el2_dec_decode_ctl.scala 334:85]
+  wire  _T_129 = r_d_i0rd == cam_raw_1_bits_rd; // @[el2_dec_decode_ctl.scala 334:80]
   wire  _T_130 = i0_wen_r & _T_129; // @[el2_dec_decode_ctl.scala 334:64]
   reg  cam_raw_1_bits_wb; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_132 = _T_130 & cam_raw_1_bits_wb; // @[el2_dec_decode_ctl.scala 334:105]
+  wire  _T_132 = _T_130 & cam_raw_1_bits_wb; // @[el2_dec_decode_ctl.scala 334:100]
   wire  _T_133 = cam_inv_reset_val_1 | _T_132; // @[el2_dec_decode_ctl.scala 334:44]
-  wire  _GEN_63 = _T_133 ? 1'h0 : cam_1_valid; // @[el2_dec_decode_ctl.scala 334:131]
-  wire  _GEN_66 = _T_133 ? 1'h0 : cam_raw_1_bits_wb; // @[el2_dec_decode_ctl.scala 334:131]
+  wire  _GEN_63 = _T_133 ? 1'h0 : cam_1_valid; // @[el2_dec_decode_ctl.scala 334:126]
+  wire  _GEN_66 = _T_133 ? 1'h0 : cam_raw_1_bits_wb; // @[el2_dec_decode_ctl.scala 334:126]
   wire  _GEN_67 = cam_wen[1] | _GEN_63; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _GEN_68 = cam_wen[1] ? 1'h0 : _GEN_66; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _T_136 = nonblock_load_valid_m_delay & _T_117; // @[el2_dec_decode_ctl.scala 339:44]
@@ -1445,13 +1445,13 @@ module el2_dec_decode_ctl(
   wire  _T_144 = io_lsu_nonblock_load_inv_r & _T_143; // @[el2_dec_decode_ctl.scala 321:45]
   wire  cam_inv_reset_val_2 = _T_144 & cam_2_valid; // @[el2_dec_decode_ctl.scala 321:87]
   reg [4:0] cam_raw_2_bits_rd; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_155 = r_d_bits_i0rd == cam_raw_2_bits_rd; // @[el2_dec_decode_ctl.scala 334:85]
+  wire  _T_155 = r_d_i0rd == cam_raw_2_bits_rd; // @[el2_dec_decode_ctl.scala 334:80]
   wire  _T_156 = i0_wen_r & _T_155; // @[el2_dec_decode_ctl.scala 334:64]
   reg  cam_raw_2_bits_wb; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_158 = _T_156 & cam_raw_2_bits_wb; // @[el2_dec_decode_ctl.scala 334:105]
+  wire  _T_158 = _T_156 & cam_raw_2_bits_wb; // @[el2_dec_decode_ctl.scala 334:100]
   wire  _T_159 = cam_inv_reset_val_2 | _T_158; // @[el2_dec_decode_ctl.scala 334:44]
-  wire  _GEN_74 = _T_159 ? 1'h0 : cam_2_valid; // @[el2_dec_decode_ctl.scala 334:131]
-  wire  _GEN_77 = _T_159 ? 1'h0 : cam_raw_2_bits_wb; // @[el2_dec_decode_ctl.scala 334:131]
+  wire  _GEN_74 = _T_159 ? 1'h0 : cam_2_valid; // @[el2_dec_decode_ctl.scala 334:126]
+  wire  _GEN_77 = _T_159 ? 1'h0 : cam_raw_2_bits_wb; // @[el2_dec_decode_ctl.scala 334:126]
   wire  _GEN_78 = cam_wen[2] | _GEN_74; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _GEN_79 = cam_wen[2] ? 1'h0 : _GEN_77; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _T_162 = nonblock_load_valid_m_delay & _T_143; // @[el2_dec_decode_ctl.scala 339:44]
@@ -1461,20 +1461,20 @@ module el2_dec_decode_ctl(
   wire  _T_170 = io_lsu_nonblock_load_inv_r & _T_169; // @[el2_dec_decode_ctl.scala 321:45]
   wire  cam_inv_reset_val_3 = _T_170 & cam_3_valid; // @[el2_dec_decode_ctl.scala 321:87]
   reg [4:0] cam_raw_3_bits_rd; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_181 = r_d_bits_i0rd == cam_raw_3_bits_rd; // @[el2_dec_decode_ctl.scala 334:85]
+  wire  _T_181 = r_d_i0rd == cam_raw_3_bits_rd; // @[el2_dec_decode_ctl.scala 334:80]
   wire  _T_182 = i0_wen_r & _T_181; // @[el2_dec_decode_ctl.scala 334:64]
   reg  cam_raw_3_bits_wb; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_184 = _T_182 & cam_raw_3_bits_wb; // @[el2_dec_decode_ctl.scala 334:105]
+  wire  _T_184 = _T_182 & cam_raw_3_bits_wb; // @[el2_dec_decode_ctl.scala 334:100]
   wire  _T_185 = cam_inv_reset_val_3 | _T_184; // @[el2_dec_decode_ctl.scala 334:44]
-  wire  _GEN_85 = _T_185 ? 1'h0 : cam_3_valid; // @[el2_dec_decode_ctl.scala 334:131]
-  wire  _GEN_88 = _T_185 ? 1'h0 : cam_raw_3_bits_wb; // @[el2_dec_decode_ctl.scala 334:131]
+  wire  _GEN_85 = _T_185 ? 1'h0 : cam_3_valid; // @[el2_dec_decode_ctl.scala 334:126]
+  wire  _GEN_88 = _T_185 ? 1'h0 : cam_raw_3_bits_wb; // @[el2_dec_decode_ctl.scala 334:126]
   wire  _GEN_89 = cam_wen[3] | _GEN_85; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _GEN_90 = cam_wen[3] ? 1'h0 : _GEN_88; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _T_188 = nonblock_load_valid_m_delay & _T_169; // @[el2_dec_decode_ctl.scala 339:44]
   wire  _T_190 = _T_188 & cam_3_valid; // @[el2_dec_decode_ctl.scala 339:100]
   wire  nonblock_load_write_3 = _T_172 & cam_raw_3_valid; // @[el2_dec_decode_ctl.scala 348:71]
-  wire  _T_195 = r_d_bits_i0rd == io_dec_nonblock_load_waddr; // @[el2_dec_decode_ctl.scala 353:49]
-  wire  nonblock_load_cancel = _T_195 & i0_wen_r; // @[el2_dec_decode_ctl.scala 353:81]
+  wire  _T_195 = r_d_i0rd == io_dec_nonblock_load_waddr; // @[el2_dec_decode_ctl.scala 353:44]
+  wire  nonblock_load_cancel = _T_195 & i0_wen_r; // @[el2_dec_decode_ctl.scala 353:76]
   wire  _T_196 = nonblock_load_write_0 | nonblock_load_write_1; // @[el2_dec_decode_ctl.scala 354:95]
   wire  _T_197 = _T_196 | nonblock_load_write_2; // @[el2_dec_decode_ctl.scala 354:95]
   wire  _T_198 = _T_197 | nonblock_load_write_3; // @[el2_dec_decode_ctl.scala 354:95]
@@ -1561,13 +1561,13 @@ module el2_dec_decode_ctl(
   reg  _T_339; // @[el2_dec_decode_ctl.scala 432:58]
   wire  lsu_decode_d = i0_legal_decode_d & i0_dp_lsu; // @[el2_dec_decode_ctl.scala 574:40]
   wire  _T_902 = i0_dp_load | i0_dp_store; // @[el2_dec_decode_ctl.scala 788:43]
-  reg  x_d_bits_i0v; // @[el2_lib.scala 524:16]
-  wire  _T_876 = io_dec_i0_rs1_en_d & x_d_bits_i0v; // @[el2_dec_decode_ctl.scala 768:48]
-  wire  _T_877 = x_d_bits_i0rd == i0r_rs1; // @[el2_dec_decode_ctl.scala 768:80]
-  wire  i0_rs1_depend_i0_x = _T_876 & _T_877; // @[el2_dec_decode_ctl.scala 768:63]
-  wire  _T_878 = io_dec_i0_rs1_en_d & r_d_bits_i0v; // @[el2_dec_decode_ctl.scala 769:48]
-  wire  _T_879 = r_d_bits_i0rd == i0r_rs1; // @[el2_dec_decode_ctl.scala 769:80]
-  wire  i0_rs1_depend_i0_r = _T_878 & _T_879; // @[el2_dec_decode_ctl.scala 769:63]
+  reg  x_d_i0v; // @[el2_lib.scala 524:16]
+  wire  _T_876 = io_dec_i0_rs1_en_d & x_d_i0v; // @[el2_dec_decode_ctl.scala 768:48]
+  wire  _T_877 = x_d_i0rd == i0r_rs1; // @[el2_dec_decode_ctl.scala 768:70]
+  wire  i0_rs1_depend_i0_x = _T_876 & _T_877; // @[el2_dec_decode_ctl.scala 768:58]
+  wire  _T_878 = io_dec_i0_rs1_en_d & r_d_i0v; // @[el2_dec_decode_ctl.scala 769:48]
+  wire  _T_879 = r_d_i0rd == i0r_rs1; // @[el2_dec_decode_ctl.scala 769:70]
+  wire  i0_rs1_depend_i0_r = _T_878 & _T_879; // @[el2_dec_decode_ctl.scala 769:58]
   wire [1:0] _T_891 = i0_rs1_depend_i0_r ? 2'h2 : 2'h0; // @[el2_dec_decode_ctl.scala 775:63]
   wire [1:0] i0_rs1_depth_d = i0_rs1_depend_i0_x ? 2'h1 : _T_891; // @[el2_dec_decode_ctl.scala 775:24]
   wire  _T_904 = _T_902 & i0_rs1_depth_d[0]; // @[el2_dec_decode_ctl.scala 788:58]
@@ -1576,12 +1576,12 @@ module el2_dec_decode_ctl(
   wire  _T_887_load = i0_rs1_depend_i0_r & i0_r_c_load; // @[el2_dec_decode_ctl.scala 774:61]
   wire  i0_rs1_class_d_load = i0_rs1_depend_i0_x ? i0_x_c_load : _T_887_load; // @[el2_dec_decode_ctl.scala 774:24]
   wire  load_ldst_bypass_d = _T_904 & i0_rs1_class_d_load; // @[el2_dec_decode_ctl.scala 788:78]
-  wire  _T_880 = io_dec_i0_rs2_en_d & x_d_bits_i0v; // @[el2_dec_decode_ctl.scala 771:48]
-  wire  _T_881 = x_d_bits_i0rd == i0r_rs2; // @[el2_dec_decode_ctl.scala 771:80]
-  wire  i0_rs2_depend_i0_x = _T_880 & _T_881; // @[el2_dec_decode_ctl.scala 771:63]
-  wire  _T_882 = io_dec_i0_rs2_en_d & r_d_bits_i0v; // @[el2_dec_decode_ctl.scala 772:48]
-  wire  _T_883 = r_d_bits_i0rd == i0r_rs2; // @[el2_dec_decode_ctl.scala 772:80]
-  wire  i0_rs2_depend_i0_r = _T_882 & _T_883; // @[el2_dec_decode_ctl.scala 772:63]
+  wire  _T_880 = io_dec_i0_rs2_en_d & x_d_i0v; // @[el2_dec_decode_ctl.scala 771:48]
+  wire  _T_881 = x_d_i0rd == i0r_rs2; // @[el2_dec_decode_ctl.scala 771:70]
+  wire  i0_rs2_depend_i0_x = _T_880 & _T_881; // @[el2_dec_decode_ctl.scala 771:58]
+  wire  _T_882 = io_dec_i0_rs2_en_d & r_d_i0v; // @[el2_dec_decode_ctl.scala 772:48]
+  wire  _T_883 = r_d_i0rd == i0r_rs2; // @[el2_dec_decode_ctl.scala 772:70]
+  wire  i0_rs2_depend_i0_r = _T_882 & _T_883; // @[el2_dec_decode_ctl.scala 772:58]
   wire [1:0] _T_900 = i0_rs2_depend_i0_r ? 2'h2 : 2'h0; // @[el2_dec_decode_ctl.scala 777:63]
   wire [1:0] i0_rs2_depth_d = i0_rs2_depend_i0_x ? 2'h1 : _T_900; // @[el2_dec_decode_ctl.scala 777:24]
   wire  _T_907 = i0_dp_store & i0_rs2_depth_d[0]; // @[el2_dec_decode_ctl.scala 789:43]
@@ -1589,16 +1589,16 @@ module el2_dec_decode_ctl(
   wire  i0_rs2_class_d_load = i0_rs2_depend_i0_x ? i0_x_c_load : _T_896_load; // @[el2_dec_decode_ctl.scala 776:24]
   wire  store_data_bypass_d = _T_907 & i0_rs2_class_d_load; // @[el2_dec_decode_ctl.scala 789:63]
   wire  _T_349 = i0_dp_csr_clr | i0_dp_csr_set; // @[el2_dec_decode_ctl.scala 463:42]
-  reg  r_d_bits_csrwen; // @[el2_lib.scala 524:16]
-  reg  r_d_valid; // @[el2_lib.scala 524:16]
-  wire  _T_352 = r_d_bits_csrwen & r_d_valid; // @[el2_dec_decode_ctl.scala 471:39]
-  reg [11:0] r_d_bits_csrwaddr; // @[el2_lib.scala 524:16]
-  wire  _T_355 = r_d_bits_csrwaddr == 12'h300; // @[el2_dec_decode_ctl.scala 474:50]
-  wire  _T_356 = r_d_bits_csrwaddr == 12'h304; // @[el2_dec_decode_ctl.scala 474:85]
-  wire  _T_357 = _T_355 | _T_356; // @[el2_dec_decode_ctl.scala 474:64]
-  wire  _T_358 = _T_357 & r_d_bits_csrwen; // @[el2_dec_decode_ctl.scala 474:100]
-  wire  _T_359 = _T_358 & r_d_valid; // @[el2_dec_decode_ctl.scala 474:118]
-  wire  _T_360 = ~io_dec_tlu_i0_kill_writeb_wb; // @[el2_dec_decode_ctl.scala 474:132]
+  reg  r_d_csrwen; // @[el2_lib.scala 524:16]
+  reg  r_d_i0valid; // @[el2_lib.scala 524:16]
+  wire  _T_352 = r_d_csrwen & r_d_i0valid; // @[el2_dec_decode_ctl.scala 471:34]
+  reg [11:0] r_d_csrwaddr; // @[el2_lib.scala 524:16]
+  wire  _T_355 = r_d_csrwaddr == 12'h300; // @[el2_dec_decode_ctl.scala 474:45]
+  wire  _T_356 = r_d_csrwaddr == 12'h304; // @[el2_dec_decode_ctl.scala 474:75]
+  wire  _T_357 = _T_355 | _T_356; // @[el2_dec_decode_ctl.scala 474:59]
+  wire  _T_358 = _T_357 & r_d_csrwen; // @[el2_dec_decode_ctl.scala 474:90]
+  wire  _T_359 = _T_358 & r_d_i0valid; // @[el2_dec_decode_ctl.scala 474:103]
+  wire  _T_360 = ~io_dec_tlu_i0_kill_writeb_wb; // @[el2_dec_decode_ctl.scala 474:119]
   reg  csr_read_x; // @[el2_dec_decode_ctl.scala 476:52]
   reg  csr_clr_x; // @[el2_dec_decode_ctl.scala 477:51]
   reg  csr_set_x; // @[el2_dec_decode_ctl.scala 478:51]
@@ -1628,14 +1628,14 @@ module el2_dec_decode_ctl(
   wire  _T_426 = _T_425 | csr_write_x; // @[el2_dec_decode_ctl.scala 507:46]
   wire  _T_427 = _T_426 & csr_read_x; // @[el2_dec_decode_ctl.scala 507:61]
   wire  _T_428 = _T_427 | io_dec_tlu_wr_pause_r; // @[el2_dec_decode_ctl.scala 507:75]
-  reg  r_d_bits_csrwonly; // @[el2_lib.scala 524:16]
-  wire  _T_764 = r_d_bits_i0v & r_d_bits_i0load; // @[el2_dec_decode_ctl.scala 710:42]
+  reg  r_d_csrwonly; // @[el2_lib.scala 524:16]
+  wire  _T_764 = r_d_i0v & r_d_i0load; // @[el2_dec_decode_ctl.scala 710:37]
   reg [31:0] i0_result_r_raw; // @[el2_lib.scala 514:16]
   wire [31:0] i0_result_corr_r = _T_764 ? io_lsu_result_corr_r : i0_result_r_raw; // @[el2_dec_decode_ctl.scala 710:27]
-  reg  x_d_bits_csrwonly; // @[el2_lib.scala 524:16]
-  wire  _T_432 = x_d_bits_csrwonly | r_d_bits_csrwonly; // @[el2_dec_decode_ctl.scala 516:43]
-  reg  wbd_bits_csrwonly; // @[el2_lib.scala 524:16]
-  wire  prior_csr_write = _T_432 | wbd_bits_csrwonly; // @[el2_dec_decode_ctl.scala 516:63]
+  reg  x_d_csrwonly; // @[el2_lib.scala 524:16]
+  wire  _T_432 = x_d_csrwonly | r_d_csrwonly; // @[el2_dec_decode_ctl.scala 516:38]
+  reg  wbd_csrwonly; // @[el2_lib.scala 524:16]
+  wire  prior_csr_write = _T_432 | wbd_csrwonly; // @[el2_dec_decode_ctl.scala 516:53]
   wire  debug_fence_raw = io_dec_debug_fence_d & io_dbg_cmd_wrdata[1]; // @[el2_dec_decode_ctl.scala 519:48]
   wire  debug_fence = debug_fence_raw | debug_fence_i; // @[el2_dec_decode_ctl.scala 520:40]
   wire  _T_436 = i0_dp_presync | io_dec_tlu_presync_d; // @[el2_dec_decode_ctl.scala 523:34]
@@ -1652,8 +1652,8 @@ module el2_dec_decode_ctl(
   wire  _T_473 = _T_472 | leak1_i0_stall; // @[el2_dec_decode_ctl.scala 541:95]
   wire  _T_474 = _T_473 | io_dec_tlu_debug_stall; // @[el2_dec_decode_ctl.scala 542:20]
   wire  _T_475 = _T_474 | postsync_stall; // @[el2_dec_decode_ctl.scala 542:45]
-  wire  prior_inflight = x_d_valid | r_d_valid; // @[el2_dec_decode_ctl.scala 564:41]
-  wire  prior_inflight_eff = i0_dp_div ? x_d_valid : prior_inflight; // @[el2_dec_decode_ctl.scala 565:31]
+  wire  prior_inflight = x_d_i0valid | r_d_i0valid; // @[el2_dec_decode_ctl.scala 564:41]
+  wire  prior_inflight_eff = i0_dp_div ? x_d_i0valid : prior_inflight; // @[el2_dec_decode_ctl.scala 565:31]
   wire  presync_stall = i0_presync & prior_inflight_eff; // @[el2_dec_decode_ctl.scala 567:37]
   wire  _T_476 = _T_475 | presync_stall; // @[el2_dec_decode_ctl.scala 542:62]
   wire  _T_477 = i0_dp_fence | debug_fence; // @[el2_dec_decode_ctl.scala 543:19]
@@ -1709,13 +1709,13 @@ module el2_dec_decode_ctl(
   reg  r_t_pmu_i0_br_unpred; // @[el2_lib.scala 524:16]
   reg [3:0] lsu_trigger_match_r; // @[el2_dec_decode_ctl.scala 602:36]
   reg  lsu_pmu_misaligned_r; // @[el2_dec_decode_ctl.scala 603:37]
-  reg  r_d_bits_i0store; // @[el2_lib.scala 524:16]
-  wire  _T_536 = r_d_bits_i0load | r_d_bits_i0store; // @[el2_dec_decode_ctl.scala 607:61]
+  reg  r_d_i0store; // @[el2_lib.scala 524:16]
+  wire  _T_536 = r_d_i0load | r_d_i0store; // @[el2_dec_decode_ctl.scala 607:56]
   wire [3:0] _T_540 = {_T_536,_T_536,_T_536,_T_536}; // @[Cat.scala 29:58]
-  wire [3:0] _T_541 = _T_540 & lsu_trigger_match_r; // @[el2_dec_decode_ctl.scala 607:82]
-  wire [3:0] _T_542 = _T_541 | r_t_i0trigger; // @[el2_dec_decode_ctl.scala 607:105]
-  reg  r_d_bits_i0div; // @[el2_lib.scala 524:16]
-  wire  _T_545 = r_d_bits_i0div & r_d_valid; // @[el2_dec_decode_ctl.scala 613:58]
+  wire [3:0] _T_541 = _T_540 & lsu_trigger_match_r; // @[el2_dec_decode_ctl.scala 607:72]
+  wire [3:0] _T_542 = _T_541 | r_t_i0trigger; // @[el2_dec_decode_ctl.scala 607:95]
+  reg  r_d_i0div; // @[el2_lib.scala 524:16]
+  wire  _T_545 = r_d_i0div & r_d_i0valid; // @[el2_dec_decode_ctl.scala 613:53]
   wire  _T_556 = i0r_rs1 != 5'h0; // @[el2_dec_decode_ctl.scala 624:49]
   wire  _T_558 = i0r_rs2 != 5'h0; // @[el2_dec_decode_ctl.scala 625:49]
   wire  _T_560 = i0r_rd != 5'h0; // @[el2_dec_decode_ctl.scala 626:48]
@@ -1751,34 +1751,34 @@ module el2_dec_decode_ctl(
   reg  i0_r_c_alu; // @[Reg.scala 15:16]
   wire  _T_710 = |i0_pipe_en[1:0]; // @[el2_dec_decode_ctl.scala 656:49]
   wire  i0_r_data_en = i0_pipe_en[2] | io_clk_override; // @[el2_dec_decode_ctl.scala 658:50]
-  reg  x_d_bits_i0store; // @[el2_lib.scala 524:16]
-  reg  x_d_bits_i0div; // @[el2_lib.scala 524:16]
-  reg  x_d_bits_csrwen; // @[el2_lib.scala 524:16]
-  reg [11:0] x_d_bits_csrwaddr; // @[el2_lib.scala 524:16]
-  wire  _T_733 = x_d_bits_i0v & _T_743; // @[el2_dec_decode_ctl.scala 680:47]
-  wire  _T_737 = x_d_valid & _T_743; // @[el2_dec_decode_ctl.scala 681:33]
-  wire  _T_756 = ~r_d_bits_i0div; // @[el2_dec_decode_ctl.scala 696:49]
+  reg  x_d_i0store; // @[el2_lib.scala 524:16]
+  reg  x_d_i0div; // @[el2_lib.scala 524:16]
+  reg  x_d_csrwen; // @[el2_lib.scala 524:16]
+  reg [11:0] x_d_csrwaddr; // @[el2_lib.scala 524:16]
+  wire  _T_733 = x_d_i0v & _T_743; // @[el2_dec_decode_ctl.scala 680:37]
+  wire  _T_737 = x_d_i0valid & _T_743; // @[el2_dec_decode_ctl.scala 681:37]
+  wire  _T_756 = ~r_d_i0div; // @[el2_dec_decode_ctl.scala 696:49]
   wire  _T_757 = i0_wen_r & _T_756; // @[el2_dec_decode_ctl.scala 696:47]
-  wire  _T_758 = ~i0_load_kill_wen_r; // @[el2_dec_decode_ctl.scala 696:70]
-  wire  _T_761 = x_d_bits_i0v & x_d_bits_i0load; // @[el2_dec_decode_ctl.scala 705:47]
+  wire  _T_758 = ~i0_load_kill_wen_r; // @[el2_dec_decode_ctl.scala 696:65]
+  wire  _T_761 = x_d_i0v & x_d_i0load; // @[el2_dec_decode_ctl.scala 705:42]
   wire  _T_768 = io_i0_ap_predict_nt & _T_561; // @[el2_dec_decode_ctl.scala 711:52]
   wire [11:0] _T_781 = {10'h0,io_dec_i0_pc4_d,i0_ap_pc2}; // @[Cat.scala 29:58]
   reg [11:0] last_br_immed_x; // @[el2_lib.scala 514:16]
-  wire  _T_799 = x_d_bits_i0div & x_d_valid; // @[el2_dec_decode_ctl.scala 719:45]
-  wire  div_e1_to_r = _T_799 | _T_545; // @[el2_dec_decode_ctl.scala 719:58]
-  wire  _T_802 = x_d_bits_i0rd == 5'h0; // @[el2_dec_decode_ctl.scala 721:77]
-  wire  _T_803 = _T_799 & _T_802; // @[el2_dec_decode_ctl.scala 721:60]
-  wire  _T_805 = _T_799 & io_dec_tlu_flush_lower_r; // @[el2_dec_decode_ctl.scala 722:33]
-  wire  _T_806 = _T_803 | _T_805; // @[el2_dec_decode_ctl.scala 721:94]
-  wire  _T_808 = _T_545 & io_dec_tlu_flush_lower_r; // @[el2_dec_decode_ctl.scala 723:33]
-  wire  _T_809 = _T_808 & io_dec_tlu_i0_kill_writeb_r; // @[el2_dec_decode_ctl.scala 723:60]
-  wire  div_flush = _T_806 | _T_809; // @[el2_dec_decode_ctl.scala 722:62]
+  wire  _T_799 = x_d_i0div & x_d_i0valid; // @[el2_dec_decode_ctl.scala 719:40]
+  wire  div_e1_to_r = _T_799 | _T_545; // @[el2_dec_decode_ctl.scala 719:55]
+  wire  _T_802 = x_d_i0rd == 5'h0; // @[el2_dec_decode_ctl.scala 721:69]
+  wire  _T_803 = _T_799 & _T_802; // @[el2_dec_decode_ctl.scala 721:57]
+  wire  _T_805 = _T_799 & io_dec_tlu_flush_lower_r; // @[el2_dec_decode_ctl.scala 722:30]
+  wire  _T_806 = _T_803 | _T_805; // @[el2_dec_decode_ctl.scala 721:86]
+  wire  _T_808 = _T_545 & io_dec_tlu_flush_lower_r; // @[el2_dec_decode_ctl.scala 723:30]
+  wire  _T_809 = _T_808 & io_dec_tlu_i0_kill_writeb_r; // @[el2_dec_decode_ctl.scala 723:57]
+  wire  div_flush = _T_806 | _T_809; // @[el2_dec_decode_ctl.scala 722:59]
   wire  _T_810 = io_dec_div_active & div_flush; // @[el2_dec_decode_ctl.scala 727:51]
   wire  _T_811 = ~div_e1_to_r; // @[el2_dec_decode_ctl.scala 728:26]
   wire  _T_812 = io_dec_div_active & _T_811; // @[el2_dec_decode_ctl.scala 728:24]
-  wire  _T_813 = r_d_bits_i0rd == io_div_waddr_wb; // @[el2_dec_decode_ctl.scala 728:56]
+  wire  _T_813 = r_d_i0rd == io_div_waddr_wb; // @[el2_dec_decode_ctl.scala 728:51]
   wire  _T_814 = _T_812 & _T_813; // @[el2_dec_decode_ctl.scala 728:39]
-  wire  _T_815 = _T_814 & i0_wen_r; // @[el2_dec_decode_ctl.scala 728:77]
+  wire  _T_815 = _T_814 & i0_wen_r; // @[el2_dec_decode_ctl.scala 728:72]
   wire  nonblock_div_cancel = _T_810 | _T_815; // @[el2_dec_decode_ctl.scala 727:65]
   wire  i0_div_decode_d = i0_legal_decode_d & i0_dp_div; // @[el2_dec_decode_ctl.scala 731:55]
   wire  _T_817 = ~io_exu_div_wren; // @[el2_dec_decode_ctl.scala 733:62]
@@ -2077,7 +2077,7 @@ module el2_dec_decode_ctl(
   assign io_dec_i0_alu_decode_d = i0_exulegal_decode_d & i0_dp_alu; // @[el2_dec_decode_ctl.scala 572:26]
   assign io_dec_i0_rs1_bypass_data_d = _T_967 | _T_966; // @[el2_dec_decode_ctl.scala 807:31]
   assign io_dec_i0_rs2_bypass_data_d = _T_984 | _T_983; // @[el2_dec_decode_ctl.scala 812:31]
-  assign io_dec_i0_waddr_r = r_d_bits_i0rd; // @[el2_dec_decode_ctl.scala 694:27]
+  assign io_dec_i0_waddr_r = r_d_i0rd; // @[el2_dec_decode_ctl.scala 694:27]
   assign io_dec_i0_wen_r = _T_757 & _T_758; // @[el2_dec_decode_ctl.scala 696:32]
   assign io_dec_i0_wdata_r = _T_764 ? io_lsu_result_corr_r : i0_result_r_raw; // @[el2_dec_decode_ctl.scala 697:26]
   assign io_dec_i0_select_pc_d = _T_41 ? 1'h0 : i0_dp_raw_pc; // @[el2_dec_decode_ctl.scala 271:25]
@@ -2127,10 +2127,10 @@ module el2_dec_decode_ctl(
   assign io_dec_csr_any_unq_d = i0_dp_csr_read | i0_csr_write; // @[el2_dec_decode_ctl.scala 529:24]
   assign io_dec_csr_rdaddr_d = io_dec_i0_instr_d[31:20]; // @[el2_dec_decode_ctl.scala 466:24]
   assign io_dec_csr_wen_r = _T_352 & _T_754; // @[el2_dec_decode_ctl.scala 471:20]
-  assign io_dec_csr_wraddr_r = r_d_bits_csrwaddr; // @[el2_dec_decode_ctl.scala 467:23]
-  assign io_dec_csr_wrdata_r = r_d_bits_csrwonly ? i0_result_corr_r : write_csr_data; // @[el2_dec_decode_ctl.scala 514:24]
+  assign io_dec_csr_wraddr_r = r_d_csrwaddr; // @[el2_dec_decode_ctl.scala 467:23]
+  assign io_dec_csr_wrdata_r = r_d_csrwonly ? i0_result_corr_r : write_csr_data; // @[el2_dec_decode_ctl.scala 514:24]
   assign io_dec_csr_stall_int_ff = _T_359 & _T_360; // @[el2_dec_decode_ctl.scala 474:27]
-  assign io_dec_tlu_i0_valid_r = r_d_valid & _T_743; // @[el2_dec_decode_ctl.scala 578:29]
+  assign io_dec_tlu_i0_valid_r = r_d_i0valid & _T_743; // @[el2_dec_decode_ctl.scala 578:29]
   assign io_dec_tlu_packet_r_legal = io_dec_tlu_flush_lower_wb ? 1'h0 : r_t_legal; // @[el2_dec_decode_ctl.scala 612:39]
   assign io_dec_tlu_packet_r_icaf = io_dec_tlu_flush_lower_wb ? 1'h0 : r_t_icaf; // @[el2_dec_decode_ctl.scala 612:39]
   assign io_dec_tlu_packet_r_icaf_f1 = io_dec_tlu_flush_lower_wb ? 1'h0 : r_t_icaf_f1; // @[el2_dec_decode_ctl.scala 612:39]
@@ -2139,7 +2139,7 @@ module el2_dec_decode_ctl(
   assign io_dec_tlu_packet_r_i0trigger = io_dec_tlu_flush_lower_wb ? 4'h0 : _T_542; // @[el2_dec_decode_ctl.scala 612:39]
   assign io_dec_tlu_packet_r_pmu_i0_itype = io_dec_tlu_flush_lower_wb ? 4'h0 : r_t_pmu_i0_itype; // @[el2_dec_decode_ctl.scala 612:39]
   assign io_dec_tlu_packet_r_pmu_i0_br_unpred = io_dec_tlu_flush_lower_wb ? 1'h0 : r_t_pmu_i0_br_unpred; // @[el2_dec_decode_ctl.scala 612:39]
-  assign io_dec_tlu_packet_r_pmu_divide = r_d_bits_i0div & r_d_valid; // @[el2_dec_decode_ctl.scala 612:39 el2_dec_decode_ctl.scala 613:39]
+  assign io_dec_tlu_packet_r_pmu_divide = r_d_i0div & r_d_i0valid; // @[el2_dec_decode_ctl.scala 612:39 el2_dec_decode_ctl.scala 613:39]
   assign io_dec_tlu_packet_r_pmu_lsu_misaligned = io_dec_tlu_flush_lower_wb ? 1'h0 : lsu_pmu_misaligned_r; // @[el2_dec_decode_ctl.scala 612:39]
   assign io_dec_tlu_i0_pc_r = dec_i0_pc_r; // @[el2_dec_decode_ctl.scala 759:27]
   assign io_dec_illegal_inst = _T_465; // @[el2_dec_decode_ctl.scala 536:23]
@@ -2283,7 +2283,7 @@ initial begin
   _RAND_6 = {1{`RANDOM}};
   postsync_stall = _RAND_6[0:0];
   _RAND_7 = {1{`RANDOM}};
-  x_d_valid = _RAND_7[0:0];
+  x_d_i0valid = _RAND_7[0:0];
   _RAND_8 = {1{`RANDOM}};
   flush_final_r = _RAND_8[0:0];
   _RAND_9 = {1{`RANDOM}};
@@ -2305,19 +2305,19 @@ initial begin
   _RAND_17 = {1{`RANDOM}};
   cam_raw_3_valid = _RAND_17[0:0];
   _RAND_18 = {1{`RANDOM}};
-  x_d_bits_i0load = _RAND_18[0:0];
+  x_d_i0load = _RAND_18[0:0];
   _RAND_19 = {1{`RANDOM}};
-  x_d_bits_i0rd = _RAND_19[4:0];
+  x_d_i0rd = _RAND_19[4:0];
   _RAND_20 = {1{`RANDOM}};
   _T_701 = _RAND_20[2:0];
   _RAND_21 = {1{`RANDOM}};
   nonblock_load_valid_m_delay = _RAND_21[0:0];
   _RAND_22 = {1{`RANDOM}};
-  r_d_bits_i0load = _RAND_22[0:0];
+  r_d_i0load = _RAND_22[0:0];
   _RAND_23 = {1{`RANDOM}};
-  r_d_bits_i0v = _RAND_23[0:0];
+  r_d_i0v = _RAND_23[0:0];
   _RAND_24 = {1{`RANDOM}};
-  r_d_bits_i0rd = _RAND_24[4:0];
+  r_d_i0rd = _RAND_24[4:0];
   _RAND_25 = {1{`RANDOM}};
   cam_raw_0_bits_rd = _RAND_25[4:0];
   _RAND_26 = {1{`RANDOM}};
@@ -2339,17 +2339,17 @@ initial begin
   _RAND_34 = {1{`RANDOM}};
   _T_339 = _RAND_34[0:0];
   _RAND_35 = {1{`RANDOM}};
-  x_d_bits_i0v = _RAND_35[0:0];
+  x_d_i0v = _RAND_35[0:0];
   _RAND_36 = {1{`RANDOM}};
   i0_x_c_load = _RAND_36[0:0];
   _RAND_37 = {1{`RANDOM}};
   i0_r_c_load = _RAND_37[0:0];
   _RAND_38 = {1{`RANDOM}};
-  r_d_bits_csrwen = _RAND_38[0:0];
+  r_d_csrwen = _RAND_38[0:0];
   _RAND_39 = {1{`RANDOM}};
-  r_d_valid = _RAND_39[0:0];
+  r_d_i0valid = _RAND_39[0:0];
   _RAND_40 = {1{`RANDOM}};
-  r_d_bits_csrwaddr = _RAND_40[11:0];
+  r_d_csrwaddr = _RAND_40[11:0];
   _RAND_41 = {1{`RANDOM}};
   csr_read_x = _RAND_41[0:0];
   _RAND_42 = {1{`RANDOM}};
@@ -2365,13 +2365,13 @@ initial begin
   _RAND_47 = {1{`RANDOM}};
   csr_rddata_x = _RAND_47[31:0];
   _RAND_48 = {1{`RANDOM}};
-  r_d_bits_csrwonly = _RAND_48[0:0];
+  r_d_csrwonly = _RAND_48[0:0];
   _RAND_49 = {1{`RANDOM}};
   i0_result_r_raw = _RAND_49[31:0];
   _RAND_50 = {1{`RANDOM}};
-  x_d_bits_csrwonly = _RAND_50[0:0];
+  x_d_csrwonly = _RAND_50[0:0];
   _RAND_51 = {1{`RANDOM}};
-  wbd_bits_csrwonly = _RAND_51[0:0];
+  wbd_csrwonly = _RAND_51[0:0];
   _RAND_52 = {1{`RANDOM}};
   _T_465 = _RAND_52[31:0];
   _RAND_53 = {1{`RANDOM}};
@@ -2411,9 +2411,9 @@ initial begin
   _RAND_70 = {1{`RANDOM}};
   lsu_pmu_misaligned_r = _RAND_70[0:0];
   _RAND_71 = {1{`RANDOM}};
-  r_d_bits_i0store = _RAND_71[0:0];
+  r_d_i0store = _RAND_71[0:0];
   _RAND_72 = {1{`RANDOM}};
-  r_d_bits_i0div = _RAND_72[0:0];
+  r_d_i0div = _RAND_72[0:0];
   _RAND_73 = {1{`RANDOM}};
   i0_x_c_mul = _RAND_73[0:0];
   _RAND_74 = {1{`RANDOM}};
@@ -2423,13 +2423,13 @@ initial begin
   _RAND_76 = {1{`RANDOM}};
   i0_r_c_alu = _RAND_76[0:0];
   _RAND_77 = {1{`RANDOM}};
-  x_d_bits_i0store = _RAND_77[0:0];
+  x_d_i0store = _RAND_77[0:0];
   _RAND_78 = {1{`RANDOM}};
-  x_d_bits_i0div = _RAND_78[0:0];
+  x_d_i0div = _RAND_78[0:0];
   _RAND_79 = {1{`RANDOM}};
-  x_d_bits_csrwen = _RAND_79[0:0];
+  x_d_csrwen = _RAND_79[0:0];
   _RAND_80 = {1{`RANDOM}};
-  x_d_bits_csrwaddr = _RAND_80[11:0];
+  x_d_csrwaddr = _RAND_80[11:0];
   _RAND_81 = {1{`RANDOM}};
   last_br_immed_x = _RAND_81[11:0];
   _RAND_82 = {1{`RANDOM}};
@@ -2473,7 +2473,7 @@ initial begin
     postsync_stall = 1'h0;
   end
   if (reset) begin
-    x_d_valid = 1'h0;
+    x_d_i0valid = 1'h0;
   end
   if (reset) begin
     flush_final_r = 1'h0;
@@ -2506,10 +2506,10 @@ initial begin
     cam_raw_3_valid = 1'h0;
   end
   if (reset) begin
-    x_d_bits_i0load = 1'h0;
+    x_d_i0load = 1'h0;
   end
   if (reset) begin
-    x_d_bits_i0rd = 5'h0;
+    x_d_i0rd = 5'h0;
   end
   if (reset) begin
     _T_701 = 3'h0;
@@ -2518,13 +2518,13 @@ initial begin
     nonblock_load_valid_m_delay = 1'h0;
   end
   if (reset) begin
-    r_d_bits_i0load = 1'h0;
+    r_d_i0load = 1'h0;
   end
   if (reset) begin
-    r_d_bits_i0v = 1'h0;
+    r_d_i0v = 1'h0;
   end
   if (reset) begin
-    r_d_bits_i0rd = 5'h0;
+    r_d_i0rd = 5'h0;
   end
   if (reset) begin
     cam_raw_0_bits_rd = 5'h0;
@@ -2557,16 +2557,16 @@ initial begin
     _T_339 = 1'h0;
   end
   if (reset) begin
-    x_d_bits_i0v = 1'h0;
+    x_d_i0v = 1'h0;
   end
   if (reset) begin
-    r_d_bits_csrwen = 1'h0;
+    r_d_csrwen = 1'h0;
   end
   if (reset) begin
-    r_d_valid = 1'h0;
+    r_d_i0valid = 1'h0;
   end
   if (reset) begin
-    r_d_bits_csrwaddr = 12'h0;
+    r_d_csrwaddr = 12'h0;
   end
   if (reset) begin
     csr_read_x = 1'h0;
@@ -2590,16 +2590,16 @@ initial begin
     csr_rddata_x = 32'h0;
   end
   if (reset) begin
-    r_d_bits_csrwonly = 1'h0;
+    r_d_csrwonly = 1'h0;
   end
   if (reset) begin
     i0_result_r_raw = 32'h0;
   end
   if (reset) begin
-    x_d_bits_csrwonly = 1'h0;
+    x_d_csrwonly = 1'h0;
   end
   if (reset) begin
-    wbd_bits_csrwonly = 1'h0;
+    wbd_csrwonly = 1'h0;
   end
   if (reset) begin
     _T_465 = 32'h0;
@@ -2659,22 +2659,22 @@ initial begin
     lsu_pmu_misaligned_r = 1'h0;
   end
   if (reset) begin
-    r_d_bits_i0store = 1'h0;
+    r_d_i0store = 1'h0;
   end
   if (reset) begin
-    r_d_bits_i0div = 1'h0;
+    r_d_i0div = 1'h0;
   end
   if (reset) begin
-    x_d_bits_i0store = 1'h0;
+    x_d_i0store = 1'h0;
   end
   if (reset) begin
-    x_d_bits_i0div = 1'h0;
+    x_d_i0div = 1'h0;
   end
   if (reset) begin
-    x_d_bits_csrwen = 1'h0;
+    x_d_csrwen = 1'h0;
   end
   if (reset) begin
-    x_d_bits_csrwaddr = 12'h0;
+    x_d_csrwaddr = 12'h0;
   end
   if (reset) begin
     last_br_immed_x = 12'h0;
@@ -2787,9 +2787,9 @@ end // initial
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_valid <= 1'h0;
+      x_d_i0valid <= 1'h0;
     end else begin
-      x_d_valid <= io_dec_i0_decode_d;
+      x_d_i0valid <= io_dec_i0_decode_d;
     end
   end
   always @(posedge rvclkhdr_io_l1clk or posedge reset) begin
@@ -2880,16 +2880,16 @@ end // initial
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_bits_i0load <= 1'h0;
+      x_d_i0load <= 1'h0;
     end else begin
-      x_d_bits_i0load <= i0_dp_load & i0_legal_decode_d;
+      x_d_i0load <= i0_dp_load & i0_legal_decode_d;
     end
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_bits_i0rd <= 5'h0;
+      x_d_i0rd <= 5'h0;
     end else begin
-      x_d_bits_i0rd <= io_dec_i0_instr_d[11:7];
+      x_d_i0rd <= io_dec_i0_instr_d[11:7];
     end
   end
   always @(posedge io_active_clk or posedge reset) begin
@@ -2908,31 +2908,31 @@ end // initial
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_bits_i0load <= 1'h0;
+      r_d_i0load <= 1'h0;
     end else begin
-      r_d_bits_i0load <= x_d_bits_i0load;
+      r_d_i0load <= x_d_i0load;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_bits_i0v <= 1'h0;
+      r_d_i0v <= 1'h0;
     end else begin
-      r_d_bits_i0v <= _T_733 & _T_280;
+      r_d_i0v <= _T_733 & _T_280;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_bits_i0rd <= 5'h0;
+      r_d_i0rd <= 5'h0;
     end else begin
-      r_d_bits_i0rd <= x_d_bits_i0rd;
+      r_d_i0rd <= x_d_i0rd;
     end
   end
   always @(posedge io_free_clk or posedge reset) begin
     if (reset) begin
       cam_raw_0_bits_rd <= 5'h0;
     end else if (cam_wen[0]) begin
-      if (x_d_bits_i0load) begin
-        cam_raw_0_bits_rd <= x_d_bits_i0rd;
+      if (x_d_i0load) begin
+        cam_raw_0_bits_rd <= x_d_i0rd;
       end else begin
         cam_raw_0_bits_rd <= 5'h0;
       end
@@ -2951,8 +2951,8 @@ end // initial
     if (reset) begin
       cam_raw_1_bits_rd <= 5'h0;
     end else if (cam_wen[1]) begin
-      if (x_d_bits_i0load) begin
-        cam_raw_1_bits_rd <= x_d_bits_i0rd;
+      if (x_d_i0load) begin
+        cam_raw_1_bits_rd <= x_d_i0rd;
       end else begin
         cam_raw_1_bits_rd <= 5'h0;
       end
@@ -2971,8 +2971,8 @@ end // initial
     if (reset) begin
       cam_raw_2_bits_rd <= 5'h0;
     end else if (cam_wen[2]) begin
-      if (x_d_bits_i0load) begin
-        cam_raw_2_bits_rd <= x_d_bits_i0rd;
+      if (x_d_i0load) begin
+        cam_raw_2_bits_rd <= x_d_i0rd;
       end else begin
         cam_raw_2_bits_rd <= 5'h0;
       end
@@ -2991,8 +2991,8 @@ end // initial
     if (reset) begin
       cam_raw_3_bits_rd <= 5'h0;
     end else if (cam_wen[3]) begin
-      if (x_d_bits_i0load) begin
-        cam_raw_3_bits_rd <= x_d_bits_i0rd;
+      if (x_d_i0load) begin
+        cam_raw_3_bits_rd <= x_d_i0rd;
       end else begin
         cam_raw_3_bits_rd <= 5'h0;
       end
@@ -3023,30 +3023,30 @@ end // initial
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_bits_i0v <= 1'h0;
+      x_d_i0v <= 1'h0;
     end else begin
-      x_d_bits_i0v <= i0_rd_en_d & i0_legal_decode_d;
+      x_d_i0v <= i0_rd_en_d & i0_legal_decode_d;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_bits_csrwen <= 1'h0;
+      r_d_csrwen <= 1'h0;
     end else begin
-      r_d_bits_csrwen <= x_d_bits_csrwen;
+      r_d_csrwen <= x_d_csrwen;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_valid <= 1'h0;
+      r_d_i0valid <= 1'h0;
     end else begin
-      r_d_valid <= _T_737 & _T_280;
+      r_d_i0valid <= _T_737 & _T_280;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_bits_csrwaddr <= 12'h0;
+      r_d_csrwaddr <= 12'h0;
     end else begin
-      r_d_bits_csrwaddr <= x_d_bits_csrwaddr;
+      r_d_csrwaddr <= x_d_csrwaddr;
     end
   end
   always @(posedge io_active_clk or posedge reset) begin
@@ -3102,9 +3102,9 @@ end // initial
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_bits_csrwonly <= 1'h0;
+      r_d_csrwonly <= 1'h0;
     end else begin
-      r_d_bits_csrwonly <= x_d_bits_csrwonly;
+      r_d_csrwonly <= x_d_csrwonly;
     end
   end
   always @(posedge rvclkhdr_10_io_l1clk or posedge reset) begin
@@ -3118,16 +3118,16 @@ end // initial
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_bits_csrwonly <= 1'h0;
+      x_d_csrwonly <= 1'h0;
     end else begin
-      x_d_bits_csrwonly <= i0_csr_write_only_d & io_dec_i0_decode_d;
+      x_d_csrwonly <= i0_csr_write_only_d & io_dec_i0_decode_d;
     end
   end
   always @(posedge rvclkhdr_9_io_l1clk or posedge reset) begin
     if (reset) begin
-      wbd_bits_csrwonly <= 1'h0;
+      wbd_csrwonly <= 1'h0;
     end else begin
-      wbd_bits_csrwonly <= r_d_bits_csrwonly;
+      wbd_csrwonly <= r_d_csrwonly;
     end
   end
   always @(posedge rvclkhdr_4_io_l1clk or posedge reset) begin
@@ -3267,44 +3267,44 @@ end // initial
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_bits_i0store <= 1'h0;
+      r_d_i0store <= 1'h0;
     end else begin
-      r_d_bits_i0store <= x_d_bits_i0store;
+      r_d_i0store <= x_d_i0store;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_bits_i0div <= 1'h0;
+      r_d_i0div <= 1'h0;
     end else begin
-      r_d_bits_i0div <= x_d_bits_i0div;
+      r_d_i0div <= x_d_i0div;
     end
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_bits_i0store <= 1'h0;
+      x_d_i0store <= 1'h0;
     end else begin
-      x_d_bits_i0store <= i0_dp_store & i0_legal_decode_d;
+      x_d_i0store <= i0_dp_store & i0_legal_decode_d;
     end
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_bits_i0div <= 1'h0;
+      x_d_i0div <= 1'h0;
     end else begin
-      x_d_bits_i0div <= i0_dp_div & i0_legal_decode_d;
+      x_d_i0div <= i0_dp_div & i0_legal_decode_d;
     end
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_bits_csrwen <= 1'h0;
+      x_d_csrwen <= 1'h0;
     end else begin
-      x_d_bits_csrwen <= io_dec_csr_wen_unq_d & i0_legal_decode_d;
+      x_d_csrwen <= io_dec_csr_wen_unq_d & i0_legal_decode_d;
     end
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_bits_csrwaddr <= 12'h0;
+      x_d_csrwaddr <= 12'h0;
     end else begin
-      x_d_bits_csrwaddr <= io_dec_i0_instr_d[31:20];
+      x_d_csrwaddr <= io_dec_i0_instr_d[31:20];
     end
   end
   always @(posedge rvclkhdr_11_io_l1clk or posedge reset) begin

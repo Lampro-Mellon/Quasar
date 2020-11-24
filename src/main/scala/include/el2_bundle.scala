@@ -103,6 +103,7 @@ class el2_dest_pkt_t extends Bundle {
   val i0store   = UInt(1.W)
   val i0div     = UInt(1.W)
   val i0v       = UInt(1.W)
+  val i0valid   = UInt(1.W)
   val csrwen    = UInt(1.W)
   val csrwonly  = UInt(1.W)
   val csrwaddr  = UInt(12.W)
