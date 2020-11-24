@@ -36,7 +36,7 @@ object el2_inst_pkt_t extends Enumeration{
 }
 
 class el2_load_cam_pkt_t extends Bundle {
-  val valid = UInt(1.W)
+  //val valid = UInt(1.W)
   val wb    = UInt(1.W)
   val tag   = UInt(3.W)
   val rd    = UInt(5.W)

@@ -144,13 +144,13 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val i0_rs1_depth_d = WireInit(UInt(2.W),0.U)
   val i0_rs2_depth_d = WireInit(UInt(2.W),0.U)
   val cam_wen=WireInit(UInt(LSU_NUM_NBLOAD.W), 0.U)
-  val cam = Wire(Vec(LSU_NUM_NBLOAD,new el2_load_cam_pkt_t))
+  val cam = Wire(Vec(LSU_NUM_NBLOAD,Valid(new el2_load_cam_pkt_t)))
   val cam_write=WireInit(UInt(1.W), 0.U)
   val cam_inv_reset_val=Wire(Vec(LSU_NUM_NBLOAD,UInt(1.W)))
   val cam_data_reset_val=Wire(Vec(LSU_NUM_NBLOAD,UInt(1.W)))
   val nonblock_load_write=Wire(Vec(LSU_NUM_NBLOAD,UInt(1.W)))
-  val cam_raw =Wire(Vec(LSU_NUM_NBLOAD,new el2_load_cam_pkt_t))
-  val cam_in  =Wire(Vec(LSU_NUM_NBLOAD,new el2_load_cam_pkt_t))
+  val cam_raw =Wire(Vec(LSU_NUM_NBLOAD,Valid(new el2_load_cam_pkt_t)))
+  val cam_in  =Wire(Vec(LSU_NUM_NBLOAD,Valid(new el2_load_cam_pkt_t)))
   //val i0_temp = Wire(new el2_inst_pkt_t)
   val i0_dp= Wire(new el2_dec_pkt_t)
   val i0_dp_raw= Wire(new el2_dec_pkt_t)
@@ -318,8 +318,8 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val nonblock_load_valid_m_delay=withClock(io.active_clk){RegEnable(io.lsu_nonblock_load_valid_m,0.U, i0_r_ctl_en.asBool)}
   val i0_load_kill_wen_r = nonblock_load_valid_m_delay &  r_d.i0load
   for(i <- 0 until  LSU_NUM_NBLOAD){
-    cam_inv_reset_val(i) := cam_inv_reset   & (cam_inv_reset_tag === cam(i).tag) & cam(i).valid
-    cam_data_reset_val(i) := cam_data_reset & (cam_data_reset_tag === cam(i).tag) & cam_raw(i).valid
+    cam_inv_reset_val(i) := cam_inv_reset   & (cam_inv_reset_tag === cam(i).bits.tag) & cam(i).valid
+    cam_data_reset_val(i) := cam_data_reset & (cam_data_reset_tag === cam(i).bits.tag) & cam_raw(i).valid
     cam_in(i):=0.U.asTypeOf(cam(0))
     cam(i):=cam_raw(i)
 
@@ -328,16 +328,16 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     }
     when(cam_wen(i).asBool){
       cam_in(i).valid     := 1.U(1.W)
-      cam_in(i).wb        := 0.U(1.W)
-      cam_in(i).tag       := cam_write_tag
-      cam_in(i).rd        := nonblock_load_rd
-    }.elsewhen(cam_inv_reset_val(i).asBool || (i0_wen_r.asBool && (r_d_in.i0rd === cam(i).rd) && cam(i).wb.asBool)){
+      cam_in(i).bits.wb        := 0.U(1.W)
+      cam_in(i).bits.tag       := cam_write_tag
+      cam_in(i).bits.rd        := nonblock_load_rd
+    }.elsewhen(cam_inv_reset_val(i).asBool || (i0_wen_r.asBool && (r_d_in.i0rd === cam(i).bits.rd) && cam(i).bits.wb.asBool)){
       cam_in(i).valid := 0.U
     }.otherwise{
       cam_in(i)      := cam(i)
     }
-    when(nonblock_load_valid_m_delay===1.U && (io.lsu_nonblock_load_inv_tag_r === cam(i).tag) && cam(i).valid===1.U){
-      cam_in(i).wb := 1.U
+    when(nonblock_load_valid_m_delay===1.U && (io.lsu_nonblock_load_inv_tag_r === cam(i).bits.tag) && cam(i).valid===1.U){
+      cam_in(i).bits.wb := 1.U
     }
     // force debug halt forces cam valids to 0; highest priority
     when(io.dec_tlu_force_halt){
@@ -345,7 +345,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     }
 
     cam_raw(i):=withClock(io.free_clk){RegNext(cam_in(i),0.U.asTypeOf(cam(0)))}
-    nonblock_load_write(i) := (load_data_tag === cam_raw(i).tag) & cam_raw(i).valid
+    nonblock_load_write(i) := (load_data_tag === cam_raw(i).bits.tag) & cam_raw(i).valid
   }
 
   io.dec_nonblock_load_waddr:=0.U(5.W)
@@ -356,7 +356,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
 
   i0_nonblock_load_stall := i0_nonblock_boundary_stall
 
-  val cal_temp= for(i <-0 until LSU_NUM_NBLOAD) yield ((Fill(5,nonblock_load_write(i)) & cam(i).rd), io.dec_i0_rs1_en_d & cam(i).valid & (cam(i).rd === i0r.rs1), io.dec_i0_rs2_en_d & cam(i).valid & (cam(i).rd === i0r.rs2))
+  val cal_temp= for(i <-0 until LSU_NUM_NBLOAD) yield ((Fill(5,nonblock_load_write(i)) & cam(i).bits.rd), io.dec_i0_rs1_en_d & cam(i).valid & (cam(i).bits.rd === i0r.rs1), io.dec_i0_rs2_en_d & cam(i).valid & (cam(i).bits.rd === i0r.rs2))
   val (waddr, ld_stall_1, ld_stall_2) = (cal_temp.map(_._1).reduce(_|_) , cal_temp.map(_._2).reduce(_|_), cal_temp.map(_._3).reduce(_|_) )
   io.dec_nonblock_load_waddr:=waddr
   i0_nonblock_load_stall:=ld_stall_1 | ld_stall_2 | i0_nonblock_boundary_stall
