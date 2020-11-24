@@ -692,7 +692,7 @@ class el2_dec_tlu_ctl extends Module with el2_lib with RequireAsyncReset with CS
   val lsu_exc_valid_r = lsu_i0_exc_r
   lsu_exc_valid_r_d1			:=withClock(lsu_r_wb_clk){RegNext(lsu_exc_valid_r,0.U)}
   val lsu_i0_exc_r_d1			=withClock(lsu_r_wb_clk){RegNext(lsu_i0_exc_r,0.U)}
-  val lsu_exc_ma_r  =  lsu_i0_exc_r & ~io.lsu_error_pkt_r.bits.exc_type
+  val lsu_exc_ma_r  =  lsu_i0_exc_r & !io.lsu_error_pkt_r.bits.exc_type
   val lsu_exc_acc_r =  lsu_i0_exc_r & io.lsu_error_pkt_r.bits.exc_type
   val lsu_exc_st_r  =  lsu_i0_exc_r & io.lsu_error_pkt_r.bits.inst_type
 

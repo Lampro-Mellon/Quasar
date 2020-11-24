@@ -219,11 +219,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     (illegal_lockout_in        ^  illegal_lockout    )     // replaces active_clk
 
 
-  val data_gated_cgc= Module(new rvclkhdr)
-  data_gated_cgc.io.en        := data_gate_en
-  data_gated_cgc.io.scan_mode :=io.scan_mode
-  data_gated_cgc.io.clk       :=clock
-  val data_gate_clk           =data_gated_cgc.io.l1clk
+  val data_gate_clk= rvclkhdr(clock,data_gate_en.asBool(),io.scan_mode)
 
   // End  - Data gating }}
 
@@ -310,10 +306,10 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val cam_write_tag      = io.lsu_nonblock_load_tag_m(LSU_NUM_NBLOAD_WIDTH-1,0)
 
   val cam_inv_reset       = io.lsu_nonblock_load_inv_r
-  val cam_inv_reset_tag   = io.lsu_nonblock_load_inv_tag_r(LSU_NUM_NBLOAD_WIDTH-1,0)
+  val cam_inv_reset_tag   = io.lsu_nonblock_load_inv_tag_r
 
   val cam_data_reset        = io.lsu_nonblock_load_data_valid | io.lsu_nonblock_load_data_error
-  val cam_data_reset_tag    = io.lsu_nonblock_load_data_tag(LSU_NUM_NBLOAD_WIDTH-1,0)
+  val cam_data_reset_tag    = io.lsu_nonblock_load_data_tag
 
   val nonblock_load_rd   = Mux(x_d.bits.i0load.asBool, x_d.bits.i0rd, 0.U(5.W))  // rd data
   val load_data_tag = io.lsu_nonblock_load_data_tag
@@ -408,15 +404,15 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
 
   // 12b jal's can be predicted - these are calls
 
-  val  i0_pcall_imm = Cat(i0(31),i0(19,12),i0(20),i0(30,21),0.U(1.W))
-  val  i0_pcall_12b_offset = Mux(i0_pcall_imm(12).asBool, i0_pcall_imm(20,13) === 0xff.U , i0_pcall_imm(20,13) === 0.U(8.W))
+  val  i0_pcall_imm = Cat(i0(31),i0(19,12),i0(20),i0(30,21))
+  val  i0_pcall_12b_offset = Mux(i0_pcall_imm(11).asBool, i0_pcall_imm(19,12) === 0xff.U , i0_pcall_imm(19,12) === 0.U(8.W))
   val  i0_pcall_case    = i0_pcall_12b_offset & i0_dp_raw.imm20 &  (i0r.rd === 1.U(5.W) | i0r.rd === 5.U(5.W))
   val  i0_pja_case      = i0_pcall_12b_offset & i0_dp_raw.imm20 & !(i0r.rd === 1.U(5.W) | i0r.rd === 5.U(5.W))
   i0_pcall_raw     := i0_dp_raw.jal  &   i0_pcall_case   // this includes ja
   i0_pcall         := i0_dp.jal      &   i0_pcall_case
   i0_pja_raw       := i0_dp_raw.jal  &   i0_pja_case
   i0_pja           := i0_dp.jal      &   i0_pja_case
-  i0_br_offset     := Mux((i0_pcall_raw | i0_pja_raw).asBool, i0_pcall_imm(12,1) , Cat(i0(31),i0(7),i0(30,25),i0(11,8)))
+  i0_br_offset     := Mux((i0_pcall_raw | i0_pja_raw).asBool, i0_pcall_imm(11,0) , Cat(i0(31),i0(7),i0(30,25),i0(11,8)))
   // jalr with rd==0, rs1==1 or rs1==5 is a ret
   val i0_pret_case = (i0_dp_raw.jal & i0_dp_raw.imm12 & (i0r.rd === 0.U(5.W)) & (i0r.rs1===1.U(5.W) | i0r.rs1 === 5.U(5.W)))
   i0_pret_raw := i0_dp_raw.jal &   i0_pret_case
@@ -500,8 +496,8 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   pause_state_in := (io.dec_tlu_wr_pause_r | pause_state) & !clear_pause
   pause_state := withClock(data_gate_clk){RegNext(pause_state_in, 0.U)}
   io.dec_pause_state := pause_state
-  tlu_wr_pause_r1 := RegNext(io.dec_tlu_wr_pause_r, 0.U)
-  tlu_wr_pause_r2 := RegNext(tlu_wr_pause_r1, 0.U)
+  tlu_wr_pause_r1 :=  withClock(data_gate_clk){RegNext(io.dec_tlu_wr_pause_r, 0.U)}
+  tlu_wr_pause_r2 :=  withClock(data_gate_clk){RegNext(tlu_wr_pause_r1, 0.U)}
   //pause for clock gating
   io.dec_pause_state_cg := (pause_state & (!tlu_wr_pause_r1 && !tlu_wr_pause_r2))
   // end pause
@@ -807,6 +803,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   io.dec_i0_rs1_bypass_en_d      :=  Cat(i0_rs1bypass(2),(i0_rs1bypass(1) | i0_rs1bypass(0) | (!i0_rs1bypass(2) & i0_rs1_nonblock_load_bypass_en_d)))
   io.dec_i0_rs2_bypass_en_d      :=  Cat(i0_rs2bypass(2),(i0_rs2bypass(1) | i0_rs2bypass(0) | (!i0_rs2bypass(2) & i0_rs2_nonblock_load_bypass_en_d)))
 
+
   io.dec_i0_rs1_bypass_data_d := Mux1H(Seq(
     i0_rs1bypass(1).asBool -> io.lsu_result_m,
     i0_rs1bypass(0).asBool -> i0_result_r,
@@ -822,8 +819,6 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     (!io.dec_extint_stall & i0_dp.lsu & i0_dp.load).asBool  ->     i0(31,20),
     (!io.dec_extint_stall & i0_dp.lsu & i0_dp.store).asBool ->     Cat(i0(31,25),i0(11,7))))
 }
-
-object dec_decode extends App{
-  println("Generating Verilog...")
+object decode_ctrl extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_dec_decode_ctl()))
 }

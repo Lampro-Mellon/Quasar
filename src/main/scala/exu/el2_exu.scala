@@ -41,9 +41,9 @@ class el2_exu extends Module with el2_lib with RequireAsyncReset{
     val		dec_tlu_flush_path_r	=Input(UInt(31.W))                          // Redirect target
     val		dec_extint_stall		  =Input(UInt(1.W))                           // External stall mux select
     val		dec_tlu_meihap			  =Input(UInt(30.W))                          // External stall mux data
+
     val		exu_lsu_rs1_d			    =Output(UInt(32.W))                         // LSU operand
     val		exu_lsu_rs2_d			    =Output(UInt(32.W))                         // LSU operand
-
     val		exu_flush_final			  =Output(UInt(1.W))                          // Pipe is being flushed this cycle
     val		exu_flush_path_final	=Output(UInt(31.W))                         // Target for the oldest flush source
     val		exu_i0_result_x			  =Output(UInt(32.W))                         // Primary ALU result to DEC
