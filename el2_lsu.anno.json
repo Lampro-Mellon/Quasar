@@ -134,37 +134,6 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu|el2_lsu>io_lsu_trigger_match_m",
-    "sources":[
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_0_store",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_1_store",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_0_load",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_0_select",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_3_store",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_2_store",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_1_load",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_1_select",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_3_load",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_3_select",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_2_load",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_2_select",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_0_tdata2",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_0_match_",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_1_tdata2",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_1_match_",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_3_tdata2",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_3_match_",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_2_tdata2",
-      "~el2_lsu|el2_lsu>io_trigger_pkt_any_2_match_",
-      "~el2_lsu|el2_lsu>io_picm_rd_data",
-      "~el2_lsu|el2_lsu>io_dccm_rd_data_hi",
-      "~el2_lsu|el2_lsu>io_dccm_rd_data_lo",
-      "~el2_lsu|el2_lsu>io_dec_tlu_flush_lower_r",
-      "~el2_lsu|el2_lsu>io_dec_tlu_i0_kill_writeb_r"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_lsu|el2_lsu>io_dccm_ready",
     "sources":[
       "~el2_lsu|el2_lsu>io_dec_lsu_valid_raw_d"
@@ -372,6 +341,37 @@
     "sink":"~el2_lsu|el2_lsu>io_lsu_nonblock_load_valid_m",
     "sources":[
       "~el2_lsu|el2_lsu>io_dec_tlu_flush_lower_r"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu|el2_lsu>io_lsu_trigger_match_m",
+    "sources":[
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_0_store",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_1_store",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_0_load",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_0_select",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_3_store",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_2_store",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_1_load",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_1_select",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_3_load",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_3_select",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_2_load",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_2_select",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_0_tdata2",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_0_match_pkt",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_1_tdata2",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_1_match_pkt",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_3_tdata2",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_3_match_pkt",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_2_tdata2",
+      "~el2_lsu|el2_lsu>io_trigger_pkt_any_2_match_pkt",
+      "~el2_lsu|el2_lsu>io_picm_rd_data",
+      "~el2_lsu|el2_lsu>io_dccm_rd_data_hi",
+      "~el2_lsu|el2_lsu>io_dccm_rd_data_lo",
+      "~el2_lsu|el2_lsu>io_dec_tlu_flush_lower_r",
+      "~el2_lsu|el2_lsu>io_dec_tlu_i0_kill_writeb_r"
     ]
   },
   {

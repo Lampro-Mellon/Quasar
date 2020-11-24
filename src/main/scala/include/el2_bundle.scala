@@ -36,6 +36,7 @@ object el2_inst_pkt_t extends Enumeration{
 }
 
 class el2_load_cam_pkt_t extends Bundle {
+  val valid = UInt(1.W)
   val wb    = UInt(1.W)
   val tag   = UInt(3.W)
   val rd    = UInt(5.W)
@@ -48,6 +49,7 @@ class el2_rets_pkt_t extends Bundle {
 }
 
 class el2_br_pkt_t extends Bundle {
+  val valid          = UInt(1.W)
   val toffset        = UInt(12.W)
   val hist           = UInt(2.W)
   val br_error       = UInt(1.W)
@@ -60,6 +62,7 @@ class el2_br_pkt_t extends Bundle {
 
 
 class el2_br_tlu_pkt_t extends Bundle {
+  val valid           = UInt(1.W)
   val hist            = UInt(2.W)
   val br_error        = UInt(1.W)
   val br_start_error  = UInt(1.W)
@@ -74,6 +77,7 @@ class el2_predict_pkt_t extends Bundle {
   val pc4        = UInt(1.W)
   val hist       = UInt(2.W)
   val toffset    = UInt(12.W)
+ // val valid      = UInt(1.W)
   val br_error   = UInt(1.W)
   val br_start_error = UInt(1.W)
   val prett      = UInt(31.W)
@@ -157,14 +161,16 @@ class el2_lsu_pkt_t extends Bundle {
   val store_data_bypass_d  = Bool()
   val load_ldst_bypass_d   = Bool()
   val store_data_bypass_m  = Bool()
+//  val valid      = Bool()
 }
 
 class el2_lsu_error_pkt_t extends Bundle {
+ // val exc_valid   = UInt(1.W)
   val single_ecc_error  = UInt(1.W)
   val inst_type    = UInt(1.W)    //0: Load, 1: Store
   val exc_type     = UInt(1.W)    //0: MisAligned, 1: Access Fault
-  val mscause      = UInt(1.W)
-  val addr         = UInt(1.W)
+  val mscause      = UInt(4.W)
+  val addr         = UInt(32.W)
 }
 
 class el2_dec_pkt_t extends Bundle {
@@ -221,6 +227,7 @@ class el2_dec_pkt_t extends Bundle {
 }
 
 class el2_mul_pkt_t extends Bundle {
+ // val valid     = UInt(1.W)
   val rs1_sign  = UInt(1.W)
   val rs2_sign  = UInt(1.W)
   val low       = UInt(1.W)
@@ -242,6 +249,7 @@ class el2_mul_pkt_t extends Bundle {
 }
 
 class el2_div_pkt_t extends Bundle {
+ // val valid     = UInt(1.W)
   val unsign    = UInt(1.W)
   val rem       = UInt(1.W)
 }
@@ -250,6 +258,7 @@ class el2_ccm_ext_in_pkt_t extends Bundle {
   val        TEST1    = UInt(1.W)
   val        RME      = UInt(1.W)
   val        RM       = UInt(4.W)
+
   val        LS        = UInt(1.W)
   val        DS        = UInt(1.W)
   val        SD        = UInt(1.W)
@@ -297,7 +306,7 @@ class el2_ic_tag_ext_in_pkt_t extends Bundle {
 
 class el2_trigger_pkt_t extends Bundle {
   val        select    = UInt(1.W)
-  val        match_    = UInt(1.W)
+  val        match_pkt    = UInt(1.W)
   val        store     = UInt(1.W)
   val        load      = UInt(1.W)
   val        execute   = UInt(1.W)

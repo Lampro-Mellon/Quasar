@@ -68,8 +68,8 @@ module el2_exu_mul_ctl(
   reg  low_x; // @[el2_lib.scala 514:16]
   reg [32:0] rs1_x; // @[el2_lib.scala 534:16]
   reg [32:0] rs2_x; // @[el2_lib.scala 534:16]
-  wire [65:0] prod_x = $signed(rs1_x) * $signed(rs2_x); // @[el2_exu_mul_ctl.scala 40:20]
-  wire  _T_16 = ~low_x; // @[el2_exu_mul_ctl.scala 41:29]
+  wire [65:0] prod_x = $signed(rs1_x) * $signed(rs2_x); // @[el2_exu_mul_ctl.scala 33:20]
+  wire  _T_16 = ~low_x; // @[el2_exu_mul_ctl.scala 34:29]
   wire [31:0] _T_20 = _T_16 ? prod_x[63:32] : 32'h0; // @[Mux.scala 27:72]
   wire [31:0] _T_21 = low_x ? prod_x[31:0] : 32'h0; // @[Mux.scala 27:72]
   rvclkhdr rvclkhdr ( // @[el2_lib.scala 508:23]
@@ -90,7 +90,7 @@ module el2_exu_mul_ctl(
     .io_en(rvclkhdr_2_io_en),
     .io_scan_mode(rvclkhdr_2_io_scan_mode)
   );
-  assign io_result_x = _T_20 | _T_21; // @[el2_exu_mul_ctl.scala 41:15]
+  assign io_result_x = _T_20 | _T_21; // @[el2_exu_mul_ctl.scala 34:15]
   assign rvclkhdr_io_clk = clock; // @[el2_lib.scala 510:18]
   assign rvclkhdr_io_en = io_mul_p_valid; // @[el2_lib.scala 511:17]
   assign rvclkhdr_io_scan_mode = io_scan_mode; // @[el2_lib.scala 512:24]

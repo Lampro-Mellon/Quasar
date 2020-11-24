@@ -11814,11 +11814,11 @@ module el2_ifu_bp_ctl(
   input  [30:0] io_ifc_fetch_addr_f,
   input         io_ifc_fetch_req_f,
   input         io_dec_tlu_br0_r_pkt_valid,
-  input  [1:0]  io_dec_tlu_br0_r_pkt_bits_hist,
-  input         io_dec_tlu_br0_r_pkt_bits_br_error,
-  input         io_dec_tlu_br0_r_pkt_bits_br_start_error,
-  input         io_dec_tlu_br0_r_pkt_bits_way,
-  input         io_dec_tlu_br0_r_pkt_bits_middle,
+  input  [1:0]  io_dec_tlu_br0_r_pkt_hist,
+  input         io_dec_tlu_br0_r_pkt_br_error,
+  input         io_dec_tlu_br0_r_pkt_br_start_error,
+  input         io_dec_tlu_br0_r_pkt_way,
+  input         io_dec_tlu_br0_r_pkt_middle,
   input  [7:0]  io_exu_i0_br_fghr_r,
   input  [7:0]  io_exu_i0_br_index_r,
   input         io_dec_tlu_flush_lower_wb,
@@ -15115,7 +15115,7 @@ module el2_ifu_bp_ctl(
   wire  leak_one_f = _T_40 | _T_41; // @[el2_ifu_bp_ctl.scala 135:76]
   wire  _T = ~leak_one_f; // @[el2_ifu_bp_ctl.scala 72:51]
   wire  exu_mp_valid = io_exu_mp_pkt_bits_misp & _T; // @[el2_ifu_bp_ctl.scala 72:49]
-  wire  dec_tlu_error_wb = io_dec_tlu_br0_r_pkt_bits_br_start_error | io_dec_tlu_br0_r_pkt_bits_br_error; // @[el2_ifu_bp_ctl.scala 94:50]
+  wire  dec_tlu_error_wb = io_dec_tlu_br0_r_pkt_br_start_error | io_dec_tlu_br0_r_pkt_br_error; // @[el2_ifu_bp_ctl.scala 94:50]
   wire [7:0] _T_4 = io_ifc_fetch_addr_f[8:1] ^ io_ifc_fetch_addr_f[16:9]; // @[el2_lib.scala 191:47]
   wire [7:0] btb_rd_addr_f = _T_4 ^ io_ifc_fetch_addr_f[24:17]; // @[el2_lib.scala 191:85]
   wire [29:0] fetch_addr_p1_f = io_ifc_fetch_addr_f[30:1] + 30'h1; // @[el2_ifu_bp_ctl.scala 102:51]
@@ -21046,12 +21046,12 @@ module el2_ifu_bp_ctl(
   wire  exu_mp_valid_write = exu_mp_valid & io_exu_mp_pkt_bits_ataken; // @[el2_ifu_bp_ctl.scala 397:41]
   wire  _T_539 = _T_175 & exu_mp_valid_write; // @[el2_ifu_bp_ctl.scala 400:39]
   wire  _T_541 = _T_539 & _T_530; // @[el2_ifu_bp_ctl.scala 400:60]
-  wire  _T_542 = ~io_dec_tlu_br0_r_pkt_bits_way; // @[el2_ifu_bp_ctl.scala 400:87]
+  wire  _T_542 = ~io_dec_tlu_br0_r_pkt_way; // @[el2_ifu_bp_ctl.scala 400:87]
   wire  _T_543 = _T_542 & dec_tlu_error_wb; // @[el2_ifu_bp_ctl.scala 400:104]
   wire  btb_wr_en_way0 = _T_541 | _T_543; // @[el2_ifu_bp_ctl.scala 400:83]
   wire  _T_544 = io_exu_mp_pkt_bits_way & exu_mp_valid_write; // @[el2_ifu_bp_ctl.scala 401:36]
   wire  _T_546 = _T_544 & _T_530; // @[el2_ifu_bp_ctl.scala 401:57]
-  wire  _T_547 = io_dec_tlu_br0_r_pkt_bits_way & dec_tlu_error_wb; // @[el2_ifu_bp_ctl.scala 401:98]
+  wire  _T_547 = io_dec_tlu_br0_r_pkt_way & dec_tlu_error_wb; // @[el2_ifu_bp_ctl.scala 401:98]
   wire  btb_wr_en_way1 = _T_546 | _T_547; // @[el2_ifu_bp_ctl.scala 401:80]
   wire [7:0] btb_wr_addr = dec_tlu_error_wb ? io_exu_i0_br_index_r : io_exu_mp_index; // @[el2_ifu_bp_ctl.scala 404:24]
   wire  middle_of_bank = io_exu_mp_pkt_bits_pc4 ^ io_exu_mp_pkt_bits_boffset; // @[el2_ifu_bp_ctl.scala 405:35]
@@ -21066,8 +21066,8 @@ module el2_ifu_bp_ctl(
   wire [1:0] _T_558 = {middle_of_bank,_T_557}; // @[Cat.scala 29:58]
   wire [1:0] bht_wr_en0 = _T_556 & _T_558; // @[el2_ifu_bp_ctl.scala 408:84]
   wire [1:0] _T_560 = io_dec_tlu_br0_r_pkt_valid ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
-  wire  _T_561 = ~io_dec_tlu_br0_r_pkt_bits_middle; // @[el2_ifu_bp_ctl.scala 409:75]
-  wire [1:0] _T_562 = {io_dec_tlu_br0_r_pkt_bits_middle,_T_561}; // @[Cat.scala 29:58]
+  wire  _T_561 = ~io_dec_tlu_br0_r_pkt_middle; // @[el2_ifu_bp_ctl.scala 409:75]
+  wire [1:0] _T_562 = {io_dec_tlu_br0_r_pkt_middle,_T_561}; // @[Cat.scala 29:58]
   wire [1:0] bht_wr_en2 = _T_560 & _T_562; // @[el2_ifu_bp_ctl.scala 409:46]
   wire [9:0] _T_563 = {io_exu_mp_index,2'h0}; // @[Cat.scala 29:58]
   wire [7:0] mp_hashed = _T_563[9:2] ^ io_exu_mp_eghr; // @[el2_lib.scala 196:35]
@@ -35094,7 +35094,7 @@ end // initial
     if (reset) begin
       dec_tlu_way_wb_f <= 1'h0;
     end else begin
-      dec_tlu_way_wb_f <= io_dec_tlu_br0_r_pkt_bits_way;
+      dec_tlu_way_wb_f <= io_dec_tlu_br0_r_pkt_way;
     end
   end
   always @(posedge rvclkhdr_266_io_l1clk or posedge reset) begin
@@ -36901,7 +36901,7 @@ end // initial
       bht_bank_rd_data_out_1_0 <= 2'h0;
     end else if (bht_bank_sel_1_0_0) begin
       if (_T_8869) begin
-        bht_bank_rd_data_out_1_0 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_0 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_0 <= io_exu_mp_pkt_bits_hist;
       end
@@ -36912,7 +36912,7 @@ end // initial
       bht_bank_rd_data_out_1_1 <= 2'h0;
     end else if (bht_bank_sel_1_0_1) begin
       if (_T_8878) begin
-        bht_bank_rd_data_out_1_1 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_1 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_1 <= io_exu_mp_pkt_bits_hist;
       end
@@ -36923,7 +36923,7 @@ end // initial
       bht_bank_rd_data_out_1_2 <= 2'h0;
     end else if (bht_bank_sel_1_0_2) begin
       if (_T_8887) begin
-        bht_bank_rd_data_out_1_2 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_2 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_2 <= io_exu_mp_pkt_bits_hist;
       end
@@ -36934,7 +36934,7 @@ end // initial
       bht_bank_rd_data_out_1_3 <= 2'h0;
     end else if (bht_bank_sel_1_0_3) begin
       if (_T_8896) begin
-        bht_bank_rd_data_out_1_3 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_3 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_3 <= io_exu_mp_pkt_bits_hist;
       end
@@ -36945,7 +36945,7 @@ end // initial
       bht_bank_rd_data_out_1_4 <= 2'h0;
     end else if (bht_bank_sel_1_0_4) begin
       if (_T_8905) begin
-        bht_bank_rd_data_out_1_4 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_4 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_4 <= io_exu_mp_pkt_bits_hist;
       end
@@ -36956,7 +36956,7 @@ end // initial
       bht_bank_rd_data_out_1_5 <= 2'h0;
     end else if (bht_bank_sel_1_0_5) begin
       if (_T_8914) begin
-        bht_bank_rd_data_out_1_5 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_5 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_5 <= io_exu_mp_pkt_bits_hist;
       end
@@ -36967,7 +36967,7 @@ end // initial
       bht_bank_rd_data_out_1_6 <= 2'h0;
     end else if (bht_bank_sel_1_0_6) begin
       if (_T_8923) begin
-        bht_bank_rd_data_out_1_6 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_6 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_6 <= io_exu_mp_pkt_bits_hist;
       end
@@ -36978,7 +36978,7 @@ end // initial
       bht_bank_rd_data_out_1_7 <= 2'h0;
     end else if (bht_bank_sel_1_0_7) begin
       if (_T_8932) begin
-        bht_bank_rd_data_out_1_7 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_7 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_7 <= io_exu_mp_pkt_bits_hist;
       end
@@ -36989,7 +36989,7 @@ end // initial
       bht_bank_rd_data_out_1_8 <= 2'h0;
     end else if (bht_bank_sel_1_0_8) begin
       if (_T_8941) begin
-        bht_bank_rd_data_out_1_8 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_8 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_8 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37000,7 +37000,7 @@ end // initial
       bht_bank_rd_data_out_1_9 <= 2'h0;
     end else if (bht_bank_sel_1_0_9) begin
       if (_T_8950) begin
-        bht_bank_rd_data_out_1_9 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_9 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_9 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37011,7 +37011,7 @@ end // initial
       bht_bank_rd_data_out_1_10 <= 2'h0;
     end else if (bht_bank_sel_1_0_10) begin
       if (_T_8959) begin
-        bht_bank_rd_data_out_1_10 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_10 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_10 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37022,7 +37022,7 @@ end // initial
       bht_bank_rd_data_out_1_11 <= 2'h0;
     end else if (bht_bank_sel_1_0_11) begin
       if (_T_8968) begin
-        bht_bank_rd_data_out_1_11 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_11 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_11 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37033,7 +37033,7 @@ end // initial
       bht_bank_rd_data_out_1_12 <= 2'h0;
     end else if (bht_bank_sel_1_0_12) begin
       if (_T_8977) begin
-        bht_bank_rd_data_out_1_12 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_12 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_12 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37044,7 +37044,7 @@ end // initial
       bht_bank_rd_data_out_1_13 <= 2'h0;
     end else if (bht_bank_sel_1_0_13) begin
       if (_T_8986) begin
-        bht_bank_rd_data_out_1_13 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_13 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_13 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37055,7 +37055,7 @@ end // initial
       bht_bank_rd_data_out_1_14 <= 2'h0;
     end else if (bht_bank_sel_1_0_14) begin
       if (_T_8995) begin
-        bht_bank_rd_data_out_1_14 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_14 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_14 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37066,7 +37066,7 @@ end // initial
       bht_bank_rd_data_out_1_15 <= 2'h0;
     end else if (bht_bank_sel_1_0_15) begin
       if (_T_9004) begin
-        bht_bank_rd_data_out_1_15 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_15 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_15 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37077,7 +37077,7 @@ end // initial
       bht_bank_rd_data_out_1_16 <= 2'h0;
     end else if (bht_bank_sel_1_1_0) begin
       if (_T_9013) begin
-        bht_bank_rd_data_out_1_16 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_16 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_16 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37088,7 +37088,7 @@ end // initial
       bht_bank_rd_data_out_1_17 <= 2'h0;
     end else if (bht_bank_sel_1_1_1) begin
       if (_T_9022) begin
-        bht_bank_rd_data_out_1_17 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_17 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_17 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37099,7 +37099,7 @@ end // initial
       bht_bank_rd_data_out_1_18 <= 2'h0;
     end else if (bht_bank_sel_1_1_2) begin
       if (_T_9031) begin
-        bht_bank_rd_data_out_1_18 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_18 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_18 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37110,7 +37110,7 @@ end // initial
       bht_bank_rd_data_out_1_19 <= 2'h0;
     end else if (bht_bank_sel_1_1_3) begin
       if (_T_9040) begin
-        bht_bank_rd_data_out_1_19 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_19 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_19 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37121,7 +37121,7 @@ end // initial
       bht_bank_rd_data_out_1_20 <= 2'h0;
     end else if (bht_bank_sel_1_1_4) begin
       if (_T_9049) begin
-        bht_bank_rd_data_out_1_20 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_20 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_20 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37132,7 +37132,7 @@ end // initial
       bht_bank_rd_data_out_1_21 <= 2'h0;
     end else if (bht_bank_sel_1_1_5) begin
       if (_T_9058) begin
-        bht_bank_rd_data_out_1_21 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_21 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_21 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37143,7 +37143,7 @@ end // initial
       bht_bank_rd_data_out_1_22 <= 2'h0;
     end else if (bht_bank_sel_1_1_6) begin
       if (_T_9067) begin
-        bht_bank_rd_data_out_1_22 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_22 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_22 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37154,7 +37154,7 @@ end // initial
       bht_bank_rd_data_out_1_23 <= 2'h0;
     end else if (bht_bank_sel_1_1_7) begin
       if (_T_9076) begin
-        bht_bank_rd_data_out_1_23 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_23 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_23 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37165,7 +37165,7 @@ end // initial
       bht_bank_rd_data_out_1_24 <= 2'h0;
     end else if (bht_bank_sel_1_1_8) begin
       if (_T_9085) begin
-        bht_bank_rd_data_out_1_24 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_24 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_24 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37176,7 +37176,7 @@ end // initial
       bht_bank_rd_data_out_1_25 <= 2'h0;
     end else if (bht_bank_sel_1_1_9) begin
       if (_T_9094) begin
-        bht_bank_rd_data_out_1_25 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_25 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_25 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37187,7 +37187,7 @@ end // initial
       bht_bank_rd_data_out_1_26 <= 2'h0;
     end else if (bht_bank_sel_1_1_10) begin
       if (_T_9103) begin
-        bht_bank_rd_data_out_1_26 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_26 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_26 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37198,7 +37198,7 @@ end // initial
       bht_bank_rd_data_out_1_27 <= 2'h0;
     end else if (bht_bank_sel_1_1_11) begin
       if (_T_9112) begin
-        bht_bank_rd_data_out_1_27 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_27 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_27 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37209,7 +37209,7 @@ end // initial
       bht_bank_rd_data_out_1_28 <= 2'h0;
     end else if (bht_bank_sel_1_1_12) begin
       if (_T_9121) begin
-        bht_bank_rd_data_out_1_28 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_28 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_28 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37220,7 +37220,7 @@ end // initial
       bht_bank_rd_data_out_1_29 <= 2'h0;
     end else if (bht_bank_sel_1_1_13) begin
       if (_T_9130) begin
-        bht_bank_rd_data_out_1_29 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_29 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_29 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37231,7 +37231,7 @@ end // initial
       bht_bank_rd_data_out_1_30 <= 2'h0;
     end else if (bht_bank_sel_1_1_14) begin
       if (_T_9139) begin
-        bht_bank_rd_data_out_1_30 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_30 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_30 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37242,7 +37242,7 @@ end // initial
       bht_bank_rd_data_out_1_31 <= 2'h0;
     end else if (bht_bank_sel_1_1_15) begin
       if (_T_9148) begin
-        bht_bank_rd_data_out_1_31 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_31 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_31 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37253,7 +37253,7 @@ end // initial
       bht_bank_rd_data_out_1_32 <= 2'h0;
     end else if (bht_bank_sel_1_2_0) begin
       if (_T_9157) begin
-        bht_bank_rd_data_out_1_32 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_32 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_32 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37264,7 +37264,7 @@ end // initial
       bht_bank_rd_data_out_1_33 <= 2'h0;
     end else if (bht_bank_sel_1_2_1) begin
       if (_T_9166) begin
-        bht_bank_rd_data_out_1_33 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_33 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_33 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37275,7 +37275,7 @@ end // initial
       bht_bank_rd_data_out_1_34 <= 2'h0;
     end else if (bht_bank_sel_1_2_2) begin
       if (_T_9175) begin
-        bht_bank_rd_data_out_1_34 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_34 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_34 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37286,7 +37286,7 @@ end // initial
       bht_bank_rd_data_out_1_35 <= 2'h0;
     end else if (bht_bank_sel_1_2_3) begin
       if (_T_9184) begin
-        bht_bank_rd_data_out_1_35 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_35 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_35 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37297,7 +37297,7 @@ end // initial
       bht_bank_rd_data_out_1_36 <= 2'h0;
     end else if (bht_bank_sel_1_2_4) begin
       if (_T_9193) begin
-        bht_bank_rd_data_out_1_36 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_36 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_36 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37308,7 +37308,7 @@ end // initial
       bht_bank_rd_data_out_1_37 <= 2'h0;
     end else if (bht_bank_sel_1_2_5) begin
       if (_T_9202) begin
-        bht_bank_rd_data_out_1_37 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_37 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_37 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37319,7 +37319,7 @@ end // initial
       bht_bank_rd_data_out_1_38 <= 2'h0;
     end else if (bht_bank_sel_1_2_6) begin
       if (_T_9211) begin
-        bht_bank_rd_data_out_1_38 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_38 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_38 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37330,7 +37330,7 @@ end // initial
       bht_bank_rd_data_out_1_39 <= 2'h0;
     end else if (bht_bank_sel_1_2_7) begin
       if (_T_9220) begin
-        bht_bank_rd_data_out_1_39 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_39 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_39 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37341,7 +37341,7 @@ end // initial
       bht_bank_rd_data_out_1_40 <= 2'h0;
     end else if (bht_bank_sel_1_2_8) begin
       if (_T_9229) begin
-        bht_bank_rd_data_out_1_40 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_40 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_40 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37352,7 +37352,7 @@ end // initial
       bht_bank_rd_data_out_1_41 <= 2'h0;
     end else if (bht_bank_sel_1_2_9) begin
       if (_T_9238) begin
-        bht_bank_rd_data_out_1_41 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_41 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_41 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37363,7 +37363,7 @@ end // initial
       bht_bank_rd_data_out_1_42 <= 2'h0;
     end else if (bht_bank_sel_1_2_10) begin
       if (_T_9247) begin
-        bht_bank_rd_data_out_1_42 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_42 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_42 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37374,7 +37374,7 @@ end // initial
       bht_bank_rd_data_out_1_43 <= 2'h0;
     end else if (bht_bank_sel_1_2_11) begin
       if (_T_9256) begin
-        bht_bank_rd_data_out_1_43 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_43 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_43 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37385,7 +37385,7 @@ end // initial
       bht_bank_rd_data_out_1_44 <= 2'h0;
     end else if (bht_bank_sel_1_2_12) begin
       if (_T_9265) begin
-        bht_bank_rd_data_out_1_44 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_44 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_44 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37396,7 +37396,7 @@ end // initial
       bht_bank_rd_data_out_1_45 <= 2'h0;
     end else if (bht_bank_sel_1_2_13) begin
       if (_T_9274) begin
-        bht_bank_rd_data_out_1_45 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_45 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_45 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37407,7 +37407,7 @@ end // initial
       bht_bank_rd_data_out_1_46 <= 2'h0;
     end else if (bht_bank_sel_1_2_14) begin
       if (_T_9283) begin
-        bht_bank_rd_data_out_1_46 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_46 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_46 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37418,7 +37418,7 @@ end // initial
       bht_bank_rd_data_out_1_47 <= 2'h0;
     end else if (bht_bank_sel_1_2_15) begin
       if (_T_9292) begin
-        bht_bank_rd_data_out_1_47 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_47 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_47 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37429,7 +37429,7 @@ end // initial
       bht_bank_rd_data_out_1_48 <= 2'h0;
     end else if (bht_bank_sel_1_3_0) begin
       if (_T_9301) begin
-        bht_bank_rd_data_out_1_48 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_48 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_48 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37440,7 +37440,7 @@ end // initial
       bht_bank_rd_data_out_1_49 <= 2'h0;
     end else if (bht_bank_sel_1_3_1) begin
       if (_T_9310) begin
-        bht_bank_rd_data_out_1_49 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_49 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_49 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37451,7 +37451,7 @@ end // initial
       bht_bank_rd_data_out_1_50 <= 2'h0;
     end else if (bht_bank_sel_1_3_2) begin
       if (_T_9319) begin
-        bht_bank_rd_data_out_1_50 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_50 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_50 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37462,7 +37462,7 @@ end // initial
       bht_bank_rd_data_out_1_51 <= 2'h0;
     end else if (bht_bank_sel_1_3_3) begin
       if (_T_9328) begin
-        bht_bank_rd_data_out_1_51 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_51 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_51 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37473,7 +37473,7 @@ end // initial
       bht_bank_rd_data_out_1_52 <= 2'h0;
     end else if (bht_bank_sel_1_3_4) begin
       if (_T_9337) begin
-        bht_bank_rd_data_out_1_52 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_52 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_52 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37484,7 +37484,7 @@ end // initial
       bht_bank_rd_data_out_1_53 <= 2'h0;
     end else if (bht_bank_sel_1_3_5) begin
       if (_T_9346) begin
-        bht_bank_rd_data_out_1_53 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_53 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_53 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37495,7 +37495,7 @@ end // initial
       bht_bank_rd_data_out_1_54 <= 2'h0;
     end else if (bht_bank_sel_1_3_6) begin
       if (_T_9355) begin
-        bht_bank_rd_data_out_1_54 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_54 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_54 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37506,7 +37506,7 @@ end // initial
       bht_bank_rd_data_out_1_55 <= 2'h0;
     end else if (bht_bank_sel_1_3_7) begin
       if (_T_9364) begin
-        bht_bank_rd_data_out_1_55 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_55 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_55 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37517,7 +37517,7 @@ end // initial
       bht_bank_rd_data_out_1_56 <= 2'h0;
     end else if (bht_bank_sel_1_3_8) begin
       if (_T_9373) begin
-        bht_bank_rd_data_out_1_56 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_56 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_56 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37528,7 +37528,7 @@ end // initial
       bht_bank_rd_data_out_1_57 <= 2'h0;
     end else if (bht_bank_sel_1_3_9) begin
       if (_T_9382) begin
-        bht_bank_rd_data_out_1_57 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_57 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_57 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37539,7 +37539,7 @@ end // initial
       bht_bank_rd_data_out_1_58 <= 2'h0;
     end else if (bht_bank_sel_1_3_10) begin
       if (_T_9391) begin
-        bht_bank_rd_data_out_1_58 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_58 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_58 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37550,7 +37550,7 @@ end // initial
       bht_bank_rd_data_out_1_59 <= 2'h0;
     end else if (bht_bank_sel_1_3_11) begin
       if (_T_9400) begin
-        bht_bank_rd_data_out_1_59 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_59 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_59 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37561,7 +37561,7 @@ end // initial
       bht_bank_rd_data_out_1_60 <= 2'h0;
     end else if (bht_bank_sel_1_3_12) begin
       if (_T_9409) begin
-        bht_bank_rd_data_out_1_60 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_60 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_60 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37572,7 +37572,7 @@ end // initial
       bht_bank_rd_data_out_1_61 <= 2'h0;
     end else if (bht_bank_sel_1_3_13) begin
       if (_T_9418) begin
-        bht_bank_rd_data_out_1_61 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_61 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_61 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37583,7 +37583,7 @@ end // initial
       bht_bank_rd_data_out_1_62 <= 2'h0;
     end else if (bht_bank_sel_1_3_14) begin
       if (_T_9427) begin
-        bht_bank_rd_data_out_1_62 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_62 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_62 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37594,7 +37594,7 @@ end // initial
       bht_bank_rd_data_out_1_63 <= 2'h0;
     end else if (bht_bank_sel_1_3_15) begin
       if (_T_9436) begin
-        bht_bank_rd_data_out_1_63 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_63 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_63 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37605,7 +37605,7 @@ end // initial
       bht_bank_rd_data_out_1_64 <= 2'h0;
     end else if (bht_bank_sel_1_4_0) begin
       if (_T_9445) begin
-        bht_bank_rd_data_out_1_64 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_64 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_64 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37616,7 +37616,7 @@ end // initial
       bht_bank_rd_data_out_1_65 <= 2'h0;
     end else if (bht_bank_sel_1_4_1) begin
       if (_T_9454) begin
-        bht_bank_rd_data_out_1_65 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_65 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_65 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37627,7 +37627,7 @@ end // initial
       bht_bank_rd_data_out_1_66 <= 2'h0;
     end else if (bht_bank_sel_1_4_2) begin
       if (_T_9463) begin
-        bht_bank_rd_data_out_1_66 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_66 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_66 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37638,7 +37638,7 @@ end // initial
       bht_bank_rd_data_out_1_67 <= 2'h0;
     end else if (bht_bank_sel_1_4_3) begin
       if (_T_9472) begin
-        bht_bank_rd_data_out_1_67 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_67 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_67 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37649,7 +37649,7 @@ end // initial
       bht_bank_rd_data_out_1_68 <= 2'h0;
     end else if (bht_bank_sel_1_4_4) begin
       if (_T_9481) begin
-        bht_bank_rd_data_out_1_68 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_68 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_68 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37660,7 +37660,7 @@ end // initial
       bht_bank_rd_data_out_1_69 <= 2'h0;
     end else if (bht_bank_sel_1_4_5) begin
       if (_T_9490) begin
-        bht_bank_rd_data_out_1_69 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_69 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_69 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37671,7 +37671,7 @@ end // initial
       bht_bank_rd_data_out_1_70 <= 2'h0;
     end else if (bht_bank_sel_1_4_6) begin
       if (_T_9499) begin
-        bht_bank_rd_data_out_1_70 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_70 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_70 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37682,7 +37682,7 @@ end // initial
       bht_bank_rd_data_out_1_71 <= 2'h0;
     end else if (bht_bank_sel_1_4_7) begin
       if (_T_9508) begin
-        bht_bank_rd_data_out_1_71 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_71 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_71 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37693,7 +37693,7 @@ end // initial
       bht_bank_rd_data_out_1_72 <= 2'h0;
     end else if (bht_bank_sel_1_4_8) begin
       if (_T_9517) begin
-        bht_bank_rd_data_out_1_72 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_72 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_72 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37704,7 +37704,7 @@ end // initial
       bht_bank_rd_data_out_1_73 <= 2'h0;
     end else if (bht_bank_sel_1_4_9) begin
       if (_T_9526) begin
-        bht_bank_rd_data_out_1_73 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_73 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_73 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37715,7 +37715,7 @@ end // initial
       bht_bank_rd_data_out_1_74 <= 2'h0;
     end else if (bht_bank_sel_1_4_10) begin
       if (_T_9535) begin
-        bht_bank_rd_data_out_1_74 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_74 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_74 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37726,7 +37726,7 @@ end // initial
       bht_bank_rd_data_out_1_75 <= 2'h0;
     end else if (bht_bank_sel_1_4_11) begin
       if (_T_9544) begin
-        bht_bank_rd_data_out_1_75 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_75 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_75 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37737,7 +37737,7 @@ end // initial
       bht_bank_rd_data_out_1_76 <= 2'h0;
     end else if (bht_bank_sel_1_4_12) begin
       if (_T_9553) begin
-        bht_bank_rd_data_out_1_76 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_76 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_76 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37748,7 +37748,7 @@ end // initial
       bht_bank_rd_data_out_1_77 <= 2'h0;
     end else if (bht_bank_sel_1_4_13) begin
       if (_T_9562) begin
-        bht_bank_rd_data_out_1_77 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_77 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_77 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37759,7 +37759,7 @@ end // initial
       bht_bank_rd_data_out_1_78 <= 2'h0;
     end else if (bht_bank_sel_1_4_14) begin
       if (_T_9571) begin
-        bht_bank_rd_data_out_1_78 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_78 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_78 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37770,7 +37770,7 @@ end // initial
       bht_bank_rd_data_out_1_79 <= 2'h0;
     end else if (bht_bank_sel_1_4_15) begin
       if (_T_9580) begin
-        bht_bank_rd_data_out_1_79 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_79 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_79 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37781,7 +37781,7 @@ end // initial
       bht_bank_rd_data_out_1_80 <= 2'h0;
     end else if (bht_bank_sel_1_5_0) begin
       if (_T_9589) begin
-        bht_bank_rd_data_out_1_80 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_80 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_80 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37792,7 +37792,7 @@ end // initial
       bht_bank_rd_data_out_1_81 <= 2'h0;
     end else if (bht_bank_sel_1_5_1) begin
       if (_T_9598) begin
-        bht_bank_rd_data_out_1_81 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_81 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_81 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37803,7 +37803,7 @@ end // initial
       bht_bank_rd_data_out_1_82 <= 2'h0;
     end else if (bht_bank_sel_1_5_2) begin
       if (_T_9607) begin
-        bht_bank_rd_data_out_1_82 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_82 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_82 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37814,7 +37814,7 @@ end // initial
       bht_bank_rd_data_out_1_83 <= 2'h0;
     end else if (bht_bank_sel_1_5_3) begin
       if (_T_9616) begin
-        bht_bank_rd_data_out_1_83 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_83 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_83 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37825,7 +37825,7 @@ end // initial
       bht_bank_rd_data_out_1_84 <= 2'h0;
     end else if (bht_bank_sel_1_5_4) begin
       if (_T_9625) begin
-        bht_bank_rd_data_out_1_84 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_84 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_84 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37836,7 +37836,7 @@ end // initial
       bht_bank_rd_data_out_1_85 <= 2'h0;
     end else if (bht_bank_sel_1_5_5) begin
       if (_T_9634) begin
-        bht_bank_rd_data_out_1_85 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_85 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_85 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37847,7 +37847,7 @@ end // initial
       bht_bank_rd_data_out_1_86 <= 2'h0;
     end else if (bht_bank_sel_1_5_6) begin
       if (_T_9643) begin
-        bht_bank_rd_data_out_1_86 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_86 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_86 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37858,7 +37858,7 @@ end // initial
       bht_bank_rd_data_out_1_87 <= 2'h0;
     end else if (bht_bank_sel_1_5_7) begin
       if (_T_9652) begin
-        bht_bank_rd_data_out_1_87 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_87 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_87 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37869,7 +37869,7 @@ end // initial
       bht_bank_rd_data_out_1_88 <= 2'h0;
     end else if (bht_bank_sel_1_5_8) begin
       if (_T_9661) begin
-        bht_bank_rd_data_out_1_88 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_88 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_88 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37880,7 +37880,7 @@ end // initial
       bht_bank_rd_data_out_1_89 <= 2'h0;
     end else if (bht_bank_sel_1_5_9) begin
       if (_T_9670) begin
-        bht_bank_rd_data_out_1_89 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_89 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_89 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37891,7 +37891,7 @@ end // initial
       bht_bank_rd_data_out_1_90 <= 2'h0;
     end else if (bht_bank_sel_1_5_10) begin
       if (_T_9679) begin
-        bht_bank_rd_data_out_1_90 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_90 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_90 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37902,7 +37902,7 @@ end // initial
       bht_bank_rd_data_out_1_91 <= 2'h0;
     end else if (bht_bank_sel_1_5_11) begin
       if (_T_9688) begin
-        bht_bank_rd_data_out_1_91 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_91 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_91 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37913,7 +37913,7 @@ end // initial
       bht_bank_rd_data_out_1_92 <= 2'h0;
     end else if (bht_bank_sel_1_5_12) begin
       if (_T_9697) begin
-        bht_bank_rd_data_out_1_92 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_92 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_92 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37924,7 +37924,7 @@ end // initial
       bht_bank_rd_data_out_1_93 <= 2'h0;
     end else if (bht_bank_sel_1_5_13) begin
       if (_T_9706) begin
-        bht_bank_rd_data_out_1_93 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_93 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_93 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37935,7 +37935,7 @@ end // initial
       bht_bank_rd_data_out_1_94 <= 2'h0;
     end else if (bht_bank_sel_1_5_14) begin
       if (_T_9715) begin
-        bht_bank_rd_data_out_1_94 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_94 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_94 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37946,7 +37946,7 @@ end // initial
       bht_bank_rd_data_out_1_95 <= 2'h0;
     end else if (bht_bank_sel_1_5_15) begin
       if (_T_9724) begin
-        bht_bank_rd_data_out_1_95 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_95 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_95 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37957,7 +37957,7 @@ end // initial
       bht_bank_rd_data_out_1_96 <= 2'h0;
     end else if (bht_bank_sel_1_6_0) begin
       if (_T_9733) begin
-        bht_bank_rd_data_out_1_96 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_96 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_96 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37968,7 +37968,7 @@ end // initial
       bht_bank_rd_data_out_1_97 <= 2'h0;
     end else if (bht_bank_sel_1_6_1) begin
       if (_T_9742) begin
-        bht_bank_rd_data_out_1_97 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_97 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_97 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37979,7 +37979,7 @@ end // initial
       bht_bank_rd_data_out_1_98 <= 2'h0;
     end else if (bht_bank_sel_1_6_2) begin
       if (_T_9751) begin
-        bht_bank_rd_data_out_1_98 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_98 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_98 <= io_exu_mp_pkt_bits_hist;
       end
@@ -37990,7 +37990,7 @@ end // initial
       bht_bank_rd_data_out_1_99 <= 2'h0;
     end else if (bht_bank_sel_1_6_3) begin
       if (_T_9760) begin
-        bht_bank_rd_data_out_1_99 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_99 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_99 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38001,7 +38001,7 @@ end // initial
       bht_bank_rd_data_out_1_100 <= 2'h0;
     end else if (bht_bank_sel_1_6_4) begin
       if (_T_9769) begin
-        bht_bank_rd_data_out_1_100 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_100 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_100 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38012,7 +38012,7 @@ end // initial
       bht_bank_rd_data_out_1_101 <= 2'h0;
     end else if (bht_bank_sel_1_6_5) begin
       if (_T_9778) begin
-        bht_bank_rd_data_out_1_101 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_101 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_101 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38023,7 +38023,7 @@ end // initial
       bht_bank_rd_data_out_1_102 <= 2'h0;
     end else if (bht_bank_sel_1_6_6) begin
       if (_T_9787) begin
-        bht_bank_rd_data_out_1_102 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_102 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_102 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38034,7 +38034,7 @@ end // initial
       bht_bank_rd_data_out_1_103 <= 2'h0;
     end else if (bht_bank_sel_1_6_7) begin
       if (_T_9796) begin
-        bht_bank_rd_data_out_1_103 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_103 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_103 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38045,7 +38045,7 @@ end // initial
       bht_bank_rd_data_out_1_104 <= 2'h0;
     end else if (bht_bank_sel_1_6_8) begin
       if (_T_9805) begin
-        bht_bank_rd_data_out_1_104 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_104 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_104 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38056,7 +38056,7 @@ end // initial
       bht_bank_rd_data_out_1_105 <= 2'h0;
     end else if (bht_bank_sel_1_6_9) begin
       if (_T_9814) begin
-        bht_bank_rd_data_out_1_105 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_105 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_105 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38067,7 +38067,7 @@ end // initial
       bht_bank_rd_data_out_1_106 <= 2'h0;
     end else if (bht_bank_sel_1_6_10) begin
       if (_T_9823) begin
-        bht_bank_rd_data_out_1_106 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_106 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_106 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38078,7 +38078,7 @@ end // initial
       bht_bank_rd_data_out_1_107 <= 2'h0;
     end else if (bht_bank_sel_1_6_11) begin
       if (_T_9832) begin
-        bht_bank_rd_data_out_1_107 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_107 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_107 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38089,7 +38089,7 @@ end // initial
       bht_bank_rd_data_out_1_108 <= 2'h0;
     end else if (bht_bank_sel_1_6_12) begin
       if (_T_9841) begin
-        bht_bank_rd_data_out_1_108 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_108 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_108 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38100,7 +38100,7 @@ end // initial
       bht_bank_rd_data_out_1_109 <= 2'h0;
     end else if (bht_bank_sel_1_6_13) begin
       if (_T_9850) begin
-        bht_bank_rd_data_out_1_109 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_109 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_109 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38111,7 +38111,7 @@ end // initial
       bht_bank_rd_data_out_1_110 <= 2'h0;
     end else if (bht_bank_sel_1_6_14) begin
       if (_T_9859) begin
-        bht_bank_rd_data_out_1_110 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_110 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_110 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38122,7 +38122,7 @@ end // initial
       bht_bank_rd_data_out_1_111 <= 2'h0;
     end else if (bht_bank_sel_1_6_15) begin
       if (_T_9868) begin
-        bht_bank_rd_data_out_1_111 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_111 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_111 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38133,7 +38133,7 @@ end // initial
       bht_bank_rd_data_out_1_112 <= 2'h0;
     end else if (bht_bank_sel_1_7_0) begin
       if (_T_9877) begin
-        bht_bank_rd_data_out_1_112 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_112 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_112 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38144,7 +38144,7 @@ end // initial
       bht_bank_rd_data_out_1_113 <= 2'h0;
     end else if (bht_bank_sel_1_7_1) begin
       if (_T_9886) begin
-        bht_bank_rd_data_out_1_113 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_113 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_113 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38155,7 +38155,7 @@ end // initial
       bht_bank_rd_data_out_1_114 <= 2'h0;
     end else if (bht_bank_sel_1_7_2) begin
       if (_T_9895) begin
-        bht_bank_rd_data_out_1_114 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_114 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_114 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38166,7 +38166,7 @@ end // initial
       bht_bank_rd_data_out_1_115 <= 2'h0;
     end else if (bht_bank_sel_1_7_3) begin
       if (_T_9904) begin
-        bht_bank_rd_data_out_1_115 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_115 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_115 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38177,7 +38177,7 @@ end // initial
       bht_bank_rd_data_out_1_116 <= 2'h0;
     end else if (bht_bank_sel_1_7_4) begin
       if (_T_9913) begin
-        bht_bank_rd_data_out_1_116 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_116 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_116 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38188,7 +38188,7 @@ end // initial
       bht_bank_rd_data_out_1_117 <= 2'h0;
     end else if (bht_bank_sel_1_7_5) begin
       if (_T_9922) begin
-        bht_bank_rd_data_out_1_117 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_117 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_117 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38199,7 +38199,7 @@ end // initial
       bht_bank_rd_data_out_1_118 <= 2'h0;
     end else if (bht_bank_sel_1_7_6) begin
       if (_T_9931) begin
-        bht_bank_rd_data_out_1_118 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_118 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_118 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38210,7 +38210,7 @@ end // initial
       bht_bank_rd_data_out_1_119 <= 2'h0;
     end else if (bht_bank_sel_1_7_7) begin
       if (_T_9940) begin
-        bht_bank_rd_data_out_1_119 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_119 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_119 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38221,7 +38221,7 @@ end // initial
       bht_bank_rd_data_out_1_120 <= 2'h0;
     end else if (bht_bank_sel_1_7_8) begin
       if (_T_9949) begin
-        bht_bank_rd_data_out_1_120 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_120 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_120 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38232,7 +38232,7 @@ end // initial
       bht_bank_rd_data_out_1_121 <= 2'h0;
     end else if (bht_bank_sel_1_7_9) begin
       if (_T_9958) begin
-        bht_bank_rd_data_out_1_121 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_121 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_121 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38243,7 +38243,7 @@ end // initial
       bht_bank_rd_data_out_1_122 <= 2'h0;
     end else if (bht_bank_sel_1_7_10) begin
       if (_T_9967) begin
-        bht_bank_rd_data_out_1_122 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_122 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_122 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38254,7 +38254,7 @@ end // initial
       bht_bank_rd_data_out_1_123 <= 2'h0;
     end else if (bht_bank_sel_1_7_11) begin
       if (_T_9976) begin
-        bht_bank_rd_data_out_1_123 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_123 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_123 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38265,7 +38265,7 @@ end // initial
       bht_bank_rd_data_out_1_124 <= 2'h0;
     end else if (bht_bank_sel_1_7_12) begin
       if (_T_9985) begin
-        bht_bank_rd_data_out_1_124 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_124 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_124 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38276,7 +38276,7 @@ end // initial
       bht_bank_rd_data_out_1_125 <= 2'h0;
     end else if (bht_bank_sel_1_7_13) begin
       if (_T_9994) begin
-        bht_bank_rd_data_out_1_125 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_125 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_125 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38287,7 +38287,7 @@ end // initial
       bht_bank_rd_data_out_1_126 <= 2'h0;
     end else if (bht_bank_sel_1_7_14) begin
       if (_T_10003) begin
-        bht_bank_rd_data_out_1_126 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_126 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_126 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38298,7 +38298,7 @@ end // initial
       bht_bank_rd_data_out_1_127 <= 2'h0;
     end else if (bht_bank_sel_1_7_15) begin
       if (_T_10012) begin
-        bht_bank_rd_data_out_1_127 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_127 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_127 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38309,7 +38309,7 @@ end // initial
       bht_bank_rd_data_out_1_128 <= 2'h0;
     end else if (bht_bank_sel_1_8_0) begin
       if (_T_10021) begin
-        bht_bank_rd_data_out_1_128 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_128 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_128 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38320,7 +38320,7 @@ end // initial
       bht_bank_rd_data_out_1_129 <= 2'h0;
     end else if (bht_bank_sel_1_8_1) begin
       if (_T_10030) begin
-        bht_bank_rd_data_out_1_129 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_129 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_129 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38331,7 +38331,7 @@ end // initial
       bht_bank_rd_data_out_1_130 <= 2'h0;
     end else if (bht_bank_sel_1_8_2) begin
       if (_T_10039) begin
-        bht_bank_rd_data_out_1_130 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_130 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_130 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38342,7 +38342,7 @@ end // initial
       bht_bank_rd_data_out_1_131 <= 2'h0;
     end else if (bht_bank_sel_1_8_3) begin
       if (_T_10048) begin
-        bht_bank_rd_data_out_1_131 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_131 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_131 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38353,7 +38353,7 @@ end // initial
       bht_bank_rd_data_out_1_132 <= 2'h0;
     end else if (bht_bank_sel_1_8_4) begin
       if (_T_10057) begin
-        bht_bank_rd_data_out_1_132 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_132 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_132 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38364,7 +38364,7 @@ end // initial
       bht_bank_rd_data_out_1_133 <= 2'h0;
     end else if (bht_bank_sel_1_8_5) begin
       if (_T_10066) begin
-        bht_bank_rd_data_out_1_133 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_133 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_133 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38375,7 +38375,7 @@ end // initial
       bht_bank_rd_data_out_1_134 <= 2'h0;
     end else if (bht_bank_sel_1_8_6) begin
       if (_T_10075) begin
-        bht_bank_rd_data_out_1_134 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_134 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_134 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38386,7 +38386,7 @@ end // initial
       bht_bank_rd_data_out_1_135 <= 2'h0;
     end else if (bht_bank_sel_1_8_7) begin
       if (_T_10084) begin
-        bht_bank_rd_data_out_1_135 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_135 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_135 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38397,7 +38397,7 @@ end // initial
       bht_bank_rd_data_out_1_136 <= 2'h0;
     end else if (bht_bank_sel_1_8_8) begin
       if (_T_10093) begin
-        bht_bank_rd_data_out_1_136 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_136 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_136 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38408,7 +38408,7 @@ end // initial
       bht_bank_rd_data_out_1_137 <= 2'h0;
     end else if (bht_bank_sel_1_8_9) begin
       if (_T_10102) begin
-        bht_bank_rd_data_out_1_137 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_137 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_137 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38419,7 +38419,7 @@ end // initial
       bht_bank_rd_data_out_1_138 <= 2'h0;
     end else if (bht_bank_sel_1_8_10) begin
       if (_T_10111) begin
-        bht_bank_rd_data_out_1_138 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_138 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_138 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38430,7 +38430,7 @@ end // initial
       bht_bank_rd_data_out_1_139 <= 2'h0;
     end else if (bht_bank_sel_1_8_11) begin
       if (_T_10120) begin
-        bht_bank_rd_data_out_1_139 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_139 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_139 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38441,7 +38441,7 @@ end // initial
       bht_bank_rd_data_out_1_140 <= 2'h0;
     end else if (bht_bank_sel_1_8_12) begin
       if (_T_10129) begin
-        bht_bank_rd_data_out_1_140 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_140 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_140 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38452,7 +38452,7 @@ end // initial
       bht_bank_rd_data_out_1_141 <= 2'h0;
     end else if (bht_bank_sel_1_8_13) begin
       if (_T_10138) begin
-        bht_bank_rd_data_out_1_141 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_141 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_141 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38463,7 +38463,7 @@ end // initial
       bht_bank_rd_data_out_1_142 <= 2'h0;
     end else if (bht_bank_sel_1_8_14) begin
       if (_T_10147) begin
-        bht_bank_rd_data_out_1_142 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_142 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_142 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38474,7 +38474,7 @@ end // initial
       bht_bank_rd_data_out_1_143 <= 2'h0;
     end else if (bht_bank_sel_1_8_15) begin
       if (_T_10156) begin
-        bht_bank_rd_data_out_1_143 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_143 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_143 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38485,7 +38485,7 @@ end // initial
       bht_bank_rd_data_out_1_144 <= 2'h0;
     end else if (bht_bank_sel_1_9_0) begin
       if (_T_10165) begin
-        bht_bank_rd_data_out_1_144 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_144 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_144 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38496,7 +38496,7 @@ end // initial
       bht_bank_rd_data_out_1_145 <= 2'h0;
     end else if (bht_bank_sel_1_9_1) begin
       if (_T_10174) begin
-        bht_bank_rd_data_out_1_145 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_145 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_145 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38507,7 +38507,7 @@ end // initial
       bht_bank_rd_data_out_1_146 <= 2'h0;
     end else if (bht_bank_sel_1_9_2) begin
       if (_T_10183) begin
-        bht_bank_rd_data_out_1_146 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_146 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_146 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38518,7 +38518,7 @@ end // initial
       bht_bank_rd_data_out_1_147 <= 2'h0;
     end else if (bht_bank_sel_1_9_3) begin
       if (_T_10192) begin
-        bht_bank_rd_data_out_1_147 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_147 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_147 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38529,7 +38529,7 @@ end // initial
       bht_bank_rd_data_out_1_148 <= 2'h0;
     end else if (bht_bank_sel_1_9_4) begin
       if (_T_10201) begin
-        bht_bank_rd_data_out_1_148 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_148 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_148 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38540,7 +38540,7 @@ end // initial
       bht_bank_rd_data_out_1_149 <= 2'h0;
     end else if (bht_bank_sel_1_9_5) begin
       if (_T_10210) begin
-        bht_bank_rd_data_out_1_149 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_149 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_149 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38551,7 +38551,7 @@ end // initial
       bht_bank_rd_data_out_1_150 <= 2'h0;
     end else if (bht_bank_sel_1_9_6) begin
       if (_T_10219) begin
-        bht_bank_rd_data_out_1_150 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_150 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_150 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38562,7 +38562,7 @@ end // initial
       bht_bank_rd_data_out_1_151 <= 2'h0;
     end else if (bht_bank_sel_1_9_7) begin
       if (_T_10228) begin
-        bht_bank_rd_data_out_1_151 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_151 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_151 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38573,7 +38573,7 @@ end // initial
       bht_bank_rd_data_out_1_152 <= 2'h0;
     end else if (bht_bank_sel_1_9_8) begin
       if (_T_10237) begin
-        bht_bank_rd_data_out_1_152 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_152 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_152 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38584,7 +38584,7 @@ end // initial
       bht_bank_rd_data_out_1_153 <= 2'h0;
     end else if (bht_bank_sel_1_9_9) begin
       if (_T_10246) begin
-        bht_bank_rd_data_out_1_153 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_153 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_153 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38595,7 +38595,7 @@ end // initial
       bht_bank_rd_data_out_1_154 <= 2'h0;
     end else if (bht_bank_sel_1_9_10) begin
       if (_T_10255) begin
-        bht_bank_rd_data_out_1_154 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_154 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_154 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38606,7 +38606,7 @@ end // initial
       bht_bank_rd_data_out_1_155 <= 2'h0;
     end else if (bht_bank_sel_1_9_11) begin
       if (_T_10264) begin
-        bht_bank_rd_data_out_1_155 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_155 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_155 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38617,7 +38617,7 @@ end // initial
       bht_bank_rd_data_out_1_156 <= 2'h0;
     end else if (bht_bank_sel_1_9_12) begin
       if (_T_10273) begin
-        bht_bank_rd_data_out_1_156 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_156 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_156 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38628,7 +38628,7 @@ end // initial
       bht_bank_rd_data_out_1_157 <= 2'h0;
     end else if (bht_bank_sel_1_9_13) begin
       if (_T_10282) begin
-        bht_bank_rd_data_out_1_157 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_157 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_157 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38639,7 +38639,7 @@ end // initial
       bht_bank_rd_data_out_1_158 <= 2'h0;
     end else if (bht_bank_sel_1_9_14) begin
       if (_T_10291) begin
-        bht_bank_rd_data_out_1_158 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_158 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_158 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38650,7 +38650,7 @@ end // initial
       bht_bank_rd_data_out_1_159 <= 2'h0;
     end else if (bht_bank_sel_1_9_15) begin
       if (_T_10300) begin
-        bht_bank_rd_data_out_1_159 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_159 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_159 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38661,7 +38661,7 @@ end // initial
       bht_bank_rd_data_out_1_160 <= 2'h0;
     end else if (bht_bank_sel_1_10_0) begin
       if (_T_10309) begin
-        bht_bank_rd_data_out_1_160 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_160 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_160 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38672,7 +38672,7 @@ end // initial
       bht_bank_rd_data_out_1_161 <= 2'h0;
     end else if (bht_bank_sel_1_10_1) begin
       if (_T_10318) begin
-        bht_bank_rd_data_out_1_161 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_161 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_161 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38683,7 +38683,7 @@ end // initial
       bht_bank_rd_data_out_1_162 <= 2'h0;
     end else if (bht_bank_sel_1_10_2) begin
       if (_T_10327) begin
-        bht_bank_rd_data_out_1_162 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_162 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_162 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38694,7 +38694,7 @@ end // initial
       bht_bank_rd_data_out_1_163 <= 2'h0;
     end else if (bht_bank_sel_1_10_3) begin
       if (_T_10336) begin
-        bht_bank_rd_data_out_1_163 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_163 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_163 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38705,7 +38705,7 @@ end // initial
       bht_bank_rd_data_out_1_164 <= 2'h0;
     end else if (bht_bank_sel_1_10_4) begin
       if (_T_10345) begin
-        bht_bank_rd_data_out_1_164 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_164 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_164 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38716,7 +38716,7 @@ end // initial
       bht_bank_rd_data_out_1_165 <= 2'h0;
     end else if (bht_bank_sel_1_10_5) begin
       if (_T_10354) begin
-        bht_bank_rd_data_out_1_165 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_165 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_165 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38727,7 +38727,7 @@ end // initial
       bht_bank_rd_data_out_1_166 <= 2'h0;
     end else if (bht_bank_sel_1_10_6) begin
       if (_T_10363) begin
-        bht_bank_rd_data_out_1_166 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_166 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_166 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38738,7 +38738,7 @@ end // initial
       bht_bank_rd_data_out_1_167 <= 2'h0;
     end else if (bht_bank_sel_1_10_7) begin
       if (_T_10372) begin
-        bht_bank_rd_data_out_1_167 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_167 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_167 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38749,7 +38749,7 @@ end // initial
       bht_bank_rd_data_out_1_168 <= 2'h0;
     end else if (bht_bank_sel_1_10_8) begin
       if (_T_10381) begin
-        bht_bank_rd_data_out_1_168 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_168 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_168 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38760,7 +38760,7 @@ end // initial
       bht_bank_rd_data_out_1_169 <= 2'h0;
     end else if (bht_bank_sel_1_10_9) begin
       if (_T_10390) begin
-        bht_bank_rd_data_out_1_169 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_169 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_169 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38771,7 +38771,7 @@ end // initial
       bht_bank_rd_data_out_1_170 <= 2'h0;
     end else if (bht_bank_sel_1_10_10) begin
       if (_T_10399) begin
-        bht_bank_rd_data_out_1_170 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_170 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_170 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38782,7 +38782,7 @@ end // initial
       bht_bank_rd_data_out_1_171 <= 2'h0;
     end else if (bht_bank_sel_1_10_11) begin
       if (_T_10408) begin
-        bht_bank_rd_data_out_1_171 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_171 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_171 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38793,7 +38793,7 @@ end // initial
       bht_bank_rd_data_out_1_172 <= 2'h0;
     end else if (bht_bank_sel_1_10_12) begin
       if (_T_10417) begin
-        bht_bank_rd_data_out_1_172 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_172 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_172 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38804,7 +38804,7 @@ end // initial
       bht_bank_rd_data_out_1_173 <= 2'h0;
     end else if (bht_bank_sel_1_10_13) begin
       if (_T_10426) begin
-        bht_bank_rd_data_out_1_173 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_173 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_173 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38815,7 +38815,7 @@ end // initial
       bht_bank_rd_data_out_1_174 <= 2'h0;
     end else if (bht_bank_sel_1_10_14) begin
       if (_T_10435) begin
-        bht_bank_rd_data_out_1_174 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_174 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_174 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38826,7 +38826,7 @@ end // initial
       bht_bank_rd_data_out_1_175 <= 2'h0;
     end else if (bht_bank_sel_1_10_15) begin
       if (_T_10444) begin
-        bht_bank_rd_data_out_1_175 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_175 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_175 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38837,7 +38837,7 @@ end // initial
       bht_bank_rd_data_out_1_176 <= 2'h0;
     end else if (bht_bank_sel_1_11_0) begin
       if (_T_10453) begin
-        bht_bank_rd_data_out_1_176 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_176 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_176 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38848,7 +38848,7 @@ end // initial
       bht_bank_rd_data_out_1_177 <= 2'h0;
     end else if (bht_bank_sel_1_11_1) begin
       if (_T_10462) begin
-        bht_bank_rd_data_out_1_177 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_177 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_177 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38859,7 +38859,7 @@ end // initial
       bht_bank_rd_data_out_1_178 <= 2'h0;
     end else if (bht_bank_sel_1_11_2) begin
       if (_T_10471) begin
-        bht_bank_rd_data_out_1_178 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_178 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_178 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38870,7 +38870,7 @@ end // initial
       bht_bank_rd_data_out_1_179 <= 2'h0;
     end else if (bht_bank_sel_1_11_3) begin
       if (_T_10480) begin
-        bht_bank_rd_data_out_1_179 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_179 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_179 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38881,7 +38881,7 @@ end // initial
       bht_bank_rd_data_out_1_180 <= 2'h0;
     end else if (bht_bank_sel_1_11_4) begin
       if (_T_10489) begin
-        bht_bank_rd_data_out_1_180 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_180 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_180 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38892,7 +38892,7 @@ end // initial
       bht_bank_rd_data_out_1_181 <= 2'h0;
     end else if (bht_bank_sel_1_11_5) begin
       if (_T_10498) begin
-        bht_bank_rd_data_out_1_181 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_181 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_181 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38903,7 +38903,7 @@ end // initial
       bht_bank_rd_data_out_1_182 <= 2'h0;
     end else if (bht_bank_sel_1_11_6) begin
       if (_T_10507) begin
-        bht_bank_rd_data_out_1_182 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_182 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_182 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38914,7 +38914,7 @@ end // initial
       bht_bank_rd_data_out_1_183 <= 2'h0;
     end else if (bht_bank_sel_1_11_7) begin
       if (_T_10516) begin
-        bht_bank_rd_data_out_1_183 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_183 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_183 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38925,7 +38925,7 @@ end // initial
       bht_bank_rd_data_out_1_184 <= 2'h0;
     end else if (bht_bank_sel_1_11_8) begin
       if (_T_10525) begin
-        bht_bank_rd_data_out_1_184 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_184 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_184 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38936,7 +38936,7 @@ end // initial
       bht_bank_rd_data_out_1_185 <= 2'h0;
     end else if (bht_bank_sel_1_11_9) begin
       if (_T_10534) begin
-        bht_bank_rd_data_out_1_185 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_185 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_185 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38947,7 +38947,7 @@ end // initial
       bht_bank_rd_data_out_1_186 <= 2'h0;
     end else if (bht_bank_sel_1_11_10) begin
       if (_T_10543) begin
-        bht_bank_rd_data_out_1_186 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_186 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_186 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38958,7 +38958,7 @@ end // initial
       bht_bank_rd_data_out_1_187 <= 2'h0;
     end else if (bht_bank_sel_1_11_11) begin
       if (_T_10552) begin
-        bht_bank_rd_data_out_1_187 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_187 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_187 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38969,7 +38969,7 @@ end // initial
       bht_bank_rd_data_out_1_188 <= 2'h0;
     end else if (bht_bank_sel_1_11_12) begin
       if (_T_10561) begin
-        bht_bank_rd_data_out_1_188 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_188 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_188 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38980,7 +38980,7 @@ end // initial
       bht_bank_rd_data_out_1_189 <= 2'h0;
     end else if (bht_bank_sel_1_11_13) begin
       if (_T_10570) begin
-        bht_bank_rd_data_out_1_189 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_189 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_189 <= io_exu_mp_pkt_bits_hist;
       end
@@ -38991,7 +38991,7 @@ end // initial
       bht_bank_rd_data_out_1_190 <= 2'h0;
     end else if (bht_bank_sel_1_11_14) begin
       if (_T_10579) begin
-        bht_bank_rd_data_out_1_190 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_190 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_190 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39002,7 +39002,7 @@ end // initial
       bht_bank_rd_data_out_1_191 <= 2'h0;
     end else if (bht_bank_sel_1_11_15) begin
       if (_T_10588) begin
-        bht_bank_rd_data_out_1_191 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_191 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_191 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39013,7 +39013,7 @@ end // initial
       bht_bank_rd_data_out_1_192 <= 2'h0;
     end else if (bht_bank_sel_1_12_0) begin
       if (_T_10597) begin
-        bht_bank_rd_data_out_1_192 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_192 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_192 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39024,7 +39024,7 @@ end // initial
       bht_bank_rd_data_out_1_193 <= 2'h0;
     end else if (bht_bank_sel_1_12_1) begin
       if (_T_10606) begin
-        bht_bank_rd_data_out_1_193 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_193 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_193 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39035,7 +39035,7 @@ end // initial
       bht_bank_rd_data_out_1_194 <= 2'h0;
     end else if (bht_bank_sel_1_12_2) begin
       if (_T_10615) begin
-        bht_bank_rd_data_out_1_194 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_194 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_194 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39046,7 +39046,7 @@ end // initial
       bht_bank_rd_data_out_1_195 <= 2'h0;
     end else if (bht_bank_sel_1_12_3) begin
       if (_T_10624) begin
-        bht_bank_rd_data_out_1_195 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_195 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_195 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39057,7 +39057,7 @@ end // initial
       bht_bank_rd_data_out_1_196 <= 2'h0;
     end else if (bht_bank_sel_1_12_4) begin
       if (_T_10633) begin
-        bht_bank_rd_data_out_1_196 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_196 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_196 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39068,7 +39068,7 @@ end // initial
       bht_bank_rd_data_out_1_197 <= 2'h0;
     end else if (bht_bank_sel_1_12_5) begin
       if (_T_10642) begin
-        bht_bank_rd_data_out_1_197 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_197 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_197 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39079,7 +39079,7 @@ end // initial
       bht_bank_rd_data_out_1_198 <= 2'h0;
     end else if (bht_bank_sel_1_12_6) begin
       if (_T_10651) begin
-        bht_bank_rd_data_out_1_198 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_198 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_198 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39090,7 +39090,7 @@ end // initial
       bht_bank_rd_data_out_1_199 <= 2'h0;
     end else if (bht_bank_sel_1_12_7) begin
       if (_T_10660) begin
-        bht_bank_rd_data_out_1_199 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_199 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_199 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39101,7 +39101,7 @@ end // initial
       bht_bank_rd_data_out_1_200 <= 2'h0;
     end else if (bht_bank_sel_1_12_8) begin
       if (_T_10669) begin
-        bht_bank_rd_data_out_1_200 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_200 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_200 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39112,7 +39112,7 @@ end // initial
       bht_bank_rd_data_out_1_201 <= 2'h0;
     end else if (bht_bank_sel_1_12_9) begin
       if (_T_10678) begin
-        bht_bank_rd_data_out_1_201 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_201 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_201 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39123,7 +39123,7 @@ end // initial
       bht_bank_rd_data_out_1_202 <= 2'h0;
     end else if (bht_bank_sel_1_12_10) begin
       if (_T_10687) begin
-        bht_bank_rd_data_out_1_202 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_202 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_202 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39134,7 +39134,7 @@ end // initial
       bht_bank_rd_data_out_1_203 <= 2'h0;
     end else if (bht_bank_sel_1_12_11) begin
       if (_T_10696) begin
-        bht_bank_rd_data_out_1_203 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_203 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_203 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39145,7 +39145,7 @@ end // initial
       bht_bank_rd_data_out_1_204 <= 2'h0;
     end else if (bht_bank_sel_1_12_12) begin
       if (_T_10705) begin
-        bht_bank_rd_data_out_1_204 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_204 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_204 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39156,7 +39156,7 @@ end // initial
       bht_bank_rd_data_out_1_205 <= 2'h0;
     end else if (bht_bank_sel_1_12_13) begin
       if (_T_10714) begin
-        bht_bank_rd_data_out_1_205 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_205 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_205 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39167,7 +39167,7 @@ end // initial
       bht_bank_rd_data_out_1_206 <= 2'h0;
     end else if (bht_bank_sel_1_12_14) begin
       if (_T_10723) begin
-        bht_bank_rd_data_out_1_206 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_206 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_206 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39178,7 +39178,7 @@ end // initial
       bht_bank_rd_data_out_1_207 <= 2'h0;
     end else if (bht_bank_sel_1_12_15) begin
       if (_T_10732) begin
-        bht_bank_rd_data_out_1_207 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_207 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_207 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39189,7 +39189,7 @@ end // initial
       bht_bank_rd_data_out_1_208 <= 2'h0;
     end else if (bht_bank_sel_1_13_0) begin
       if (_T_10741) begin
-        bht_bank_rd_data_out_1_208 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_208 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_208 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39200,7 +39200,7 @@ end // initial
       bht_bank_rd_data_out_1_209 <= 2'h0;
     end else if (bht_bank_sel_1_13_1) begin
       if (_T_10750) begin
-        bht_bank_rd_data_out_1_209 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_209 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_209 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39211,7 +39211,7 @@ end // initial
       bht_bank_rd_data_out_1_210 <= 2'h0;
     end else if (bht_bank_sel_1_13_2) begin
       if (_T_10759) begin
-        bht_bank_rd_data_out_1_210 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_210 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_210 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39222,7 +39222,7 @@ end // initial
       bht_bank_rd_data_out_1_211 <= 2'h0;
     end else if (bht_bank_sel_1_13_3) begin
       if (_T_10768) begin
-        bht_bank_rd_data_out_1_211 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_211 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_211 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39233,7 +39233,7 @@ end // initial
       bht_bank_rd_data_out_1_212 <= 2'h0;
     end else if (bht_bank_sel_1_13_4) begin
       if (_T_10777) begin
-        bht_bank_rd_data_out_1_212 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_212 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_212 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39244,7 +39244,7 @@ end // initial
       bht_bank_rd_data_out_1_213 <= 2'h0;
     end else if (bht_bank_sel_1_13_5) begin
       if (_T_10786) begin
-        bht_bank_rd_data_out_1_213 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_213 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_213 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39255,7 +39255,7 @@ end // initial
       bht_bank_rd_data_out_1_214 <= 2'h0;
     end else if (bht_bank_sel_1_13_6) begin
       if (_T_10795) begin
-        bht_bank_rd_data_out_1_214 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_214 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_214 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39266,7 +39266,7 @@ end // initial
       bht_bank_rd_data_out_1_215 <= 2'h0;
     end else if (bht_bank_sel_1_13_7) begin
       if (_T_10804) begin
-        bht_bank_rd_data_out_1_215 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_215 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_215 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39277,7 +39277,7 @@ end // initial
       bht_bank_rd_data_out_1_216 <= 2'h0;
     end else if (bht_bank_sel_1_13_8) begin
       if (_T_10813) begin
-        bht_bank_rd_data_out_1_216 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_216 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_216 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39288,7 +39288,7 @@ end // initial
       bht_bank_rd_data_out_1_217 <= 2'h0;
     end else if (bht_bank_sel_1_13_9) begin
       if (_T_10822) begin
-        bht_bank_rd_data_out_1_217 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_217 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_217 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39299,7 +39299,7 @@ end // initial
       bht_bank_rd_data_out_1_218 <= 2'h0;
     end else if (bht_bank_sel_1_13_10) begin
       if (_T_10831) begin
-        bht_bank_rd_data_out_1_218 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_218 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_218 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39310,7 +39310,7 @@ end // initial
       bht_bank_rd_data_out_1_219 <= 2'h0;
     end else if (bht_bank_sel_1_13_11) begin
       if (_T_10840) begin
-        bht_bank_rd_data_out_1_219 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_219 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_219 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39321,7 +39321,7 @@ end // initial
       bht_bank_rd_data_out_1_220 <= 2'h0;
     end else if (bht_bank_sel_1_13_12) begin
       if (_T_10849) begin
-        bht_bank_rd_data_out_1_220 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_220 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_220 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39332,7 +39332,7 @@ end // initial
       bht_bank_rd_data_out_1_221 <= 2'h0;
     end else if (bht_bank_sel_1_13_13) begin
       if (_T_10858) begin
-        bht_bank_rd_data_out_1_221 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_221 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_221 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39343,7 +39343,7 @@ end // initial
       bht_bank_rd_data_out_1_222 <= 2'h0;
     end else if (bht_bank_sel_1_13_14) begin
       if (_T_10867) begin
-        bht_bank_rd_data_out_1_222 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_222 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_222 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39354,7 +39354,7 @@ end // initial
       bht_bank_rd_data_out_1_223 <= 2'h0;
     end else if (bht_bank_sel_1_13_15) begin
       if (_T_10876) begin
-        bht_bank_rd_data_out_1_223 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_223 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_223 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39365,7 +39365,7 @@ end // initial
       bht_bank_rd_data_out_1_224 <= 2'h0;
     end else if (bht_bank_sel_1_14_0) begin
       if (_T_10885) begin
-        bht_bank_rd_data_out_1_224 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_224 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_224 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39376,7 +39376,7 @@ end // initial
       bht_bank_rd_data_out_1_225 <= 2'h0;
     end else if (bht_bank_sel_1_14_1) begin
       if (_T_10894) begin
-        bht_bank_rd_data_out_1_225 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_225 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_225 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39387,7 +39387,7 @@ end // initial
       bht_bank_rd_data_out_1_226 <= 2'h0;
     end else if (bht_bank_sel_1_14_2) begin
       if (_T_10903) begin
-        bht_bank_rd_data_out_1_226 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_226 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_226 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39398,7 +39398,7 @@ end // initial
       bht_bank_rd_data_out_1_227 <= 2'h0;
     end else if (bht_bank_sel_1_14_3) begin
       if (_T_10912) begin
-        bht_bank_rd_data_out_1_227 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_227 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_227 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39409,7 +39409,7 @@ end // initial
       bht_bank_rd_data_out_1_228 <= 2'h0;
     end else if (bht_bank_sel_1_14_4) begin
       if (_T_10921) begin
-        bht_bank_rd_data_out_1_228 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_228 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_228 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39420,7 +39420,7 @@ end // initial
       bht_bank_rd_data_out_1_229 <= 2'h0;
     end else if (bht_bank_sel_1_14_5) begin
       if (_T_10930) begin
-        bht_bank_rd_data_out_1_229 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_229 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_229 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39431,7 +39431,7 @@ end // initial
       bht_bank_rd_data_out_1_230 <= 2'h0;
     end else if (bht_bank_sel_1_14_6) begin
       if (_T_10939) begin
-        bht_bank_rd_data_out_1_230 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_230 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_230 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39442,7 +39442,7 @@ end // initial
       bht_bank_rd_data_out_1_231 <= 2'h0;
     end else if (bht_bank_sel_1_14_7) begin
       if (_T_10948) begin
-        bht_bank_rd_data_out_1_231 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_231 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_231 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39453,7 +39453,7 @@ end // initial
       bht_bank_rd_data_out_1_232 <= 2'h0;
     end else if (bht_bank_sel_1_14_8) begin
       if (_T_10957) begin
-        bht_bank_rd_data_out_1_232 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_232 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_232 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39464,7 +39464,7 @@ end // initial
       bht_bank_rd_data_out_1_233 <= 2'h0;
     end else if (bht_bank_sel_1_14_9) begin
       if (_T_10966) begin
-        bht_bank_rd_data_out_1_233 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_233 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_233 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39475,7 +39475,7 @@ end // initial
       bht_bank_rd_data_out_1_234 <= 2'h0;
     end else if (bht_bank_sel_1_14_10) begin
       if (_T_10975) begin
-        bht_bank_rd_data_out_1_234 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_234 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_234 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39486,7 +39486,7 @@ end // initial
       bht_bank_rd_data_out_1_235 <= 2'h0;
     end else if (bht_bank_sel_1_14_11) begin
       if (_T_10984) begin
-        bht_bank_rd_data_out_1_235 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_235 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_235 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39497,7 +39497,7 @@ end // initial
       bht_bank_rd_data_out_1_236 <= 2'h0;
     end else if (bht_bank_sel_1_14_12) begin
       if (_T_10993) begin
-        bht_bank_rd_data_out_1_236 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_236 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_236 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39508,7 +39508,7 @@ end // initial
       bht_bank_rd_data_out_1_237 <= 2'h0;
     end else if (bht_bank_sel_1_14_13) begin
       if (_T_11002) begin
-        bht_bank_rd_data_out_1_237 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_237 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_237 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39519,7 +39519,7 @@ end // initial
       bht_bank_rd_data_out_1_238 <= 2'h0;
     end else if (bht_bank_sel_1_14_14) begin
       if (_T_11011) begin
-        bht_bank_rd_data_out_1_238 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_238 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_238 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39530,7 +39530,7 @@ end // initial
       bht_bank_rd_data_out_1_239 <= 2'h0;
     end else if (bht_bank_sel_1_14_15) begin
       if (_T_11020) begin
-        bht_bank_rd_data_out_1_239 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_239 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_239 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39541,7 +39541,7 @@ end // initial
       bht_bank_rd_data_out_1_240 <= 2'h0;
     end else if (bht_bank_sel_1_15_0) begin
       if (_T_11029) begin
-        bht_bank_rd_data_out_1_240 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_240 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_240 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39552,7 +39552,7 @@ end // initial
       bht_bank_rd_data_out_1_241 <= 2'h0;
     end else if (bht_bank_sel_1_15_1) begin
       if (_T_11038) begin
-        bht_bank_rd_data_out_1_241 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_241 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_241 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39563,7 +39563,7 @@ end // initial
       bht_bank_rd_data_out_1_242 <= 2'h0;
     end else if (bht_bank_sel_1_15_2) begin
       if (_T_11047) begin
-        bht_bank_rd_data_out_1_242 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_242 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_242 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39574,7 +39574,7 @@ end // initial
       bht_bank_rd_data_out_1_243 <= 2'h0;
     end else if (bht_bank_sel_1_15_3) begin
       if (_T_11056) begin
-        bht_bank_rd_data_out_1_243 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_243 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_243 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39585,7 +39585,7 @@ end // initial
       bht_bank_rd_data_out_1_244 <= 2'h0;
     end else if (bht_bank_sel_1_15_4) begin
       if (_T_11065) begin
-        bht_bank_rd_data_out_1_244 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_244 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_244 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39596,7 +39596,7 @@ end // initial
       bht_bank_rd_data_out_1_245 <= 2'h0;
     end else if (bht_bank_sel_1_15_5) begin
       if (_T_11074) begin
-        bht_bank_rd_data_out_1_245 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_245 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_245 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39607,7 +39607,7 @@ end // initial
       bht_bank_rd_data_out_1_246 <= 2'h0;
     end else if (bht_bank_sel_1_15_6) begin
       if (_T_11083) begin
-        bht_bank_rd_data_out_1_246 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_246 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_246 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39618,7 +39618,7 @@ end // initial
       bht_bank_rd_data_out_1_247 <= 2'h0;
     end else if (bht_bank_sel_1_15_7) begin
       if (_T_11092) begin
-        bht_bank_rd_data_out_1_247 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_247 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_247 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39629,7 +39629,7 @@ end // initial
       bht_bank_rd_data_out_1_248 <= 2'h0;
     end else if (bht_bank_sel_1_15_8) begin
       if (_T_11101) begin
-        bht_bank_rd_data_out_1_248 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_248 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_248 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39640,7 +39640,7 @@ end // initial
       bht_bank_rd_data_out_1_249 <= 2'h0;
     end else if (bht_bank_sel_1_15_9) begin
       if (_T_11110) begin
-        bht_bank_rd_data_out_1_249 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_249 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_249 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39651,7 +39651,7 @@ end // initial
       bht_bank_rd_data_out_1_250 <= 2'h0;
     end else if (bht_bank_sel_1_15_10) begin
       if (_T_11119) begin
-        bht_bank_rd_data_out_1_250 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_250 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_250 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39662,7 +39662,7 @@ end // initial
       bht_bank_rd_data_out_1_251 <= 2'h0;
     end else if (bht_bank_sel_1_15_11) begin
       if (_T_11128) begin
-        bht_bank_rd_data_out_1_251 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_251 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_251 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39673,7 +39673,7 @@ end // initial
       bht_bank_rd_data_out_1_252 <= 2'h0;
     end else if (bht_bank_sel_1_15_12) begin
       if (_T_11137) begin
-        bht_bank_rd_data_out_1_252 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_252 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_252 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39684,7 +39684,7 @@ end // initial
       bht_bank_rd_data_out_1_253 <= 2'h0;
     end else if (bht_bank_sel_1_15_13) begin
       if (_T_11146) begin
-        bht_bank_rd_data_out_1_253 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_253 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_253 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39695,7 +39695,7 @@ end // initial
       bht_bank_rd_data_out_1_254 <= 2'h0;
     end else if (bht_bank_sel_1_15_14) begin
       if (_T_11155) begin
-        bht_bank_rd_data_out_1_254 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_254 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_254 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39706,7 +39706,7 @@ end // initial
       bht_bank_rd_data_out_1_255 <= 2'h0;
     end else if (bht_bank_sel_1_15_15) begin
       if (_T_11164) begin
-        bht_bank_rd_data_out_1_255 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_1_255 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_1_255 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39717,7 +39717,7 @@ end // initial
       bht_bank_rd_data_out_0_0 <= 2'h0;
     end else if (bht_bank_sel_0_0_0) begin
       if (_T_6565) begin
-        bht_bank_rd_data_out_0_0 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_0 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_0 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39728,7 +39728,7 @@ end // initial
       bht_bank_rd_data_out_0_1 <= 2'h0;
     end else if (bht_bank_sel_0_0_1) begin
       if (_T_6574) begin
-        bht_bank_rd_data_out_0_1 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_1 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_1 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39739,7 +39739,7 @@ end // initial
       bht_bank_rd_data_out_0_2 <= 2'h0;
     end else if (bht_bank_sel_0_0_2) begin
       if (_T_6583) begin
-        bht_bank_rd_data_out_0_2 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_2 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_2 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39750,7 +39750,7 @@ end // initial
       bht_bank_rd_data_out_0_3 <= 2'h0;
     end else if (bht_bank_sel_0_0_3) begin
       if (_T_6592) begin
-        bht_bank_rd_data_out_0_3 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_3 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_3 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39761,7 +39761,7 @@ end // initial
       bht_bank_rd_data_out_0_4 <= 2'h0;
     end else if (bht_bank_sel_0_0_4) begin
       if (_T_6601) begin
-        bht_bank_rd_data_out_0_4 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_4 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_4 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39772,7 +39772,7 @@ end // initial
       bht_bank_rd_data_out_0_5 <= 2'h0;
     end else if (bht_bank_sel_0_0_5) begin
       if (_T_6610) begin
-        bht_bank_rd_data_out_0_5 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_5 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_5 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39783,7 +39783,7 @@ end // initial
       bht_bank_rd_data_out_0_6 <= 2'h0;
     end else if (bht_bank_sel_0_0_6) begin
       if (_T_6619) begin
-        bht_bank_rd_data_out_0_6 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_6 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_6 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39794,7 +39794,7 @@ end // initial
       bht_bank_rd_data_out_0_7 <= 2'h0;
     end else if (bht_bank_sel_0_0_7) begin
       if (_T_6628) begin
-        bht_bank_rd_data_out_0_7 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_7 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_7 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39805,7 +39805,7 @@ end // initial
       bht_bank_rd_data_out_0_8 <= 2'h0;
     end else if (bht_bank_sel_0_0_8) begin
       if (_T_6637) begin
-        bht_bank_rd_data_out_0_8 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_8 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_8 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39816,7 +39816,7 @@ end // initial
       bht_bank_rd_data_out_0_9 <= 2'h0;
     end else if (bht_bank_sel_0_0_9) begin
       if (_T_6646) begin
-        bht_bank_rd_data_out_0_9 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_9 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_9 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39827,7 +39827,7 @@ end // initial
       bht_bank_rd_data_out_0_10 <= 2'h0;
     end else if (bht_bank_sel_0_0_10) begin
       if (_T_6655) begin
-        bht_bank_rd_data_out_0_10 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_10 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_10 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39838,7 +39838,7 @@ end // initial
       bht_bank_rd_data_out_0_11 <= 2'h0;
     end else if (bht_bank_sel_0_0_11) begin
       if (_T_6664) begin
-        bht_bank_rd_data_out_0_11 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_11 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_11 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39849,7 +39849,7 @@ end // initial
       bht_bank_rd_data_out_0_12 <= 2'h0;
     end else if (bht_bank_sel_0_0_12) begin
       if (_T_6673) begin
-        bht_bank_rd_data_out_0_12 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_12 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_12 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39860,7 +39860,7 @@ end // initial
       bht_bank_rd_data_out_0_13 <= 2'h0;
     end else if (bht_bank_sel_0_0_13) begin
       if (_T_6682) begin
-        bht_bank_rd_data_out_0_13 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_13 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_13 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39871,7 +39871,7 @@ end // initial
       bht_bank_rd_data_out_0_14 <= 2'h0;
     end else if (bht_bank_sel_0_0_14) begin
       if (_T_6691) begin
-        bht_bank_rd_data_out_0_14 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_14 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_14 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39882,7 +39882,7 @@ end // initial
       bht_bank_rd_data_out_0_15 <= 2'h0;
     end else if (bht_bank_sel_0_0_15) begin
       if (_T_6700) begin
-        bht_bank_rd_data_out_0_15 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_15 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_15 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39893,7 +39893,7 @@ end // initial
       bht_bank_rd_data_out_0_16 <= 2'h0;
     end else if (bht_bank_sel_0_1_0) begin
       if (_T_6709) begin
-        bht_bank_rd_data_out_0_16 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_16 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_16 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39904,7 +39904,7 @@ end // initial
       bht_bank_rd_data_out_0_17 <= 2'h0;
     end else if (bht_bank_sel_0_1_1) begin
       if (_T_6718) begin
-        bht_bank_rd_data_out_0_17 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_17 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_17 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39915,7 +39915,7 @@ end // initial
       bht_bank_rd_data_out_0_18 <= 2'h0;
     end else if (bht_bank_sel_0_1_2) begin
       if (_T_6727) begin
-        bht_bank_rd_data_out_0_18 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_18 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_18 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39926,7 +39926,7 @@ end // initial
       bht_bank_rd_data_out_0_19 <= 2'h0;
     end else if (bht_bank_sel_0_1_3) begin
       if (_T_6736) begin
-        bht_bank_rd_data_out_0_19 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_19 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_19 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39937,7 +39937,7 @@ end // initial
       bht_bank_rd_data_out_0_20 <= 2'h0;
     end else if (bht_bank_sel_0_1_4) begin
       if (_T_6745) begin
-        bht_bank_rd_data_out_0_20 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_20 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_20 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39948,7 +39948,7 @@ end // initial
       bht_bank_rd_data_out_0_21 <= 2'h0;
     end else if (bht_bank_sel_0_1_5) begin
       if (_T_6754) begin
-        bht_bank_rd_data_out_0_21 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_21 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_21 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39959,7 +39959,7 @@ end // initial
       bht_bank_rd_data_out_0_22 <= 2'h0;
     end else if (bht_bank_sel_0_1_6) begin
       if (_T_6763) begin
-        bht_bank_rd_data_out_0_22 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_22 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_22 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39970,7 +39970,7 @@ end // initial
       bht_bank_rd_data_out_0_23 <= 2'h0;
     end else if (bht_bank_sel_0_1_7) begin
       if (_T_6772) begin
-        bht_bank_rd_data_out_0_23 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_23 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_23 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39981,7 +39981,7 @@ end // initial
       bht_bank_rd_data_out_0_24 <= 2'h0;
     end else if (bht_bank_sel_0_1_8) begin
       if (_T_6781) begin
-        bht_bank_rd_data_out_0_24 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_24 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_24 <= io_exu_mp_pkt_bits_hist;
       end
@@ -39992,7 +39992,7 @@ end // initial
       bht_bank_rd_data_out_0_25 <= 2'h0;
     end else if (bht_bank_sel_0_1_9) begin
       if (_T_6790) begin
-        bht_bank_rd_data_out_0_25 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_25 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_25 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40003,7 +40003,7 @@ end // initial
       bht_bank_rd_data_out_0_26 <= 2'h0;
     end else if (bht_bank_sel_0_1_10) begin
       if (_T_6799) begin
-        bht_bank_rd_data_out_0_26 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_26 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_26 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40014,7 +40014,7 @@ end // initial
       bht_bank_rd_data_out_0_27 <= 2'h0;
     end else if (bht_bank_sel_0_1_11) begin
       if (_T_6808) begin
-        bht_bank_rd_data_out_0_27 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_27 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_27 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40025,7 +40025,7 @@ end // initial
       bht_bank_rd_data_out_0_28 <= 2'h0;
     end else if (bht_bank_sel_0_1_12) begin
       if (_T_6817) begin
-        bht_bank_rd_data_out_0_28 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_28 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_28 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40036,7 +40036,7 @@ end // initial
       bht_bank_rd_data_out_0_29 <= 2'h0;
     end else if (bht_bank_sel_0_1_13) begin
       if (_T_6826) begin
-        bht_bank_rd_data_out_0_29 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_29 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_29 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40047,7 +40047,7 @@ end // initial
       bht_bank_rd_data_out_0_30 <= 2'h0;
     end else if (bht_bank_sel_0_1_14) begin
       if (_T_6835) begin
-        bht_bank_rd_data_out_0_30 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_30 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_30 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40058,7 +40058,7 @@ end // initial
       bht_bank_rd_data_out_0_31 <= 2'h0;
     end else if (bht_bank_sel_0_1_15) begin
       if (_T_6844) begin
-        bht_bank_rd_data_out_0_31 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_31 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_31 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40069,7 +40069,7 @@ end // initial
       bht_bank_rd_data_out_0_32 <= 2'h0;
     end else if (bht_bank_sel_0_2_0) begin
       if (_T_6853) begin
-        bht_bank_rd_data_out_0_32 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_32 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_32 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40080,7 +40080,7 @@ end // initial
       bht_bank_rd_data_out_0_33 <= 2'h0;
     end else if (bht_bank_sel_0_2_1) begin
       if (_T_6862) begin
-        bht_bank_rd_data_out_0_33 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_33 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_33 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40091,7 +40091,7 @@ end // initial
       bht_bank_rd_data_out_0_34 <= 2'h0;
     end else if (bht_bank_sel_0_2_2) begin
       if (_T_6871) begin
-        bht_bank_rd_data_out_0_34 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_34 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_34 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40102,7 +40102,7 @@ end // initial
       bht_bank_rd_data_out_0_35 <= 2'h0;
     end else if (bht_bank_sel_0_2_3) begin
       if (_T_6880) begin
-        bht_bank_rd_data_out_0_35 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_35 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_35 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40113,7 +40113,7 @@ end // initial
       bht_bank_rd_data_out_0_36 <= 2'h0;
     end else if (bht_bank_sel_0_2_4) begin
       if (_T_6889) begin
-        bht_bank_rd_data_out_0_36 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_36 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_36 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40124,7 +40124,7 @@ end // initial
       bht_bank_rd_data_out_0_37 <= 2'h0;
     end else if (bht_bank_sel_0_2_5) begin
       if (_T_6898) begin
-        bht_bank_rd_data_out_0_37 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_37 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_37 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40135,7 +40135,7 @@ end // initial
       bht_bank_rd_data_out_0_38 <= 2'h0;
     end else if (bht_bank_sel_0_2_6) begin
       if (_T_6907) begin
-        bht_bank_rd_data_out_0_38 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_38 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_38 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40146,7 +40146,7 @@ end // initial
       bht_bank_rd_data_out_0_39 <= 2'h0;
     end else if (bht_bank_sel_0_2_7) begin
       if (_T_6916) begin
-        bht_bank_rd_data_out_0_39 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_39 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_39 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40157,7 +40157,7 @@ end // initial
       bht_bank_rd_data_out_0_40 <= 2'h0;
     end else if (bht_bank_sel_0_2_8) begin
       if (_T_6925) begin
-        bht_bank_rd_data_out_0_40 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_40 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_40 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40168,7 +40168,7 @@ end // initial
       bht_bank_rd_data_out_0_41 <= 2'h0;
     end else if (bht_bank_sel_0_2_9) begin
       if (_T_6934) begin
-        bht_bank_rd_data_out_0_41 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_41 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_41 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40179,7 +40179,7 @@ end // initial
       bht_bank_rd_data_out_0_42 <= 2'h0;
     end else if (bht_bank_sel_0_2_10) begin
       if (_T_6943) begin
-        bht_bank_rd_data_out_0_42 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_42 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_42 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40190,7 +40190,7 @@ end // initial
       bht_bank_rd_data_out_0_43 <= 2'h0;
     end else if (bht_bank_sel_0_2_11) begin
       if (_T_6952) begin
-        bht_bank_rd_data_out_0_43 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_43 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_43 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40201,7 +40201,7 @@ end // initial
       bht_bank_rd_data_out_0_44 <= 2'h0;
     end else if (bht_bank_sel_0_2_12) begin
       if (_T_6961) begin
-        bht_bank_rd_data_out_0_44 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_44 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_44 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40212,7 +40212,7 @@ end // initial
       bht_bank_rd_data_out_0_45 <= 2'h0;
     end else if (bht_bank_sel_0_2_13) begin
       if (_T_6970) begin
-        bht_bank_rd_data_out_0_45 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_45 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_45 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40223,7 +40223,7 @@ end // initial
       bht_bank_rd_data_out_0_46 <= 2'h0;
     end else if (bht_bank_sel_0_2_14) begin
       if (_T_6979) begin
-        bht_bank_rd_data_out_0_46 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_46 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_46 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40234,7 +40234,7 @@ end // initial
       bht_bank_rd_data_out_0_47 <= 2'h0;
     end else if (bht_bank_sel_0_2_15) begin
       if (_T_6988) begin
-        bht_bank_rd_data_out_0_47 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_47 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_47 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40245,7 +40245,7 @@ end // initial
       bht_bank_rd_data_out_0_48 <= 2'h0;
     end else if (bht_bank_sel_0_3_0) begin
       if (_T_6997) begin
-        bht_bank_rd_data_out_0_48 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_48 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_48 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40256,7 +40256,7 @@ end // initial
       bht_bank_rd_data_out_0_49 <= 2'h0;
     end else if (bht_bank_sel_0_3_1) begin
       if (_T_7006) begin
-        bht_bank_rd_data_out_0_49 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_49 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_49 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40267,7 +40267,7 @@ end // initial
       bht_bank_rd_data_out_0_50 <= 2'h0;
     end else if (bht_bank_sel_0_3_2) begin
       if (_T_7015) begin
-        bht_bank_rd_data_out_0_50 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_50 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_50 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40278,7 +40278,7 @@ end // initial
       bht_bank_rd_data_out_0_51 <= 2'h0;
     end else if (bht_bank_sel_0_3_3) begin
       if (_T_7024) begin
-        bht_bank_rd_data_out_0_51 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_51 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_51 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40289,7 +40289,7 @@ end // initial
       bht_bank_rd_data_out_0_52 <= 2'h0;
     end else if (bht_bank_sel_0_3_4) begin
       if (_T_7033) begin
-        bht_bank_rd_data_out_0_52 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_52 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_52 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40300,7 +40300,7 @@ end // initial
       bht_bank_rd_data_out_0_53 <= 2'h0;
     end else if (bht_bank_sel_0_3_5) begin
       if (_T_7042) begin
-        bht_bank_rd_data_out_0_53 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_53 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_53 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40311,7 +40311,7 @@ end // initial
       bht_bank_rd_data_out_0_54 <= 2'h0;
     end else if (bht_bank_sel_0_3_6) begin
       if (_T_7051) begin
-        bht_bank_rd_data_out_0_54 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_54 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_54 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40322,7 +40322,7 @@ end // initial
       bht_bank_rd_data_out_0_55 <= 2'h0;
     end else if (bht_bank_sel_0_3_7) begin
       if (_T_7060) begin
-        bht_bank_rd_data_out_0_55 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_55 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_55 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40333,7 +40333,7 @@ end // initial
       bht_bank_rd_data_out_0_56 <= 2'h0;
     end else if (bht_bank_sel_0_3_8) begin
       if (_T_7069) begin
-        bht_bank_rd_data_out_0_56 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_56 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_56 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40344,7 +40344,7 @@ end // initial
       bht_bank_rd_data_out_0_57 <= 2'h0;
     end else if (bht_bank_sel_0_3_9) begin
       if (_T_7078) begin
-        bht_bank_rd_data_out_0_57 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_57 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_57 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40355,7 +40355,7 @@ end // initial
       bht_bank_rd_data_out_0_58 <= 2'h0;
     end else if (bht_bank_sel_0_3_10) begin
       if (_T_7087) begin
-        bht_bank_rd_data_out_0_58 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_58 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_58 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40366,7 +40366,7 @@ end // initial
       bht_bank_rd_data_out_0_59 <= 2'h0;
     end else if (bht_bank_sel_0_3_11) begin
       if (_T_7096) begin
-        bht_bank_rd_data_out_0_59 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_59 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_59 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40377,7 +40377,7 @@ end // initial
       bht_bank_rd_data_out_0_60 <= 2'h0;
     end else if (bht_bank_sel_0_3_12) begin
       if (_T_7105) begin
-        bht_bank_rd_data_out_0_60 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_60 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_60 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40388,7 +40388,7 @@ end // initial
       bht_bank_rd_data_out_0_61 <= 2'h0;
     end else if (bht_bank_sel_0_3_13) begin
       if (_T_7114) begin
-        bht_bank_rd_data_out_0_61 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_61 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_61 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40399,7 +40399,7 @@ end // initial
       bht_bank_rd_data_out_0_62 <= 2'h0;
     end else if (bht_bank_sel_0_3_14) begin
       if (_T_7123) begin
-        bht_bank_rd_data_out_0_62 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_62 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_62 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40410,7 +40410,7 @@ end // initial
       bht_bank_rd_data_out_0_63 <= 2'h0;
     end else if (bht_bank_sel_0_3_15) begin
       if (_T_7132) begin
-        bht_bank_rd_data_out_0_63 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_63 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_63 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40421,7 +40421,7 @@ end // initial
       bht_bank_rd_data_out_0_64 <= 2'h0;
     end else if (bht_bank_sel_0_4_0) begin
       if (_T_7141) begin
-        bht_bank_rd_data_out_0_64 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_64 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_64 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40432,7 +40432,7 @@ end // initial
       bht_bank_rd_data_out_0_65 <= 2'h0;
     end else if (bht_bank_sel_0_4_1) begin
       if (_T_7150) begin
-        bht_bank_rd_data_out_0_65 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_65 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_65 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40443,7 +40443,7 @@ end // initial
       bht_bank_rd_data_out_0_66 <= 2'h0;
     end else if (bht_bank_sel_0_4_2) begin
       if (_T_7159) begin
-        bht_bank_rd_data_out_0_66 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_66 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_66 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40454,7 +40454,7 @@ end // initial
       bht_bank_rd_data_out_0_67 <= 2'h0;
     end else if (bht_bank_sel_0_4_3) begin
       if (_T_7168) begin
-        bht_bank_rd_data_out_0_67 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_67 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_67 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40465,7 +40465,7 @@ end // initial
       bht_bank_rd_data_out_0_68 <= 2'h0;
     end else if (bht_bank_sel_0_4_4) begin
       if (_T_7177) begin
-        bht_bank_rd_data_out_0_68 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_68 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_68 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40476,7 +40476,7 @@ end // initial
       bht_bank_rd_data_out_0_69 <= 2'h0;
     end else if (bht_bank_sel_0_4_5) begin
       if (_T_7186) begin
-        bht_bank_rd_data_out_0_69 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_69 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_69 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40487,7 +40487,7 @@ end // initial
       bht_bank_rd_data_out_0_70 <= 2'h0;
     end else if (bht_bank_sel_0_4_6) begin
       if (_T_7195) begin
-        bht_bank_rd_data_out_0_70 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_70 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_70 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40498,7 +40498,7 @@ end // initial
       bht_bank_rd_data_out_0_71 <= 2'h0;
     end else if (bht_bank_sel_0_4_7) begin
       if (_T_7204) begin
-        bht_bank_rd_data_out_0_71 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_71 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_71 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40509,7 +40509,7 @@ end // initial
       bht_bank_rd_data_out_0_72 <= 2'h0;
     end else if (bht_bank_sel_0_4_8) begin
       if (_T_7213) begin
-        bht_bank_rd_data_out_0_72 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_72 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_72 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40520,7 +40520,7 @@ end // initial
       bht_bank_rd_data_out_0_73 <= 2'h0;
     end else if (bht_bank_sel_0_4_9) begin
       if (_T_7222) begin
-        bht_bank_rd_data_out_0_73 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_73 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_73 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40531,7 +40531,7 @@ end // initial
       bht_bank_rd_data_out_0_74 <= 2'h0;
     end else if (bht_bank_sel_0_4_10) begin
       if (_T_7231) begin
-        bht_bank_rd_data_out_0_74 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_74 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_74 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40542,7 +40542,7 @@ end // initial
       bht_bank_rd_data_out_0_75 <= 2'h0;
     end else if (bht_bank_sel_0_4_11) begin
       if (_T_7240) begin
-        bht_bank_rd_data_out_0_75 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_75 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_75 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40553,7 +40553,7 @@ end // initial
       bht_bank_rd_data_out_0_76 <= 2'h0;
     end else if (bht_bank_sel_0_4_12) begin
       if (_T_7249) begin
-        bht_bank_rd_data_out_0_76 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_76 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_76 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40564,7 +40564,7 @@ end // initial
       bht_bank_rd_data_out_0_77 <= 2'h0;
     end else if (bht_bank_sel_0_4_13) begin
       if (_T_7258) begin
-        bht_bank_rd_data_out_0_77 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_77 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_77 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40575,7 +40575,7 @@ end // initial
       bht_bank_rd_data_out_0_78 <= 2'h0;
     end else if (bht_bank_sel_0_4_14) begin
       if (_T_7267) begin
-        bht_bank_rd_data_out_0_78 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_78 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_78 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40586,7 +40586,7 @@ end // initial
       bht_bank_rd_data_out_0_79 <= 2'h0;
     end else if (bht_bank_sel_0_4_15) begin
       if (_T_7276) begin
-        bht_bank_rd_data_out_0_79 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_79 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_79 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40597,7 +40597,7 @@ end // initial
       bht_bank_rd_data_out_0_80 <= 2'h0;
     end else if (bht_bank_sel_0_5_0) begin
       if (_T_7285) begin
-        bht_bank_rd_data_out_0_80 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_80 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_80 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40608,7 +40608,7 @@ end // initial
       bht_bank_rd_data_out_0_81 <= 2'h0;
     end else if (bht_bank_sel_0_5_1) begin
       if (_T_7294) begin
-        bht_bank_rd_data_out_0_81 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_81 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_81 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40619,7 +40619,7 @@ end // initial
       bht_bank_rd_data_out_0_82 <= 2'h0;
     end else if (bht_bank_sel_0_5_2) begin
       if (_T_7303) begin
-        bht_bank_rd_data_out_0_82 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_82 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_82 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40630,7 +40630,7 @@ end // initial
       bht_bank_rd_data_out_0_83 <= 2'h0;
     end else if (bht_bank_sel_0_5_3) begin
       if (_T_7312) begin
-        bht_bank_rd_data_out_0_83 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_83 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_83 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40641,7 +40641,7 @@ end // initial
       bht_bank_rd_data_out_0_84 <= 2'h0;
     end else if (bht_bank_sel_0_5_4) begin
       if (_T_7321) begin
-        bht_bank_rd_data_out_0_84 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_84 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_84 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40652,7 +40652,7 @@ end // initial
       bht_bank_rd_data_out_0_85 <= 2'h0;
     end else if (bht_bank_sel_0_5_5) begin
       if (_T_7330) begin
-        bht_bank_rd_data_out_0_85 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_85 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_85 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40663,7 +40663,7 @@ end // initial
       bht_bank_rd_data_out_0_86 <= 2'h0;
     end else if (bht_bank_sel_0_5_6) begin
       if (_T_7339) begin
-        bht_bank_rd_data_out_0_86 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_86 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_86 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40674,7 +40674,7 @@ end // initial
       bht_bank_rd_data_out_0_87 <= 2'h0;
     end else if (bht_bank_sel_0_5_7) begin
       if (_T_7348) begin
-        bht_bank_rd_data_out_0_87 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_87 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_87 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40685,7 +40685,7 @@ end // initial
       bht_bank_rd_data_out_0_88 <= 2'h0;
     end else if (bht_bank_sel_0_5_8) begin
       if (_T_7357) begin
-        bht_bank_rd_data_out_0_88 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_88 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_88 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40696,7 +40696,7 @@ end // initial
       bht_bank_rd_data_out_0_89 <= 2'h0;
     end else if (bht_bank_sel_0_5_9) begin
       if (_T_7366) begin
-        bht_bank_rd_data_out_0_89 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_89 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_89 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40707,7 +40707,7 @@ end // initial
       bht_bank_rd_data_out_0_90 <= 2'h0;
     end else if (bht_bank_sel_0_5_10) begin
       if (_T_7375) begin
-        bht_bank_rd_data_out_0_90 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_90 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_90 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40718,7 +40718,7 @@ end // initial
       bht_bank_rd_data_out_0_91 <= 2'h0;
     end else if (bht_bank_sel_0_5_11) begin
       if (_T_7384) begin
-        bht_bank_rd_data_out_0_91 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_91 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_91 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40729,7 +40729,7 @@ end // initial
       bht_bank_rd_data_out_0_92 <= 2'h0;
     end else if (bht_bank_sel_0_5_12) begin
       if (_T_7393) begin
-        bht_bank_rd_data_out_0_92 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_92 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_92 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40740,7 +40740,7 @@ end // initial
       bht_bank_rd_data_out_0_93 <= 2'h0;
     end else if (bht_bank_sel_0_5_13) begin
       if (_T_7402) begin
-        bht_bank_rd_data_out_0_93 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_93 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_93 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40751,7 +40751,7 @@ end // initial
       bht_bank_rd_data_out_0_94 <= 2'h0;
     end else if (bht_bank_sel_0_5_14) begin
       if (_T_7411) begin
-        bht_bank_rd_data_out_0_94 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_94 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_94 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40762,7 +40762,7 @@ end // initial
       bht_bank_rd_data_out_0_95 <= 2'h0;
     end else if (bht_bank_sel_0_5_15) begin
       if (_T_7420) begin
-        bht_bank_rd_data_out_0_95 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_95 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_95 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40773,7 +40773,7 @@ end // initial
       bht_bank_rd_data_out_0_96 <= 2'h0;
     end else if (bht_bank_sel_0_6_0) begin
       if (_T_7429) begin
-        bht_bank_rd_data_out_0_96 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_96 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_96 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40784,7 +40784,7 @@ end // initial
       bht_bank_rd_data_out_0_97 <= 2'h0;
     end else if (bht_bank_sel_0_6_1) begin
       if (_T_7438) begin
-        bht_bank_rd_data_out_0_97 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_97 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_97 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40795,7 +40795,7 @@ end // initial
       bht_bank_rd_data_out_0_98 <= 2'h0;
     end else if (bht_bank_sel_0_6_2) begin
       if (_T_7447) begin
-        bht_bank_rd_data_out_0_98 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_98 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_98 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40806,7 +40806,7 @@ end // initial
       bht_bank_rd_data_out_0_99 <= 2'h0;
     end else if (bht_bank_sel_0_6_3) begin
       if (_T_7456) begin
-        bht_bank_rd_data_out_0_99 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_99 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_99 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40817,7 +40817,7 @@ end // initial
       bht_bank_rd_data_out_0_100 <= 2'h0;
     end else if (bht_bank_sel_0_6_4) begin
       if (_T_7465) begin
-        bht_bank_rd_data_out_0_100 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_100 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_100 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40828,7 +40828,7 @@ end // initial
       bht_bank_rd_data_out_0_101 <= 2'h0;
     end else if (bht_bank_sel_0_6_5) begin
       if (_T_7474) begin
-        bht_bank_rd_data_out_0_101 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_101 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_101 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40839,7 +40839,7 @@ end // initial
       bht_bank_rd_data_out_0_102 <= 2'h0;
     end else if (bht_bank_sel_0_6_6) begin
       if (_T_7483) begin
-        bht_bank_rd_data_out_0_102 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_102 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_102 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40850,7 +40850,7 @@ end // initial
       bht_bank_rd_data_out_0_103 <= 2'h0;
     end else if (bht_bank_sel_0_6_7) begin
       if (_T_7492) begin
-        bht_bank_rd_data_out_0_103 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_103 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_103 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40861,7 +40861,7 @@ end // initial
       bht_bank_rd_data_out_0_104 <= 2'h0;
     end else if (bht_bank_sel_0_6_8) begin
       if (_T_7501) begin
-        bht_bank_rd_data_out_0_104 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_104 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_104 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40872,7 +40872,7 @@ end // initial
       bht_bank_rd_data_out_0_105 <= 2'h0;
     end else if (bht_bank_sel_0_6_9) begin
       if (_T_7510) begin
-        bht_bank_rd_data_out_0_105 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_105 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_105 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40883,7 +40883,7 @@ end // initial
       bht_bank_rd_data_out_0_106 <= 2'h0;
     end else if (bht_bank_sel_0_6_10) begin
       if (_T_7519) begin
-        bht_bank_rd_data_out_0_106 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_106 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_106 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40894,7 +40894,7 @@ end // initial
       bht_bank_rd_data_out_0_107 <= 2'h0;
     end else if (bht_bank_sel_0_6_11) begin
       if (_T_7528) begin
-        bht_bank_rd_data_out_0_107 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_107 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_107 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40905,7 +40905,7 @@ end // initial
       bht_bank_rd_data_out_0_108 <= 2'h0;
     end else if (bht_bank_sel_0_6_12) begin
       if (_T_7537) begin
-        bht_bank_rd_data_out_0_108 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_108 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_108 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40916,7 +40916,7 @@ end // initial
       bht_bank_rd_data_out_0_109 <= 2'h0;
     end else if (bht_bank_sel_0_6_13) begin
       if (_T_7546) begin
-        bht_bank_rd_data_out_0_109 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_109 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_109 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40927,7 +40927,7 @@ end // initial
       bht_bank_rd_data_out_0_110 <= 2'h0;
     end else if (bht_bank_sel_0_6_14) begin
       if (_T_7555) begin
-        bht_bank_rd_data_out_0_110 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_110 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_110 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40938,7 +40938,7 @@ end // initial
       bht_bank_rd_data_out_0_111 <= 2'h0;
     end else if (bht_bank_sel_0_6_15) begin
       if (_T_7564) begin
-        bht_bank_rd_data_out_0_111 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_111 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_111 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40949,7 +40949,7 @@ end // initial
       bht_bank_rd_data_out_0_112 <= 2'h0;
     end else if (bht_bank_sel_0_7_0) begin
       if (_T_7573) begin
-        bht_bank_rd_data_out_0_112 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_112 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_112 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40960,7 +40960,7 @@ end // initial
       bht_bank_rd_data_out_0_113 <= 2'h0;
     end else if (bht_bank_sel_0_7_1) begin
       if (_T_7582) begin
-        bht_bank_rd_data_out_0_113 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_113 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_113 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40971,7 +40971,7 @@ end // initial
       bht_bank_rd_data_out_0_114 <= 2'h0;
     end else if (bht_bank_sel_0_7_2) begin
       if (_T_7591) begin
-        bht_bank_rd_data_out_0_114 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_114 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_114 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40982,7 +40982,7 @@ end // initial
       bht_bank_rd_data_out_0_115 <= 2'h0;
     end else if (bht_bank_sel_0_7_3) begin
       if (_T_7600) begin
-        bht_bank_rd_data_out_0_115 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_115 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_115 <= io_exu_mp_pkt_bits_hist;
       end
@@ -40993,7 +40993,7 @@ end // initial
       bht_bank_rd_data_out_0_116 <= 2'h0;
     end else if (bht_bank_sel_0_7_4) begin
       if (_T_7609) begin
-        bht_bank_rd_data_out_0_116 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_116 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_116 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41004,7 +41004,7 @@ end // initial
       bht_bank_rd_data_out_0_117 <= 2'h0;
     end else if (bht_bank_sel_0_7_5) begin
       if (_T_7618) begin
-        bht_bank_rd_data_out_0_117 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_117 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_117 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41015,7 +41015,7 @@ end // initial
       bht_bank_rd_data_out_0_118 <= 2'h0;
     end else if (bht_bank_sel_0_7_6) begin
       if (_T_7627) begin
-        bht_bank_rd_data_out_0_118 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_118 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_118 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41026,7 +41026,7 @@ end // initial
       bht_bank_rd_data_out_0_119 <= 2'h0;
     end else if (bht_bank_sel_0_7_7) begin
       if (_T_7636) begin
-        bht_bank_rd_data_out_0_119 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_119 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_119 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41037,7 +41037,7 @@ end // initial
       bht_bank_rd_data_out_0_120 <= 2'h0;
     end else if (bht_bank_sel_0_7_8) begin
       if (_T_7645) begin
-        bht_bank_rd_data_out_0_120 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_120 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_120 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41048,7 +41048,7 @@ end // initial
       bht_bank_rd_data_out_0_121 <= 2'h0;
     end else if (bht_bank_sel_0_7_9) begin
       if (_T_7654) begin
-        bht_bank_rd_data_out_0_121 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_121 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_121 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41059,7 +41059,7 @@ end // initial
       bht_bank_rd_data_out_0_122 <= 2'h0;
     end else if (bht_bank_sel_0_7_10) begin
       if (_T_7663) begin
-        bht_bank_rd_data_out_0_122 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_122 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_122 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41070,7 +41070,7 @@ end // initial
       bht_bank_rd_data_out_0_123 <= 2'h0;
     end else if (bht_bank_sel_0_7_11) begin
       if (_T_7672) begin
-        bht_bank_rd_data_out_0_123 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_123 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_123 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41081,7 +41081,7 @@ end // initial
       bht_bank_rd_data_out_0_124 <= 2'h0;
     end else if (bht_bank_sel_0_7_12) begin
       if (_T_7681) begin
-        bht_bank_rd_data_out_0_124 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_124 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_124 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41092,7 +41092,7 @@ end // initial
       bht_bank_rd_data_out_0_125 <= 2'h0;
     end else if (bht_bank_sel_0_7_13) begin
       if (_T_7690) begin
-        bht_bank_rd_data_out_0_125 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_125 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_125 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41103,7 +41103,7 @@ end // initial
       bht_bank_rd_data_out_0_126 <= 2'h0;
     end else if (bht_bank_sel_0_7_14) begin
       if (_T_7699) begin
-        bht_bank_rd_data_out_0_126 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_126 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_126 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41114,7 +41114,7 @@ end // initial
       bht_bank_rd_data_out_0_127 <= 2'h0;
     end else if (bht_bank_sel_0_7_15) begin
       if (_T_7708) begin
-        bht_bank_rd_data_out_0_127 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_127 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_127 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41125,7 +41125,7 @@ end // initial
       bht_bank_rd_data_out_0_128 <= 2'h0;
     end else if (bht_bank_sel_0_8_0) begin
       if (_T_7717) begin
-        bht_bank_rd_data_out_0_128 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_128 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_128 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41136,7 +41136,7 @@ end // initial
       bht_bank_rd_data_out_0_129 <= 2'h0;
     end else if (bht_bank_sel_0_8_1) begin
       if (_T_7726) begin
-        bht_bank_rd_data_out_0_129 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_129 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_129 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41147,7 +41147,7 @@ end // initial
       bht_bank_rd_data_out_0_130 <= 2'h0;
     end else if (bht_bank_sel_0_8_2) begin
       if (_T_7735) begin
-        bht_bank_rd_data_out_0_130 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_130 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_130 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41158,7 +41158,7 @@ end // initial
       bht_bank_rd_data_out_0_131 <= 2'h0;
     end else if (bht_bank_sel_0_8_3) begin
       if (_T_7744) begin
-        bht_bank_rd_data_out_0_131 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_131 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_131 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41169,7 +41169,7 @@ end // initial
       bht_bank_rd_data_out_0_132 <= 2'h0;
     end else if (bht_bank_sel_0_8_4) begin
       if (_T_7753) begin
-        bht_bank_rd_data_out_0_132 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_132 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_132 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41180,7 +41180,7 @@ end // initial
       bht_bank_rd_data_out_0_133 <= 2'h0;
     end else if (bht_bank_sel_0_8_5) begin
       if (_T_7762) begin
-        bht_bank_rd_data_out_0_133 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_133 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_133 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41191,7 +41191,7 @@ end // initial
       bht_bank_rd_data_out_0_134 <= 2'h0;
     end else if (bht_bank_sel_0_8_6) begin
       if (_T_7771) begin
-        bht_bank_rd_data_out_0_134 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_134 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_134 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41202,7 +41202,7 @@ end // initial
       bht_bank_rd_data_out_0_135 <= 2'h0;
     end else if (bht_bank_sel_0_8_7) begin
       if (_T_7780) begin
-        bht_bank_rd_data_out_0_135 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_135 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_135 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41213,7 +41213,7 @@ end // initial
       bht_bank_rd_data_out_0_136 <= 2'h0;
     end else if (bht_bank_sel_0_8_8) begin
       if (_T_7789) begin
-        bht_bank_rd_data_out_0_136 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_136 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_136 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41224,7 +41224,7 @@ end // initial
       bht_bank_rd_data_out_0_137 <= 2'h0;
     end else if (bht_bank_sel_0_8_9) begin
       if (_T_7798) begin
-        bht_bank_rd_data_out_0_137 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_137 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_137 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41235,7 +41235,7 @@ end // initial
       bht_bank_rd_data_out_0_138 <= 2'h0;
     end else if (bht_bank_sel_0_8_10) begin
       if (_T_7807) begin
-        bht_bank_rd_data_out_0_138 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_138 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_138 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41246,7 +41246,7 @@ end // initial
       bht_bank_rd_data_out_0_139 <= 2'h0;
     end else if (bht_bank_sel_0_8_11) begin
       if (_T_7816) begin
-        bht_bank_rd_data_out_0_139 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_139 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_139 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41257,7 +41257,7 @@ end // initial
       bht_bank_rd_data_out_0_140 <= 2'h0;
     end else if (bht_bank_sel_0_8_12) begin
       if (_T_7825) begin
-        bht_bank_rd_data_out_0_140 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_140 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_140 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41268,7 +41268,7 @@ end // initial
       bht_bank_rd_data_out_0_141 <= 2'h0;
     end else if (bht_bank_sel_0_8_13) begin
       if (_T_7834) begin
-        bht_bank_rd_data_out_0_141 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_141 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_141 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41279,7 +41279,7 @@ end // initial
       bht_bank_rd_data_out_0_142 <= 2'h0;
     end else if (bht_bank_sel_0_8_14) begin
       if (_T_7843) begin
-        bht_bank_rd_data_out_0_142 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_142 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_142 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41290,7 +41290,7 @@ end // initial
       bht_bank_rd_data_out_0_143 <= 2'h0;
     end else if (bht_bank_sel_0_8_15) begin
       if (_T_7852) begin
-        bht_bank_rd_data_out_0_143 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_143 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_143 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41301,7 +41301,7 @@ end // initial
       bht_bank_rd_data_out_0_144 <= 2'h0;
     end else if (bht_bank_sel_0_9_0) begin
       if (_T_7861) begin
-        bht_bank_rd_data_out_0_144 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_144 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_144 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41312,7 +41312,7 @@ end // initial
       bht_bank_rd_data_out_0_145 <= 2'h0;
     end else if (bht_bank_sel_0_9_1) begin
       if (_T_7870) begin
-        bht_bank_rd_data_out_0_145 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_145 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_145 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41323,7 +41323,7 @@ end // initial
       bht_bank_rd_data_out_0_146 <= 2'h0;
     end else if (bht_bank_sel_0_9_2) begin
       if (_T_7879) begin
-        bht_bank_rd_data_out_0_146 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_146 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_146 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41334,7 +41334,7 @@ end // initial
       bht_bank_rd_data_out_0_147 <= 2'h0;
     end else if (bht_bank_sel_0_9_3) begin
       if (_T_7888) begin
-        bht_bank_rd_data_out_0_147 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_147 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_147 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41345,7 +41345,7 @@ end // initial
       bht_bank_rd_data_out_0_148 <= 2'h0;
     end else if (bht_bank_sel_0_9_4) begin
       if (_T_7897) begin
-        bht_bank_rd_data_out_0_148 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_148 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_148 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41356,7 +41356,7 @@ end // initial
       bht_bank_rd_data_out_0_149 <= 2'h0;
     end else if (bht_bank_sel_0_9_5) begin
       if (_T_7906) begin
-        bht_bank_rd_data_out_0_149 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_149 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_149 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41367,7 +41367,7 @@ end // initial
       bht_bank_rd_data_out_0_150 <= 2'h0;
     end else if (bht_bank_sel_0_9_6) begin
       if (_T_7915) begin
-        bht_bank_rd_data_out_0_150 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_150 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_150 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41378,7 +41378,7 @@ end // initial
       bht_bank_rd_data_out_0_151 <= 2'h0;
     end else if (bht_bank_sel_0_9_7) begin
       if (_T_7924) begin
-        bht_bank_rd_data_out_0_151 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_151 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_151 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41389,7 +41389,7 @@ end // initial
       bht_bank_rd_data_out_0_152 <= 2'h0;
     end else if (bht_bank_sel_0_9_8) begin
       if (_T_7933) begin
-        bht_bank_rd_data_out_0_152 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_152 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_152 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41400,7 +41400,7 @@ end // initial
       bht_bank_rd_data_out_0_153 <= 2'h0;
     end else if (bht_bank_sel_0_9_9) begin
       if (_T_7942) begin
-        bht_bank_rd_data_out_0_153 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_153 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_153 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41411,7 +41411,7 @@ end // initial
       bht_bank_rd_data_out_0_154 <= 2'h0;
     end else if (bht_bank_sel_0_9_10) begin
       if (_T_7951) begin
-        bht_bank_rd_data_out_0_154 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_154 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_154 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41422,7 +41422,7 @@ end // initial
       bht_bank_rd_data_out_0_155 <= 2'h0;
     end else if (bht_bank_sel_0_9_11) begin
       if (_T_7960) begin
-        bht_bank_rd_data_out_0_155 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_155 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_155 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41433,7 +41433,7 @@ end // initial
       bht_bank_rd_data_out_0_156 <= 2'h0;
     end else if (bht_bank_sel_0_9_12) begin
       if (_T_7969) begin
-        bht_bank_rd_data_out_0_156 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_156 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_156 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41444,7 +41444,7 @@ end // initial
       bht_bank_rd_data_out_0_157 <= 2'h0;
     end else if (bht_bank_sel_0_9_13) begin
       if (_T_7978) begin
-        bht_bank_rd_data_out_0_157 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_157 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_157 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41455,7 +41455,7 @@ end // initial
       bht_bank_rd_data_out_0_158 <= 2'h0;
     end else if (bht_bank_sel_0_9_14) begin
       if (_T_7987) begin
-        bht_bank_rd_data_out_0_158 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_158 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_158 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41466,7 +41466,7 @@ end // initial
       bht_bank_rd_data_out_0_159 <= 2'h0;
     end else if (bht_bank_sel_0_9_15) begin
       if (_T_7996) begin
-        bht_bank_rd_data_out_0_159 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_159 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_159 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41477,7 +41477,7 @@ end // initial
       bht_bank_rd_data_out_0_160 <= 2'h0;
     end else if (bht_bank_sel_0_10_0) begin
       if (_T_8005) begin
-        bht_bank_rd_data_out_0_160 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_160 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_160 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41488,7 +41488,7 @@ end // initial
       bht_bank_rd_data_out_0_161 <= 2'h0;
     end else if (bht_bank_sel_0_10_1) begin
       if (_T_8014) begin
-        bht_bank_rd_data_out_0_161 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_161 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_161 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41499,7 +41499,7 @@ end // initial
       bht_bank_rd_data_out_0_162 <= 2'h0;
     end else if (bht_bank_sel_0_10_2) begin
       if (_T_8023) begin
-        bht_bank_rd_data_out_0_162 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_162 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_162 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41510,7 +41510,7 @@ end // initial
       bht_bank_rd_data_out_0_163 <= 2'h0;
     end else if (bht_bank_sel_0_10_3) begin
       if (_T_8032) begin
-        bht_bank_rd_data_out_0_163 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_163 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_163 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41521,7 +41521,7 @@ end // initial
       bht_bank_rd_data_out_0_164 <= 2'h0;
     end else if (bht_bank_sel_0_10_4) begin
       if (_T_8041) begin
-        bht_bank_rd_data_out_0_164 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_164 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_164 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41532,7 +41532,7 @@ end // initial
       bht_bank_rd_data_out_0_165 <= 2'h0;
     end else if (bht_bank_sel_0_10_5) begin
       if (_T_8050) begin
-        bht_bank_rd_data_out_0_165 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_165 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_165 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41543,7 +41543,7 @@ end // initial
       bht_bank_rd_data_out_0_166 <= 2'h0;
     end else if (bht_bank_sel_0_10_6) begin
       if (_T_8059) begin
-        bht_bank_rd_data_out_0_166 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_166 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_166 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41554,7 +41554,7 @@ end // initial
       bht_bank_rd_data_out_0_167 <= 2'h0;
     end else if (bht_bank_sel_0_10_7) begin
       if (_T_8068) begin
-        bht_bank_rd_data_out_0_167 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_167 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_167 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41565,7 +41565,7 @@ end // initial
       bht_bank_rd_data_out_0_168 <= 2'h0;
     end else if (bht_bank_sel_0_10_8) begin
       if (_T_8077) begin
-        bht_bank_rd_data_out_0_168 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_168 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_168 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41576,7 +41576,7 @@ end // initial
       bht_bank_rd_data_out_0_169 <= 2'h0;
     end else if (bht_bank_sel_0_10_9) begin
       if (_T_8086) begin
-        bht_bank_rd_data_out_0_169 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_169 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_169 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41587,7 +41587,7 @@ end // initial
       bht_bank_rd_data_out_0_170 <= 2'h0;
     end else if (bht_bank_sel_0_10_10) begin
       if (_T_8095) begin
-        bht_bank_rd_data_out_0_170 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_170 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_170 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41598,7 +41598,7 @@ end // initial
       bht_bank_rd_data_out_0_171 <= 2'h0;
     end else if (bht_bank_sel_0_10_11) begin
       if (_T_8104) begin
-        bht_bank_rd_data_out_0_171 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_171 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_171 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41609,7 +41609,7 @@ end // initial
       bht_bank_rd_data_out_0_172 <= 2'h0;
     end else if (bht_bank_sel_0_10_12) begin
       if (_T_8113) begin
-        bht_bank_rd_data_out_0_172 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_172 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_172 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41620,7 +41620,7 @@ end // initial
       bht_bank_rd_data_out_0_173 <= 2'h0;
     end else if (bht_bank_sel_0_10_13) begin
       if (_T_8122) begin
-        bht_bank_rd_data_out_0_173 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_173 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_173 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41631,7 +41631,7 @@ end // initial
       bht_bank_rd_data_out_0_174 <= 2'h0;
     end else if (bht_bank_sel_0_10_14) begin
       if (_T_8131) begin
-        bht_bank_rd_data_out_0_174 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_174 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_174 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41642,7 +41642,7 @@ end // initial
       bht_bank_rd_data_out_0_175 <= 2'h0;
     end else if (bht_bank_sel_0_10_15) begin
       if (_T_8140) begin
-        bht_bank_rd_data_out_0_175 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_175 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_175 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41653,7 +41653,7 @@ end // initial
       bht_bank_rd_data_out_0_176 <= 2'h0;
     end else if (bht_bank_sel_0_11_0) begin
       if (_T_8149) begin
-        bht_bank_rd_data_out_0_176 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_176 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_176 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41664,7 +41664,7 @@ end // initial
       bht_bank_rd_data_out_0_177 <= 2'h0;
     end else if (bht_bank_sel_0_11_1) begin
       if (_T_8158) begin
-        bht_bank_rd_data_out_0_177 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_177 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_177 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41675,7 +41675,7 @@ end // initial
       bht_bank_rd_data_out_0_178 <= 2'h0;
     end else if (bht_bank_sel_0_11_2) begin
       if (_T_8167) begin
-        bht_bank_rd_data_out_0_178 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_178 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_178 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41686,7 +41686,7 @@ end // initial
       bht_bank_rd_data_out_0_179 <= 2'h0;
     end else if (bht_bank_sel_0_11_3) begin
       if (_T_8176) begin
-        bht_bank_rd_data_out_0_179 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_179 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_179 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41697,7 +41697,7 @@ end // initial
       bht_bank_rd_data_out_0_180 <= 2'h0;
     end else if (bht_bank_sel_0_11_4) begin
       if (_T_8185) begin
-        bht_bank_rd_data_out_0_180 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_180 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_180 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41708,7 +41708,7 @@ end // initial
       bht_bank_rd_data_out_0_181 <= 2'h0;
     end else if (bht_bank_sel_0_11_5) begin
       if (_T_8194) begin
-        bht_bank_rd_data_out_0_181 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_181 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_181 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41719,7 +41719,7 @@ end // initial
       bht_bank_rd_data_out_0_182 <= 2'h0;
     end else if (bht_bank_sel_0_11_6) begin
       if (_T_8203) begin
-        bht_bank_rd_data_out_0_182 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_182 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_182 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41730,7 +41730,7 @@ end // initial
       bht_bank_rd_data_out_0_183 <= 2'h0;
     end else if (bht_bank_sel_0_11_7) begin
       if (_T_8212) begin
-        bht_bank_rd_data_out_0_183 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_183 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_183 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41741,7 +41741,7 @@ end // initial
       bht_bank_rd_data_out_0_184 <= 2'h0;
     end else if (bht_bank_sel_0_11_8) begin
       if (_T_8221) begin
-        bht_bank_rd_data_out_0_184 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_184 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_184 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41752,7 +41752,7 @@ end // initial
       bht_bank_rd_data_out_0_185 <= 2'h0;
     end else if (bht_bank_sel_0_11_9) begin
       if (_T_8230) begin
-        bht_bank_rd_data_out_0_185 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_185 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_185 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41763,7 +41763,7 @@ end // initial
       bht_bank_rd_data_out_0_186 <= 2'h0;
     end else if (bht_bank_sel_0_11_10) begin
       if (_T_8239) begin
-        bht_bank_rd_data_out_0_186 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_186 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_186 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41774,7 +41774,7 @@ end // initial
       bht_bank_rd_data_out_0_187 <= 2'h0;
     end else if (bht_bank_sel_0_11_11) begin
       if (_T_8248) begin
-        bht_bank_rd_data_out_0_187 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_187 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_187 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41785,7 +41785,7 @@ end // initial
       bht_bank_rd_data_out_0_188 <= 2'h0;
     end else if (bht_bank_sel_0_11_12) begin
       if (_T_8257) begin
-        bht_bank_rd_data_out_0_188 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_188 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_188 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41796,7 +41796,7 @@ end // initial
       bht_bank_rd_data_out_0_189 <= 2'h0;
     end else if (bht_bank_sel_0_11_13) begin
       if (_T_8266) begin
-        bht_bank_rd_data_out_0_189 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_189 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_189 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41807,7 +41807,7 @@ end // initial
       bht_bank_rd_data_out_0_190 <= 2'h0;
     end else if (bht_bank_sel_0_11_14) begin
       if (_T_8275) begin
-        bht_bank_rd_data_out_0_190 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_190 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_190 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41818,7 +41818,7 @@ end // initial
       bht_bank_rd_data_out_0_191 <= 2'h0;
     end else if (bht_bank_sel_0_11_15) begin
       if (_T_8284) begin
-        bht_bank_rd_data_out_0_191 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_191 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_191 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41829,7 +41829,7 @@ end // initial
       bht_bank_rd_data_out_0_192 <= 2'h0;
     end else if (bht_bank_sel_0_12_0) begin
       if (_T_8293) begin
-        bht_bank_rd_data_out_0_192 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_192 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_192 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41840,7 +41840,7 @@ end // initial
       bht_bank_rd_data_out_0_193 <= 2'h0;
     end else if (bht_bank_sel_0_12_1) begin
       if (_T_8302) begin
-        bht_bank_rd_data_out_0_193 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_193 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_193 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41851,7 +41851,7 @@ end // initial
       bht_bank_rd_data_out_0_194 <= 2'h0;
     end else if (bht_bank_sel_0_12_2) begin
       if (_T_8311) begin
-        bht_bank_rd_data_out_0_194 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_194 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_194 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41862,7 +41862,7 @@ end // initial
       bht_bank_rd_data_out_0_195 <= 2'h0;
     end else if (bht_bank_sel_0_12_3) begin
       if (_T_8320) begin
-        bht_bank_rd_data_out_0_195 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_195 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_195 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41873,7 +41873,7 @@ end // initial
       bht_bank_rd_data_out_0_196 <= 2'h0;
     end else if (bht_bank_sel_0_12_4) begin
       if (_T_8329) begin
-        bht_bank_rd_data_out_0_196 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_196 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_196 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41884,7 +41884,7 @@ end // initial
       bht_bank_rd_data_out_0_197 <= 2'h0;
     end else if (bht_bank_sel_0_12_5) begin
       if (_T_8338) begin
-        bht_bank_rd_data_out_0_197 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_197 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_197 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41895,7 +41895,7 @@ end // initial
       bht_bank_rd_data_out_0_198 <= 2'h0;
     end else if (bht_bank_sel_0_12_6) begin
       if (_T_8347) begin
-        bht_bank_rd_data_out_0_198 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_198 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_198 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41906,7 +41906,7 @@ end // initial
       bht_bank_rd_data_out_0_199 <= 2'h0;
     end else if (bht_bank_sel_0_12_7) begin
       if (_T_8356) begin
-        bht_bank_rd_data_out_0_199 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_199 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_199 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41917,7 +41917,7 @@ end // initial
       bht_bank_rd_data_out_0_200 <= 2'h0;
     end else if (bht_bank_sel_0_12_8) begin
       if (_T_8365) begin
-        bht_bank_rd_data_out_0_200 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_200 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_200 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41928,7 +41928,7 @@ end // initial
       bht_bank_rd_data_out_0_201 <= 2'h0;
     end else if (bht_bank_sel_0_12_9) begin
       if (_T_8374) begin
-        bht_bank_rd_data_out_0_201 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_201 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_201 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41939,7 +41939,7 @@ end // initial
       bht_bank_rd_data_out_0_202 <= 2'h0;
     end else if (bht_bank_sel_0_12_10) begin
       if (_T_8383) begin
-        bht_bank_rd_data_out_0_202 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_202 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_202 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41950,7 +41950,7 @@ end // initial
       bht_bank_rd_data_out_0_203 <= 2'h0;
     end else if (bht_bank_sel_0_12_11) begin
       if (_T_8392) begin
-        bht_bank_rd_data_out_0_203 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_203 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_203 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41961,7 +41961,7 @@ end // initial
       bht_bank_rd_data_out_0_204 <= 2'h0;
     end else if (bht_bank_sel_0_12_12) begin
       if (_T_8401) begin
-        bht_bank_rd_data_out_0_204 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_204 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_204 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41972,7 +41972,7 @@ end // initial
       bht_bank_rd_data_out_0_205 <= 2'h0;
     end else if (bht_bank_sel_0_12_13) begin
       if (_T_8410) begin
-        bht_bank_rd_data_out_0_205 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_205 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_205 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41983,7 +41983,7 @@ end // initial
       bht_bank_rd_data_out_0_206 <= 2'h0;
     end else if (bht_bank_sel_0_12_14) begin
       if (_T_8419) begin
-        bht_bank_rd_data_out_0_206 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_206 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_206 <= io_exu_mp_pkt_bits_hist;
       end
@@ -41994,7 +41994,7 @@ end // initial
       bht_bank_rd_data_out_0_207 <= 2'h0;
     end else if (bht_bank_sel_0_12_15) begin
       if (_T_8428) begin
-        bht_bank_rd_data_out_0_207 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_207 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_207 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42005,7 +42005,7 @@ end // initial
       bht_bank_rd_data_out_0_208 <= 2'h0;
     end else if (bht_bank_sel_0_13_0) begin
       if (_T_8437) begin
-        bht_bank_rd_data_out_0_208 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_208 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_208 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42016,7 +42016,7 @@ end // initial
       bht_bank_rd_data_out_0_209 <= 2'h0;
     end else if (bht_bank_sel_0_13_1) begin
       if (_T_8446) begin
-        bht_bank_rd_data_out_0_209 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_209 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_209 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42027,7 +42027,7 @@ end // initial
       bht_bank_rd_data_out_0_210 <= 2'h0;
     end else if (bht_bank_sel_0_13_2) begin
       if (_T_8455) begin
-        bht_bank_rd_data_out_0_210 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_210 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_210 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42038,7 +42038,7 @@ end // initial
       bht_bank_rd_data_out_0_211 <= 2'h0;
     end else if (bht_bank_sel_0_13_3) begin
       if (_T_8464) begin
-        bht_bank_rd_data_out_0_211 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_211 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_211 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42049,7 +42049,7 @@ end // initial
       bht_bank_rd_data_out_0_212 <= 2'h0;
     end else if (bht_bank_sel_0_13_4) begin
       if (_T_8473) begin
-        bht_bank_rd_data_out_0_212 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_212 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_212 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42060,7 +42060,7 @@ end // initial
       bht_bank_rd_data_out_0_213 <= 2'h0;
     end else if (bht_bank_sel_0_13_5) begin
       if (_T_8482) begin
-        bht_bank_rd_data_out_0_213 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_213 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_213 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42071,7 +42071,7 @@ end // initial
       bht_bank_rd_data_out_0_214 <= 2'h0;
     end else if (bht_bank_sel_0_13_6) begin
       if (_T_8491) begin
-        bht_bank_rd_data_out_0_214 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_214 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_214 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42082,7 +42082,7 @@ end // initial
       bht_bank_rd_data_out_0_215 <= 2'h0;
     end else if (bht_bank_sel_0_13_7) begin
       if (_T_8500) begin
-        bht_bank_rd_data_out_0_215 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_215 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_215 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42093,7 +42093,7 @@ end // initial
       bht_bank_rd_data_out_0_216 <= 2'h0;
     end else if (bht_bank_sel_0_13_8) begin
       if (_T_8509) begin
-        bht_bank_rd_data_out_0_216 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_216 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_216 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42104,7 +42104,7 @@ end // initial
       bht_bank_rd_data_out_0_217 <= 2'h0;
     end else if (bht_bank_sel_0_13_9) begin
       if (_T_8518) begin
-        bht_bank_rd_data_out_0_217 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_217 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_217 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42115,7 +42115,7 @@ end // initial
       bht_bank_rd_data_out_0_218 <= 2'h0;
     end else if (bht_bank_sel_0_13_10) begin
       if (_T_8527) begin
-        bht_bank_rd_data_out_0_218 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_218 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_218 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42126,7 +42126,7 @@ end // initial
       bht_bank_rd_data_out_0_219 <= 2'h0;
     end else if (bht_bank_sel_0_13_11) begin
       if (_T_8536) begin
-        bht_bank_rd_data_out_0_219 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_219 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_219 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42137,7 +42137,7 @@ end // initial
       bht_bank_rd_data_out_0_220 <= 2'h0;
     end else if (bht_bank_sel_0_13_12) begin
       if (_T_8545) begin
-        bht_bank_rd_data_out_0_220 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_220 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_220 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42148,7 +42148,7 @@ end // initial
       bht_bank_rd_data_out_0_221 <= 2'h0;
     end else if (bht_bank_sel_0_13_13) begin
       if (_T_8554) begin
-        bht_bank_rd_data_out_0_221 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_221 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_221 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42159,7 +42159,7 @@ end // initial
       bht_bank_rd_data_out_0_222 <= 2'h0;
     end else if (bht_bank_sel_0_13_14) begin
       if (_T_8563) begin
-        bht_bank_rd_data_out_0_222 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_222 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_222 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42170,7 +42170,7 @@ end // initial
       bht_bank_rd_data_out_0_223 <= 2'h0;
     end else if (bht_bank_sel_0_13_15) begin
       if (_T_8572) begin
-        bht_bank_rd_data_out_0_223 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_223 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_223 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42181,7 +42181,7 @@ end // initial
       bht_bank_rd_data_out_0_224 <= 2'h0;
     end else if (bht_bank_sel_0_14_0) begin
       if (_T_8581) begin
-        bht_bank_rd_data_out_0_224 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_224 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_224 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42192,7 +42192,7 @@ end // initial
       bht_bank_rd_data_out_0_225 <= 2'h0;
     end else if (bht_bank_sel_0_14_1) begin
       if (_T_8590) begin
-        bht_bank_rd_data_out_0_225 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_225 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_225 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42203,7 +42203,7 @@ end // initial
       bht_bank_rd_data_out_0_226 <= 2'h0;
     end else if (bht_bank_sel_0_14_2) begin
       if (_T_8599) begin
-        bht_bank_rd_data_out_0_226 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_226 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_226 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42214,7 +42214,7 @@ end // initial
       bht_bank_rd_data_out_0_227 <= 2'h0;
     end else if (bht_bank_sel_0_14_3) begin
       if (_T_8608) begin
-        bht_bank_rd_data_out_0_227 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_227 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_227 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42225,7 +42225,7 @@ end // initial
       bht_bank_rd_data_out_0_228 <= 2'h0;
     end else if (bht_bank_sel_0_14_4) begin
       if (_T_8617) begin
-        bht_bank_rd_data_out_0_228 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_228 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_228 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42236,7 +42236,7 @@ end // initial
       bht_bank_rd_data_out_0_229 <= 2'h0;
     end else if (bht_bank_sel_0_14_5) begin
       if (_T_8626) begin
-        bht_bank_rd_data_out_0_229 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_229 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_229 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42247,7 +42247,7 @@ end // initial
       bht_bank_rd_data_out_0_230 <= 2'h0;
     end else if (bht_bank_sel_0_14_6) begin
       if (_T_8635) begin
-        bht_bank_rd_data_out_0_230 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_230 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_230 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42258,7 +42258,7 @@ end // initial
       bht_bank_rd_data_out_0_231 <= 2'h0;
     end else if (bht_bank_sel_0_14_7) begin
       if (_T_8644) begin
-        bht_bank_rd_data_out_0_231 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_231 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_231 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42269,7 +42269,7 @@ end // initial
       bht_bank_rd_data_out_0_232 <= 2'h0;
     end else if (bht_bank_sel_0_14_8) begin
       if (_T_8653) begin
-        bht_bank_rd_data_out_0_232 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_232 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_232 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42280,7 +42280,7 @@ end // initial
       bht_bank_rd_data_out_0_233 <= 2'h0;
     end else if (bht_bank_sel_0_14_9) begin
       if (_T_8662) begin
-        bht_bank_rd_data_out_0_233 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_233 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_233 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42291,7 +42291,7 @@ end // initial
       bht_bank_rd_data_out_0_234 <= 2'h0;
     end else if (bht_bank_sel_0_14_10) begin
       if (_T_8671) begin
-        bht_bank_rd_data_out_0_234 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_234 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_234 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42302,7 +42302,7 @@ end // initial
       bht_bank_rd_data_out_0_235 <= 2'h0;
     end else if (bht_bank_sel_0_14_11) begin
       if (_T_8680) begin
-        bht_bank_rd_data_out_0_235 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_235 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_235 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42313,7 +42313,7 @@ end // initial
       bht_bank_rd_data_out_0_236 <= 2'h0;
     end else if (bht_bank_sel_0_14_12) begin
       if (_T_8689) begin
-        bht_bank_rd_data_out_0_236 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_236 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_236 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42324,7 +42324,7 @@ end // initial
       bht_bank_rd_data_out_0_237 <= 2'h0;
     end else if (bht_bank_sel_0_14_13) begin
       if (_T_8698) begin
-        bht_bank_rd_data_out_0_237 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_237 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_237 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42335,7 +42335,7 @@ end // initial
       bht_bank_rd_data_out_0_238 <= 2'h0;
     end else if (bht_bank_sel_0_14_14) begin
       if (_T_8707) begin
-        bht_bank_rd_data_out_0_238 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_238 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_238 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42346,7 +42346,7 @@ end // initial
       bht_bank_rd_data_out_0_239 <= 2'h0;
     end else if (bht_bank_sel_0_14_15) begin
       if (_T_8716) begin
-        bht_bank_rd_data_out_0_239 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_239 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_239 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42357,7 +42357,7 @@ end // initial
       bht_bank_rd_data_out_0_240 <= 2'h0;
     end else if (bht_bank_sel_0_15_0) begin
       if (_T_8725) begin
-        bht_bank_rd_data_out_0_240 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_240 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_240 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42368,7 +42368,7 @@ end // initial
       bht_bank_rd_data_out_0_241 <= 2'h0;
     end else if (bht_bank_sel_0_15_1) begin
       if (_T_8734) begin
-        bht_bank_rd_data_out_0_241 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_241 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_241 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42379,7 +42379,7 @@ end // initial
       bht_bank_rd_data_out_0_242 <= 2'h0;
     end else if (bht_bank_sel_0_15_2) begin
       if (_T_8743) begin
-        bht_bank_rd_data_out_0_242 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_242 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_242 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42390,7 +42390,7 @@ end // initial
       bht_bank_rd_data_out_0_243 <= 2'h0;
     end else if (bht_bank_sel_0_15_3) begin
       if (_T_8752) begin
-        bht_bank_rd_data_out_0_243 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_243 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_243 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42401,7 +42401,7 @@ end // initial
       bht_bank_rd_data_out_0_244 <= 2'h0;
     end else if (bht_bank_sel_0_15_4) begin
       if (_T_8761) begin
-        bht_bank_rd_data_out_0_244 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_244 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_244 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42412,7 +42412,7 @@ end // initial
       bht_bank_rd_data_out_0_245 <= 2'h0;
     end else if (bht_bank_sel_0_15_5) begin
       if (_T_8770) begin
-        bht_bank_rd_data_out_0_245 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_245 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_245 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42423,7 +42423,7 @@ end // initial
       bht_bank_rd_data_out_0_246 <= 2'h0;
     end else if (bht_bank_sel_0_15_6) begin
       if (_T_8779) begin
-        bht_bank_rd_data_out_0_246 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_246 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_246 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42434,7 +42434,7 @@ end // initial
       bht_bank_rd_data_out_0_247 <= 2'h0;
     end else if (bht_bank_sel_0_15_7) begin
       if (_T_8788) begin
-        bht_bank_rd_data_out_0_247 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_247 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_247 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42445,7 +42445,7 @@ end // initial
       bht_bank_rd_data_out_0_248 <= 2'h0;
     end else if (bht_bank_sel_0_15_8) begin
       if (_T_8797) begin
-        bht_bank_rd_data_out_0_248 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_248 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_248 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42456,7 +42456,7 @@ end // initial
       bht_bank_rd_data_out_0_249 <= 2'h0;
     end else if (bht_bank_sel_0_15_9) begin
       if (_T_8806) begin
-        bht_bank_rd_data_out_0_249 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_249 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_249 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42467,7 +42467,7 @@ end // initial
       bht_bank_rd_data_out_0_250 <= 2'h0;
     end else if (bht_bank_sel_0_15_10) begin
       if (_T_8815) begin
-        bht_bank_rd_data_out_0_250 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_250 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_250 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42478,7 +42478,7 @@ end // initial
       bht_bank_rd_data_out_0_251 <= 2'h0;
     end else if (bht_bank_sel_0_15_11) begin
       if (_T_8824) begin
-        bht_bank_rd_data_out_0_251 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_251 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_251 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42489,7 +42489,7 @@ end // initial
       bht_bank_rd_data_out_0_252 <= 2'h0;
     end else if (bht_bank_sel_0_15_12) begin
       if (_T_8833) begin
-        bht_bank_rd_data_out_0_252 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_252 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_252 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42500,7 +42500,7 @@ end // initial
       bht_bank_rd_data_out_0_253 <= 2'h0;
     end else if (bht_bank_sel_0_15_13) begin
       if (_T_8842) begin
-        bht_bank_rd_data_out_0_253 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_253 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_253 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42511,7 +42511,7 @@ end // initial
       bht_bank_rd_data_out_0_254 <= 2'h0;
     end else if (bht_bank_sel_0_15_14) begin
       if (_T_8851) begin
-        bht_bank_rd_data_out_0_254 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_254 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_254 <= io_exu_mp_pkt_bits_hist;
       end
@@ -42522,7 +42522,7 @@ end // initial
       bht_bank_rd_data_out_0_255 <= 2'h0;
     end else if (bht_bank_sel_0_15_15) begin
       if (_T_8860) begin
-        bht_bank_rd_data_out_0_255 <= io_dec_tlu_br0_r_pkt_bits_hist;
+        bht_bank_rd_data_out_0_255 <= io_dec_tlu_br0_r_pkt_hist;
       end else begin
         bht_bank_rd_data_out_0_255 <= io_exu_mp_pkt_bits_hist;
       end
@@ -43161,14 +43161,14 @@ module el2_ifu_aln_ctl(
   output        io_ifu_pmu_instr_aligned,
   output [15:0] io_ifu_i0_cinst,
   output        io_i0_brp_valid,
-  output [11:0] io_i0_brp_bits_toffset,
-  output [1:0]  io_i0_brp_bits_hist,
-  output        io_i0_brp_bits_br_error,
-  output        io_i0_brp_bits_br_start_error,
-  output        io_i0_brp_bits_bank,
-  output [30:0] io_i0_brp_bits_prett,
-  output        io_i0_brp_bits_way,
-  output        io_i0_brp_bits_ret
+  output [11:0] io_i0_brp_toffset,
+  output [1:0]  io_i0_brp_hist,
+  output        io_i0_brp_br_error,
+  output        io_i0_brp_br_start_error,
+  output        io_i0_brp_bank,
+  output [30:0] io_i0_brp_prett,
+  output        io_i0_brp_way,
+  output        io_i0_brp_ret
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -43607,24 +43607,24 @@ module el2_ifu_aln_ctl(
   wire  _T_721 = first4B & alignbrend[1]; // @[el2_ifu_aln_ctl.scala 378:58]
   wire  _T_722 = _T_719 | _T_721; // @[el2_ifu_aln_ctl.scala 378:47]
   wire  _T_726 = _T_657 & alignbrend[0]; // @[el2_ifu_aln_ctl.scala 378:100]
-  wire  _T_729 = first2B & alignret[0]; // @[el2_ifu_aln_ctl.scala 380:34]
-  wire  _T_731 = first4B & alignret[1]; // @[el2_ifu_aln_ctl.scala 380:60]
+  wire  _T_729 = first2B & alignret[0]; // @[el2_ifu_aln_ctl.scala 380:29]
+  wire  _T_731 = first4B & alignret[1]; // @[el2_ifu_aln_ctl.scala 380:55]
   wire  _T_734 = first2B & alignpc4[0]; // @[el2_ifu_aln_ctl.scala 382:29]
   wire  _T_736 = first4B & alignpc4[1]; // @[el2_ifu_aln_ctl.scala 382:55]
   wire  i0_brp_pc4 = _T_734 | _T_736; // @[el2_ifu_aln_ctl.scala 382:44]
-  wire  _T_738 = first2B | alignbrend[0]; // @[el2_ifu_aln_ctl.scala 384:38]
-  wire  _T_744 = first2B & alignhist1[0]; // @[el2_ifu_aln_ctl.scala 386:39]
-  wire  _T_746 = first4B & alignhist1[1]; // @[el2_ifu_aln_ctl.scala 386:67]
-  wire  _T_747 = _T_744 | _T_746; // @[el2_ifu_aln_ctl.scala 386:56]
+  wire  _T_738 = first2B | alignbrend[0]; // @[el2_ifu_aln_ctl.scala 384:33]
+  wire  _T_744 = first2B & alignhist1[0]; // @[el2_ifu_aln_ctl.scala 386:34]
+  wire  _T_746 = first4B & alignhist1[1]; // @[el2_ifu_aln_ctl.scala 386:62]
+  wire  _T_747 = _T_744 | _T_746; // @[el2_ifu_aln_ctl.scala 386:51]
   wire  _T_749 = first2B & alignhist0[0]; // @[el2_ifu_aln_ctl.scala 387:14]
   wire  _T_751 = first4B & alignhist0[1]; // @[el2_ifu_aln_ctl.scala 387:42]
   wire  _T_752 = _T_749 | _T_751; // @[el2_ifu_aln_ctl.scala 387:31]
   wire  i0_ends_f1 = first4B & _T_515; // @[el2_ifu_aln_ctl.scala 389:28]
-  wire  _T_768 = io_i0_brp_valid & i0_brp_pc4; // @[el2_ifu_aln_ctl.scala 398:47]
-  wire  _T_769 = _T_768 & first2B; // @[el2_ifu_aln_ctl.scala 398:61]
-  wire  _T_770 = ~i0_brp_pc4; // @[el2_ifu_aln_ctl.scala 398:94]
-  wire  _T_771 = io_i0_brp_valid & _T_770; // @[el2_ifu_aln_ctl.scala 398:92]
-  wire  _T_772 = _T_771 & first4B; // @[el2_ifu_aln_ctl.scala 398:106]
+  wire  _T_768 = io_i0_brp_valid & i0_brp_pc4; // @[el2_ifu_aln_ctl.scala 398:42]
+  wire  _T_769 = _T_768 & first2B; // @[el2_ifu_aln_ctl.scala 398:56]
+  wire  _T_770 = ~i0_brp_pc4; // @[el2_ifu_aln_ctl.scala 398:89]
+  wire  _T_771 = io_i0_brp_valid & _T_770; // @[el2_ifu_aln_ctl.scala 398:87]
+  wire  _T_772 = _T_771 & first4B; // @[el2_ifu_aln_ctl.scala 398:101]
   rvclkhdr rvclkhdr ( // @[el2_lib.scala 508:23]
     .io_l1clk(rvclkhdr_io_l1clk),
     .io_clk(rvclkhdr_io_clk),
@@ -43717,14 +43717,14 @@ module el2_ifu_aln_ctl(
   assign io_ifu_pmu_instr_aligned = io_dec_i0_decode_d & _T_785; // @[el2_ifu_aln_ctl.scala 60:28 el2_ifu_aln_ctl.scala 410:28]
   assign io_ifu_i0_cinst = aligndata[15:0]; // @[el2_ifu_aln_ctl.scala 61:19 el2_ifu_aln_ctl.scala 346:19]
   assign io_i0_brp_valid = _T_722 | _T_726; // @[el2_ifu_aln_ctl.scala 378:19]
-  assign io_i0_brp_bits_toffset = i0_ends_f1 ? f1poffset : f0poffset; // @[el2_ifu_aln_ctl.scala 390:26]
-  assign io_i0_brp_bits_hist = {_T_747,_T_752}; // @[el2_ifu_aln_ctl.scala 386:23]
-  assign io_i0_brp_bits_br_error = _T_769 | _T_772; // @[el2_ifu_aln_ctl.scala 398:27]
-  assign io_i0_brp_bits_br_start_error = _T_657 & alignbrend[0]; // @[el2_ifu_aln_ctl.scala 394:34]
-  assign io_i0_brp_bits_bank = _T_738 ? f0pc[0] : secondpc[0]; // @[el2_ifu_aln_ctl.scala 396:34]
-  assign io_i0_brp_bits_prett = i0_ends_f1 ? f1prett : f0prett; // @[el2_ifu_aln_ctl.scala 392:24]
-  assign io_i0_brp_bits_way = _T_738 ? alignway[0] : alignway[1]; // @[el2_ifu_aln_ctl.scala 384:22]
-  assign io_i0_brp_bits_ret = _T_729 | _T_731; // @[el2_ifu_aln_ctl.scala 380:22]
+  assign io_i0_brp_toffset = i0_ends_f1 ? f1poffset : f0poffset; // @[el2_ifu_aln_ctl.scala 390:21]
+  assign io_i0_brp_hist = {_T_747,_T_752}; // @[el2_ifu_aln_ctl.scala 386:18]
+  assign io_i0_brp_br_error = _T_769 | _T_772; // @[el2_ifu_aln_ctl.scala 398:22]
+  assign io_i0_brp_br_start_error = _T_657 & alignbrend[0]; // @[el2_ifu_aln_ctl.scala 394:29]
+  assign io_i0_brp_bank = _T_738 ? f0pc[0] : secondpc[0]; // @[el2_ifu_aln_ctl.scala 396:29]
+  assign io_i0_brp_prett = i0_ends_f1 ? f1prett : f0prett; // @[el2_ifu_aln_ctl.scala 392:19]
+  assign io_i0_brp_way = _T_738 ? alignway[0] : alignway[1]; // @[el2_ifu_aln_ctl.scala 384:17]
+  assign io_i0_brp_ret = _T_729 | _T_731; // @[el2_ifu_aln_ctl.scala 380:17]
   assign rvclkhdr_io_clk = clock; // @[el2_lib.scala 510:18]
   assign rvclkhdr_io_en = _T_354 | _T_358; // @[el2_lib.scala 511:17]
   assign rvclkhdr_io_scan_mode = io_scan_mode; // @[el2_lib.scala 512:24]
@@ -44475,14 +44475,14 @@ module el2_ifu(
   output        io_ifu_i0_pc4,
   output        io_ifu_miss_state_idle,
   output        io_i0_brp_valid,
-  output [11:0] io_i0_brp_bits_toffset,
-  output [1:0]  io_i0_brp_bits_hist,
-  output        io_i0_brp_bits_br_error,
-  output        io_i0_brp_bits_br_start_error,
-  output        io_i0_brp_bits_bank,
-  output [30:0] io_i0_brp_bits_prett,
-  output        io_i0_brp_bits_way,
-  output        io_i0_brp_bits_ret,
+  output [11:0] io_i0_brp_toffset,
+  output [1:0]  io_i0_brp_hist,
+  output        io_i0_brp_br_error,
+  output        io_i0_brp_br_start_error,
+  output        io_i0_brp_bank,
+  output [30:0] io_i0_brp_prett,
+  output        io_i0_brp_way,
+  output        io_i0_brp_ret,
   output [7:0]  io_ifu_i0_bp_index,
   output [7:0]  io_ifu_i0_bp_fghr,
   output [4:0]  io_ifu_i0_bp_btag,
@@ -44505,11 +44505,11 @@ module el2_ifu(
   input  [7:0]  io_exu_mp_index,
   input  [4:0]  io_exu_mp_btag,
   input         io_dec_tlu_br0_r_pkt_valid,
-  input  [1:0]  io_dec_tlu_br0_r_pkt_bits_hist,
-  input         io_dec_tlu_br0_r_pkt_bits_br_error,
-  input         io_dec_tlu_br0_r_pkt_bits_br_start_error,
-  input         io_dec_tlu_br0_r_pkt_bits_way,
-  input         io_dec_tlu_br0_r_pkt_bits_middle,
+  input  [1:0]  io_dec_tlu_br0_r_pkt_hist,
+  input         io_dec_tlu_br0_r_pkt_br_error,
+  input         io_dec_tlu_br0_r_pkt_br_start_error,
+  input         io_dec_tlu_br0_r_pkt_way,
+  input         io_dec_tlu_br0_r_pkt_middle,
   input  [7:0]  io_exu_i0_br_fghr_r,
   input  [7:0]  io_exu_i0_br_index_r,
   input         io_dec_tlu_flush_lower_wb,
@@ -44628,11 +44628,11 @@ module el2_ifu(
   wire [30:0] bp_ctl_ch_io_ifc_fetch_addr_f; // @[el2_ifu.scala 147:25]
   wire  bp_ctl_ch_io_ifc_fetch_req_f; // @[el2_ifu.scala 147:25]
   wire  bp_ctl_ch_io_dec_tlu_br0_r_pkt_valid; // @[el2_ifu.scala 147:25]
-  wire [1:0] bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_hist; // @[el2_ifu.scala 147:25]
-  wire  bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_br_error; // @[el2_ifu.scala 147:25]
-  wire  bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_br_start_error; // @[el2_ifu.scala 147:25]
-  wire  bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_way; // @[el2_ifu.scala 147:25]
-  wire  bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_middle; // @[el2_ifu.scala 147:25]
+  wire [1:0] bp_ctl_ch_io_dec_tlu_br0_r_pkt_hist; // @[el2_ifu.scala 147:25]
+  wire  bp_ctl_ch_io_dec_tlu_br0_r_pkt_br_error; // @[el2_ifu.scala 147:25]
+  wire  bp_ctl_ch_io_dec_tlu_br0_r_pkt_br_start_error; // @[el2_ifu.scala 147:25]
+  wire  bp_ctl_ch_io_dec_tlu_br0_r_pkt_way; // @[el2_ifu.scala 147:25]
+  wire  bp_ctl_ch_io_dec_tlu_br0_r_pkt_middle; // @[el2_ifu.scala 147:25]
   wire [7:0] bp_ctl_ch_io_exu_i0_br_fghr_r; // @[el2_ifu.scala 147:25]
   wire [7:0] bp_ctl_ch_io_exu_i0_br_index_r; // @[el2_ifu.scala 147:25]
   wire  bp_ctl_ch_io_dec_tlu_flush_lower_wb; // @[el2_ifu.scala 147:25]
@@ -44703,14 +44703,14 @@ module el2_ifu(
   wire  aln_ctl_ch_io_ifu_pmu_instr_aligned; // @[el2_ifu.scala 148:26]
   wire [15:0] aln_ctl_ch_io_ifu_i0_cinst; // @[el2_ifu.scala 148:26]
   wire  aln_ctl_ch_io_i0_brp_valid; // @[el2_ifu.scala 148:26]
-  wire [11:0] aln_ctl_ch_io_i0_brp_bits_toffset; // @[el2_ifu.scala 148:26]
-  wire [1:0] aln_ctl_ch_io_i0_brp_bits_hist; // @[el2_ifu.scala 148:26]
-  wire  aln_ctl_ch_io_i0_brp_bits_br_error; // @[el2_ifu.scala 148:26]
-  wire  aln_ctl_ch_io_i0_brp_bits_br_start_error; // @[el2_ifu.scala 148:26]
-  wire  aln_ctl_ch_io_i0_brp_bits_bank; // @[el2_ifu.scala 148:26]
-  wire [30:0] aln_ctl_ch_io_i0_brp_bits_prett; // @[el2_ifu.scala 148:26]
-  wire  aln_ctl_ch_io_i0_brp_bits_way; // @[el2_ifu.scala 148:26]
-  wire  aln_ctl_ch_io_i0_brp_bits_ret; // @[el2_ifu.scala 148:26]
+  wire [11:0] aln_ctl_ch_io_i0_brp_toffset; // @[el2_ifu.scala 148:26]
+  wire [1:0] aln_ctl_ch_io_i0_brp_hist; // @[el2_ifu.scala 148:26]
+  wire  aln_ctl_ch_io_i0_brp_br_error; // @[el2_ifu.scala 148:26]
+  wire  aln_ctl_ch_io_i0_brp_br_start_error; // @[el2_ifu.scala 148:26]
+  wire  aln_ctl_ch_io_i0_brp_bank; // @[el2_ifu.scala 148:26]
+  wire [30:0] aln_ctl_ch_io_i0_brp_prett; // @[el2_ifu.scala 148:26]
+  wire  aln_ctl_ch_io_i0_brp_way; // @[el2_ifu.scala 148:26]
+  wire  aln_ctl_ch_io_i0_brp_ret; // @[el2_ifu.scala 148:26]
   wire  ifc_ctl_ch_clock; // @[el2_ifu.scala 149:26]
   wire  ifc_ctl_ch_reset; // @[el2_ifu.scala 149:26]
   wire  ifc_ctl_ch_io_free_clk; // @[el2_ifu.scala 149:26]
@@ -44847,11 +44847,11 @@ module el2_ifu(
     .io_ifc_fetch_addr_f(bp_ctl_ch_io_ifc_fetch_addr_f),
     .io_ifc_fetch_req_f(bp_ctl_ch_io_ifc_fetch_req_f),
     .io_dec_tlu_br0_r_pkt_valid(bp_ctl_ch_io_dec_tlu_br0_r_pkt_valid),
-    .io_dec_tlu_br0_r_pkt_bits_hist(bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_hist),
-    .io_dec_tlu_br0_r_pkt_bits_br_error(bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_br_error),
-    .io_dec_tlu_br0_r_pkt_bits_br_start_error(bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_br_start_error),
-    .io_dec_tlu_br0_r_pkt_bits_way(bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_way),
-    .io_dec_tlu_br0_r_pkt_bits_middle(bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_middle),
+    .io_dec_tlu_br0_r_pkt_hist(bp_ctl_ch_io_dec_tlu_br0_r_pkt_hist),
+    .io_dec_tlu_br0_r_pkt_br_error(bp_ctl_ch_io_dec_tlu_br0_r_pkt_br_error),
+    .io_dec_tlu_br0_r_pkt_br_start_error(bp_ctl_ch_io_dec_tlu_br0_r_pkt_br_start_error),
+    .io_dec_tlu_br0_r_pkt_way(bp_ctl_ch_io_dec_tlu_br0_r_pkt_way),
+    .io_dec_tlu_br0_r_pkt_middle(bp_ctl_ch_io_dec_tlu_br0_r_pkt_middle),
     .io_exu_i0_br_fghr_r(bp_ctl_ch_io_exu_i0_br_fghr_r),
     .io_exu_i0_br_index_r(bp_ctl_ch_io_exu_i0_br_index_r),
     .io_dec_tlu_flush_lower_wb(bp_ctl_ch_io_dec_tlu_flush_lower_wb),
@@ -44924,14 +44924,14 @@ module el2_ifu(
     .io_ifu_pmu_instr_aligned(aln_ctl_ch_io_ifu_pmu_instr_aligned),
     .io_ifu_i0_cinst(aln_ctl_ch_io_ifu_i0_cinst),
     .io_i0_brp_valid(aln_ctl_ch_io_i0_brp_valid),
-    .io_i0_brp_bits_toffset(aln_ctl_ch_io_i0_brp_bits_toffset),
-    .io_i0_brp_bits_hist(aln_ctl_ch_io_i0_brp_bits_hist),
-    .io_i0_brp_bits_br_error(aln_ctl_ch_io_i0_brp_bits_br_error),
-    .io_i0_brp_bits_br_start_error(aln_ctl_ch_io_i0_brp_bits_br_start_error),
-    .io_i0_brp_bits_bank(aln_ctl_ch_io_i0_brp_bits_bank),
-    .io_i0_brp_bits_prett(aln_ctl_ch_io_i0_brp_bits_prett),
-    .io_i0_brp_bits_way(aln_ctl_ch_io_i0_brp_bits_way),
-    .io_i0_brp_bits_ret(aln_ctl_ch_io_i0_brp_bits_ret)
+    .io_i0_brp_toffset(aln_ctl_ch_io_i0_brp_toffset),
+    .io_i0_brp_hist(aln_ctl_ch_io_i0_brp_hist),
+    .io_i0_brp_br_error(aln_ctl_ch_io_i0_brp_br_error),
+    .io_i0_brp_br_start_error(aln_ctl_ch_io_i0_brp_br_start_error),
+    .io_i0_brp_bank(aln_ctl_ch_io_i0_brp_bank),
+    .io_i0_brp_prett(aln_ctl_ch_io_i0_brp_prett),
+    .io_i0_brp_way(aln_ctl_ch_io_i0_brp_way),
+    .io_i0_brp_ret(aln_ctl_ch_io_i0_brp_ret)
   );
   el2_ifu_ifc_ctl ifc_ctl_ch ( // @[el2_ifu.scala 149:26]
     .clock(ifc_ctl_ch_clock),
@@ -45036,14 +45036,14 @@ module el2_ifu(
   assign io_ifu_i0_pc4 = aln_ctl_ch_io_ifu_i0_pc4; // @[el2_ifu.scala 328:17]
   assign io_ifu_miss_state_idle = mem_ctl_ch_io_ifu_miss_state_idle; // @[el2_ifu.scala 329:26]
   assign io_i0_brp_valid = aln_ctl_ch_io_i0_brp_valid; // @[el2_ifu.scala 331:13]
-  assign io_i0_brp_bits_toffset = aln_ctl_ch_io_i0_brp_bits_toffset; // @[el2_ifu.scala 331:13]
-  assign io_i0_brp_bits_hist = aln_ctl_ch_io_i0_brp_bits_hist; // @[el2_ifu.scala 331:13]
-  assign io_i0_brp_bits_br_error = aln_ctl_ch_io_i0_brp_bits_br_error; // @[el2_ifu.scala 331:13]
-  assign io_i0_brp_bits_br_start_error = aln_ctl_ch_io_i0_brp_bits_br_start_error; // @[el2_ifu.scala 331:13]
-  assign io_i0_brp_bits_bank = aln_ctl_ch_io_i0_brp_bits_bank; // @[el2_ifu.scala 331:13]
-  assign io_i0_brp_bits_prett = aln_ctl_ch_io_i0_brp_bits_prett; // @[el2_ifu.scala 331:13]
-  assign io_i0_brp_bits_way = aln_ctl_ch_io_i0_brp_bits_way; // @[el2_ifu.scala 331:13]
-  assign io_i0_brp_bits_ret = aln_ctl_ch_io_i0_brp_bits_ret; // @[el2_ifu.scala 331:13]
+  assign io_i0_brp_toffset = aln_ctl_ch_io_i0_brp_toffset; // @[el2_ifu.scala 331:13]
+  assign io_i0_brp_hist = aln_ctl_ch_io_i0_brp_hist; // @[el2_ifu.scala 331:13]
+  assign io_i0_brp_br_error = aln_ctl_ch_io_i0_brp_br_error; // @[el2_ifu.scala 331:13]
+  assign io_i0_brp_br_start_error = aln_ctl_ch_io_i0_brp_br_start_error; // @[el2_ifu.scala 331:13]
+  assign io_i0_brp_bank = aln_ctl_ch_io_i0_brp_bank; // @[el2_ifu.scala 331:13]
+  assign io_i0_brp_prett = aln_ctl_ch_io_i0_brp_prett; // @[el2_ifu.scala 331:13]
+  assign io_i0_brp_way = aln_ctl_ch_io_i0_brp_way; // @[el2_ifu.scala 331:13]
+  assign io_i0_brp_ret = aln_ctl_ch_io_i0_brp_ret; // @[el2_ifu.scala 331:13]
   assign io_ifu_i0_bp_index = aln_ctl_ch_io_ifu_i0_bp_index; // @[el2_ifu.scala 332:22]
   assign io_ifu_i0_bp_fghr = aln_ctl_ch_io_ifu_i0_bp_fghr; // @[el2_ifu.scala 333:21]
   assign io_ifu_i0_bp_btag = aln_ctl_ch_io_ifu_i0_bp_btag; // @[el2_ifu.scala 334:21]
@@ -45104,11 +45104,11 @@ module el2_ifu(
   assign bp_ctl_ch_io_ifc_fetch_addr_f = ifc_ctl_ch_io_ifc_fetch_addr_f; // @[el2_ifu.scala 196:33]
   assign bp_ctl_ch_io_ifc_fetch_req_f = ifc_ctl_ch_io_ifc_fetch_req_f; // @[el2_ifu.scala 197:32]
   assign bp_ctl_ch_io_dec_tlu_br0_r_pkt_valid = io_dec_tlu_br0_r_pkt_valid; // @[el2_ifu.scala 198:34]
-  assign bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_hist = io_dec_tlu_br0_r_pkt_bits_hist; // @[el2_ifu.scala 198:34]
-  assign bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_br_error = io_dec_tlu_br0_r_pkt_bits_br_error; // @[el2_ifu.scala 198:34]
-  assign bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_br_start_error = io_dec_tlu_br0_r_pkt_bits_br_start_error; // @[el2_ifu.scala 198:34]
-  assign bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_way = io_dec_tlu_br0_r_pkt_bits_way; // @[el2_ifu.scala 198:34]
-  assign bp_ctl_ch_io_dec_tlu_br0_r_pkt_bits_middle = io_dec_tlu_br0_r_pkt_bits_middle; // @[el2_ifu.scala 198:34]
+  assign bp_ctl_ch_io_dec_tlu_br0_r_pkt_hist = io_dec_tlu_br0_r_pkt_hist; // @[el2_ifu.scala 198:34]
+  assign bp_ctl_ch_io_dec_tlu_br0_r_pkt_br_error = io_dec_tlu_br0_r_pkt_br_error; // @[el2_ifu.scala 198:34]
+  assign bp_ctl_ch_io_dec_tlu_br0_r_pkt_br_start_error = io_dec_tlu_br0_r_pkt_br_start_error; // @[el2_ifu.scala 198:34]
+  assign bp_ctl_ch_io_dec_tlu_br0_r_pkt_way = io_dec_tlu_br0_r_pkt_way; // @[el2_ifu.scala 198:34]
+  assign bp_ctl_ch_io_dec_tlu_br0_r_pkt_middle = io_dec_tlu_br0_r_pkt_middle; // @[el2_ifu.scala 198:34]
   assign bp_ctl_ch_io_exu_i0_br_fghr_r = io_exu_i0_br_fghr_r; // @[el2_ifu.scala 199:33]
   assign bp_ctl_ch_io_exu_i0_br_index_r = io_exu_i0_br_index_r; // @[el2_ifu.scala 200:34]
   assign bp_ctl_ch_io_dec_tlu_flush_lower_wb = io_dec_tlu_flush_lower_wb; // @[el2_ifu.scala 201:39]

@@ -17,7 +17,7 @@ class el2_lsu_trigger extends Module with RequireAsyncReset with el2_lib {
   val lsu_match_data = (0 until 4).map(i=>Mux1H(Seq(!io.trigger_pkt_any(i).select.asBool->io.lsu_addr_m, (io.trigger_pkt_any(i).select & io.trigger_pkt_any(i).store).asBool->store_data_trigger_m)))
   io.lsu_trigger_match_m :=  (0 until 4).map(i =>io.lsu_pkt_m.valid & !io.lsu_pkt_m.bits.dma & ((io.trigger_pkt_any(i).store & io.lsu_pkt_m.bits.store)|
     (io.trigger_pkt_any(i).load & io.lsu_pkt_m.bits.load & !io.trigger_pkt_any(i).select) )&
-    rvmaskandmatch(io.trigger_pkt_any(i).tdata2, lsu_match_data(i), io.trigger_pkt_any(i).match_.asBool())).reverse.reduce(Cat(_,_))
+    rvmaskandmatch(io.trigger_pkt_any(i).tdata2, lsu_match_data(i), io.trigger_pkt_any(i).match_pkt.asBool())).reverse.reduce(Cat(_,_))
 
 }
 

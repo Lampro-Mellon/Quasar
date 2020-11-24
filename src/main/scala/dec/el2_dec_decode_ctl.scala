@@ -35,7 +35,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     val dec_i0_icaf_f1_d           =   Input(Bool())            // i0 instruction access fault at decode for f1 fetch group
     val dec_i0_icaf_type_d         =   Input(UInt(2.W))      // i0 instruction access fault type
     val dec_i0_dbecc_d             =   Input(Bool())            // icache/iccm double-bit error
-    val dec_i0_brp                 =   Flipped(Valid(new el2_br_pkt_t))          // branch packet
+    val dec_i0_brp                 =   Input(new el2_br_pkt_t)          // branch packet
     val dec_i0_bp_index            =   Input(UInt(((BTB_ADDR_HI-BTB_ADDR_LO)+1).W))    // i0 branch index
     val dec_i0_bp_fghr             =   Input(UInt(BHT_GHR_SIZE.W))   // BP FGHR
     val dec_i0_bp_btag             =   Input(UInt(BTB_BTAG_SIZE.W))   // BP tag
@@ -144,13 +144,13 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val i0_rs1_depth_d = WireInit(UInt(2.W),0.U)
   val i0_rs2_depth_d = WireInit(UInt(2.W),0.U)
   val cam_wen=WireInit(UInt(LSU_NUM_NBLOAD.W), 0.U)
-  val cam = Wire(Vec(LSU_NUM_NBLOAD,Valid(new el2_load_cam_pkt_t)))
+  val cam = Wire(Vec(LSU_NUM_NBLOAD,new el2_load_cam_pkt_t))
   val cam_write=WireInit(UInt(1.W), 0.U)
   val cam_inv_reset_val=Wire(Vec(LSU_NUM_NBLOAD,UInt(1.W)))
   val cam_data_reset_val=Wire(Vec(LSU_NUM_NBLOAD,UInt(1.W)))
   val nonblock_load_write=Wire(Vec(LSU_NUM_NBLOAD,UInt(1.W)))
-  val cam_raw =Wire(Vec(LSU_NUM_NBLOAD,Valid(new el2_load_cam_pkt_t)))
-  val cam_in  =Wire(Vec(LSU_NUM_NBLOAD,Valid(new el2_load_cam_pkt_t)))
+  val cam_raw =Wire(Vec(LSU_NUM_NBLOAD,new el2_load_cam_pkt_t))
+  val cam_in  =Wire(Vec(LSU_NUM_NBLOAD,new el2_load_cam_pkt_t))
   //val i0_temp = Wire(new el2_inst_pkt_t)
   val i0_dp= Wire(new el2_dec_pkt_t)
   val i0_dp_raw= Wire(new el2_dec_pkt_t)
@@ -230,24 +230,24 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   io.dec_i0_predict_p_d.bits.pcall        :=  i0_pcall  // don't mark as pcall if branch error
   io.dec_i0_predict_p_d.bits.pja          :=  i0_pja
   io.dec_i0_predict_p_d.bits.pret         :=  i0_pret
-  io.dec_i0_predict_p_d.bits.prett        :=  io.dec_i0_brp.bits.prett
+  io.dec_i0_predict_p_d.bits.prett        :=  io.dec_i0_brp.prett
   io.dec_i0_predict_p_d.bits.pc4          :=  io.dec_i0_pc4_d
-  io.dec_i0_predict_p_d.bits.hist         :=  io.dec_i0_brp.bits.hist
+  io.dec_i0_predict_p_d.bits.hist         :=  io.dec_i0_brp.hist
   io.dec_i0_predict_p_d.valid        :=  i0_brp_valid & i0_legal_decode_d
   val i0_notbr_error                 =  i0_brp_valid & !(i0_dp_raw.condbr | i0_pcall_raw | i0_pja_raw | i0_pret_raw)
 
   // no toffset error for a pret
-  val i0_br_toffset_error     =  i0_brp_valid & io.dec_i0_brp.bits.hist(1) & (io.dec_i0_brp.bits.toffset =/= i0_br_offset) & !i0_pret_raw
-  val i0_ret_error            =  i0_brp_valid & io.dec_i0_brp.bits.ret & !i0_pret_raw;
-  val i0_br_error             =  io.dec_i0_brp.bits.br_error | i0_notbr_error | i0_br_toffset_error | i0_ret_error
+  val i0_br_toffset_error     =  i0_brp_valid & io.dec_i0_brp.hist(1) & (io.dec_i0_brp.toffset =/= i0_br_offset) & !i0_pret_raw
+  val i0_ret_error            =  i0_brp_valid & io.dec_i0_brp.ret & !i0_pret_raw;
+  val i0_br_error             =  io.dec_i0_brp.br_error | i0_notbr_error | i0_br_toffset_error | i0_ret_error
   io.dec_i0_predict_p_d.bits.br_error                  :=  i0_br_error & i0_legal_decode_d & !leak1_mode
-  io.dec_i0_predict_p_d.bits.br_start_error            :=  io.dec_i0_brp.bits.br_start_error & i0_legal_decode_d & !leak1_mode
+  io.dec_i0_predict_p_d.bits.br_start_error            :=  io.dec_i0_brp.br_start_error & i0_legal_decode_d & !leak1_mode
   io.i0_predict_index_d        :=  io.dec_i0_bp_index
   io.i0_predict_btag_d         :=  io.dec_i0_bp_btag
-  val i0_br_error_all          = (i0_br_error | io.dec_i0_brp.bits.br_start_error) & !leak1_mode
+  val i0_br_error_all          = (i0_br_error | io.dec_i0_brp.br_start_error) & !leak1_mode
   io.dec_i0_predict_p_d.bits.toffset            :=  i0_br_offset
   io.i0_predict_fghr_d         :=  io.dec_i0_bp_fghr
-  io.dec_i0_predict_p_d.bits.way                       :=  io.dec_i0_brp.bits.way
+  io.dec_i0_predict_p_d.bits.way                       :=  io.dec_i0_brp.way
   //   end
 
   // on br error turn anything into a nop
@@ -273,8 +273,8 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   // branches that can be predicted
   val i0_predict_br  =  i0_dp.condbr | i0_pcall | i0_pja | i0_pret;
 
-  val i0_predict_nt    = !(io.dec_i0_brp.bits.hist(1) & i0_brp_valid) & i0_predict_br
-  val i0_predict_t     =  (io.dec_i0_brp.bits.hist(1) & i0_brp_valid) & i0_predict_br
+  val i0_predict_nt    = !(io.dec_i0_brp.hist(1) & i0_brp_valid) & i0_predict_br
+  val i0_predict_t     =  (io.dec_i0_brp.hist(1) & i0_brp_valid) & i0_predict_br
   val i0_ap_pc2  = !io.dec_i0_pc4_d
   val i0_ap_pc4  =  io.dec_i0_pc4_d
   io.i0_ap.predict_nt    := i0_predict_nt
@@ -318,8 +318,8 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val nonblock_load_valid_m_delay=withClock(io.active_clk){RegEnable(io.lsu_nonblock_load_valid_m,0.U, i0_r_ctl_en.asBool)}
   val i0_load_kill_wen_r = nonblock_load_valid_m_delay &  r_d.i0load
   for(i <- 0 until  LSU_NUM_NBLOAD){
-    cam_inv_reset_val(i) := cam_inv_reset   & (cam_inv_reset_tag === cam(i).bits.tag) & cam(i).valid
-    cam_data_reset_val(i) := cam_data_reset & (cam_data_reset_tag === cam(i).bits.tag) & cam_raw(i).valid
+    cam_inv_reset_val(i) := cam_inv_reset   & (cam_inv_reset_tag === cam(i).tag) & cam(i).valid
+    cam_data_reset_val(i) := cam_data_reset & (cam_data_reset_tag === cam(i).tag) & cam_raw(i).valid
     cam_in(i):=0.U.asTypeOf(cam(0))
     cam(i):=cam_raw(i)
 
@@ -328,16 +328,16 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     }
     when(cam_wen(i).asBool){
       cam_in(i).valid     := 1.U(1.W)
-      cam_in(i).bits.wb        := 0.U(1.W)
-      cam_in(i).bits.tag       := cam_write_tag
-      cam_in(i).bits.rd        := nonblock_load_rd
-    }.elsewhen(cam_inv_reset_val(i).asBool || (i0_wen_r.asBool && (r_d_in.i0rd === cam(i).bits.rd) && cam(i).bits.wb.asBool)){
+      cam_in(i).wb        := 0.U(1.W)
+      cam_in(i).tag       := cam_write_tag
+      cam_in(i).rd        := nonblock_load_rd
+    }.elsewhen(cam_inv_reset_val(i).asBool || (i0_wen_r.asBool && (r_d_in.i0rd === cam(i).rd) && cam(i).wb.asBool)){
       cam_in(i).valid := 0.U
     }.otherwise{
       cam_in(i)      := cam(i)
     }
-    when(nonblock_load_valid_m_delay===1.U && (io.lsu_nonblock_load_inv_tag_r === cam(i).bits.tag) && cam(i).valid===1.U){
-      cam_in(i).bits.wb := 1.U
+    when(nonblock_load_valid_m_delay===1.U && (io.lsu_nonblock_load_inv_tag_r === cam(i).tag) && cam(i).valid===1.U){
+      cam_in(i).wb := 1.U
     }
     // force debug halt forces cam valids to 0; highest priority
     when(io.dec_tlu_force_halt){
@@ -345,7 +345,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     }
 
     cam_raw(i):=withClock(io.free_clk){RegNext(cam_in(i),0.U.asTypeOf(cam(0)))}
-    nonblock_load_write(i) := (load_data_tag === cam_raw(i).bits.tag) & cam_raw(i).valid
+    nonblock_load_write(i) := (load_data_tag === cam_raw(i).tag) & cam_raw(i).valid
   }
 
   io.dec_nonblock_load_waddr:=0.U(5.W)
@@ -356,7 +356,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
 
   i0_nonblock_load_stall := i0_nonblock_boundary_stall
 
-  val cal_temp= for(i <-0 until LSU_NUM_NBLOAD) yield ((Fill(5,nonblock_load_write(i)) & cam(i).bits.rd), io.dec_i0_rs1_en_d & cam(i).valid & (cam(i).bits.rd === i0r.rs1), io.dec_i0_rs2_en_d & cam(i).valid & (cam(i).bits.rd === i0r.rs2))
+  val cal_temp= for(i <-0 until LSU_NUM_NBLOAD) yield ((Fill(5,nonblock_load_write(i)) & cam(i).rd), io.dec_i0_rs1_en_d & cam(i).valid & (cam(i).rd === i0r.rs1), io.dec_i0_rs2_en_d & cam(i).valid & (cam(i).rd === i0r.rs2))
   val (waddr, ld_stall_1, ld_stall_2) = (cal_temp.map(_._1).reduce(_|_) , cal_temp.map(_._2).reduce(_|_), cal_temp.map(_._3).reduce(_|_) )
   io.dec_nonblock_load_waddr:=waddr
   i0_nonblock_load_stall:=ld_stall_1 | ld_stall_2 | i0_nonblock_boundary_stall
@@ -819,6 +819,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     (!io.dec_extint_stall & i0_dp.lsu & i0_dp.load).asBool  ->     i0(31,20),
     (!io.dec_extint_stall & i0_dp.lsu & i0_dp.store).asBool ->     Cat(i0(31,25),i0(11,7))))
 }
-object decode_ctrl extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_dec_decode_ctl()))
+
+object dec_decode extends App{
+  chisel3.Driver.emitVerilog(new el2_dec_decode_ctl)
 }

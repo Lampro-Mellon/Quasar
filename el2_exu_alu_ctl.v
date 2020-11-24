@@ -50,20 +50,20 @@ module el2_exu_alu_ctl(
   input  [31:0] io_a_in,
   input  [31:0] io_b_in,
   input  [30:0] io_pc_in,
-  input         io_pp_in_misp,
-  input         io_pp_in_ataken,
-  input         io_pp_in_boffset,
-  input         io_pp_in_pc4,
-  input  [1:0]  io_pp_in_hist,
-  input  [11:0] io_pp_in_toffset,
   input         io_pp_in_valid,
-  input         io_pp_in_br_error,
-  input         io_pp_in_br_start_error,
-  input  [30:0] io_pp_in_prett,
-  input         io_pp_in_pcall,
-  input         io_pp_in_pret,
-  input         io_pp_in_pja,
-  input         io_pp_in_way,
+  input         io_pp_in_bits_misp,
+  input         io_pp_in_bits_ataken,
+  input         io_pp_in_bits_boffset,
+  input         io_pp_in_bits_pc4,
+  input  [1:0]  io_pp_in_bits_hist,
+  input  [11:0] io_pp_in_bits_toffset,
+  input         io_pp_in_bits_br_error,
+  input         io_pp_in_bits_br_start_error,
+  input  [30:0] io_pp_in_bits_prett,
+  input         io_pp_in_bits_pcall,
+  input         io_pp_in_bits_pret,
+  input         io_pp_in_bits_pja,
+  input         io_pp_in_bits_way,
   input  [11:0] io_brimm_in,
   output [31:0] io_result_ff,
   output        io_flush_upper_out,
@@ -71,20 +71,20 @@ module el2_exu_alu_ctl(
   output [30:0] io_flush_path_out,
   output [30:0] io_pc_ff,
   output        io_pred_correct_out,
-  output        io_predict_p_out_misp,
-  output        io_predict_p_out_ataken,
-  output        io_predict_p_out_boffset,
-  output        io_predict_p_out_pc4,
-  output [1:0]  io_predict_p_out_hist,
-  output [11:0] io_predict_p_out_toffset,
   output        io_predict_p_out_valid,
-  output        io_predict_p_out_br_error,
-  output        io_predict_p_out_br_start_error,
-  output [30:0] io_predict_p_out_prett,
-  output        io_predict_p_out_pcall,
-  output        io_predict_p_out_pret,
-  output        io_predict_p_out_pja,
-  output        io_predict_p_out_way
+  output        io_predict_p_out_bits_misp,
+  output        io_predict_p_out_bits_ataken,
+  output        io_predict_p_out_bits_boffset,
+  output        io_predict_p_out_bits_pc4,
+  output [1:0]  io_predict_p_out_bits_hist,
+  output [11:0] io_predict_p_out_bits_toffset,
+  output        io_predict_p_out_bits_br_error,
+  output        io_predict_p_out_bits_br_start_error,
+  output [30:0] io_predict_p_out_bits_prett,
+  output        io_predict_p_out_bits_pcall,
+  output        io_predict_p_out_bits_pret,
+  output        io_predict_p_out_bits_pja,
+  output        io_predict_p_out_bits_way
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -172,9 +172,9 @@ module el2_exu_alu_ctl(
   wire  _T_211 = io_ap_add | io_ap_sub; // @[el2_exu_alu_ctl.scala 78:41]
   wire  _T_212 = ~io_ap_slt; // @[el2_exu_alu_ctl.scala 78:56]
   wire  sel_adder = _T_211 & _T_212; // @[el2_exu_alu_ctl.scala 78:54]
-  wire  _T_213 = io_ap_jal | io_pp_in_pcall; // @[el2_exu_alu_ctl.scala 79:41]
-  wire  _T_214 = _T_213 | io_pp_in_pja; // @[el2_exu_alu_ctl.scala 79:58]
-  wire  sel_pc = _T_214 | io_pp_in_pret; // @[el2_exu_alu_ctl.scala 79:73]
+  wire  _T_213 = io_ap_jal | io_pp_in_bits_pcall; // @[el2_exu_alu_ctl.scala 79:41]
+  wire  _T_214 = _T_213 | io_pp_in_bits_pja; // @[el2_exu_alu_ctl.scala 79:63]
+  wire  sel_pc = _T_214 | io_pp_in_bits_pret; // @[el2_exu_alu_ctl.scala 79:83]
   wire  slt_one = io_ap_slt & lt; // @[el2_exu_alu_ctl.scala 82:40]
   wire [31:0] _T_217 = {io_pc_in,1'h0}; // @[Cat.scala 29:58]
   wire [12:0] _T_218 = {io_brimm_in,1'h0}; // @[Cat.scala 29:58]
@@ -183,9 +183,9 @@ module el2_exu_alu_ctl(
   wire [18:0] _T_227 = _T_217[31:13] - 19'h1; // @[el2_lib.scala 210:27]
   wire  _T_230 = ~_T_221[12]; // @[el2_lib.scala 212:28]
   wire  _T_231 = _T_218[12] ^ _T_230; // @[el2_lib.scala 212:26]
-  wire  _T_234 = ~_T_218[12]; // @[el2_lib.scala 213:8]
-  wire  _T_236 = _T_234 & _T_221[12]; // @[el2_lib.scala 213:14]
-  wire  _T_240 = _T_218[12] & _T_230; // @[el2_lib.scala 214:14]
+  wire  _T_234 = ~_T_218[12]; // @[el2_lib.scala 213:20]
+  wire  _T_236 = _T_234 & _T_221[12]; // @[el2_lib.scala 213:26]
+  wire  _T_240 = _T_218[12] & _T_230; // @[el2_lib.scala 214:26]
   wire [18:0] _T_242 = _T_231 ? _T_217[31:13] : 19'h0; // @[Mux.scala 27:72]
   wire [18:0] _T_243 = _T_236 ? _T_224 : 19'h0; // @[Mux.scala 27:72]
   wire [18:0] _T_244 = _T_240 ? _T_227 : 19'h0; // @[Mux.scala 27:72]
@@ -222,24 +222,24 @@ module el2_exu_alu_ctl(
   wire  _T_293 = io_ap_predict_t & _T_279; // @[el2_exu_alu_ctl.scala 111:45]
   wire  _T_294 = io_ap_predict_nt & actual_taken; // @[el2_exu_alu_ctl.scala 111:82]
   wire  cond_mispredict = _T_293 | _T_294; // @[el2_exu_alu_ctl.scala 111:62]
-  wire  _T_296 = io_pp_in_prett != aout[31:1]; // @[el2_exu_alu_ctl.scala 114:62]
-  wire  target_mispredict = io_pp_in_pret & _T_296; // @[el2_exu_alu_ctl.scala 114:44]
+  wire  _T_296 = io_pp_in_bits_prett != aout[31:1]; // @[el2_exu_alu_ctl.scala 114:72]
+  wire  target_mispredict = io_pp_in_bits_pret & _T_296; // @[el2_exu_alu_ctl.scala 114:49]
   wire  _T_297 = io_ap_jal | cond_mispredict; // @[el2_exu_alu_ctl.scala 116:42]
   wire  _T_298 = _T_297 | target_mispredict; // @[el2_exu_alu_ctl.scala 116:60]
   wire  _T_299 = _T_298 & io_valid_in; // @[el2_exu_alu_ctl.scala 116:81]
   wire  _T_300 = ~io_flush_upper_x; // @[el2_exu_alu_ctl.scala 116:97]
   wire  _T_301 = _T_299 & _T_300; // @[el2_exu_alu_ctl.scala 116:95]
   wire  _T_302 = ~io_flush_lower_r; // @[el2_exu_alu_ctl.scala 116:119]
-  wire  _T_312 = io_pp_in_hist[1] & io_pp_in_hist[0]; // @[el2_exu_alu_ctl.scala 122:39]
-  wire  _T_314 = ~io_pp_in_hist[0]; // @[el2_exu_alu_ctl.scala 122:63]
-  wire  _T_315 = _T_314 & actual_taken; // @[el2_exu_alu_ctl.scala 122:81]
-  wire  _T_316 = _T_312 | _T_315; // @[el2_exu_alu_ctl.scala 122:60]
-  wire  _T_318 = ~io_pp_in_hist[1]; // @[el2_exu_alu_ctl.scala 123:6]
-  wire  _T_320 = _T_318 & _T_279; // @[el2_exu_alu_ctl.scala 123:24]
-  wire  _T_322 = io_pp_in_hist[1] & actual_taken; // @[el2_exu_alu_ctl.scala 123:62]
-  wire  _T_323 = _T_320 | _T_322; // @[el2_exu_alu_ctl.scala 123:42]
-  wire  _T_327 = _T_300 & _T_302; // @[el2_exu_alu_ctl.scala 126:51]
-  wire  _T_328 = cond_mispredict | target_mispredict; // @[el2_exu_alu_ctl.scala 126:90]
+  wire  _T_312 = io_pp_in_bits_hist[1] & io_pp_in_bits_hist[0]; // @[el2_exu_alu_ctl.scala 122:44]
+  wire  _T_314 = ~io_pp_in_bits_hist[0]; // @[el2_exu_alu_ctl.scala 122:73]
+  wire  _T_315 = _T_314 & actual_taken; // @[el2_exu_alu_ctl.scala 122:96]
+  wire  _T_316 = _T_312 | _T_315; // @[el2_exu_alu_ctl.scala 122:70]
+  wire  _T_318 = ~io_pp_in_bits_hist[1]; // @[el2_exu_alu_ctl.scala 123:6]
+  wire  _T_320 = _T_318 & _T_279; // @[el2_exu_alu_ctl.scala 123:29]
+  wire  _T_322 = io_pp_in_bits_hist[1] & actual_taken; // @[el2_exu_alu_ctl.scala 123:72]
+  wire  _T_323 = _T_320 | _T_322; // @[el2_exu_alu_ctl.scala 123:47]
+  wire  _T_327 = _T_300 & _T_302; // @[el2_exu_alu_ctl.scala 126:56]
+  wire  _T_328 = cond_mispredict | target_mispredict; // @[el2_exu_alu_ctl.scala 126:95]
   rvclkhdr rvclkhdr ( // @[el2_lib.scala 508:23]
     .io_l1clk(rvclkhdr_io_l1clk),
     .io_clk(rvclkhdr_io_clk),
@@ -258,20 +258,20 @@ module el2_exu_alu_ctl(
   assign io_flush_path_out = sel_pc ? aout[31:1] : pcout[31:1]; // @[el2_exu_alu_ctl.scala 108:22]
   assign io_pc_ff = _T_1; // @[el2_exu_alu_ctl.scala 35:12]
   assign io_pred_correct_out = _T_282 | _T_286; // @[el2_exu_alu_ctl.scala 106:26]
-  assign io_predict_p_out_misp = _T_327 & _T_328; // @[el2_exu_alu_ctl.scala 125:30 el2_exu_alu_ctl.scala 126:30]
-  assign io_predict_p_out_ataken = _T_277 | sel_pc; // @[el2_exu_alu_ctl.scala 125:30 el2_exu_alu_ctl.scala 127:30]
-  assign io_predict_p_out_boffset = io_pp_in_boffset; // @[el2_exu_alu_ctl.scala 125:30]
-  assign io_predict_p_out_pc4 = io_pp_in_pc4; // @[el2_exu_alu_ctl.scala 125:30]
-  assign io_predict_p_out_hist = {_T_316,_T_323}; // @[el2_exu_alu_ctl.scala 125:30 el2_exu_alu_ctl.scala 128:30]
-  assign io_predict_p_out_toffset = io_pp_in_toffset; // @[el2_exu_alu_ctl.scala 125:30]
   assign io_predict_p_out_valid = io_pp_in_valid; // @[el2_exu_alu_ctl.scala 125:30]
-  assign io_predict_p_out_br_error = io_pp_in_br_error; // @[el2_exu_alu_ctl.scala 125:30]
-  assign io_predict_p_out_br_start_error = io_pp_in_br_start_error; // @[el2_exu_alu_ctl.scala 125:30]
-  assign io_predict_p_out_prett = io_pp_in_prett; // @[el2_exu_alu_ctl.scala 125:30]
-  assign io_predict_p_out_pcall = io_pp_in_pcall; // @[el2_exu_alu_ctl.scala 125:30]
-  assign io_predict_p_out_pret = io_pp_in_pret; // @[el2_exu_alu_ctl.scala 125:30]
-  assign io_predict_p_out_pja = io_pp_in_pja; // @[el2_exu_alu_ctl.scala 125:30]
-  assign io_predict_p_out_way = io_pp_in_way; // @[el2_exu_alu_ctl.scala 125:30]
+  assign io_predict_p_out_bits_misp = _T_327 & _T_328; // @[el2_exu_alu_ctl.scala 125:30 el2_exu_alu_ctl.scala 126:35]
+  assign io_predict_p_out_bits_ataken = _T_277 | sel_pc; // @[el2_exu_alu_ctl.scala 125:30 el2_exu_alu_ctl.scala 127:35]
+  assign io_predict_p_out_bits_boffset = io_pp_in_bits_boffset; // @[el2_exu_alu_ctl.scala 125:30]
+  assign io_predict_p_out_bits_pc4 = io_pp_in_bits_pc4; // @[el2_exu_alu_ctl.scala 125:30]
+  assign io_predict_p_out_bits_hist = {_T_316,_T_323}; // @[el2_exu_alu_ctl.scala 125:30 el2_exu_alu_ctl.scala 128:35]
+  assign io_predict_p_out_bits_toffset = io_pp_in_bits_toffset; // @[el2_exu_alu_ctl.scala 125:30]
+  assign io_predict_p_out_bits_br_error = io_pp_in_bits_br_error; // @[el2_exu_alu_ctl.scala 125:30]
+  assign io_predict_p_out_bits_br_start_error = io_pp_in_bits_br_start_error; // @[el2_exu_alu_ctl.scala 125:30]
+  assign io_predict_p_out_bits_prett = io_pp_in_bits_prett; // @[el2_exu_alu_ctl.scala 125:30]
+  assign io_predict_p_out_bits_pcall = io_pp_in_bits_pcall; // @[el2_exu_alu_ctl.scala 125:30]
+  assign io_predict_p_out_bits_pret = io_pp_in_bits_pret; // @[el2_exu_alu_ctl.scala 125:30]
+  assign io_predict_p_out_bits_pja = io_pp_in_bits_pja; // @[el2_exu_alu_ctl.scala 125:30]
+  assign io_predict_p_out_bits_way = io_pp_in_bits_way; // @[el2_exu_alu_ctl.scala 125:30]
   assign rvclkhdr_io_clk = clock; // @[el2_lib.scala 510:18]
   assign rvclkhdr_io_en = io_enable; // @[el2_lib.scala 511:17]
   assign rvclkhdr_io_scan_mode = io_scan_mode; // @[el2_lib.scala 512:24]
