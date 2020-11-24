@@ -72,654 +72,661 @@ module el2_dec_dec_ctl(
   output        io_out_pm_alu,
   output        io_out_legal
 );
-  wire  _T_2 = io_ins[2] | io_ins[6]; // @[el2_dec_dec_ctl.scala 72:27]
-  wire  _T_4 = ~io_ins[25]; // @[el2_dec_dec_ctl.scala 72:42]
-  wire  _T_6 = _T_4 & io_ins[4]; // @[el2_dec_dec_ctl.scala 72:53]
-  wire  _T_7 = _T_2 | _T_6; // @[el2_dec_dec_ctl.scala 72:39]
-  wire  _T_9 = ~io_ins[5]; // @[el2_dec_dec_ctl.scala 72:68]
-  wire  _T_11 = _T_9 & io_ins[4]; // @[el2_dec_dec_ctl.scala 72:78]
-  wire  _T_14 = ~io_ins[14]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_16 = ~io_ins[13]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_18 = ~io_ins[2]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_19 = _T_14 & _T_16; // @[el2_dec_dec_ctl.scala 73:51]
-  wire  _T_20 = _T_19 & _T_18; // @[el2_dec_dec_ctl.scala 73:51]
-  wire  _T_26 = _T_16 & io_ins[11]; // @[el2_dec_dec_ctl.scala 73:90]
-  wire  _T_27 = _T_26 & _T_18; // @[el2_dec_dec_ctl.scala 73:90]
-  wire  _T_28 = _T_20 | _T_27; // @[el2_dec_dec_ctl.scala 73:55]
-  wire  _T_33 = io_ins[19] & io_ins[13]; // @[el2_dec_dec_ctl.scala 74:37]
-  wire  _T_34 = _T_33 & _T_18; // @[el2_dec_dec_ctl.scala 74:37]
-  wire  _T_35 = _T_28 | _T_34; // @[el2_dec_dec_ctl.scala 73:94]
-  wire  _T_41 = _T_16 & io_ins[10]; // @[el2_dec_dec_ctl.scala 74:76]
-  wire  _T_42 = _T_41 & _T_18; // @[el2_dec_dec_ctl.scala 74:76]
-  wire  _T_43 = _T_35 | _T_42; // @[el2_dec_dec_ctl.scala 74:41]
-  wire  _T_45 = ~io_ins[18]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_49 = _T_45 & io_ins[13]; // @[el2_dec_dec_ctl.scala 75:38]
-  wire  _T_50 = _T_49 & _T_18; // @[el2_dec_dec_ctl.scala 75:38]
-  wire  _T_51 = _T_43 | _T_50; // @[el2_dec_dec_ctl.scala 74:80]
-  wire  _T_57 = _T_16 & io_ins[9]; // @[el2_dec_dec_ctl.scala 75:76]
-  wire  _T_58 = _T_57 & _T_18; // @[el2_dec_dec_ctl.scala 75:76]
-  wire  _T_59 = _T_51 | _T_58; // @[el2_dec_dec_ctl.scala 75:42]
-  wire  _T_64 = io_ins[17] & io_ins[13]; // @[el2_dec_dec_ctl.scala 76:37]
-  wire  _T_65 = _T_64 & _T_18; // @[el2_dec_dec_ctl.scala 76:37]
-  wire  _T_66 = _T_59 | _T_65; // @[el2_dec_dec_ctl.scala 75:80]
-  wire  _T_72 = _T_16 & io_ins[8]; // @[el2_dec_dec_ctl.scala 76:75]
-  wire  _T_73 = _T_72 & _T_18; // @[el2_dec_dec_ctl.scala 76:75]
-  wire  _T_74 = _T_66 | _T_73; // @[el2_dec_dec_ctl.scala 76:41]
-  wire  _T_79 = io_ins[16] & io_ins[13]; // @[el2_dec_dec_ctl.scala 77:37]
-  wire  _T_80 = _T_79 & _T_18; // @[el2_dec_dec_ctl.scala 77:37]
-  wire  _T_81 = _T_74 | _T_80; // @[el2_dec_dec_ctl.scala 76:79]
-  wire  _T_87 = _T_16 & io_ins[7]; // @[el2_dec_dec_ctl.scala 77:75]
-  wire  _T_88 = _T_87 & _T_18; // @[el2_dec_dec_ctl.scala 77:75]
-  wire  _T_89 = _T_81 | _T_88; // @[el2_dec_dec_ctl.scala 77:41]
-  wire  _T_94 = io_ins[15] & io_ins[13]; // @[el2_dec_dec_ctl.scala 78:37]
-  wire  _T_95 = _T_94 & _T_18; // @[el2_dec_dec_ctl.scala 78:37]
-  wire  _T_96 = _T_89 | _T_95; // @[el2_dec_dec_ctl.scala 77:79]
-  wire  _T_98 = ~io_ins[4]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_100 = ~io_ins[3]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_101 = _T_98 & _T_100; // @[el2_dec_dec_ctl.scala 78:71]
-  wire  _T_102 = _T_96 | _T_101; // @[el2_dec_dec_ctl.scala 78:41]
-  wire  _T_104 = ~io_ins[6]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_107 = _T_104 & _T_18; // @[el2_dec_dec_ctl.scala 78:106]
-  wire  _T_114 = io_ins[5] & _T_98; // @[el2_dec_dec_ctl.scala 79:48]
-  wire  _T_115 = _T_114 & _T_18; // @[el2_dec_dec_ctl.scala 79:48]
-  wire  _T_121 = _T_104 & io_ins[5]; // @[el2_dec_dec_ctl.scala 79:85]
-  wire  _T_122 = _T_121 & _T_18; // @[el2_dec_dec_ctl.scala 79:85]
-  wire  _T_130 = _T_101 & io_ins[2]; // @[el2_dec_dec_ctl.scala 80:50]
-  wire  _T_137 = io_ins[13] & _T_9; // @[el2_dec_dec_ctl.scala 80:90]
-  wire  _T_138 = _T_137 & io_ins[4]; // @[el2_dec_dec_ctl.scala 80:90]
-  wire  _T_139 = _T_138 & _T_18; // @[el2_dec_dec_ctl.scala 80:90]
-  wire  _T_140 = _T_130 | _T_139; // @[el2_dec_dec_ctl.scala 80:54]
-  wire  _T_144 = ~io_ins[12]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_147 = _T_16 & _T_144; // @[el2_dec_dec_ctl.scala 81:40]
-  wire  _T_148 = _T_147 & io_ins[6]; // @[el2_dec_dec_ctl.scala 81:40]
-  wire  _T_149 = _T_148 & io_ins[4]; // @[el2_dec_dec_ctl.scala 81:40]
-  wire  _T_150 = _T_140 | _T_149; // @[el2_dec_dec_ctl.scala 80:94]
-  wire  _T_158 = _T_144 & _T_9; // @[el2_dec_dec_ctl.scala 81:81]
-  wire  _T_159 = _T_158 & io_ins[4]; // @[el2_dec_dec_ctl.scala 81:81]
-  wire  _T_160 = _T_159 & _T_18; // @[el2_dec_dec_ctl.scala 81:81]
-  wire  _T_166 = _T_9 & _T_18; // @[el2_dec_dec_ctl.scala 82:28]
-  wire  _T_169 = io_ins[5] & io_ins[2]; // @[el2_dec_dec_ctl.scala 82:55]
-  wire  _T_170 = _T_166 | _T_169; // @[el2_dec_dec_ctl.scala 82:42]
-  wire  _T_181 = _T_16 & io_ins[12]; // @[el2_dec_dec_ctl.scala 83:58]
-  wire  _T_182 = _T_181 & _T_9; // @[el2_dec_dec_ctl.scala 83:58]
-  wire  _T_183 = _T_182 & io_ins[4]; // @[el2_dec_dec_ctl.scala 83:58]
-  wire  _T_187 = io_ins[5] & io_ins[3]; // @[el2_dec_dec_ctl.scala 84:29]
-  wire  _T_190 = io_ins[4] & io_ins[2]; // @[el2_dec_dec_ctl.scala 84:53]
-  wire  _T_196 = _T_9 & _T_100; // @[el2_dec_dec_ctl.scala 85:28]
-  wire  _T_198 = _T_196 & io_ins[2]; // @[el2_dec_dec_ctl.scala 85:41]
-  wire  _T_209 = _T_9 & _T_98; // @[el2_dec_dec_ctl.scala 86:50]
-  wire  _T_224 = _T_104 & _T_98; // @[el2_dec_dec_ctl.scala 88:49]
-  wire  _T_236 = _T_19 & _T_144; // @[el2_dec_dec_ctl.scala 89:57]
-  wire  _T_237 = _T_236 & _T_9; // @[el2_dec_dec_ctl.scala 89:57]
-  wire  _T_238 = _T_237 & io_ins[4]; // @[el2_dec_dec_ctl.scala 89:57]
-  wire  _T_246 = _T_238 | _T_198; // @[el2_dec_dec_ctl.scala 89:61]
-  wire  _T_248 = ~io_ins[30]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_262 = _T_248 & _T_4; // @[el2_dec_dec_ctl.scala 90:56]
-  wire  _T_263 = _T_262 & _T_14; // @[el2_dec_dec_ctl.scala 90:56]
-  wire  _T_264 = _T_263 & _T_16; // @[el2_dec_dec_ctl.scala 90:56]
-  wire  _T_265 = _T_264 & _T_144; // @[el2_dec_dec_ctl.scala 90:56]
-  wire  _T_266 = _T_265 & _T_104; // @[el2_dec_dec_ctl.scala 90:56]
-  wire  _T_267 = _T_266 & io_ins[4]; // @[el2_dec_dec_ctl.scala 90:56]
-  wire  _T_268 = _T_267 & _T_18; // @[el2_dec_dec_ctl.scala 90:56]
-  wire  _T_279 = io_ins[30] & _T_144; // @[el2_dec_dec_ctl.scala 91:57]
-  wire  _T_280 = _T_279 & _T_104; // @[el2_dec_dec_ctl.scala 91:57]
-  wire  _T_281 = _T_280 & io_ins[5]; // @[el2_dec_dec_ctl.scala 91:57]
-  wire  _T_282 = _T_281 & io_ins[4]; // @[el2_dec_dec_ctl.scala 91:57]
-  wire  _T_283 = _T_282 & _T_18; // @[el2_dec_dec_ctl.scala 91:57]
-  wire  _T_294 = _T_4 & _T_14; // @[el2_dec_dec_ctl.scala 91:105]
-  wire  _T_295 = _T_294 & io_ins[13]; // @[el2_dec_dec_ctl.scala 91:105]
-  wire  _T_296 = _T_295 & _T_104; // @[el2_dec_dec_ctl.scala 91:105]
-  wire  _T_297 = _T_296 & io_ins[4]; // @[el2_dec_dec_ctl.scala 91:105]
-  wire  _T_298 = _T_297 & _T_18; // @[el2_dec_dec_ctl.scala 91:105]
-  wire  _T_299 = _T_283 | _T_298; // @[el2_dec_dec_ctl.scala 91:61]
-  wire  _T_308 = _T_14 & io_ins[13]; // @[el2_dec_dec_ctl.scala 92:43]
-  wire  _T_309 = _T_308 & _T_9; // @[el2_dec_dec_ctl.scala 92:43]
-  wire  _T_310 = _T_309 & io_ins[4]; // @[el2_dec_dec_ctl.scala 92:43]
-  wire  _T_311 = _T_310 & _T_18; // @[el2_dec_dec_ctl.scala 92:43]
-  wire  _T_312 = _T_299 | _T_311; // @[el2_dec_dec_ctl.scala 91:109]
-  wire  _T_318 = io_ins[6] & _T_98; // @[el2_dec_dec_ctl.scala 92:80]
-  wire  _T_319 = _T_318 & _T_18; // @[el2_dec_dec_ctl.scala 92:80]
-  wire  _T_328 = io_ins[14] & io_ins[13]; // @[el2_dec_dec_ctl.scala 93:56]
-  wire  _T_329 = _T_328 & io_ins[12]; // @[el2_dec_dec_ctl.scala 93:56]
-  wire  _T_330 = _T_329 & _T_9; // @[el2_dec_dec_ctl.scala 93:56]
-  wire  _T_331 = _T_330 & _T_18; // @[el2_dec_dec_ctl.scala 93:56]
-  wire  _T_341 = _T_4 & io_ins[14]; // @[el2_dec_dec_ctl.scala 93:104]
-  wire  _T_342 = _T_341 & io_ins[13]; // @[el2_dec_dec_ctl.scala 93:104]
-  wire  _T_343 = _T_342 & io_ins[12]; // @[el2_dec_dec_ctl.scala 93:104]
-  wire  _T_344 = _T_343 & _T_104; // @[el2_dec_dec_ctl.scala 93:104]
-  wire  _T_345 = _T_344 & _T_18; // @[el2_dec_dec_ctl.scala 93:104]
-  wire  _T_350 = _T_104 & io_ins[3]; // @[el2_dec_dec_ctl.scala 94:45]
-  wire  _T_363 = _T_342 & _T_144; // @[el2_dec_dec_ctl.scala 94:94]
-  wire  _T_364 = _T_363 & _T_104; // @[el2_dec_dec_ctl.scala 94:94]
-  wire  _T_365 = _T_364 & _T_18; // @[el2_dec_dec_ctl.scala 94:94]
-  wire  _T_366 = _T_350 | _T_365; // @[el2_dec_dec_ctl.scala 94:49]
-  wire  _T_370 = io_ins[5] & io_ins[4]; // @[el2_dec_dec_ctl.scala 95:34]
-  wire  _T_371 = _T_370 & io_ins[2]; // @[el2_dec_dec_ctl.scala 95:34]
-  wire  _T_372 = _T_366 | _T_371; // @[el2_dec_dec_ctl.scala 94:98]
-  wire  _T_382 = _T_372 | _T_149; // @[el2_dec_dec_ctl.scala 95:38]
-  wire  _T_392 = _T_328 & _T_144; // @[el2_dec_dec_ctl.scala 96:44]
-  wire  _T_393 = _T_392 & _T_9; // @[el2_dec_dec_ctl.scala 96:44]
-  wire  _T_394 = _T_393 & _T_18; // @[el2_dec_dec_ctl.scala 96:44]
-  wire  _T_407 = _T_341 & _T_16; // @[el2_dec_dec_ctl.scala 97:61]
-  wire  _T_408 = _T_407 & _T_144; // @[el2_dec_dec_ctl.scala 97:61]
-  wire  _T_409 = _T_408 & io_ins[4]; // @[el2_dec_dec_ctl.scala 97:61]
-  wire  _T_410 = _T_409 & _T_18; // @[el2_dec_dec_ctl.scala 97:61]
-  wire  _T_421 = io_ins[14] & _T_16; // @[el2_dec_dec_ctl.scala 97:109]
-  wire  _T_422 = _T_421 & _T_144; // @[el2_dec_dec_ctl.scala 97:109]
-  wire  _T_423 = _T_422 & _T_9; // @[el2_dec_dec_ctl.scala 97:109]
-  wire  _T_424 = _T_423 & io_ins[4]; // @[el2_dec_dec_ctl.scala 97:109]
-  wire  _T_425 = _T_424 & _T_18; // @[el2_dec_dec_ctl.scala 97:109]
-  wire  _T_440 = _T_294 & _T_16; // @[el2_dec_dec_ctl.scala 98:63]
-  wire  _T_441 = _T_440 & io_ins[12]; // @[el2_dec_dec_ctl.scala 98:63]
-  wire  _T_442 = _T_441 & _T_104; // @[el2_dec_dec_ctl.scala 98:63]
-  wire  _T_443 = _T_442 & io_ins[4]; // @[el2_dec_dec_ctl.scala 98:63]
-  wire  _T_454 = io_ins[30] & _T_16; // @[el2_dec_dec_ctl.scala 99:58]
-  wire  _T_455 = _T_454 & io_ins[12]; // @[el2_dec_dec_ctl.scala 99:58]
-  wire  _T_456 = _T_455 & _T_104; // @[el2_dec_dec_ctl.scala 99:58]
-  wire  _T_457 = _T_456 & io_ins[4]; // @[el2_dec_dec_ctl.scala 99:58]
-  wire  _T_473 = _T_262 & io_ins[14]; // @[el2_dec_dec_ctl.scala 100:66]
-  wire  _T_474 = _T_473 & _T_16; // @[el2_dec_dec_ctl.scala 100:66]
-  wire  _T_475 = _T_474 & io_ins[12]; // @[el2_dec_dec_ctl.scala 100:66]
-  wire  _T_476 = _T_475 & _T_104; // @[el2_dec_dec_ctl.scala 100:66]
-  wire  _T_477 = _T_476 & io_ins[4]; // @[el2_dec_dec_ctl.scala 100:66]
-  wire  _T_492 = _T_295 & io_ins[12]; // @[el2_dec_dec_ctl.scala 101:62]
-  wire  _T_493 = _T_492 & _T_104; // @[el2_dec_dec_ctl.scala 101:62]
-  wire  _T_494 = _T_493 & io_ins[4]; // @[el2_dec_dec_ctl.scala 101:62]
-  wire  _T_495 = _T_494 & _T_18; // @[el2_dec_dec_ctl.scala 101:62]
-  wire  _T_518 = _T_308 & io_ins[12]; // @[el2_dec_dec_ctl.scala 102:59]
-  wire  _T_519 = _T_518 & _T_9; // @[el2_dec_dec_ctl.scala 102:59]
-  wire  _T_520 = _T_519 & _T_18; // @[el2_dec_dec_ctl.scala 102:59]
-  wire  _T_527 = io_ins[13] & io_ins[6]; // @[el2_dec_dec_ctl.scala 102:99]
-  wire  _T_528 = _T_527 & _T_98; // @[el2_dec_dec_ctl.scala 102:99]
-  wire  _T_529 = _T_528 & _T_18; // @[el2_dec_dec_ctl.scala 102:99]
-  wire  _T_530 = _T_520 | _T_529; // @[el2_dec_dec_ctl.scala 102:63]
-  wire  _T_536 = io_ins[14] & _T_9; // @[el2_dec_dec_ctl.scala 103:37]
-  wire  _T_537 = _T_536 & _T_98; // @[el2_dec_dec_ctl.scala 103:37]
-  wire  _T_538 = _T_530 | _T_537; // @[el2_dec_dec_ctl.scala 102:103]
-  wire  _T_553 = _T_493 & _T_18; // @[el2_dec_dec_ctl.scala 103:86]
-  wire  _T_554 = _T_538 | _T_553; // @[el2_dec_dec_ctl.scala 103:41]
-  wire  _T_563 = io_ins[25] & io_ins[14]; // @[el2_dec_dec_ctl.scala 104:45]
-  wire  _T_564 = _T_563 & io_ins[12]; // @[el2_dec_dec_ctl.scala 104:45]
-  wire  _T_565 = _T_564 & _T_104; // @[el2_dec_dec_ctl.scala 104:45]
-  wire  _T_566 = _T_565 & io_ins[5]; // @[el2_dec_dec_ctl.scala 104:45]
-  wire  _T_567 = _T_566 & _T_18; // @[el2_dec_dec_ctl.scala 104:45]
-  wire  _T_585 = _T_14 & _T_144; // @[el2_dec_dec_ctl.scala 106:56]
-  wire  _T_586 = _T_585 & io_ins[6]; // @[el2_dec_dec_ctl.scala 106:56]
-  wire  _T_587 = _T_586 & _T_98; // @[el2_dec_dec_ctl.scala 106:56]
-  wire  _T_597 = _T_14 & io_ins[12]; // @[el2_dec_dec_ctl.scala 107:55]
-  wire  _T_598 = _T_597 & io_ins[6]; // @[el2_dec_dec_ctl.scala 107:55]
-  wire  _T_599 = _T_598 & _T_98; // @[el2_dec_dec_ctl.scala 107:55]
-  wire  _T_608 = io_ins[14] & io_ins[12]; // @[el2_dec_dec_ctl.scala 108:54]
-  wire  _T_609 = _T_608 & io_ins[5]; // @[el2_dec_dec_ctl.scala 108:54]
-  wire  _T_610 = _T_609 & _T_98; // @[el2_dec_dec_ctl.scala 108:54]
-  wire  _T_620 = io_ins[14] & _T_144; // @[el2_dec_dec_ctl.scala 109:55]
-  wire  _T_621 = _T_620 & io_ins[5]; // @[el2_dec_dec_ctl.scala 109:55]
-  wire  _T_622 = _T_621 & _T_98; // @[el2_dec_dec_ctl.scala 109:55]
-  wire  _T_638 = _T_147 & _T_104; // @[el2_dec_dec_ctl.scala 111:56]
-  wire  _T_639 = _T_638 & _T_98; // @[el2_dec_dec_ctl.scala 111:56]
-  wire  _T_648 = io_ins[12] & _T_104; // @[el2_dec_dec_ctl.scala 112:53]
-  wire  _T_649 = _T_648 & _T_98; // @[el2_dec_dec_ctl.scala 112:53]
-  wire  _T_656 = io_ins[13] & _T_104; // @[el2_dec_dec_ctl.scala 113:50]
-  wire  _T_662 = _T_527 & io_ins[4]; // @[el2_dec_dec_ctl.scala 114:52]
-  wire  _T_666 = io_ins[7] & io_ins[6]; // @[el2_dec_dec_ctl.scala 114:87]
-  wire  _T_667 = _T_666 & io_ins[4]; // @[el2_dec_dec_ctl.scala 114:87]
-  wire  _T_668 = _T_662 | _T_667; // @[el2_dec_dec_ctl.scala 114:56]
-  wire  _T_672 = io_ins[8] & io_ins[6]; // @[el2_dec_dec_ctl.scala 115:34]
-  wire  _T_673 = _T_672 & io_ins[4]; // @[el2_dec_dec_ctl.scala 115:34]
-  wire  _T_674 = _T_668 | _T_673; // @[el2_dec_dec_ctl.scala 114:91]
-  wire  _T_678 = io_ins[9] & io_ins[6]; // @[el2_dec_dec_ctl.scala 115:69]
-  wire  _T_679 = _T_678 & io_ins[4]; // @[el2_dec_dec_ctl.scala 115:69]
-  wire  _T_680 = _T_674 | _T_679; // @[el2_dec_dec_ctl.scala 115:38]
-  wire  _T_684 = io_ins[10] & io_ins[6]; // @[el2_dec_dec_ctl.scala 115:105]
-  wire  _T_685 = _T_684 & io_ins[4]; // @[el2_dec_dec_ctl.scala 115:105]
-  wire  _T_686 = _T_680 | _T_685; // @[el2_dec_dec_ctl.scala 115:73]
-  wire  _T_690 = io_ins[11] & io_ins[6]; // @[el2_dec_dec_ctl.scala 116:35]
-  wire  _T_691 = _T_690 & io_ins[4]; // @[el2_dec_dec_ctl.scala 116:35]
-  wire  _T_699 = _T_94 & io_ins[12]; // @[el2_dec_dec_ctl.scala 117:57]
-  wire  _T_700 = _T_699 & io_ins[6]; // @[el2_dec_dec_ctl.scala 117:57]
-  wire  _T_701 = _T_700 & io_ins[4]; // @[el2_dec_dec_ctl.scala 117:57]
-  wire  _T_708 = _T_79 & io_ins[12]; // @[el2_dec_dec_ctl.scala 117:99]
-  wire  _T_709 = _T_708 & io_ins[6]; // @[el2_dec_dec_ctl.scala 117:99]
-  wire  _T_710 = _T_709 & io_ins[4]; // @[el2_dec_dec_ctl.scala 117:99]
-  wire  _T_711 = _T_701 | _T_710; // @[el2_dec_dec_ctl.scala 117:61]
-  wire  _T_718 = _T_64 & io_ins[12]; // @[el2_dec_dec_ctl.scala 118:41]
-  wire  _T_719 = _T_718 & io_ins[6]; // @[el2_dec_dec_ctl.scala 118:41]
-  wire  _T_720 = _T_719 & io_ins[4]; // @[el2_dec_dec_ctl.scala 118:41]
-  wire  _T_721 = _T_711 | _T_720; // @[el2_dec_dec_ctl.scala 117:103]
-  wire  _T_727 = io_ins[18] & _T_144; // @[el2_dec_dec_ctl.scala 118:81]
-  wire  _T_728 = _T_727 & io_ins[6]; // @[el2_dec_dec_ctl.scala 118:81]
-  wire  _T_729 = _T_728 & io_ins[4]; // @[el2_dec_dec_ctl.scala 118:81]
-  wire  _T_730 = _T_721 | _T_729; // @[el2_dec_dec_ctl.scala 118:45]
-  wire  _T_736 = io_ins[19] & _T_144; // @[el2_dec_dec_ctl.scala 119:39]
-  wire  _T_737 = _T_736 & io_ins[6]; // @[el2_dec_dec_ctl.scala 119:39]
-  wire  _T_738 = _T_737 & io_ins[4]; // @[el2_dec_dec_ctl.scala 119:39]
-  wire  _T_746 = _T_181 & io_ins[6]; // @[el2_dec_dec_ctl.scala 120:57]
-  wire  _T_754 = _T_421 & io_ins[6]; // @[el2_dec_dec_ctl.scala 121:55]
-  wire  _T_755 = _T_754 & io_ins[4]; // @[el2_dec_dec_ctl.scala 121:55]
-  wire  _T_760 = io_ins[15] & io_ins[14]; // @[el2_dec_dec_ctl.scala 121:94]
-  wire  _T_761 = _T_760 & io_ins[6]; // @[el2_dec_dec_ctl.scala 121:94]
-  wire  _T_762 = _T_761 & io_ins[4]; // @[el2_dec_dec_ctl.scala 121:94]
-  wire  _T_763 = _T_755 | _T_762; // @[el2_dec_dec_ctl.scala 121:59]
-  wire  _T_768 = io_ins[16] & io_ins[14]; // @[el2_dec_dec_ctl.scala 122:38]
-  wire  _T_769 = _T_768 & io_ins[6]; // @[el2_dec_dec_ctl.scala 122:38]
-  wire  _T_770 = _T_769 & io_ins[4]; // @[el2_dec_dec_ctl.scala 122:38]
-  wire  _T_771 = _T_763 | _T_770; // @[el2_dec_dec_ctl.scala 121:98]
-  wire  _T_776 = io_ins[17] & io_ins[14]; // @[el2_dec_dec_ctl.scala 122:77]
-  wire  _T_777 = _T_776 & io_ins[6]; // @[el2_dec_dec_ctl.scala 122:77]
-  wire  _T_778 = _T_777 & io_ins[4]; // @[el2_dec_dec_ctl.scala 122:77]
-  wire  _T_779 = _T_771 | _T_778; // @[el2_dec_dec_ctl.scala 122:42]
-  wire  _T_784 = io_ins[18] & io_ins[14]; // @[el2_dec_dec_ctl.scala 123:38]
-  wire  _T_785 = _T_784 & io_ins[6]; // @[el2_dec_dec_ctl.scala 123:38]
-  wire  _T_786 = _T_785 & io_ins[4]; // @[el2_dec_dec_ctl.scala 123:38]
-  wire  _T_787 = _T_779 | _T_786; // @[el2_dec_dec_ctl.scala 122:81]
-  wire  _T_792 = io_ins[19] & io_ins[14]; // @[el2_dec_dec_ctl.scala 123:77]
-  wire  _T_793 = _T_792 & io_ins[6]; // @[el2_dec_dec_ctl.scala 123:77]
-  wire  _T_794 = _T_793 & io_ins[4]; // @[el2_dec_dec_ctl.scala 123:77]
-  wire  _T_801 = io_ins[15] & _T_144; // @[el2_dec_dec_ctl.scala 124:55]
-  wire  _T_802 = _T_801 & io_ins[6]; // @[el2_dec_dec_ctl.scala 124:55]
-  wire  _T_803 = _T_802 & io_ins[4]; // @[el2_dec_dec_ctl.scala 124:55]
-  wire  _T_809 = io_ins[16] & _T_144; // @[el2_dec_dec_ctl.scala 124:95]
-  wire  _T_810 = _T_809 & io_ins[6]; // @[el2_dec_dec_ctl.scala 124:95]
-  wire  _T_811 = _T_810 & io_ins[4]; // @[el2_dec_dec_ctl.scala 124:95]
-  wire  _T_812 = _T_803 | _T_811; // @[el2_dec_dec_ctl.scala 124:59]
-  wire  _T_818 = io_ins[17] & _T_144; // @[el2_dec_dec_ctl.scala 125:39]
-  wire  _T_819 = _T_818 & io_ins[6]; // @[el2_dec_dec_ctl.scala 125:39]
-  wire  _T_820 = _T_819 & io_ins[4]; // @[el2_dec_dec_ctl.scala 125:39]
-  wire  _T_821 = _T_812 | _T_820; // @[el2_dec_dec_ctl.scala 124:99]
-  wire  _T_830 = _T_821 | _T_729; // @[el2_dec_dec_ctl.scala 125:43]
-  wire  _T_841 = ~io_ins[22]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_849 = _T_841 & io_ins[20]; // @[el2_dec_dec_ctl.scala 127:62]
-  wire  _T_850 = _T_849 & _T_16; // @[el2_dec_dec_ctl.scala 127:62]
-  wire  _T_851 = _T_850 & _T_144; // @[el2_dec_dec_ctl.scala 127:62]
-  wire  _T_852 = _T_851 & io_ins[6]; // @[el2_dec_dec_ctl.scala 127:62]
-  wire  _T_855 = ~io_ins[21]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_857 = ~io_ins[20]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_864 = _T_855 & _T_857; // @[el2_dec_dec_ctl.scala 128:62]
-  wire  _T_865 = _T_864 & _T_16; // @[el2_dec_dec_ctl.scala 128:62]
-  wire  _T_866 = _T_865 & _T_144; // @[el2_dec_dec_ctl.scala 128:62]
-  wire  _T_867 = _T_866 & io_ins[6]; // @[el2_dec_dec_ctl.scala 128:62]
-  wire  _T_876 = io_ins[29] & _T_16; // @[el2_dec_dec_ctl.scala 129:56]
-  wire  _T_877 = _T_876 & _T_144; // @[el2_dec_dec_ctl.scala 129:56]
-  wire  _T_878 = _T_877 & io_ins[6]; // @[el2_dec_dec_ctl.scala 129:56]
-  wire  _T_889 = io_ins[25] & _T_14; // @[el2_dec_dec_ctl.scala 130:57]
-  wire  _T_890 = _T_889 & _T_104; // @[el2_dec_dec_ctl.scala 130:57]
-  wire  _T_891 = _T_890 & io_ins[5]; // @[el2_dec_dec_ctl.scala 130:57]
-  wire  _T_892 = _T_891 & io_ins[4]; // @[el2_dec_dec_ctl.scala 130:57]
-  wire  _T_907 = _T_889 & io_ins[13]; // @[el2_dec_dec_ctl.scala 131:69]
-  wire  _T_908 = _T_907 & _T_144; // @[el2_dec_dec_ctl.scala 131:69]
-  wire  _T_909 = _T_908 & _T_104; // @[el2_dec_dec_ctl.scala 131:69]
-  wire  _T_910 = _T_909 & io_ins[5]; // @[el2_dec_dec_ctl.scala 131:69]
-  wire  _T_911 = _T_910 & io_ins[4]; // @[el2_dec_dec_ctl.scala 131:69]
-  wire  _T_912 = _T_911 & _T_18; // @[el2_dec_dec_ctl.scala 131:69]
-  wire  _T_925 = _T_889 & _T_16; // @[el2_dec_dec_ctl.scala 132:50]
-  wire  _T_926 = _T_925 & io_ins[12]; // @[el2_dec_dec_ctl.scala 132:50]
-  wire  _T_927 = _T_926 & _T_104; // @[el2_dec_dec_ctl.scala 132:50]
-  wire  _T_928 = _T_927 & io_ins[4]; // @[el2_dec_dec_ctl.scala 132:50]
-  wire  _T_929 = _T_928 & _T_18; // @[el2_dec_dec_ctl.scala 132:50]
-  wire  _T_961 = _T_925 & _T_144; // @[el2_dec_dec_ctl.scala 134:62]
-  wire  _T_962 = _T_961 & io_ins[5]; // @[el2_dec_dec_ctl.scala 134:62]
-  wire  _T_963 = _T_962 & io_ins[4]; // @[el2_dec_dec_ctl.scala 134:62]
-  wire  _T_973 = _T_563 & _T_104; // @[el2_dec_dec_ctl.scala 135:54]
-  wire  _T_974 = _T_973 & io_ins[5]; // @[el2_dec_dec_ctl.scala 135:54]
-  wire  _T_985 = _T_563 & io_ins[13]; // @[el2_dec_dec_ctl.scala 136:57]
-  wire  _T_986 = _T_985 & _T_104; // @[el2_dec_dec_ctl.scala 136:57]
-  wire  _T_987 = _T_986 & io_ins[5]; // @[el2_dec_dec_ctl.scala 136:57]
-  wire  _T_992 = _T_9 & io_ins[3]; // @[el2_dec_dec_ctl.scala 137:47]
-  wire  _T_997 = io_ins[12] & _T_9; // @[el2_dec_dec_ctl.scala 138:52]
-  wire  _T_998 = _T_997 & io_ins[3]; // @[el2_dec_dec_ctl.scala 138:52]
-  wire  _T_1006 = io_ins[28] & io_ins[22]; // @[el2_dec_dec_ctl.scala 139:59]
-  wire  _T_1007 = _T_1006 & _T_16; // @[el2_dec_dec_ctl.scala 139:59]
-  wire  _T_1008 = _T_1007 & _T_144; // @[el2_dec_dec_ctl.scala 139:59]
-  wire  _T_1009 = _T_1008 & io_ins[4]; // @[el2_dec_dec_ctl.scala 139:59]
-  wire  _T_1013 = _T_1009 | _T_190; // @[el2_dec_dec_ctl.scala 139:63]
-  wire  _T_1019 = _T_4 & _T_104; // @[el2_dec_dec_ctl.scala 140:37]
-  wire  _T_1020 = _T_1019 & io_ins[4]; // @[el2_dec_dec_ctl.scala 140:37]
-  wire  _T_1021 = _T_1013 | _T_1020; // @[el2_dec_dec_ctl.scala 139:96]
-  wire  _T_1037 = _T_87 & io_ins[6]; // @[el2_dec_dec_ctl.scala 141:88]
-  wire  _T_1038 = _T_1037 & io_ins[4]; // @[el2_dec_dec_ctl.scala 141:88]
-  wire  _T_1039 = _T_992 | _T_1038; // @[el2_dec_dec_ctl.scala 141:53]
-  wire  _T_1046 = _T_72 & io_ins[6]; // @[el2_dec_dec_ctl.scala 142:38]
-  wire  _T_1047 = _T_1046 & io_ins[4]; // @[el2_dec_dec_ctl.scala 142:38]
-  wire  _T_1048 = _T_1039 | _T_1047; // @[el2_dec_dec_ctl.scala 141:92]
-  wire  _T_1055 = _T_57 & io_ins[6]; // @[el2_dec_dec_ctl.scala 142:77]
-  wire  _T_1056 = _T_1055 & io_ins[4]; // @[el2_dec_dec_ctl.scala 142:77]
-  wire  _T_1057 = _T_1048 | _T_1056; // @[el2_dec_dec_ctl.scala 142:42]
-  wire  _T_1066 = _T_1057 | _T_1056; // @[el2_dec_dec_ctl.scala 142:81]
-  wire  _T_1073 = _T_41 & io_ins[6]; // @[el2_dec_dec_ctl.scala 143:78]
-  wire  _T_1074 = _T_1073 & io_ins[4]; // @[el2_dec_dec_ctl.scala 143:78]
-  wire  _T_1075 = _T_1066 | _T_1074; // @[el2_dec_dec_ctl.scala 143:42]
-  wire  _T_1082 = _T_26 & io_ins[6]; // @[el2_dec_dec_ctl.scala 144:39]
-  wire  _T_1083 = _T_1082 & io_ins[4]; // @[el2_dec_dec_ctl.scala 144:39]
-  wire  _T_1084 = _T_1075 | _T_1083; // @[el2_dec_dec_ctl.scala 143:82]
-  wire  _T_1090 = _T_94 & io_ins[6]; // @[el2_dec_dec_ctl.scala 144:78]
-  wire  _T_1091 = _T_1090 & io_ins[4]; // @[el2_dec_dec_ctl.scala 144:78]
-  wire  _T_1092 = _T_1084 | _T_1091; // @[el2_dec_dec_ctl.scala 144:43]
-  wire  _T_1098 = _T_79 & io_ins[6]; // @[el2_dec_dec_ctl.scala 145:38]
-  wire  _T_1099 = _T_1098 & io_ins[4]; // @[el2_dec_dec_ctl.scala 145:38]
-  wire  _T_1100 = _T_1092 | _T_1099; // @[el2_dec_dec_ctl.scala 144:82]
-  wire  _T_1106 = _T_64 & io_ins[6]; // @[el2_dec_dec_ctl.scala 145:77]
-  wire  _T_1107 = _T_1106 & io_ins[4]; // @[el2_dec_dec_ctl.scala 145:77]
-  wire  _T_1108 = _T_1100 | _T_1107; // @[el2_dec_dec_ctl.scala 145:42]
-  wire  _T_1113 = io_ins[18] & io_ins[13]; // @[el2_dec_dec_ctl.scala 146:38]
-  wire  _T_1114 = _T_1113 & io_ins[6]; // @[el2_dec_dec_ctl.scala 146:38]
-  wire  _T_1115 = _T_1114 & io_ins[4]; // @[el2_dec_dec_ctl.scala 146:38]
-  wire  _T_1116 = _T_1108 | _T_1115; // @[el2_dec_dec_ctl.scala 145:81]
-  wire  _T_1122 = _T_33 & io_ins[6]; // @[el2_dec_dec_ctl.scala 146:77]
-  wire  _T_1123 = _T_1122 & io_ins[4]; // @[el2_dec_dec_ctl.scala 146:77]
-  wire  _T_1139 = _T_841 & _T_16; // @[el2_dec_dec_ctl.scala 147:98]
-  wire  _T_1140 = _T_1139 & _T_144; // @[el2_dec_dec_ctl.scala 147:98]
-  wire  _T_1141 = _T_1140 & io_ins[6]; // @[el2_dec_dec_ctl.scala 147:98]
-  wire  _T_1142 = _T_1141 & io_ins[4]; // @[el2_dec_dec_ctl.scala 147:98]
-  wire  _T_1143 = _T_998 | _T_1142; // @[el2_dec_dec_ctl.scala 147:57]
-  wire  _T_1152 = _T_1143 | _T_1038; // @[el2_dec_dec_ctl.scala 147:102]
-  wire  _T_1161 = _T_1152 | _T_1047; // @[el2_dec_dec_ctl.scala 148:42]
-  wire  _T_1170 = _T_1161 | _T_1056; // @[el2_dec_dec_ctl.scala 148:81]
-  wire  _T_1179 = _T_1170 | _T_1074; // @[el2_dec_dec_ctl.scala 149:42]
-  wire  _T_1188 = _T_1179 | _T_1083; // @[el2_dec_dec_ctl.scala 149:82]
-  wire  _T_1196 = _T_1188 | _T_1091; // @[el2_dec_dec_ctl.scala 150:43]
-  wire  _T_1204 = _T_1196 | _T_1099; // @[el2_dec_dec_ctl.scala 150:82]
-  wire  _T_1212 = _T_1204 | _T_1107; // @[el2_dec_dec_ctl.scala 151:42]
-  wire  _T_1220 = _T_1212 | _T_1115; // @[el2_dec_dec_ctl.scala 151:81]
-  wire  _T_1230 = ~io_ins[31]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1236 = ~io_ins[27]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1238 = ~io_ins[26]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1242 = ~io_ins[24]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1244 = ~io_ins[23]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1251 = ~io_ins[19]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1255 = ~io_ins[17]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1257 = ~io_ins[16]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1259 = ~io_ins[15]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1263 = ~io_ins[11]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1265 = ~io_ins[10]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1267 = ~io_ins[9]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1269 = ~io_ins[8]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1271 = ~io_ins[7]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1281 = ~io_ins[0]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1282 = _T_1230 & _T_248; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1283 = _T_1282 & io_ins[29]; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1284 = _T_1283 & io_ins[28]; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1285 = _T_1284 & _T_1236; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1286 = _T_1285 & _T_1238; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1287 = _T_1286 & _T_4; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1288 = _T_1287 & _T_1242; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1289 = _T_1288 & _T_1244; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1290 = _T_1289 & _T_841; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1291 = _T_1290 & io_ins[21]; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1292 = _T_1291 & _T_857; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1293 = _T_1292 & _T_1251; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1294 = _T_1293 & _T_45; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1295 = _T_1294 & _T_1255; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1296 = _T_1295 & _T_1257; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1297 = _T_1296 & _T_1259; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1298 = _T_1297 & _T_14; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1299 = _T_1298 & _T_1263; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1300 = _T_1299 & _T_1265; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1301 = _T_1300 & _T_1267; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1302 = _T_1301 & _T_1269; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1303 = _T_1302 & _T_1271; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1304 = _T_1303 & io_ins[6]; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1305 = _T_1304 & io_ins[5]; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1306 = _T_1305 & io_ins[4]; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1307 = _T_1306 & _T_100; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1308 = _T_1307 & _T_18; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1309 = _T_1308 & io_ins[1]; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1310 = _T_1309 & _T_1281; // @[el2_dec_dec_ctl.scala 153:144]
-  wire  _T_1316 = ~io_ins[29]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1365 = _T_1282 & _T_1316; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1366 = _T_1365 & io_ins[28]; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1367 = _T_1366 & _T_1236; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1368 = _T_1367 & _T_1238; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1369 = _T_1368 & _T_4; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1370 = _T_1369 & _T_1242; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1371 = _T_1370 & _T_1244; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1372 = _T_1371 & io_ins[22]; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1373 = _T_1372 & _T_855; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1374 = _T_1373 & io_ins[20]; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1375 = _T_1374 & _T_1251; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1376 = _T_1375 & _T_45; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1377 = _T_1376 & _T_1255; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1378 = _T_1377 & _T_1257; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1379 = _T_1378 & _T_1259; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1380 = _T_1379 & _T_14; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1381 = _T_1380 & _T_1263; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1382 = _T_1381 & _T_1265; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1383 = _T_1382 & _T_1267; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1384 = _T_1383 & _T_1269; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1385 = _T_1384 & _T_1271; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1386 = _T_1385 & io_ins[6]; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1387 = _T_1386 & io_ins[5]; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1388 = _T_1387 & io_ins[4]; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1389 = _T_1388 & _T_100; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1390 = _T_1389 & _T_18; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1391 = _T_1390 & io_ins[1]; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1392 = _T_1391 & _T_1281; // @[el2_dec_dec_ctl.scala 154:130]
-  wire  _T_1393 = _T_1310 | _T_1392; // @[el2_dec_dec_ctl.scala 153:148]
-  wire  _T_1401 = ~io_ins[28]; // @[el2_dec_dec_ctl.scala 67:45]
-  wire  _T_1449 = _T_1365 & _T_1401; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1450 = _T_1449 & _T_1236; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1451 = _T_1450 & _T_1238; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1452 = _T_1451 & _T_4; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1453 = _T_1452 & _T_1242; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1454 = _T_1453 & _T_1244; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1455 = _T_1454 & _T_841; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1456 = _T_1455 & _T_855; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1457 = _T_1456 & _T_1251; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1458 = _T_1457 & _T_45; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1459 = _T_1458 & _T_1255; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1460 = _T_1459 & _T_1257; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1461 = _T_1460 & _T_1259; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1462 = _T_1461 & _T_14; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1463 = _T_1462 & _T_1263; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1464 = _T_1463 & _T_1265; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1465 = _T_1464 & _T_1267; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1466 = _T_1465 & _T_1269; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1467 = _T_1466 & _T_1271; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1468 = _T_1467 & io_ins[5]; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1469 = _T_1468 & io_ins[4]; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1470 = _T_1469 & _T_100; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1471 = _T_1470 & _T_18; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1472 = _T_1471 & io_ins[1]; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1473 = _T_1472 & _T_1281; // @[el2_dec_dec_ctl.scala 155:127]
-  wire  _T_1474 = _T_1393 | _T_1473; // @[el2_dec_dec_ctl.scala 154:134]
-  wire  _T_1503 = _T_1452 & _T_104; // @[el2_dec_dec_ctl.scala 156:68]
-  wire  _T_1504 = _T_1503 & io_ins[4]; // @[el2_dec_dec_ctl.scala 156:68]
-  wire  _T_1505 = _T_1504 & _T_100; // @[el2_dec_dec_ctl.scala 156:68]
-  wire  _T_1506 = _T_1505 & io_ins[1]; // @[el2_dec_dec_ctl.scala 156:68]
-  wire  _T_1507 = _T_1506 & _T_1281; // @[el2_dec_dec_ctl.scala 156:68]
-  wire  _T_1508 = _T_1474 | _T_1507; // @[el2_dec_dec_ctl.scala 155:131]
-  wire  _T_1536 = _T_1230 & _T_1316; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1537 = _T_1536 & _T_1401; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1538 = _T_1537 & _T_1236; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1539 = _T_1538 & _T_1238; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1540 = _T_1539 & _T_4; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1541 = _T_1540 & _T_14; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1542 = _T_1541 & _T_16; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1543 = _T_1542 & _T_144; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1544 = _T_1543 & _T_104; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1545 = _T_1544 & _T_100; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1546 = _T_1545 & _T_18; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1547 = _T_1546 & io_ins[1]; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1548 = _T_1547 & _T_1281; // @[el2_dec_dec_ctl.scala 157:77]
-  wire  _T_1549 = _T_1508 | _T_1548; // @[el2_dec_dec_ctl.scala 156:72]
-  wire  _T_1579 = _T_1540 & io_ins[14]; // @[el2_dec_dec_ctl.scala 158:74]
-  wire  _T_1580 = _T_1579 & _T_16; // @[el2_dec_dec_ctl.scala 158:74]
-  wire  _T_1581 = _T_1580 & io_ins[12]; // @[el2_dec_dec_ctl.scala 158:74]
-  wire  _T_1582 = _T_1581 & _T_104; // @[el2_dec_dec_ctl.scala 158:74]
-  wire  _T_1583 = _T_1582 & io_ins[4]; // @[el2_dec_dec_ctl.scala 158:74]
-  wire  _T_1584 = _T_1583 & _T_100; // @[el2_dec_dec_ctl.scala 158:74]
-  wire  _T_1585 = _T_1584 & io_ins[1]; // @[el2_dec_dec_ctl.scala 158:74]
-  wire  _T_1586 = _T_1585 & _T_1281; // @[el2_dec_dec_ctl.scala 158:74]
-  wire  _T_1587 = _T_1549 | _T_1586; // @[el2_dec_dec_ctl.scala 157:81]
-  wire  _T_1614 = _T_1451 & _T_104; // @[el2_dec_dec_ctl.scala 159:66]
-  wire  _T_1615 = _T_1614 & io_ins[5]; // @[el2_dec_dec_ctl.scala 159:66]
-  wire  _T_1616 = _T_1615 & io_ins[4]; // @[el2_dec_dec_ctl.scala 159:66]
-  wire  _T_1617 = _T_1616 & _T_100; // @[el2_dec_dec_ctl.scala 159:66]
-  wire  _T_1618 = _T_1617 & io_ins[1]; // @[el2_dec_dec_ctl.scala 159:66]
-  wire  _T_1619 = _T_1618 & _T_1281; // @[el2_dec_dec_ctl.scala 159:66]
-  wire  _T_1620 = _T_1587 | _T_1619; // @[el2_dec_dec_ctl.scala 158:78]
-  wire  _T_1638 = _T_236 & io_ins[6]; // @[el2_dec_dec_ctl.scala 160:54]
-  wire  _T_1639 = _T_1638 & io_ins[5]; // @[el2_dec_dec_ctl.scala 160:54]
-  wire  _T_1640 = _T_1639 & _T_98; // @[el2_dec_dec_ctl.scala 160:54]
-  wire  _T_1641 = _T_1640 & _T_100; // @[el2_dec_dec_ctl.scala 160:54]
-  wire  _T_1642 = _T_1641 & io_ins[1]; // @[el2_dec_dec_ctl.scala 160:54]
-  wire  _T_1643 = _T_1642 & _T_1281; // @[el2_dec_dec_ctl.scala 160:54]
-  wire  _T_1644 = _T_1620 | _T_1643; // @[el2_dec_dec_ctl.scala 159:70]
-  wire  _T_1657 = io_ins[14] & io_ins[6]; // @[el2_dec_dec_ctl.scala 161:48]
-  wire  _T_1658 = _T_1657 & io_ins[5]; // @[el2_dec_dec_ctl.scala 161:48]
-  wire  _T_1659 = _T_1658 & _T_98; // @[el2_dec_dec_ctl.scala 161:48]
-  wire  _T_1660 = _T_1659 & _T_100; // @[el2_dec_dec_ctl.scala 161:48]
-  wire  _T_1661 = _T_1660 & _T_18; // @[el2_dec_dec_ctl.scala 161:48]
-  wire  _T_1662 = _T_1661 & io_ins[1]; // @[el2_dec_dec_ctl.scala 161:48]
-  wire  _T_1663 = _T_1662 & _T_1281; // @[el2_dec_dec_ctl.scala 161:48]
-  wire  _T_1664 = _T_1644 | _T_1663; // @[el2_dec_dec_ctl.scala 160:58]
-  wire  _T_1677 = _T_144 & _T_104; // @[el2_dec_dec_ctl.scala 162:47]
-  wire  _T_1678 = _T_1677 & _T_9; // @[el2_dec_dec_ctl.scala 162:47]
-  wire  _T_1679 = _T_1678 & io_ins[4]; // @[el2_dec_dec_ctl.scala 162:47]
-  wire  _T_1680 = _T_1679 & _T_100; // @[el2_dec_dec_ctl.scala 162:47]
-  wire  _T_1681 = _T_1680 & io_ins[1]; // @[el2_dec_dec_ctl.scala 162:47]
-  wire  _T_1682 = _T_1681 & _T_1281; // @[el2_dec_dec_ctl.scala 162:47]
-  wire  _T_1683 = _T_1664 | _T_1682; // @[el2_dec_dec_ctl.scala 161:52]
-  wire  _T_1699 = _T_19 & io_ins[5]; // @[el2_dec_dec_ctl.scala 162:99]
-  wire  _T_1700 = _T_1699 & _T_98; // @[el2_dec_dec_ctl.scala 162:99]
-  wire  _T_1701 = _T_1700 & _T_100; // @[el2_dec_dec_ctl.scala 162:99]
-  wire  _T_1702 = _T_1701 & _T_18; // @[el2_dec_dec_ctl.scala 162:99]
-  wire  _T_1703 = _T_1702 & io_ins[1]; // @[el2_dec_dec_ctl.scala 162:99]
-  wire  _T_1704 = _T_1703 & _T_1281; // @[el2_dec_dec_ctl.scala 162:99]
-  wire  _T_1705 = _T_1683 | _T_1704; // @[el2_dec_dec_ctl.scala 162:51]
-  wire  _T_1717 = io_ins[12] & io_ins[6]; // @[el2_dec_dec_ctl.scala 163:47]
-  wire  _T_1718 = _T_1717 & io_ins[5]; // @[el2_dec_dec_ctl.scala 163:47]
-  wire  _T_1719 = _T_1718 & io_ins[4]; // @[el2_dec_dec_ctl.scala 163:47]
-  wire  _T_1720 = _T_1719 & _T_100; // @[el2_dec_dec_ctl.scala 163:47]
-  wire  _T_1721 = _T_1720 & _T_18; // @[el2_dec_dec_ctl.scala 163:47]
-  wire  _T_1722 = _T_1721 & io_ins[1]; // @[el2_dec_dec_ctl.scala 163:47]
-  wire  _T_1723 = _T_1722 & _T_1281; // @[el2_dec_dec_ctl.scala 163:47]
-  wire  _T_1724 = _T_1705 | _T_1723; // @[el2_dec_dec_ctl.scala 162:103]
-  wire  _T_1796 = _T_1456 & _T_857; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1797 = _T_1796 & _T_1251; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1798 = _T_1797 & _T_45; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1799 = _T_1798 & _T_1255; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1800 = _T_1799 & _T_1257; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1801 = _T_1800 & _T_1259; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1802 = _T_1801 & _T_14; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1803 = _T_1802 & _T_16; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1804 = _T_1803 & _T_144; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1805 = _T_1804 & _T_1263; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1806 = _T_1805 & _T_1265; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1807 = _T_1806 & _T_1267; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1808 = _T_1807 & _T_1269; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1809 = _T_1808 & _T_1271; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1810 = _T_1809 & _T_104; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1811 = _T_1810 & _T_9; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1812 = _T_1811 & _T_98; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1813 = _T_1812 & io_ins[3]; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1814 = _T_1813 & io_ins[2]; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1815 = _T_1814 & io_ins[1]; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1816 = _T_1815 & _T_1281; // @[el2_dec_dec_ctl.scala 164:142]
-  wire  _T_1817 = _T_1724 | _T_1816; // @[el2_dec_dec_ctl.scala 163:51]
-  wire  _T_1866 = _T_1449 & _T_1251; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1867 = _T_1866 & _T_45; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1868 = _T_1867 & _T_1255; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1869 = _T_1868 & _T_1257; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1870 = _T_1869 & _T_1259; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1871 = _T_1870 & _T_14; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1872 = _T_1871 & _T_16; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1873 = _T_1872 & _T_144; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1874 = _T_1873 & _T_1263; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1875 = _T_1874 & _T_1265; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1876 = _T_1875 & _T_1267; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1877 = _T_1876 & _T_1269; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1878 = _T_1877 & _T_1271; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1879 = _T_1878 & _T_104; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1880 = _T_1879 & _T_9; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1881 = _T_1880 & _T_98; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1882 = _T_1881 & io_ins[3]; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1883 = _T_1882 & io_ins[2]; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1884 = _T_1883 & io_ins[1]; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1885 = _T_1884 & _T_1281; // @[el2_dec_dec_ctl.scala 165:110]
-  wire  _T_1886 = _T_1817 | _T_1885; // @[el2_dec_dec_ctl.scala 164:146]
-  wire  _T_1902 = _T_16 & _T_104; // @[el2_dec_dec_ctl.scala 166:51]
-  wire  _T_1903 = _T_1902 & _T_9; // @[el2_dec_dec_ctl.scala 166:51]
-  wire  _T_1904 = _T_1903 & _T_98; // @[el2_dec_dec_ctl.scala 166:51]
-  wire  _T_1905 = _T_1904 & _T_100; // @[el2_dec_dec_ctl.scala 166:51]
-  wire  _T_1906 = _T_1905 & _T_18; // @[el2_dec_dec_ctl.scala 166:51]
-  wire  _T_1907 = _T_1906 & io_ins[1]; // @[el2_dec_dec_ctl.scala 166:51]
-  wire  _T_1908 = _T_1907 & _T_1281; // @[el2_dec_dec_ctl.scala 166:51]
-  wire  _T_1909 = _T_1886 | _T_1908; // @[el2_dec_dec_ctl.scala 165:114]
-  wire  _T_1919 = io_ins[6] & io_ins[5]; // @[el2_dec_dec_ctl.scala 166:95]
-  wire  _T_1920 = _T_1919 & _T_98; // @[el2_dec_dec_ctl.scala 166:95]
-  wire  _T_1921 = _T_1920 & io_ins[3]; // @[el2_dec_dec_ctl.scala 166:95]
-  wire  _T_1922 = _T_1921 & io_ins[2]; // @[el2_dec_dec_ctl.scala 166:95]
-  wire  _T_1923 = _T_1922 & io_ins[1]; // @[el2_dec_dec_ctl.scala 166:95]
-  wire  _T_1924 = _T_1923 & _T_1281; // @[el2_dec_dec_ctl.scala 166:95]
-  wire  _T_1925 = _T_1909 | _T_1924; // @[el2_dec_dec_ctl.scala 166:55]
-  wire  _T_1938 = _T_656 & _T_9; // @[el2_dec_dec_ctl.scala 167:46]
-  wire  _T_1939 = _T_1938 & io_ins[4]; // @[el2_dec_dec_ctl.scala 167:46]
-  wire  _T_1940 = _T_1939 & _T_100; // @[el2_dec_dec_ctl.scala 167:46]
-  wire  _T_1941 = _T_1940 & io_ins[1]; // @[el2_dec_dec_ctl.scala 167:46]
-  wire  _T_1942 = _T_1941 & _T_1281; // @[el2_dec_dec_ctl.scala 167:46]
-  wire  _T_1943 = _T_1925 | _T_1942; // @[el2_dec_dec_ctl.scala 166:99]
-  wire  _T_1960 = _T_585 & _T_104; // @[el2_dec_dec_ctl.scala 167:99]
-  wire  _T_1961 = _T_1960 & _T_98; // @[el2_dec_dec_ctl.scala 167:99]
-  wire  _T_1962 = _T_1961 & _T_100; // @[el2_dec_dec_ctl.scala 167:99]
-  wire  _T_1963 = _T_1962 & _T_18; // @[el2_dec_dec_ctl.scala 167:99]
-  wire  _T_1964 = _T_1963 & io_ins[1]; // @[el2_dec_dec_ctl.scala 167:99]
-  wire  _T_1965 = _T_1964 & _T_1281; // @[el2_dec_dec_ctl.scala 167:99]
-  wire  _T_1966 = _T_1943 | _T_1965; // @[el2_dec_dec_ctl.scala 167:50]
-  wire  _T_1977 = _T_104 & io_ins[4]; // @[el2_dec_dec_ctl.scala 168:43]
-  wire  _T_1978 = _T_1977 & _T_100; // @[el2_dec_dec_ctl.scala 168:43]
-  wire  _T_1979 = _T_1978 & _T_18; // @[el2_dec_dec_ctl.scala 168:43]
-  wire  _T_1980 = _T_1979 & io_ins[1]; // @[el2_dec_dec_ctl.scala 168:43]
-  wire  _T_1981 = _T_1980 & _T_1281; // @[el2_dec_dec_ctl.scala 168:43]
-  assign io_out_alu = _T_7 | _T_11; // @[el2_dec_dec_ctl.scala 72:14]
-  assign io_out_rs1 = _T_102 | _T_107; // @[el2_dec_dec_ctl.scala 73:14]
-  assign io_out_rs2 = _T_115 | _T_122; // @[el2_dec_dec_ctl.scala 79:14]
-  assign io_out_imm12 = _T_150 | _T_160; // @[el2_dec_dec_ctl.scala 80:16]
-  assign io_out_rd = _T_170 | io_ins[4]; // @[el2_dec_dec_ctl.scala 82:13]
-  assign io_out_shimm5 = _T_183 & _T_18; // @[el2_dec_dec_ctl.scala 83:17]
-  assign io_out_imm20 = _T_187 | _T_190; // @[el2_dec_dec_ctl.scala 84:16]
-  assign io_out_pc = _T_198 | _T_187; // @[el2_dec_dec_ctl.scala 85:13]
-  assign io_out_load = _T_209 & _T_18; // @[el2_dec_dec_ctl.scala 86:15]
-  assign io_out_store = _T_121 & _T_98; // @[el2_dec_dec_ctl.scala 87:16]
-  assign io_out_lsu = _T_224 & _T_18; // @[el2_dec_dec_ctl.scala 88:14]
-  assign io_out_add = _T_246 | _T_268; // @[el2_dec_dec_ctl.scala 89:14]
-  assign io_out_sub = _T_312 | _T_319; // @[el2_dec_dec_ctl.scala 91:14]
-  assign io_out_land = _T_331 | _T_345; // @[el2_dec_dec_ctl.scala 93:15]
-  assign io_out_lor = _T_382 | _T_394; // @[el2_dec_dec_ctl.scala 94:14]
-  assign io_out_lxor = _T_410 | _T_425; // @[el2_dec_dec_ctl.scala 97:15]
-  assign io_out_sll = _T_443 & _T_18; // @[el2_dec_dec_ctl.scala 98:14]
-  assign io_out_sra = _T_457 & _T_18; // @[el2_dec_dec_ctl.scala 99:14]
-  assign io_out_srl = _T_477 & _T_18; // @[el2_dec_dec_ctl.scala 100:14]
-  assign io_out_slt = _T_495 | _T_311; // @[el2_dec_dec_ctl.scala 101:14]
-  assign io_out_unsign = _T_554 | _T_567; // @[el2_dec_dec_ctl.scala 102:17]
-  assign io_out_condbr = _T_318 & _T_18; // @[el2_dec_dec_ctl.scala 105:17]
-  assign io_out_beq = _T_587 & _T_18; // @[el2_dec_dec_ctl.scala 106:14]
-  assign io_out_bne = _T_599 & _T_18; // @[el2_dec_dec_ctl.scala 107:14]
-  assign io_out_bge = _T_610 & _T_18; // @[el2_dec_dec_ctl.scala 108:14]
-  assign io_out_blt = _T_622 & _T_18; // @[el2_dec_dec_ctl.scala 109:14]
-  assign io_out_jal = io_ins[6] & io_ins[2]; // @[el2_dec_dec_ctl.scala 110:14]
-  assign io_out_by = _T_639 & _T_18; // @[el2_dec_dec_ctl.scala 111:13]
-  assign io_out_half = _T_649 & _T_18; // @[el2_dec_dec_ctl.scala 112:15]
-  assign io_out_word = _T_656 & _T_98; // @[el2_dec_dec_ctl.scala 113:15]
-  assign io_out_csr_read = _T_686 | _T_691; // @[el2_dec_dec_ctl.scala 114:19]
-  assign io_out_csr_clr = _T_730 | _T_738; // @[el2_dec_dec_ctl.scala 117:18]
-  assign io_out_csr_set = _T_830 | _T_738; // @[el2_dec_dec_ctl.scala 124:18]
-  assign io_out_csr_write = _T_746 & io_ins[4]; // @[el2_dec_dec_ctl.scala 120:20]
-  assign io_out_csr_imm = _T_787 | _T_794; // @[el2_dec_dec_ctl.scala 121:18]
-  assign io_out_presync = _T_1116 | _T_1123; // @[el2_dec_dec_ctl.scala 141:18]
-  assign io_out_postsync = _T_1220 | _T_1123; // @[el2_dec_dec_ctl.scala 147:19]
-  assign io_out_ebreak = _T_852 & io_ins[4]; // @[el2_dec_dec_ctl.scala 127:17]
-  assign io_out_ecall = _T_867 & io_ins[4]; // @[el2_dec_dec_ctl.scala 128:16]
-  assign io_out_mret = _T_878 & io_ins[4]; // @[el2_dec_dec_ctl.scala 129:15]
-  assign io_out_mul = _T_892 & _T_18; // @[el2_dec_dec_ctl.scala 130:14]
-  assign io_out_rs1_sign = _T_912 | _T_929; // @[el2_dec_dec_ctl.scala 131:19]
-  assign io_out_rs2_sign = _T_928 & _T_18; // @[el2_dec_dec_ctl.scala 133:19]
-  assign io_out_low = _T_963 & _T_18; // @[el2_dec_dec_ctl.scala 134:14]
-  assign io_out_div = _T_974 & _T_18; // @[el2_dec_dec_ctl.scala 135:14]
-  assign io_out_rem = _T_987 & _T_18; // @[el2_dec_dec_ctl.scala 136:14]
-  assign io_out_fence = _T_9 & io_ins[3]; // @[el2_dec_dec_ctl.scala 137:16]
-  assign io_out_fence_i = _T_997 & io_ins[3]; // @[el2_dec_dec_ctl.scala 138:18]
-  assign io_out_pm_alu = _T_1021 | _T_11; // @[el2_dec_dec_ctl.scala 139:17]
-  assign io_out_legal = _T_1966 | _T_1981; // @[el2_dec_dec_ctl.scala 153:16]
+  wire  _T_2 = io_ins[2] | io_ins[6]; // @[el2_dec_dec_ctl.scala 20:27]
+  wire  _T_4 = ~io_ins[25]; // @[el2_dec_dec_ctl.scala 20:42]
+  wire  _T_6 = _T_4 & io_ins[4]; // @[el2_dec_dec_ctl.scala 20:53]
+  wire  _T_7 = _T_2 | _T_6; // @[el2_dec_dec_ctl.scala 20:39]
+  wire  _T_9 = ~io_ins[5]; // @[el2_dec_dec_ctl.scala 20:68]
+  wire  _T_11 = _T_9 & io_ins[4]; // @[el2_dec_dec_ctl.scala 20:78]
+  wire  _T_14 = ~io_ins[14]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_16 = ~io_ins[13]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_18 = ~io_ins[2]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_19 = _T_14 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_20 = _T_19 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_26 = _T_16 & io_ins[11]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_27 = _T_26 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_28 = _T_20 | _T_27; // @[el2_dec_dec_ctl.scala 21:43]
+  wire  _T_33 = io_ins[19] & io_ins[13]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_34 = _T_33 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_35 = _T_28 | _T_34; // @[el2_dec_dec_ctl.scala 21:70]
+  wire  _T_41 = _T_16 & io_ins[10]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_42 = _T_41 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_43 = _T_35 | _T_42; // @[el2_dec_dec_ctl.scala 22:29]
+  wire  _T_48 = io_ins[18] & io_ins[13]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_49 = _T_48 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_50 = _T_43 | _T_49; // @[el2_dec_dec_ctl.scala 22:56]
+  wire  _T_56 = _T_16 & io_ins[9]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_57 = _T_56 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_58 = _T_50 | _T_57; // @[el2_dec_dec_ctl.scala 23:29]
+  wire  _T_63 = io_ins[17] & io_ins[13]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_64 = _T_63 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_65 = _T_58 | _T_64; // @[el2_dec_dec_ctl.scala 23:55]
+  wire  _T_71 = _T_16 & io_ins[8]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_72 = _T_71 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_73 = _T_65 | _T_72; // @[el2_dec_dec_ctl.scala 24:29]
+  wire  _T_78 = io_ins[16] & io_ins[13]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_79 = _T_78 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_80 = _T_73 | _T_79; // @[el2_dec_dec_ctl.scala 24:55]
+  wire  _T_86 = _T_16 & io_ins[7]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_87 = _T_86 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_88 = _T_80 | _T_87; // @[el2_dec_dec_ctl.scala 25:29]
+  wire  _T_93 = io_ins[15] & io_ins[13]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_94 = _T_93 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_95 = _T_88 | _T_94; // @[el2_dec_dec_ctl.scala 25:55]
+  wire  _T_97 = ~io_ins[4]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_99 = ~io_ins[3]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_100 = _T_97 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_101 = _T_95 | _T_100; // @[el2_dec_dec_ctl.scala 26:29]
+  wire  _T_103 = ~io_ins[6]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_106 = _T_103 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_113 = io_ins[5] & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_114 = _T_113 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_120 = _T_103 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_121 = _T_120 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_129 = _T_100 & io_ins[2]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_136 = io_ins[13] & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_137 = _T_136 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_138 = _T_137 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_139 = _T_129 | _T_138; // @[el2_dec_dec_ctl.scala 28:42]
+  wire  _T_143 = ~io_ins[12]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_146 = _T_16 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_147 = _T_146 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_148 = _T_147 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_149 = _T_139 | _T_148; // @[el2_dec_dec_ctl.scala 28:70]
+  wire  _T_157 = _T_143 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_158 = _T_157 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_159 = _T_158 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_165 = _T_9 & _T_18; // @[el2_dec_dec_ctl.scala 30:28]
+  wire  _T_168 = io_ins[5] & io_ins[2]; // @[el2_dec_dec_ctl.scala 30:55]
+  wire  _T_169 = _T_165 | _T_168; // @[el2_dec_dec_ctl.scala 30:42]
+  wire  _T_180 = _T_16 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_181 = _T_180 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_182 = _T_181 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_186 = io_ins[5] & io_ins[3]; // @[el2_dec_dec_ctl.scala 32:29]
+  wire  _T_189 = io_ins[4] & io_ins[2]; // @[el2_dec_dec_ctl.scala 32:53]
+  wire  _T_195 = _T_9 & _T_99; // @[el2_dec_dec_ctl.scala 33:28]
+  wire  _T_197 = _T_195 & io_ins[2]; // @[el2_dec_dec_ctl.scala 33:41]
+  wire  _T_208 = _T_9 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_223 = _T_103 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_235 = _T_19 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_236 = _T_235 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_237 = _T_236 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_245 = _T_237 | _T_197; // @[el2_dec_dec_ctl.scala 37:49]
+  wire  _T_247 = ~io_ins[30]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_261 = _T_247 & _T_4; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_262 = _T_261 & _T_14; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_263 = _T_262 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_264 = _T_263 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_265 = _T_264 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_266 = _T_265 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_267 = _T_266 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_278 = io_ins[30] & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_279 = _T_278 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_280 = _T_279 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_281 = _T_280 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_282 = _T_281 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_293 = _T_4 & _T_14; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_294 = _T_293 & io_ins[13]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_295 = _T_294 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_296 = _T_295 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_297 = _T_296 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_298 = _T_282 | _T_297; // @[el2_dec_dec_ctl.scala 39:49]
+  wire  _T_307 = _T_14 & io_ins[13]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_308 = _T_307 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_309 = _T_308 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_310 = _T_309 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_311 = _T_298 | _T_310; // @[el2_dec_dec_ctl.scala 39:85]
+  wire  _T_317 = io_ins[6] & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_318 = _T_317 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_327 = io_ins[14] & io_ins[13]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_328 = _T_327 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_329 = _T_328 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_330 = _T_329 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_340 = _T_4 & io_ins[14]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_341 = _T_340 & io_ins[13]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_342 = _T_341 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_343 = _T_342 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_344 = _T_343 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_349 = _T_103 & io_ins[3]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_362 = _T_341 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_363 = _T_362 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_364 = _T_363 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_365 = _T_349 | _T_364; // @[el2_dec_dec_ctl.scala 42:37]
+  wire  _T_369 = io_ins[5] & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_370 = _T_369 & io_ins[2]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_371 = _T_365 | _T_370; // @[el2_dec_dec_ctl.scala 42:74]
+  wire  _T_381 = _T_371 | _T_148; // @[el2_dec_dec_ctl.scala 43:26]
+  wire  _T_391 = _T_327 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_392 = _T_391 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_393 = _T_392 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_406 = _T_340 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_407 = _T_406 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_408 = _T_407 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_409 = _T_408 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_420 = io_ins[14] & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_421 = _T_420 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_422 = _T_421 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_423 = _T_422 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_424 = _T_423 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_439 = _T_293 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_440 = _T_439 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_441 = _T_440 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_442 = _T_441 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_453 = io_ins[30] & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_454 = _T_453 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_455 = _T_454 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_456 = _T_455 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_472 = _T_261 & io_ins[14]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_473 = _T_472 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_474 = _T_473 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_475 = _T_474 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_476 = _T_475 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_515 = _T_307 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_516 = _T_515 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_517 = _T_516 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_524 = io_ins[13] & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_525 = _T_524 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_526 = _T_525 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_527 = _T_517 | _T_526; // @[el2_dec_dec_ctl.scala 50:51]
+  wire  _T_533 = io_ins[14] & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_534 = _T_533 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_535 = _T_527 | _T_534; // @[el2_dec_dec_ctl.scala 50:79]
+  wire  _T_548 = _T_294 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_549 = _T_548 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_550 = _T_549 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_551 = _T_535 | _T_550; // @[el2_dec_dec_ctl.scala 51:29]
+  wire  _T_560 = io_ins[25] & io_ins[14]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_561 = _T_560 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_562 = _T_561 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_563 = _T_562 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_564 = _T_563 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_582 = _T_14 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_583 = _T_582 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_584 = _T_583 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_594 = _T_14 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_595 = _T_594 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_596 = _T_595 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_605 = io_ins[14] & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_606 = _T_605 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_607 = _T_606 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_617 = io_ins[14] & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_618 = _T_617 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_619 = _T_618 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_635 = _T_146 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_636 = _T_635 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_645 = io_ins[12] & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_646 = _T_645 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_653 = io_ins[13] & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_659 = _T_524 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_663 = io_ins[7] & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_664 = _T_663 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_665 = _T_659 | _T_664; // @[el2_dec_dec_ctl.scala 62:44]
+  wire  _T_669 = io_ins[8] & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_670 = _T_669 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_671 = _T_665 | _T_670; // @[el2_dec_dec_ctl.scala 62:67]
+  wire  _T_675 = io_ins[9] & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_676 = _T_675 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_677 = _T_671 | _T_676; // @[el2_dec_dec_ctl.scala 63:26]
+  wire  _T_681 = io_ins[10] & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_682 = _T_681 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_683 = _T_677 | _T_682; // @[el2_dec_dec_ctl.scala 63:49]
+  wire  _T_687 = io_ins[11] & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_688 = _T_687 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_696 = _T_93 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_697 = _T_696 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_698 = _T_697 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_705 = _T_78 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_706 = _T_705 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_707 = _T_706 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_708 = _T_698 | _T_707; // @[el2_dec_dec_ctl.scala 65:49]
+  wire  _T_715 = _T_63 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_716 = _T_715 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_717 = _T_716 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_718 = _T_708 | _T_717; // @[el2_dec_dec_ctl.scala 65:79]
+  wire  _T_725 = _T_48 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_726 = _T_725 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_727 = _T_726 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_728 = _T_718 | _T_727; // @[el2_dec_dec_ctl.scala 66:33]
+  wire  _T_735 = _T_33 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_736 = _T_735 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_737 = _T_736 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_745 = _T_180 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_753 = _T_420 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_754 = _T_753 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_759 = io_ins[15] & io_ins[14]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_760 = _T_759 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_761 = _T_760 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_762 = _T_754 | _T_761; // @[el2_dec_dec_ctl.scala 69:47]
+  wire  _T_767 = io_ins[16] & io_ins[14]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_768 = _T_767 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_769 = _T_768 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_770 = _T_762 | _T_769; // @[el2_dec_dec_ctl.scala 69:74]
+  wire  _T_775 = io_ins[17] & io_ins[14]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_776 = _T_775 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_777 = _T_776 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_778 = _T_770 | _T_777; // @[el2_dec_dec_ctl.scala 70:30]
+  wire  _T_783 = io_ins[18] & io_ins[14]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_784 = _T_783 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_785 = _T_784 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_786 = _T_778 | _T_785; // @[el2_dec_dec_ctl.scala 70:57]
+  wire  _T_791 = io_ins[19] & io_ins[14]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_792 = _T_791 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_793 = _T_792 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_800 = io_ins[15] & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_801 = _T_800 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_802 = _T_801 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_808 = io_ins[16] & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_809 = _T_808 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_810 = _T_809 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_811 = _T_802 | _T_810; // @[el2_dec_dec_ctl.scala 72:47]
+  wire  _T_817 = io_ins[17] & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_818 = _T_817 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_819 = _T_818 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_820 = _T_811 | _T_819; // @[el2_dec_dec_ctl.scala 72:75]
+  wire  _T_826 = io_ins[18] & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_827 = _T_826 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_828 = _T_827 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_829 = _T_820 | _T_828; // @[el2_dec_dec_ctl.scala 73:31]
+  wire  _T_835 = io_ins[19] & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_836 = _T_835 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_837 = _T_836 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_840 = ~io_ins[22]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_848 = _T_840 & io_ins[20]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_849 = _T_848 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_850 = _T_849 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_851 = _T_850 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_854 = ~io_ins[21]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_856 = ~io_ins[20]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_863 = _T_854 & _T_856; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_864 = _T_863 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_865 = _T_864 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_866 = _T_865 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_875 = io_ins[29] & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_876 = _T_875 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_877 = _T_876 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_888 = io_ins[25] & _T_14; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_889 = _T_888 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_890 = _T_889 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_891 = _T_890 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_906 = _T_888 & io_ins[13]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_907 = _T_906 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_908 = _T_907 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_909 = _T_908 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_910 = _T_909 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_911 = _T_910 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_924 = _T_888 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_925 = _T_924 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_926 = _T_925 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_927 = _T_926 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_928 = _T_927 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_960 = _T_924 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_961 = _T_960 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_962 = _T_961 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_972 = _T_560 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_973 = _T_972 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_984 = _T_560 & io_ins[13]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_985 = _T_984 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_986 = _T_985 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_991 = _T_9 & io_ins[3]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_996 = io_ins[12] & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_997 = _T_996 & io_ins[3]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1005 = io_ins[28] & io_ins[22]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1006 = _T_1005 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1007 = _T_1006 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1008 = _T_1007 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1012 = _T_1008 | _T_189; // @[el2_dec_dec_ctl.scala 87:51]
+  wire  _T_1018 = _T_4 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1019 = _T_1018 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1020 = _T_1012 | _T_1019; // @[el2_dec_dec_ctl.scala 87:72]
+  wire  _T_1036 = _T_86 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1037 = _T_1036 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1038 = _T_991 | _T_1037; // @[el2_dec_dec_ctl.scala 89:41]
+  wire  _T_1045 = _T_71 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1046 = _T_1045 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1047 = _T_1038 | _T_1046; // @[el2_dec_dec_ctl.scala 89:68]
+  wire  _T_1054 = _T_56 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1055 = _T_1054 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1056 = _T_1047 | _T_1055; // @[el2_dec_dec_ctl.scala 90:30]
+  wire  _T_1063 = _T_41 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1064 = _T_1063 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1065 = _T_1056 | _T_1064; // @[el2_dec_dec_ctl.scala 90:57]
+  wire  _T_1072 = _T_26 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1073 = _T_1072 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1074 = _T_1065 | _T_1073; // @[el2_dec_dec_ctl.scala 91:31]
+  wire  _T_1080 = _T_93 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1081 = _T_1080 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1082 = _T_1074 | _T_1081; // @[el2_dec_dec_ctl.scala 91:59]
+  wire  _T_1088 = _T_78 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1089 = _T_1088 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1090 = _T_1082 | _T_1089; // @[el2_dec_dec_ctl.scala 92:30]
+  wire  _T_1096 = _T_63 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1097 = _T_1096 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1098 = _T_1090 | _T_1097; // @[el2_dec_dec_ctl.scala 92:57]
+  wire  _T_1104 = _T_48 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1105 = _T_1104 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1106 = _T_1098 | _T_1105; // @[el2_dec_dec_ctl.scala 93:30]
+  wire  _T_1112 = _T_33 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1113 = _T_1112 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1129 = _T_840 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1130 = _T_1129 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1131 = _T_1130 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1132 = _T_1131 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1133 = _T_997 | _T_1132; // @[el2_dec_dec_ctl.scala 95:45]
+  wire  _T_1142 = _T_1133 | _T_1037; // @[el2_dec_dec_ctl.scala 95:78]
+  wire  _T_1151 = _T_1142 | _T_1046; // @[el2_dec_dec_ctl.scala 96:30]
+  wire  _T_1160 = _T_1151 | _T_1055; // @[el2_dec_dec_ctl.scala 96:57]
+  wire  _T_1169 = _T_1160 | _T_1064; // @[el2_dec_dec_ctl.scala 97:30]
+  wire  _T_1178 = _T_1169 | _T_1073; // @[el2_dec_dec_ctl.scala 97:58]
+  wire  _T_1186 = _T_1178 | _T_1081; // @[el2_dec_dec_ctl.scala 98:31]
+  wire  _T_1194 = _T_1186 | _T_1089; // @[el2_dec_dec_ctl.scala 98:58]
+  wire  _T_1202 = _T_1194 | _T_1097; // @[el2_dec_dec_ctl.scala 99:30]
+  wire  _T_1210 = _T_1202 | _T_1105; // @[el2_dec_dec_ctl.scala 99:57]
+  wire  _T_1220 = ~io_ins[31]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1226 = ~io_ins[27]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1228 = ~io_ins[26]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1232 = ~io_ins[24]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1234 = ~io_ins[23]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1241 = ~io_ins[19]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1243 = ~io_ins[18]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1245 = ~io_ins[17]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1247 = ~io_ins[16]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1249 = ~io_ins[15]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1253 = ~io_ins[11]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1255 = ~io_ins[10]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1257 = ~io_ins[9]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1259 = ~io_ins[8]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1261 = ~io_ins[7]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1271 = _T_1220 & _T_247; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1272 = _T_1271 & io_ins[29]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1273 = _T_1272 & io_ins[28]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1274 = _T_1273 & _T_1226; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1275 = _T_1274 & _T_1228; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1276 = _T_1275 & _T_4; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1277 = _T_1276 & _T_1232; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1278 = _T_1277 & _T_1234; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1279 = _T_1278 & _T_840; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1280 = _T_1279 & io_ins[21]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1281 = _T_1280 & _T_856; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1282 = _T_1281 & _T_1241; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1283 = _T_1282 & _T_1243; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1284 = _T_1283 & _T_1245; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1285 = _T_1284 & _T_1247; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1286 = _T_1285 & _T_1249; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1287 = _T_1286 & _T_14; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1288 = _T_1287 & _T_1253; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1289 = _T_1288 & _T_1255; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1290 = _T_1289 & _T_1257; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1291 = _T_1290 & _T_1259; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1292 = _T_1291 & _T_1261; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1293 = _T_1292 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1294 = _T_1293 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1295 = _T_1294 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1296 = _T_1295 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1297 = _T_1296 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1298 = _T_1297 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1299 = _T_1298 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1305 = ~io_ins[29]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1353 = _T_1271 & _T_1305; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1354 = _T_1353 & io_ins[28]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1355 = _T_1354 & _T_1226; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1356 = _T_1355 & _T_1228; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1357 = _T_1356 & _T_4; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1358 = _T_1357 & _T_1232; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1359 = _T_1358 & _T_1234; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1360 = _T_1359 & io_ins[22]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1361 = _T_1360 & _T_854; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1362 = _T_1361 & io_ins[20]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1363 = _T_1362 & _T_1241; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1364 = _T_1363 & _T_1243; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1365 = _T_1364 & _T_1245; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1366 = _T_1365 & _T_1247; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1367 = _T_1366 & _T_1249; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1368 = _T_1367 & _T_14; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1369 = _T_1368 & _T_1253; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1370 = _T_1369 & _T_1255; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1371 = _T_1370 & _T_1257; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1372 = _T_1371 & _T_1259; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1373 = _T_1372 & _T_1261; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1374 = _T_1373 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1375 = _T_1374 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1376 = _T_1375 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1377 = _T_1376 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1378 = _T_1377 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1379 = _T_1378 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1380 = _T_1379 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1381 = _T_1299 | _T_1380; // @[el2_dec_dec_ctl.scala 101:136]
+  wire  _T_1389 = ~io_ins[28]; // @[el2_dec_dec_ctl.scala 15:46]
+  wire  _T_1436 = _T_1353 & _T_1389; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1437 = _T_1436 & _T_1226; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1438 = _T_1437 & _T_1228; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1439 = _T_1438 & _T_4; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1440 = _T_1439 & _T_1232; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1441 = _T_1440 & _T_1234; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1442 = _T_1441 & _T_840; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1443 = _T_1442 & _T_854; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1444 = _T_1443 & _T_1241; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1445 = _T_1444 & _T_1243; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1446 = _T_1445 & _T_1245; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1447 = _T_1446 & _T_1247; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1448 = _T_1447 & _T_1249; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1449 = _T_1448 & _T_14; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1450 = _T_1449 & _T_1253; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1451 = _T_1450 & _T_1255; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1452 = _T_1451 & _T_1257; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1453 = _T_1452 & _T_1259; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1454 = _T_1453 & _T_1261; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1455 = _T_1454 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1456 = _T_1455 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1457 = _T_1456 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1458 = _T_1457 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1459 = _T_1458 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1460 = _T_1459 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1461 = _T_1381 | _T_1460; // @[el2_dec_dec_ctl.scala 102:122]
+  wire  _T_1489 = _T_1439 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1490 = _T_1489 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1491 = _T_1490 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1492 = _T_1491 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1493 = _T_1492 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1494 = _T_1461 | _T_1493; // @[el2_dec_dec_ctl.scala 103:119]
+  wire  _T_1521 = _T_1220 & _T_1305; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1522 = _T_1521 & _T_1389; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1523 = _T_1522 & _T_1226; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1524 = _T_1523 & _T_1228; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1525 = _T_1524 & _T_4; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1526 = _T_1525 & _T_14; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1527 = _T_1526 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1528 = _T_1527 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1529 = _T_1528 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1530 = _T_1529 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1531 = _T_1530 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1532 = _T_1531 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1533 = _T_1532 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1534 = _T_1494 | _T_1533; // @[el2_dec_dec_ctl.scala 104:60]
+  wire  _T_1563 = _T_1525 & io_ins[14]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1564 = _T_1563 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1565 = _T_1564 & io_ins[12]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1566 = _T_1565 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1567 = _T_1566 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1568 = _T_1567 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1569 = _T_1568 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1570 = _T_1569 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1571 = _T_1534 | _T_1570; // @[el2_dec_dec_ctl.scala 105:69]
+  wire  _T_1597 = _T_1438 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1598 = _T_1597 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1599 = _T_1598 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1600 = _T_1599 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1601 = _T_1600 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1602 = _T_1601 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1603 = _T_1571 | _T_1602; // @[el2_dec_dec_ctl.scala 106:66]
+  wire  _T_1620 = _T_235 & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1621 = _T_1620 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1622 = _T_1621 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1623 = _T_1622 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1624 = _T_1623 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1625 = _T_1624 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1626 = _T_1603 | _T_1625; // @[el2_dec_dec_ctl.scala 107:58]
+  wire  _T_1638 = io_ins[14] & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1639 = _T_1638 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1640 = _T_1639 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1641 = _T_1640 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1642 = _T_1641 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1643 = _T_1642 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1644 = _T_1643 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1645 = _T_1626 | _T_1644; // @[el2_dec_dec_ctl.scala 108:46]
+  wire  _T_1657 = _T_143 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1658 = _T_1657 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1659 = _T_1658 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1660 = _T_1659 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1661 = _T_1660 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1662 = _T_1661 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1663 = _T_1645 | _T_1662; // @[el2_dec_dec_ctl.scala 109:40]
+  wire  _T_1678 = _T_19 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1679 = _T_1678 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1680 = _T_1679 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1681 = _T_1680 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1682 = _T_1681 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1683 = _T_1682 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1684 = _T_1663 | _T_1683; // @[el2_dec_dec_ctl.scala 110:39]
+  wire  _T_1695 = io_ins[12] & io_ins[6]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1696 = _T_1695 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1697 = _T_1696 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1698 = _T_1697 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1699 = _T_1698 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1700 = _T_1699 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1701 = _T_1700 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1702 = _T_1684 | _T_1701; // @[el2_dec_dec_ctl.scala 111:43]
+  wire  _T_1771 = _T_1443 & _T_856; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1772 = _T_1771 & _T_1241; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1773 = _T_1772 & _T_1243; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1774 = _T_1773 & _T_1245; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1775 = _T_1774 & _T_1247; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1776 = _T_1775 & _T_1249; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1777 = _T_1776 & _T_14; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1778 = _T_1777 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1779 = _T_1778 & _T_1253; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1780 = _T_1779 & _T_1255; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1781 = _T_1780 & _T_1257; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1782 = _T_1781 & _T_1259; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1783 = _T_1782 & _T_1261; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1784 = _T_1783 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1785 = _T_1784 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1786 = _T_1785 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1787 = _T_1786 & io_ins[3]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1788 = _T_1787 & io_ins[2]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1789 = _T_1788 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1790 = _T_1789 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1791 = _T_1702 | _T_1790; // @[el2_dec_dec_ctl.scala 112:39]
+  wire  _T_1839 = _T_1436 & _T_1241; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1840 = _T_1839 & _T_1243; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1841 = _T_1840 & _T_1245; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1842 = _T_1841 & _T_1247; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1843 = _T_1842 & _T_1249; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1844 = _T_1843 & _T_14; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1845 = _T_1844 & _T_16; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1846 = _T_1845 & _T_143; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1847 = _T_1846 & _T_1253; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1848 = _T_1847 & _T_1255; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1849 = _T_1848 & _T_1257; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1850 = _T_1849 & _T_1259; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1851 = _T_1850 & _T_1261; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1852 = _T_1851 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1853 = _T_1852 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1854 = _T_1853 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1855 = _T_1854 & io_ins[3]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1856 = _T_1855 & io_ins[2]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1857 = _T_1856 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1858 = _T_1857 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1859 = _T_1791 | _T_1858; // @[el2_dec_dec_ctl.scala 113:130]
+  wire  _T_1871 = _T_524 & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1872 = _T_1871 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1873 = _T_1872 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1874 = _T_1873 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1875 = _T_1874 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1876 = _T_1875 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1877 = _T_1859 | _T_1876; // @[el2_dec_dec_ctl.scala 114:102]
+  wire  _T_1892 = _T_16 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1893 = _T_1892 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1894 = _T_1893 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1895 = _T_1894 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1896 = _T_1895 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1897 = _T_1896 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1898 = _T_1897 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1899 = _T_1877 | _T_1898; // @[el2_dec_dec_ctl.scala 115:39]
+  wire  _T_1908 = io_ins[6] & io_ins[5]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1909 = _T_1908 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1910 = _T_1909 & io_ins[3]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1911 = _T_1910 & io_ins[2]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1912 = _T_1911 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1913 = _T_1912 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1914 = _T_1899 | _T_1913; // @[el2_dec_dec_ctl.scala 116:43]
+  wire  _T_1926 = _T_653 & _T_9; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1927 = _T_1926 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1928 = _T_1927 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1929 = _T_1928 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1930 = _T_1929 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1931 = _T_1914 | _T_1930; // @[el2_dec_dec_ctl.scala 117:35]
+  wire  _T_1947 = _T_582 & _T_103; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1948 = _T_1947 & _T_97; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1949 = _T_1948 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1950 = _T_1949 & _T_18; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1951 = _T_1950 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1952 = _T_1951 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1953 = _T_1931 | _T_1952; // @[el2_dec_dec_ctl.scala 118:38]
+  wire  _T_1962 = _T_103 & io_ins[4]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1963 = _T_1962 & _T_99; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1964 = _T_1963 & io_ins[2]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1965 = _T_1964 & io_ins[1]; // @[el2_dec_dec_ctl.scala 17:17]
+  wire  _T_1966 = _T_1965 & io_ins[0]; // @[el2_dec_dec_ctl.scala 17:17]
+  assign io_out_alu = _T_7 | _T_11; // @[el2_dec_dec_ctl.scala 20:14]
+  assign io_out_rs1 = _T_101 | _T_106; // @[el2_dec_dec_ctl.scala 21:14]
+  assign io_out_rs2 = _T_114 | _T_121; // @[el2_dec_dec_ctl.scala 27:14]
+  assign io_out_imm12 = _T_149 | _T_159; // @[el2_dec_dec_ctl.scala 28:16]
+  assign io_out_rd = _T_169 | io_ins[4]; // @[el2_dec_dec_ctl.scala 30:13]
+  assign io_out_shimm5 = _T_182 & _T_18; // @[el2_dec_dec_ctl.scala 31:17]
+  assign io_out_imm20 = _T_186 | _T_189; // @[el2_dec_dec_ctl.scala 32:16]
+  assign io_out_pc = _T_197 | _T_186; // @[el2_dec_dec_ctl.scala 33:13]
+  assign io_out_load = _T_208 & _T_18; // @[el2_dec_dec_ctl.scala 34:15]
+  assign io_out_store = _T_120 & _T_97; // @[el2_dec_dec_ctl.scala 35:16]
+  assign io_out_lsu = _T_223 & _T_18; // @[el2_dec_dec_ctl.scala 36:14]
+  assign io_out_add = _T_245 | _T_267; // @[el2_dec_dec_ctl.scala 37:14]
+  assign io_out_sub = _T_311 | _T_318; // @[el2_dec_dec_ctl.scala 39:14]
+  assign io_out_land = _T_330 | _T_344; // @[el2_dec_dec_ctl.scala 41:15]
+  assign io_out_lor = _T_381 | _T_393; // @[el2_dec_dec_ctl.scala 42:14]
+  assign io_out_lxor = _T_409 | _T_424; // @[el2_dec_dec_ctl.scala 45:15]
+  assign io_out_sll = _T_442 & _T_18; // @[el2_dec_dec_ctl.scala 46:14]
+  assign io_out_sra = _T_456 & _T_18; // @[el2_dec_dec_ctl.scala 47:14]
+  assign io_out_srl = _T_476 & _T_18; // @[el2_dec_dec_ctl.scala 48:14]
+  assign io_out_slt = _T_297 | _T_310; // @[el2_dec_dec_ctl.scala 49:14]
+  assign io_out_unsign = _T_551 | _T_564; // @[el2_dec_dec_ctl.scala 50:17]
+  assign io_out_condbr = _T_317 & _T_18; // @[el2_dec_dec_ctl.scala 53:17]
+  assign io_out_beq = _T_584 & _T_18; // @[el2_dec_dec_ctl.scala 54:14]
+  assign io_out_bne = _T_596 & _T_18; // @[el2_dec_dec_ctl.scala 55:14]
+  assign io_out_bge = _T_607 & _T_18; // @[el2_dec_dec_ctl.scala 56:14]
+  assign io_out_blt = _T_619 & _T_18; // @[el2_dec_dec_ctl.scala 57:14]
+  assign io_out_jal = io_ins[6] & io_ins[2]; // @[el2_dec_dec_ctl.scala 58:14]
+  assign io_out_by = _T_636 & _T_18; // @[el2_dec_dec_ctl.scala 59:13]
+  assign io_out_half = _T_646 & _T_18; // @[el2_dec_dec_ctl.scala 60:15]
+  assign io_out_word = _T_653 & _T_97; // @[el2_dec_dec_ctl.scala 61:15]
+  assign io_out_csr_read = _T_683 | _T_688; // @[el2_dec_dec_ctl.scala 62:19]
+  assign io_out_csr_clr = _T_728 | _T_737; // @[el2_dec_dec_ctl.scala 65:18]
+  assign io_out_csr_set = _T_829 | _T_837; // @[el2_dec_dec_ctl.scala 72:18]
+  assign io_out_csr_write = _T_745 & io_ins[4]; // @[el2_dec_dec_ctl.scala 68:20]
+  assign io_out_csr_imm = _T_786 | _T_793; // @[el2_dec_dec_ctl.scala 69:18]
+  assign io_out_presync = _T_1106 | _T_1113; // @[el2_dec_dec_ctl.scala 89:18]
+  assign io_out_postsync = _T_1210 | _T_1113; // @[el2_dec_dec_ctl.scala 95:19]
+  assign io_out_ebreak = _T_851 & io_ins[4]; // @[el2_dec_dec_ctl.scala 75:17]
+  assign io_out_ecall = _T_866 & io_ins[4]; // @[el2_dec_dec_ctl.scala 76:16]
+  assign io_out_mret = _T_877 & io_ins[4]; // @[el2_dec_dec_ctl.scala 77:15]
+  assign io_out_mul = _T_891 & _T_18; // @[el2_dec_dec_ctl.scala 78:14]
+  assign io_out_rs1_sign = _T_911 | _T_928; // @[el2_dec_dec_ctl.scala 79:19]
+  assign io_out_rs2_sign = _T_927 & _T_18; // @[el2_dec_dec_ctl.scala 81:19]
+  assign io_out_low = _T_962 & _T_18; // @[el2_dec_dec_ctl.scala 82:14]
+  assign io_out_div = _T_973 & _T_18; // @[el2_dec_dec_ctl.scala 83:14]
+  assign io_out_rem = _T_986 & _T_18; // @[el2_dec_dec_ctl.scala 84:14]
+  assign io_out_fence = _T_9 & io_ins[3]; // @[el2_dec_dec_ctl.scala 85:16]
+  assign io_out_fence_i = _T_996 & io_ins[3]; // @[el2_dec_dec_ctl.scala 86:18]
+  assign io_out_pm_alu = _T_1020 | _T_11; // @[el2_dec_dec_ctl.scala 87:17]
+  assign io_out_legal = _T_1953 | _T_1966; // @[el2_dec_dec_ctl.scala 101:16]
 endmodule
 module el2_dec_decode_ctl(
   input         clock,
@@ -1248,8 +1255,8 @@ module el2_dec_decode_ctl(
   wire  _T_505 = i0_postsync | _T_504; // @[el2_dec_decode_ctl.scala 570:54]
   wire  _T_506 = io_dec_i0_decode_d & _T_505; // @[el2_dec_decode_ctl.scala 570:39]
   reg  postsync_stall; // @[el2_dec_decode_ctl.scala 568:53]
-  reg  x_d_i0valid; // @[el2_lib.scala 524:16]
-  wire  _T_507 = postsync_stall & x_d_i0valid; // @[el2_dec_decode_ctl.scala 570:88]
+  reg  x_d_valid; // @[el2_lib.scala 524:16]
+  wire  _T_507 = postsync_stall & x_d_valid; // @[el2_dec_decode_ctl.scala 570:88]
   wire  ps_stall_in = _T_506 | _T_507; // @[el2_dec_decode_ctl.scala 570:69]
   wire  _T_12 = ps_stall_in ^ postsync_stall; // @[el2_dec_decode_ctl.scala 217:32]
   wire  _T_13 = _T_11 | _T_12; // @[el2_dec_decode_ctl.scala 216:56]
@@ -1392,34 +1399,34 @@ module el2_dec_decode_ctl(
   wire [2:0] _T_86 = _GEN_128 | _T_83; // @[Mux.scala 27:72]
   wire [3:0] _GEN_129 = {{1'd0}, _T_86}; // @[Mux.scala 27:72]
   wire [3:0] cam_wen = _GEN_129 | _T_84; // @[Mux.scala 27:72]
-  reg  x_d_i0load; // @[el2_lib.scala 524:16]
-  reg [4:0] x_d_i0rd; // @[el2_lib.scala 524:16]
-  wire [4:0] nonblock_load_rd = x_d_i0load ? x_d_i0rd : 5'h0; // @[el2_dec_decode_ctl.scala 314:31]
+  reg  x_d_bits_i0load; // @[el2_lib.scala 524:16]
+  reg [4:0] x_d_bits_i0rd; // @[el2_lib.scala 524:16]
+  wire [4:0] nonblock_load_rd = x_d_bits_i0load ? x_d_bits_i0rd : 5'h0; // @[el2_dec_decode_ctl.scala 314:31]
   reg [2:0] _T_701; // @[el2_dec_decode_ctl.scala 652:72]
   wire [3:0] i0_pipe_en = {io_dec_i0_decode_d,_T_701}; // @[Cat.scala 29:58]
   wire  _T_707 = |i0_pipe_en[2:1]; // @[el2_dec_decode_ctl.scala 655:49]
   wire  i0_r_ctl_en = _T_707 | io_clk_override; // @[el2_dec_decode_ctl.scala 655:53]
   reg  nonblock_load_valid_m_delay; // @[Reg.scala 27:20]
-  reg  r_d_i0load; // @[el2_lib.scala 524:16]
-  wire  i0_load_kill_wen_r = nonblock_load_valid_m_delay & r_d_i0load; // @[el2_dec_decode_ctl.scala 319:56]
+  reg  r_d_bits_i0load; // @[el2_lib.scala 524:16]
+  wire  i0_load_kill_wen_r = nonblock_load_valid_m_delay & r_d_bits_i0load; // @[el2_dec_decode_ctl.scala 319:56]
   wire [2:0] _GEN_130 = {{1'd0}, io_lsu_nonblock_load_inv_tag_r}; // @[el2_dec_decode_ctl.scala 321:66]
   wire  _T_91 = _GEN_130 == cam_raw_0_bits_tag; // @[el2_dec_decode_ctl.scala 321:66]
   wire  _T_92 = io_lsu_nonblock_load_inv_r & _T_91; // @[el2_dec_decode_ctl.scala 321:45]
   wire  cam_inv_reset_val_0 = _T_92 & cam_0_valid; // @[el2_dec_decode_ctl.scala 321:87]
-  reg  r_d_i0v; // @[el2_lib.scala 524:16]
-  wire  _T_743 = ~io_dec_tlu_flush_lower_wb; // @[el2_dec_decode_ctl.scala 687:41]
-  wire  r_d_in_i0v = r_d_i0v & _T_743; // @[el2_dec_decode_ctl.scala 687:39]
-  wire  _T_754 = ~io_dec_tlu_i0_kill_writeb_r; // @[el2_dec_decode_ctl.scala 695:42]
-  wire  i0_wen_r = r_d_in_i0v & _T_754; // @[el2_dec_decode_ctl.scala 695:40]
-  reg [4:0] r_d_i0rd; // @[el2_lib.scala 524:16]
+  reg  r_d_bits_i0v; // @[el2_lib.scala 524:16]
+  wire  _T_743 = ~io_dec_tlu_flush_lower_wb; // @[el2_dec_decode_ctl.scala 687:51]
+  wire  r_d_in_bits_i0v = r_d_bits_i0v & _T_743; // @[el2_dec_decode_ctl.scala 687:49]
+  wire  _T_754 = ~io_dec_tlu_i0_kill_writeb_r; // @[el2_dec_decode_ctl.scala 695:47]
+  wire  i0_wen_r = r_d_in_bits_i0v & _T_754; // @[el2_dec_decode_ctl.scala 695:45]
+  reg [4:0] r_d_bits_i0rd; // @[el2_lib.scala 524:16]
   reg [4:0] cam_raw_0_bits_rd; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_103 = r_d_i0rd == cam_raw_0_bits_rd; // @[el2_dec_decode_ctl.scala 334:80]
+  wire  _T_103 = r_d_bits_i0rd == cam_raw_0_bits_rd; // @[el2_dec_decode_ctl.scala 334:85]
   wire  _T_104 = i0_wen_r & _T_103; // @[el2_dec_decode_ctl.scala 334:64]
   reg  cam_raw_0_bits_wb; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_106 = _T_104 & cam_raw_0_bits_wb; // @[el2_dec_decode_ctl.scala 334:100]
+  wire  _T_106 = _T_104 & cam_raw_0_bits_wb; // @[el2_dec_decode_ctl.scala 334:105]
   wire  _T_107 = cam_inv_reset_val_0 | _T_106; // @[el2_dec_decode_ctl.scala 334:44]
-  wire  _GEN_52 = _T_107 ? 1'h0 : cam_0_valid; // @[el2_dec_decode_ctl.scala 334:126]
-  wire  _GEN_55 = _T_107 ? 1'h0 : cam_raw_0_bits_wb; // @[el2_dec_decode_ctl.scala 334:126]
+  wire  _GEN_52 = _T_107 ? 1'h0 : cam_0_valid; // @[el2_dec_decode_ctl.scala 334:131]
+  wire  _GEN_55 = _T_107 ? 1'h0 : cam_raw_0_bits_wb; // @[el2_dec_decode_ctl.scala 334:131]
   wire  _GEN_56 = cam_wen[0] | _GEN_52; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _GEN_57 = cam_wen[0] ? 1'h0 : _GEN_55; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _T_110 = nonblock_load_valid_m_delay & _T_91; // @[el2_dec_decode_ctl.scala 339:44]
@@ -1429,13 +1436,13 @@ module el2_dec_decode_ctl(
   wire  _T_118 = io_lsu_nonblock_load_inv_r & _T_117; // @[el2_dec_decode_ctl.scala 321:45]
   wire  cam_inv_reset_val_1 = _T_118 & cam_1_valid; // @[el2_dec_decode_ctl.scala 321:87]
   reg [4:0] cam_raw_1_bits_rd; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_129 = r_d_i0rd == cam_raw_1_bits_rd; // @[el2_dec_decode_ctl.scala 334:80]
+  wire  _T_129 = r_d_bits_i0rd == cam_raw_1_bits_rd; // @[el2_dec_decode_ctl.scala 334:85]
   wire  _T_130 = i0_wen_r & _T_129; // @[el2_dec_decode_ctl.scala 334:64]
   reg  cam_raw_1_bits_wb; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_132 = _T_130 & cam_raw_1_bits_wb; // @[el2_dec_decode_ctl.scala 334:100]
+  wire  _T_132 = _T_130 & cam_raw_1_bits_wb; // @[el2_dec_decode_ctl.scala 334:105]
   wire  _T_133 = cam_inv_reset_val_1 | _T_132; // @[el2_dec_decode_ctl.scala 334:44]
-  wire  _GEN_63 = _T_133 ? 1'h0 : cam_1_valid; // @[el2_dec_decode_ctl.scala 334:126]
-  wire  _GEN_66 = _T_133 ? 1'h0 : cam_raw_1_bits_wb; // @[el2_dec_decode_ctl.scala 334:126]
+  wire  _GEN_63 = _T_133 ? 1'h0 : cam_1_valid; // @[el2_dec_decode_ctl.scala 334:131]
+  wire  _GEN_66 = _T_133 ? 1'h0 : cam_raw_1_bits_wb; // @[el2_dec_decode_ctl.scala 334:131]
   wire  _GEN_67 = cam_wen[1] | _GEN_63; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _GEN_68 = cam_wen[1] ? 1'h0 : _GEN_66; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _T_136 = nonblock_load_valid_m_delay & _T_117; // @[el2_dec_decode_ctl.scala 339:44]
@@ -1445,13 +1452,13 @@ module el2_dec_decode_ctl(
   wire  _T_144 = io_lsu_nonblock_load_inv_r & _T_143; // @[el2_dec_decode_ctl.scala 321:45]
   wire  cam_inv_reset_val_2 = _T_144 & cam_2_valid; // @[el2_dec_decode_ctl.scala 321:87]
   reg [4:0] cam_raw_2_bits_rd; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_155 = r_d_i0rd == cam_raw_2_bits_rd; // @[el2_dec_decode_ctl.scala 334:80]
+  wire  _T_155 = r_d_bits_i0rd == cam_raw_2_bits_rd; // @[el2_dec_decode_ctl.scala 334:85]
   wire  _T_156 = i0_wen_r & _T_155; // @[el2_dec_decode_ctl.scala 334:64]
   reg  cam_raw_2_bits_wb; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_158 = _T_156 & cam_raw_2_bits_wb; // @[el2_dec_decode_ctl.scala 334:100]
+  wire  _T_158 = _T_156 & cam_raw_2_bits_wb; // @[el2_dec_decode_ctl.scala 334:105]
   wire  _T_159 = cam_inv_reset_val_2 | _T_158; // @[el2_dec_decode_ctl.scala 334:44]
-  wire  _GEN_74 = _T_159 ? 1'h0 : cam_2_valid; // @[el2_dec_decode_ctl.scala 334:126]
-  wire  _GEN_77 = _T_159 ? 1'h0 : cam_raw_2_bits_wb; // @[el2_dec_decode_ctl.scala 334:126]
+  wire  _GEN_74 = _T_159 ? 1'h0 : cam_2_valid; // @[el2_dec_decode_ctl.scala 334:131]
+  wire  _GEN_77 = _T_159 ? 1'h0 : cam_raw_2_bits_wb; // @[el2_dec_decode_ctl.scala 334:131]
   wire  _GEN_78 = cam_wen[2] | _GEN_74; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _GEN_79 = cam_wen[2] ? 1'h0 : _GEN_77; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _T_162 = nonblock_load_valid_m_delay & _T_143; // @[el2_dec_decode_ctl.scala 339:44]
@@ -1461,20 +1468,20 @@ module el2_dec_decode_ctl(
   wire  _T_170 = io_lsu_nonblock_load_inv_r & _T_169; // @[el2_dec_decode_ctl.scala 321:45]
   wire  cam_inv_reset_val_3 = _T_170 & cam_3_valid; // @[el2_dec_decode_ctl.scala 321:87]
   reg [4:0] cam_raw_3_bits_rd; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_181 = r_d_i0rd == cam_raw_3_bits_rd; // @[el2_dec_decode_ctl.scala 334:80]
+  wire  _T_181 = r_d_bits_i0rd == cam_raw_3_bits_rd; // @[el2_dec_decode_ctl.scala 334:85]
   wire  _T_182 = i0_wen_r & _T_181; // @[el2_dec_decode_ctl.scala 334:64]
   reg  cam_raw_3_bits_wb; // @[el2_dec_decode_ctl.scala 347:47]
-  wire  _T_184 = _T_182 & cam_raw_3_bits_wb; // @[el2_dec_decode_ctl.scala 334:100]
+  wire  _T_184 = _T_182 & cam_raw_3_bits_wb; // @[el2_dec_decode_ctl.scala 334:105]
   wire  _T_185 = cam_inv_reset_val_3 | _T_184; // @[el2_dec_decode_ctl.scala 334:44]
-  wire  _GEN_85 = _T_185 ? 1'h0 : cam_3_valid; // @[el2_dec_decode_ctl.scala 334:126]
-  wire  _GEN_88 = _T_185 ? 1'h0 : cam_raw_3_bits_wb; // @[el2_dec_decode_ctl.scala 334:126]
+  wire  _GEN_85 = _T_185 ? 1'h0 : cam_3_valid; // @[el2_dec_decode_ctl.scala 334:131]
+  wire  _GEN_88 = _T_185 ? 1'h0 : cam_raw_3_bits_wb; // @[el2_dec_decode_ctl.scala 334:131]
   wire  _GEN_89 = cam_wen[3] | _GEN_85; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _GEN_90 = cam_wen[3] ? 1'h0 : _GEN_88; // @[el2_dec_decode_ctl.scala 329:28]
   wire  _T_188 = nonblock_load_valid_m_delay & _T_169; // @[el2_dec_decode_ctl.scala 339:44]
   wire  _T_190 = _T_188 & cam_3_valid; // @[el2_dec_decode_ctl.scala 339:100]
   wire  nonblock_load_write_3 = _T_172 & cam_raw_3_valid; // @[el2_dec_decode_ctl.scala 348:71]
-  wire  _T_195 = r_d_i0rd == io_dec_nonblock_load_waddr; // @[el2_dec_decode_ctl.scala 353:44]
-  wire  nonblock_load_cancel = _T_195 & i0_wen_r; // @[el2_dec_decode_ctl.scala 353:76]
+  wire  _T_195 = r_d_bits_i0rd == io_dec_nonblock_load_waddr; // @[el2_dec_decode_ctl.scala 353:49]
+  wire  nonblock_load_cancel = _T_195 & i0_wen_r; // @[el2_dec_decode_ctl.scala 353:81]
   wire  _T_196 = nonblock_load_write_0 | nonblock_load_write_1; // @[el2_dec_decode_ctl.scala 354:95]
   wire  _T_197 = _T_196 | nonblock_load_write_2; // @[el2_dec_decode_ctl.scala 354:95]
   wire  _T_198 = _T_197 | nonblock_load_write_3; // @[el2_dec_decode_ctl.scala 354:95]
@@ -1561,13 +1568,13 @@ module el2_dec_decode_ctl(
   reg  _T_339; // @[el2_dec_decode_ctl.scala 432:58]
   wire  lsu_decode_d = i0_legal_decode_d & i0_dp_lsu; // @[el2_dec_decode_ctl.scala 574:40]
   wire  _T_902 = i0_dp_load | i0_dp_store; // @[el2_dec_decode_ctl.scala 788:43]
-  reg  x_d_i0v; // @[el2_lib.scala 524:16]
-  wire  _T_876 = io_dec_i0_rs1_en_d & x_d_i0v; // @[el2_dec_decode_ctl.scala 768:48]
-  wire  _T_877 = x_d_i0rd == i0r_rs1; // @[el2_dec_decode_ctl.scala 768:70]
-  wire  i0_rs1_depend_i0_x = _T_876 & _T_877; // @[el2_dec_decode_ctl.scala 768:58]
-  wire  _T_878 = io_dec_i0_rs1_en_d & r_d_i0v; // @[el2_dec_decode_ctl.scala 769:48]
-  wire  _T_879 = r_d_i0rd == i0r_rs1; // @[el2_dec_decode_ctl.scala 769:70]
-  wire  i0_rs1_depend_i0_r = _T_878 & _T_879; // @[el2_dec_decode_ctl.scala 769:58]
+  reg  x_d_bits_i0v; // @[el2_lib.scala 524:16]
+  wire  _T_876 = io_dec_i0_rs1_en_d & x_d_bits_i0v; // @[el2_dec_decode_ctl.scala 768:48]
+  wire  _T_877 = x_d_bits_i0rd == i0r_rs1; // @[el2_dec_decode_ctl.scala 768:80]
+  wire  i0_rs1_depend_i0_x = _T_876 & _T_877; // @[el2_dec_decode_ctl.scala 768:63]
+  wire  _T_878 = io_dec_i0_rs1_en_d & r_d_bits_i0v; // @[el2_dec_decode_ctl.scala 769:48]
+  wire  _T_879 = r_d_bits_i0rd == i0r_rs1; // @[el2_dec_decode_ctl.scala 769:80]
+  wire  i0_rs1_depend_i0_r = _T_878 & _T_879; // @[el2_dec_decode_ctl.scala 769:63]
   wire [1:0] _T_891 = i0_rs1_depend_i0_r ? 2'h2 : 2'h0; // @[el2_dec_decode_ctl.scala 775:63]
   wire [1:0] i0_rs1_depth_d = i0_rs1_depend_i0_x ? 2'h1 : _T_891; // @[el2_dec_decode_ctl.scala 775:24]
   wire  _T_904 = _T_902 & i0_rs1_depth_d[0]; // @[el2_dec_decode_ctl.scala 788:58]
@@ -1576,12 +1583,12 @@ module el2_dec_decode_ctl(
   wire  _T_887_load = i0_rs1_depend_i0_r & i0_r_c_load; // @[el2_dec_decode_ctl.scala 774:61]
   wire  i0_rs1_class_d_load = i0_rs1_depend_i0_x ? i0_x_c_load : _T_887_load; // @[el2_dec_decode_ctl.scala 774:24]
   wire  load_ldst_bypass_d = _T_904 & i0_rs1_class_d_load; // @[el2_dec_decode_ctl.scala 788:78]
-  wire  _T_880 = io_dec_i0_rs2_en_d & x_d_i0v; // @[el2_dec_decode_ctl.scala 771:48]
-  wire  _T_881 = x_d_i0rd == i0r_rs2; // @[el2_dec_decode_ctl.scala 771:70]
-  wire  i0_rs2_depend_i0_x = _T_880 & _T_881; // @[el2_dec_decode_ctl.scala 771:58]
-  wire  _T_882 = io_dec_i0_rs2_en_d & r_d_i0v; // @[el2_dec_decode_ctl.scala 772:48]
-  wire  _T_883 = r_d_i0rd == i0r_rs2; // @[el2_dec_decode_ctl.scala 772:70]
-  wire  i0_rs2_depend_i0_r = _T_882 & _T_883; // @[el2_dec_decode_ctl.scala 772:58]
+  wire  _T_880 = io_dec_i0_rs2_en_d & x_d_bits_i0v; // @[el2_dec_decode_ctl.scala 771:48]
+  wire  _T_881 = x_d_bits_i0rd == i0r_rs2; // @[el2_dec_decode_ctl.scala 771:80]
+  wire  i0_rs2_depend_i0_x = _T_880 & _T_881; // @[el2_dec_decode_ctl.scala 771:63]
+  wire  _T_882 = io_dec_i0_rs2_en_d & r_d_bits_i0v; // @[el2_dec_decode_ctl.scala 772:48]
+  wire  _T_883 = r_d_bits_i0rd == i0r_rs2; // @[el2_dec_decode_ctl.scala 772:80]
+  wire  i0_rs2_depend_i0_r = _T_882 & _T_883; // @[el2_dec_decode_ctl.scala 772:63]
   wire [1:0] _T_900 = i0_rs2_depend_i0_r ? 2'h2 : 2'h0; // @[el2_dec_decode_ctl.scala 777:63]
   wire [1:0] i0_rs2_depth_d = i0_rs2_depend_i0_x ? 2'h1 : _T_900; // @[el2_dec_decode_ctl.scala 777:24]
   wire  _T_907 = i0_dp_store & i0_rs2_depth_d[0]; // @[el2_dec_decode_ctl.scala 789:43]
@@ -1589,16 +1596,16 @@ module el2_dec_decode_ctl(
   wire  i0_rs2_class_d_load = i0_rs2_depend_i0_x ? i0_x_c_load : _T_896_load; // @[el2_dec_decode_ctl.scala 776:24]
   wire  store_data_bypass_d = _T_907 & i0_rs2_class_d_load; // @[el2_dec_decode_ctl.scala 789:63]
   wire  _T_349 = i0_dp_csr_clr | i0_dp_csr_set; // @[el2_dec_decode_ctl.scala 463:42]
-  reg  r_d_csrwen; // @[el2_lib.scala 524:16]
-  reg  r_d_i0valid; // @[el2_lib.scala 524:16]
-  wire  _T_352 = r_d_csrwen & r_d_i0valid; // @[el2_dec_decode_ctl.scala 471:34]
-  reg [11:0] r_d_csrwaddr; // @[el2_lib.scala 524:16]
-  wire  _T_355 = r_d_csrwaddr == 12'h300; // @[el2_dec_decode_ctl.scala 474:45]
-  wire  _T_356 = r_d_csrwaddr == 12'h304; // @[el2_dec_decode_ctl.scala 474:75]
-  wire  _T_357 = _T_355 | _T_356; // @[el2_dec_decode_ctl.scala 474:59]
-  wire  _T_358 = _T_357 & r_d_csrwen; // @[el2_dec_decode_ctl.scala 474:90]
-  wire  _T_359 = _T_358 & r_d_i0valid; // @[el2_dec_decode_ctl.scala 474:103]
-  wire  _T_360 = ~io_dec_tlu_i0_kill_writeb_wb; // @[el2_dec_decode_ctl.scala 474:119]
+  reg  r_d_bits_csrwen; // @[el2_lib.scala 524:16]
+  reg  r_d_valid; // @[el2_lib.scala 524:16]
+  wire  _T_352 = r_d_bits_csrwen & r_d_valid; // @[el2_dec_decode_ctl.scala 471:39]
+  reg [11:0] r_d_bits_csrwaddr; // @[el2_lib.scala 524:16]
+  wire  _T_355 = r_d_bits_csrwaddr == 12'h300; // @[el2_dec_decode_ctl.scala 474:50]
+  wire  _T_356 = r_d_bits_csrwaddr == 12'h304; // @[el2_dec_decode_ctl.scala 474:85]
+  wire  _T_357 = _T_355 | _T_356; // @[el2_dec_decode_ctl.scala 474:64]
+  wire  _T_358 = _T_357 & r_d_bits_csrwen; // @[el2_dec_decode_ctl.scala 474:100]
+  wire  _T_359 = _T_358 & r_d_valid; // @[el2_dec_decode_ctl.scala 474:118]
+  wire  _T_360 = ~io_dec_tlu_i0_kill_writeb_wb; // @[el2_dec_decode_ctl.scala 474:132]
   reg  csr_read_x; // @[el2_dec_decode_ctl.scala 476:52]
   reg  csr_clr_x; // @[el2_dec_decode_ctl.scala 477:51]
   reg  csr_set_x; // @[el2_dec_decode_ctl.scala 478:51]
@@ -1628,14 +1635,14 @@ module el2_dec_decode_ctl(
   wire  _T_426 = _T_425 | csr_write_x; // @[el2_dec_decode_ctl.scala 507:46]
   wire  _T_427 = _T_426 & csr_read_x; // @[el2_dec_decode_ctl.scala 507:61]
   wire  _T_428 = _T_427 | io_dec_tlu_wr_pause_r; // @[el2_dec_decode_ctl.scala 507:75]
-  reg  r_d_csrwonly; // @[el2_lib.scala 524:16]
-  wire  _T_764 = r_d_i0v & r_d_i0load; // @[el2_dec_decode_ctl.scala 710:37]
+  reg  r_d_bits_csrwonly; // @[el2_lib.scala 524:16]
+  wire  _T_764 = r_d_bits_i0v & r_d_bits_i0load; // @[el2_dec_decode_ctl.scala 710:42]
   reg [31:0] i0_result_r_raw; // @[el2_lib.scala 514:16]
   wire [31:0] i0_result_corr_r = _T_764 ? io_lsu_result_corr_r : i0_result_r_raw; // @[el2_dec_decode_ctl.scala 710:27]
-  reg  x_d_csrwonly; // @[el2_lib.scala 524:16]
-  wire  _T_432 = x_d_csrwonly | r_d_csrwonly; // @[el2_dec_decode_ctl.scala 516:38]
-  reg  wbd_csrwonly; // @[el2_lib.scala 524:16]
-  wire  prior_csr_write = _T_432 | wbd_csrwonly; // @[el2_dec_decode_ctl.scala 516:53]
+  reg  x_d_bits_csrwonly; // @[el2_lib.scala 524:16]
+  wire  _T_432 = x_d_bits_csrwonly | r_d_bits_csrwonly; // @[el2_dec_decode_ctl.scala 516:43]
+  reg  wbd_bits_csrwonly; // @[el2_lib.scala 524:16]
+  wire  prior_csr_write = _T_432 | wbd_bits_csrwonly; // @[el2_dec_decode_ctl.scala 516:63]
   wire  debug_fence_raw = io_dec_debug_fence_d & io_dbg_cmd_wrdata[1]; // @[el2_dec_decode_ctl.scala 519:48]
   wire  debug_fence = debug_fence_raw | debug_fence_i; // @[el2_dec_decode_ctl.scala 520:40]
   wire  _T_436 = i0_dp_presync | io_dec_tlu_presync_d; // @[el2_dec_decode_ctl.scala 523:34]
@@ -1652,8 +1659,8 @@ module el2_dec_decode_ctl(
   wire  _T_473 = _T_472 | leak1_i0_stall; // @[el2_dec_decode_ctl.scala 541:95]
   wire  _T_474 = _T_473 | io_dec_tlu_debug_stall; // @[el2_dec_decode_ctl.scala 542:20]
   wire  _T_475 = _T_474 | postsync_stall; // @[el2_dec_decode_ctl.scala 542:45]
-  wire  prior_inflight = x_d_i0valid | r_d_i0valid; // @[el2_dec_decode_ctl.scala 564:41]
-  wire  prior_inflight_eff = i0_dp_div ? x_d_i0valid : prior_inflight; // @[el2_dec_decode_ctl.scala 565:31]
+  wire  prior_inflight = x_d_valid | r_d_valid; // @[el2_dec_decode_ctl.scala 564:41]
+  wire  prior_inflight_eff = i0_dp_div ? x_d_valid : prior_inflight; // @[el2_dec_decode_ctl.scala 565:31]
   wire  presync_stall = i0_presync & prior_inflight_eff; // @[el2_dec_decode_ctl.scala 567:37]
   wire  _T_476 = _T_475 | presync_stall; // @[el2_dec_decode_ctl.scala 542:62]
   wire  _T_477 = i0_dp_fence | debug_fence; // @[el2_dec_decode_ctl.scala 543:19]
@@ -1709,13 +1716,13 @@ module el2_dec_decode_ctl(
   reg  r_t_pmu_i0_br_unpred; // @[el2_lib.scala 524:16]
   reg [3:0] lsu_trigger_match_r; // @[el2_dec_decode_ctl.scala 602:36]
   reg  lsu_pmu_misaligned_r; // @[el2_dec_decode_ctl.scala 603:37]
-  reg  r_d_i0store; // @[el2_lib.scala 524:16]
-  wire  _T_536 = r_d_i0load | r_d_i0store; // @[el2_dec_decode_ctl.scala 607:56]
+  reg  r_d_bits_i0store; // @[el2_lib.scala 524:16]
+  wire  _T_536 = r_d_bits_i0load | r_d_bits_i0store; // @[el2_dec_decode_ctl.scala 607:61]
   wire [3:0] _T_540 = {_T_536,_T_536,_T_536,_T_536}; // @[Cat.scala 29:58]
-  wire [3:0] _T_541 = _T_540 & lsu_trigger_match_r; // @[el2_dec_decode_ctl.scala 607:72]
-  wire [3:0] _T_542 = _T_541 | r_t_i0trigger; // @[el2_dec_decode_ctl.scala 607:95]
-  reg  r_d_i0div; // @[el2_lib.scala 524:16]
-  wire  _T_545 = r_d_i0div & r_d_i0valid; // @[el2_dec_decode_ctl.scala 613:53]
+  wire [3:0] _T_541 = _T_540 & lsu_trigger_match_r; // @[el2_dec_decode_ctl.scala 607:82]
+  wire [3:0] _T_542 = _T_541 | r_t_i0trigger; // @[el2_dec_decode_ctl.scala 607:105]
+  reg  r_d_bits_i0div; // @[el2_lib.scala 524:16]
+  wire  _T_545 = r_d_bits_i0div & r_d_valid; // @[el2_dec_decode_ctl.scala 613:58]
   wire  _T_556 = i0r_rs1 != 5'h0; // @[el2_dec_decode_ctl.scala 624:49]
   wire  _T_558 = i0r_rs2 != 5'h0; // @[el2_dec_decode_ctl.scala 625:49]
   wire  _T_560 = i0r_rd != 5'h0; // @[el2_dec_decode_ctl.scala 626:48]
@@ -1751,34 +1758,34 @@ module el2_dec_decode_ctl(
   reg  i0_r_c_alu; // @[Reg.scala 15:16]
   wire  _T_710 = |i0_pipe_en[1:0]; // @[el2_dec_decode_ctl.scala 656:49]
   wire  i0_r_data_en = i0_pipe_en[2] | io_clk_override; // @[el2_dec_decode_ctl.scala 658:50]
-  reg  x_d_i0store; // @[el2_lib.scala 524:16]
-  reg  x_d_i0div; // @[el2_lib.scala 524:16]
-  reg  x_d_csrwen; // @[el2_lib.scala 524:16]
-  reg [11:0] x_d_csrwaddr; // @[el2_lib.scala 524:16]
-  wire  _T_733 = x_d_i0v & _T_743; // @[el2_dec_decode_ctl.scala 680:37]
-  wire  _T_737 = x_d_i0valid & _T_743; // @[el2_dec_decode_ctl.scala 681:37]
-  wire  _T_756 = ~r_d_i0div; // @[el2_dec_decode_ctl.scala 696:49]
+  reg  x_d_bits_i0store; // @[el2_lib.scala 524:16]
+  reg  x_d_bits_i0div; // @[el2_lib.scala 524:16]
+  reg  x_d_bits_csrwen; // @[el2_lib.scala 524:16]
+  reg [11:0] x_d_bits_csrwaddr; // @[el2_lib.scala 524:16]
+  wire  _T_733 = x_d_bits_i0v & _T_743; // @[el2_dec_decode_ctl.scala 680:47]
+  wire  _T_737 = x_d_valid & _T_743; // @[el2_dec_decode_ctl.scala 681:33]
+  wire  _T_756 = ~r_d_bits_i0div; // @[el2_dec_decode_ctl.scala 696:49]
   wire  _T_757 = i0_wen_r & _T_756; // @[el2_dec_decode_ctl.scala 696:47]
-  wire  _T_758 = ~i0_load_kill_wen_r; // @[el2_dec_decode_ctl.scala 696:65]
-  wire  _T_761 = x_d_i0v & x_d_i0load; // @[el2_dec_decode_ctl.scala 705:42]
+  wire  _T_758 = ~i0_load_kill_wen_r; // @[el2_dec_decode_ctl.scala 696:70]
+  wire  _T_761 = x_d_bits_i0v & x_d_bits_i0load; // @[el2_dec_decode_ctl.scala 705:47]
   wire  _T_768 = io_i0_ap_predict_nt & _T_561; // @[el2_dec_decode_ctl.scala 711:52]
   wire [11:0] _T_781 = {10'h0,io_dec_i0_pc4_d,i0_ap_pc2}; // @[Cat.scala 29:58]
   reg [11:0] last_br_immed_x; // @[el2_lib.scala 514:16]
-  wire  _T_799 = x_d_i0div & x_d_i0valid; // @[el2_dec_decode_ctl.scala 719:40]
-  wire  div_e1_to_r = _T_799 | _T_545; // @[el2_dec_decode_ctl.scala 719:55]
-  wire  _T_802 = x_d_i0rd == 5'h0; // @[el2_dec_decode_ctl.scala 721:69]
-  wire  _T_803 = _T_799 & _T_802; // @[el2_dec_decode_ctl.scala 721:57]
-  wire  _T_805 = _T_799 & io_dec_tlu_flush_lower_r; // @[el2_dec_decode_ctl.scala 722:30]
-  wire  _T_806 = _T_803 | _T_805; // @[el2_dec_decode_ctl.scala 721:86]
-  wire  _T_808 = _T_545 & io_dec_tlu_flush_lower_r; // @[el2_dec_decode_ctl.scala 723:30]
-  wire  _T_809 = _T_808 & io_dec_tlu_i0_kill_writeb_r; // @[el2_dec_decode_ctl.scala 723:57]
-  wire  div_flush = _T_806 | _T_809; // @[el2_dec_decode_ctl.scala 722:59]
+  wire  _T_799 = x_d_bits_i0div & x_d_valid; // @[el2_dec_decode_ctl.scala 719:45]
+  wire  div_e1_to_r = _T_799 | _T_545; // @[el2_dec_decode_ctl.scala 719:58]
+  wire  _T_802 = x_d_bits_i0rd == 5'h0; // @[el2_dec_decode_ctl.scala 721:77]
+  wire  _T_803 = _T_799 & _T_802; // @[el2_dec_decode_ctl.scala 721:60]
+  wire  _T_805 = _T_799 & io_dec_tlu_flush_lower_r; // @[el2_dec_decode_ctl.scala 722:33]
+  wire  _T_806 = _T_803 | _T_805; // @[el2_dec_decode_ctl.scala 721:94]
+  wire  _T_808 = _T_545 & io_dec_tlu_flush_lower_r; // @[el2_dec_decode_ctl.scala 723:33]
+  wire  _T_809 = _T_808 & io_dec_tlu_i0_kill_writeb_r; // @[el2_dec_decode_ctl.scala 723:60]
+  wire  div_flush = _T_806 | _T_809; // @[el2_dec_decode_ctl.scala 722:62]
   wire  _T_810 = io_dec_div_active & div_flush; // @[el2_dec_decode_ctl.scala 727:51]
   wire  _T_811 = ~div_e1_to_r; // @[el2_dec_decode_ctl.scala 728:26]
   wire  _T_812 = io_dec_div_active & _T_811; // @[el2_dec_decode_ctl.scala 728:24]
-  wire  _T_813 = r_d_i0rd == io_div_waddr_wb; // @[el2_dec_decode_ctl.scala 728:51]
+  wire  _T_813 = r_d_bits_i0rd == io_div_waddr_wb; // @[el2_dec_decode_ctl.scala 728:56]
   wire  _T_814 = _T_812 & _T_813; // @[el2_dec_decode_ctl.scala 728:39]
-  wire  _T_815 = _T_814 & i0_wen_r; // @[el2_dec_decode_ctl.scala 728:72]
+  wire  _T_815 = _T_814 & i0_wen_r; // @[el2_dec_decode_ctl.scala 728:77]
   wire  nonblock_div_cancel = _T_810 | _T_815; // @[el2_dec_decode_ctl.scala 727:65]
   wire  i0_div_decode_d = i0_legal_decode_d & i0_dp_div; // @[el2_dec_decode_ctl.scala 731:55]
   wire  _T_817 = ~io_exu_div_wren; // @[el2_dec_decode_ctl.scala 733:62]
@@ -2077,7 +2084,7 @@ module el2_dec_decode_ctl(
   assign io_dec_i0_alu_decode_d = i0_exulegal_decode_d & i0_dp_alu; // @[el2_dec_decode_ctl.scala 572:26]
   assign io_dec_i0_rs1_bypass_data_d = _T_967 | _T_966; // @[el2_dec_decode_ctl.scala 807:31]
   assign io_dec_i0_rs2_bypass_data_d = _T_984 | _T_983; // @[el2_dec_decode_ctl.scala 812:31]
-  assign io_dec_i0_waddr_r = r_d_i0rd; // @[el2_dec_decode_ctl.scala 694:27]
+  assign io_dec_i0_waddr_r = r_d_bits_i0rd; // @[el2_dec_decode_ctl.scala 694:27]
   assign io_dec_i0_wen_r = _T_757 & _T_758; // @[el2_dec_decode_ctl.scala 696:32]
   assign io_dec_i0_wdata_r = _T_764 ? io_lsu_result_corr_r : i0_result_r_raw; // @[el2_dec_decode_ctl.scala 697:26]
   assign io_dec_i0_select_pc_d = _T_41 ? 1'h0 : i0_dp_raw_pc; // @[el2_dec_decode_ctl.scala 271:25]
@@ -2127,10 +2134,10 @@ module el2_dec_decode_ctl(
   assign io_dec_csr_any_unq_d = i0_dp_csr_read | i0_csr_write; // @[el2_dec_decode_ctl.scala 529:24]
   assign io_dec_csr_rdaddr_d = io_dec_i0_instr_d[31:20]; // @[el2_dec_decode_ctl.scala 466:24]
   assign io_dec_csr_wen_r = _T_352 & _T_754; // @[el2_dec_decode_ctl.scala 471:20]
-  assign io_dec_csr_wraddr_r = r_d_csrwaddr; // @[el2_dec_decode_ctl.scala 467:23]
-  assign io_dec_csr_wrdata_r = r_d_csrwonly ? i0_result_corr_r : write_csr_data; // @[el2_dec_decode_ctl.scala 514:24]
+  assign io_dec_csr_wraddr_r = r_d_bits_csrwaddr; // @[el2_dec_decode_ctl.scala 467:23]
+  assign io_dec_csr_wrdata_r = r_d_bits_csrwonly ? i0_result_corr_r : write_csr_data; // @[el2_dec_decode_ctl.scala 514:24]
   assign io_dec_csr_stall_int_ff = _T_359 & _T_360; // @[el2_dec_decode_ctl.scala 474:27]
-  assign io_dec_tlu_i0_valid_r = r_d_i0valid & _T_743; // @[el2_dec_decode_ctl.scala 578:29]
+  assign io_dec_tlu_i0_valid_r = r_d_valid & _T_743; // @[el2_dec_decode_ctl.scala 578:29]
   assign io_dec_tlu_packet_r_legal = io_dec_tlu_flush_lower_wb ? 1'h0 : r_t_legal; // @[el2_dec_decode_ctl.scala 612:39]
   assign io_dec_tlu_packet_r_icaf = io_dec_tlu_flush_lower_wb ? 1'h0 : r_t_icaf; // @[el2_dec_decode_ctl.scala 612:39]
   assign io_dec_tlu_packet_r_icaf_f1 = io_dec_tlu_flush_lower_wb ? 1'h0 : r_t_icaf_f1; // @[el2_dec_decode_ctl.scala 612:39]
@@ -2139,7 +2146,7 @@ module el2_dec_decode_ctl(
   assign io_dec_tlu_packet_r_i0trigger = io_dec_tlu_flush_lower_wb ? 4'h0 : _T_542; // @[el2_dec_decode_ctl.scala 612:39]
   assign io_dec_tlu_packet_r_pmu_i0_itype = io_dec_tlu_flush_lower_wb ? 4'h0 : r_t_pmu_i0_itype; // @[el2_dec_decode_ctl.scala 612:39]
   assign io_dec_tlu_packet_r_pmu_i0_br_unpred = io_dec_tlu_flush_lower_wb ? 1'h0 : r_t_pmu_i0_br_unpred; // @[el2_dec_decode_ctl.scala 612:39]
-  assign io_dec_tlu_packet_r_pmu_divide = r_d_i0div & r_d_i0valid; // @[el2_dec_decode_ctl.scala 612:39 el2_dec_decode_ctl.scala 613:39]
+  assign io_dec_tlu_packet_r_pmu_divide = r_d_bits_i0div & r_d_valid; // @[el2_dec_decode_ctl.scala 612:39 el2_dec_decode_ctl.scala 613:39]
   assign io_dec_tlu_packet_r_pmu_lsu_misaligned = io_dec_tlu_flush_lower_wb ? 1'h0 : lsu_pmu_misaligned_r; // @[el2_dec_decode_ctl.scala 612:39]
   assign io_dec_tlu_i0_pc_r = dec_i0_pc_r; // @[el2_dec_decode_ctl.scala 759:27]
   assign io_dec_illegal_inst = _T_465; // @[el2_dec_decode_ctl.scala 536:23]
@@ -2283,7 +2290,7 @@ initial begin
   _RAND_6 = {1{`RANDOM}};
   postsync_stall = _RAND_6[0:0];
   _RAND_7 = {1{`RANDOM}};
-  x_d_i0valid = _RAND_7[0:0];
+  x_d_valid = _RAND_7[0:0];
   _RAND_8 = {1{`RANDOM}};
   flush_final_r = _RAND_8[0:0];
   _RAND_9 = {1{`RANDOM}};
@@ -2305,19 +2312,19 @@ initial begin
   _RAND_17 = {1{`RANDOM}};
   cam_raw_3_valid = _RAND_17[0:0];
   _RAND_18 = {1{`RANDOM}};
-  x_d_i0load = _RAND_18[0:0];
+  x_d_bits_i0load = _RAND_18[0:0];
   _RAND_19 = {1{`RANDOM}};
-  x_d_i0rd = _RAND_19[4:0];
+  x_d_bits_i0rd = _RAND_19[4:0];
   _RAND_20 = {1{`RANDOM}};
   _T_701 = _RAND_20[2:0];
   _RAND_21 = {1{`RANDOM}};
   nonblock_load_valid_m_delay = _RAND_21[0:0];
   _RAND_22 = {1{`RANDOM}};
-  r_d_i0load = _RAND_22[0:0];
+  r_d_bits_i0load = _RAND_22[0:0];
   _RAND_23 = {1{`RANDOM}};
-  r_d_i0v = _RAND_23[0:0];
+  r_d_bits_i0v = _RAND_23[0:0];
   _RAND_24 = {1{`RANDOM}};
-  r_d_i0rd = _RAND_24[4:0];
+  r_d_bits_i0rd = _RAND_24[4:0];
   _RAND_25 = {1{`RANDOM}};
   cam_raw_0_bits_rd = _RAND_25[4:0];
   _RAND_26 = {1{`RANDOM}};
@@ -2339,17 +2346,17 @@ initial begin
   _RAND_34 = {1{`RANDOM}};
   _T_339 = _RAND_34[0:0];
   _RAND_35 = {1{`RANDOM}};
-  x_d_i0v = _RAND_35[0:0];
+  x_d_bits_i0v = _RAND_35[0:0];
   _RAND_36 = {1{`RANDOM}};
   i0_x_c_load = _RAND_36[0:0];
   _RAND_37 = {1{`RANDOM}};
   i0_r_c_load = _RAND_37[0:0];
   _RAND_38 = {1{`RANDOM}};
-  r_d_csrwen = _RAND_38[0:0];
+  r_d_bits_csrwen = _RAND_38[0:0];
   _RAND_39 = {1{`RANDOM}};
-  r_d_i0valid = _RAND_39[0:0];
+  r_d_valid = _RAND_39[0:0];
   _RAND_40 = {1{`RANDOM}};
-  r_d_csrwaddr = _RAND_40[11:0];
+  r_d_bits_csrwaddr = _RAND_40[11:0];
   _RAND_41 = {1{`RANDOM}};
   csr_read_x = _RAND_41[0:0];
   _RAND_42 = {1{`RANDOM}};
@@ -2365,13 +2372,13 @@ initial begin
   _RAND_47 = {1{`RANDOM}};
   csr_rddata_x = _RAND_47[31:0];
   _RAND_48 = {1{`RANDOM}};
-  r_d_csrwonly = _RAND_48[0:0];
+  r_d_bits_csrwonly = _RAND_48[0:0];
   _RAND_49 = {1{`RANDOM}};
   i0_result_r_raw = _RAND_49[31:0];
   _RAND_50 = {1{`RANDOM}};
-  x_d_csrwonly = _RAND_50[0:0];
+  x_d_bits_csrwonly = _RAND_50[0:0];
   _RAND_51 = {1{`RANDOM}};
-  wbd_csrwonly = _RAND_51[0:0];
+  wbd_bits_csrwonly = _RAND_51[0:0];
   _RAND_52 = {1{`RANDOM}};
   _T_465 = _RAND_52[31:0];
   _RAND_53 = {1{`RANDOM}};
@@ -2411,9 +2418,9 @@ initial begin
   _RAND_70 = {1{`RANDOM}};
   lsu_pmu_misaligned_r = _RAND_70[0:0];
   _RAND_71 = {1{`RANDOM}};
-  r_d_i0store = _RAND_71[0:0];
+  r_d_bits_i0store = _RAND_71[0:0];
   _RAND_72 = {1{`RANDOM}};
-  r_d_i0div = _RAND_72[0:0];
+  r_d_bits_i0div = _RAND_72[0:0];
   _RAND_73 = {1{`RANDOM}};
   i0_x_c_mul = _RAND_73[0:0];
   _RAND_74 = {1{`RANDOM}};
@@ -2423,13 +2430,13 @@ initial begin
   _RAND_76 = {1{`RANDOM}};
   i0_r_c_alu = _RAND_76[0:0];
   _RAND_77 = {1{`RANDOM}};
-  x_d_i0store = _RAND_77[0:0];
+  x_d_bits_i0store = _RAND_77[0:0];
   _RAND_78 = {1{`RANDOM}};
-  x_d_i0div = _RAND_78[0:0];
+  x_d_bits_i0div = _RAND_78[0:0];
   _RAND_79 = {1{`RANDOM}};
-  x_d_csrwen = _RAND_79[0:0];
+  x_d_bits_csrwen = _RAND_79[0:0];
   _RAND_80 = {1{`RANDOM}};
-  x_d_csrwaddr = _RAND_80[11:0];
+  x_d_bits_csrwaddr = _RAND_80[11:0];
   _RAND_81 = {1{`RANDOM}};
   last_br_immed_x = _RAND_81[11:0];
   _RAND_82 = {1{`RANDOM}};
@@ -2473,7 +2480,7 @@ initial begin
     postsync_stall = 1'h0;
   end
   if (reset) begin
-    x_d_i0valid = 1'h0;
+    x_d_valid = 1'h0;
   end
   if (reset) begin
     flush_final_r = 1'h0;
@@ -2506,10 +2513,10 @@ initial begin
     cam_raw_3_valid = 1'h0;
   end
   if (reset) begin
-    x_d_i0load = 1'h0;
+    x_d_bits_i0load = 1'h0;
   end
   if (reset) begin
-    x_d_i0rd = 5'h0;
+    x_d_bits_i0rd = 5'h0;
   end
   if (reset) begin
     _T_701 = 3'h0;
@@ -2518,13 +2525,13 @@ initial begin
     nonblock_load_valid_m_delay = 1'h0;
   end
   if (reset) begin
-    r_d_i0load = 1'h0;
+    r_d_bits_i0load = 1'h0;
   end
   if (reset) begin
-    r_d_i0v = 1'h0;
+    r_d_bits_i0v = 1'h0;
   end
   if (reset) begin
-    r_d_i0rd = 5'h0;
+    r_d_bits_i0rd = 5'h0;
   end
   if (reset) begin
     cam_raw_0_bits_rd = 5'h0;
@@ -2557,16 +2564,16 @@ initial begin
     _T_339 = 1'h0;
   end
   if (reset) begin
-    x_d_i0v = 1'h0;
+    x_d_bits_i0v = 1'h0;
   end
   if (reset) begin
-    r_d_csrwen = 1'h0;
+    r_d_bits_csrwen = 1'h0;
   end
   if (reset) begin
-    r_d_i0valid = 1'h0;
+    r_d_valid = 1'h0;
   end
   if (reset) begin
-    r_d_csrwaddr = 12'h0;
+    r_d_bits_csrwaddr = 12'h0;
   end
   if (reset) begin
     csr_read_x = 1'h0;
@@ -2590,16 +2597,16 @@ initial begin
     csr_rddata_x = 32'h0;
   end
   if (reset) begin
-    r_d_csrwonly = 1'h0;
+    r_d_bits_csrwonly = 1'h0;
   end
   if (reset) begin
     i0_result_r_raw = 32'h0;
   end
   if (reset) begin
-    x_d_csrwonly = 1'h0;
+    x_d_bits_csrwonly = 1'h0;
   end
   if (reset) begin
-    wbd_csrwonly = 1'h0;
+    wbd_bits_csrwonly = 1'h0;
   end
   if (reset) begin
     _T_465 = 32'h0;
@@ -2659,22 +2666,22 @@ initial begin
     lsu_pmu_misaligned_r = 1'h0;
   end
   if (reset) begin
-    r_d_i0store = 1'h0;
+    r_d_bits_i0store = 1'h0;
   end
   if (reset) begin
-    r_d_i0div = 1'h0;
+    r_d_bits_i0div = 1'h0;
   end
   if (reset) begin
-    x_d_i0store = 1'h0;
+    x_d_bits_i0store = 1'h0;
   end
   if (reset) begin
-    x_d_i0div = 1'h0;
+    x_d_bits_i0div = 1'h0;
   end
   if (reset) begin
-    x_d_csrwen = 1'h0;
+    x_d_bits_csrwen = 1'h0;
   end
   if (reset) begin
-    x_d_csrwaddr = 12'h0;
+    x_d_bits_csrwaddr = 12'h0;
   end
   if (reset) begin
     last_br_immed_x = 12'h0;
@@ -2787,9 +2794,9 @@ end // initial
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_i0valid <= 1'h0;
+      x_d_valid <= 1'h0;
     end else begin
-      x_d_i0valid <= io_dec_i0_decode_d;
+      x_d_valid <= io_dec_i0_decode_d;
     end
   end
   always @(posedge rvclkhdr_io_l1clk or posedge reset) begin
@@ -2880,16 +2887,16 @@ end // initial
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_i0load <= 1'h0;
+      x_d_bits_i0load <= 1'h0;
     end else begin
-      x_d_i0load <= i0_dp_load & i0_legal_decode_d;
+      x_d_bits_i0load <= i0_dp_load & i0_legal_decode_d;
     end
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_i0rd <= 5'h0;
+      x_d_bits_i0rd <= 5'h0;
     end else begin
-      x_d_i0rd <= io_dec_i0_instr_d[11:7];
+      x_d_bits_i0rd <= io_dec_i0_instr_d[11:7];
     end
   end
   always @(posedge io_active_clk or posedge reset) begin
@@ -2908,31 +2915,31 @@ end // initial
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_i0load <= 1'h0;
+      r_d_bits_i0load <= 1'h0;
     end else begin
-      r_d_i0load <= x_d_i0load;
+      r_d_bits_i0load <= x_d_bits_i0load;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_i0v <= 1'h0;
+      r_d_bits_i0v <= 1'h0;
     end else begin
-      r_d_i0v <= _T_733 & _T_280;
+      r_d_bits_i0v <= _T_733 & _T_280;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_i0rd <= 5'h0;
+      r_d_bits_i0rd <= 5'h0;
     end else begin
-      r_d_i0rd <= x_d_i0rd;
+      r_d_bits_i0rd <= x_d_bits_i0rd;
     end
   end
   always @(posedge io_free_clk or posedge reset) begin
     if (reset) begin
       cam_raw_0_bits_rd <= 5'h0;
     end else if (cam_wen[0]) begin
-      if (x_d_i0load) begin
-        cam_raw_0_bits_rd <= x_d_i0rd;
+      if (x_d_bits_i0load) begin
+        cam_raw_0_bits_rd <= x_d_bits_i0rd;
       end else begin
         cam_raw_0_bits_rd <= 5'h0;
       end
@@ -2951,8 +2958,8 @@ end // initial
     if (reset) begin
       cam_raw_1_bits_rd <= 5'h0;
     end else if (cam_wen[1]) begin
-      if (x_d_i0load) begin
-        cam_raw_1_bits_rd <= x_d_i0rd;
+      if (x_d_bits_i0load) begin
+        cam_raw_1_bits_rd <= x_d_bits_i0rd;
       end else begin
         cam_raw_1_bits_rd <= 5'h0;
       end
@@ -2971,8 +2978,8 @@ end // initial
     if (reset) begin
       cam_raw_2_bits_rd <= 5'h0;
     end else if (cam_wen[2]) begin
-      if (x_d_i0load) begin
-        cam_raw_2_bits_rd <= x_d_i0rd;
+      if (x_d_bits_i0load) begin
+        cam_raw_2_bits_rd <= x_d_bits_i0rd;
       end else begin
         cam_raw_2_bits_rd <= 5'h0;
       end
@@ -2991,8 +2998,8 @@ end // initial
     if (reset) begin
       cam_raw_3_bits_rd <= 5'h0;
     end else if (cam_wen[3]) begin
-      if (x_d_i0load) begin
-        cam_raw_3_bits_rd <= x_d_i0rd;
+      if (x_d_bits_i0load) begin
+        cam_raw_3_bits_rd <= x_d_bits_i0rd;
       end else begin
         cam_raw_3_bits_rd <= 5'h0;
       end
@@ -3023,30 +3030,30 @@ end // initial
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_i0v <= 1'h0;
+      x_d_bits_i0v <= 1'h0;
     end else begin
-      x_d_i0v <= i0_rd_en_d & i0_legal_decode_d;
+      x_d_bits_i0v <= i0_rd_en_d & i0_legal_decode_d;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_csrwen <= 1'h0;
+      r_d_bits_csrwen <= 1'h0;
     end else begin
-      r_d_csrwen <= x_d_csrwen;
+      r_d_bits_csrwen <= x_d_bits_csrwen;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_i0valid <= 1'h0;
+      r_d_valid <= 1'h0;
     end else begin
-      r_d_i0valid <= _T_737 & _T_280;
+      r_d_valid <= _T_737 & _T_280;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_csrwaddr <= 12'h0;
+      r_d_bits_csrwaddr <= 12'h0;
     end else begin
-      r_d_csrwaddr <= x_d_csrwaddr;
+      r_d_bits_csrwaddr <= x_d_bits_csrwaddr;
     end
   end
   always @(posedge io_active_clk or posedge reset) begin
@@ -3102,9 +3109,9 @@ end // initial
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_csrwonly <= 1'h0;
+      r_d_bits_csrwonly <= 1'h0;
     end else begin
-      r_d_csrwonly <= x_d_csrwonly;
+      r_d_bits_csrwonly <= x_d_bits_csrwonly;
     end
   end
   always @(posedge rvclkhdr_10_io_l1clk or posedge reset) begin
@@ -3118,16 +3125,16 @@ end // initial
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_csrwonly <= 1'h0;
+      x_d_bits_csrwonly <= 1'h0;
     end else begin
-      x_d_csrwonly <= i0_csr_write_only_d & io_dec_i0_decode_d;
+      x_d_bits_csrwonly <= i0_csr_write_only_d & io_dec_i0_decode_d;
     end
   end
   always @(posedge rvclkhdr_9_io_l1clk or posedge reset) begin
     if (reset) begin
-      wbd_csrwonly <= 1'h0;
+      wbd_bits_csrwonly <= 1'h0;
     end else begin
-      wbd_csrwonly <= r_d_csrwonly;
+      wbd_bits_csrwonly <= r_d_bits_csrwonly;
     end
   end
   always @(posedge rvclkhdr_4_io_l1clk or posedge reset) begin
@@ -3267,44 +3274,44 @@ end // initial
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_i0store <= 1'h0;
+      r_d_bits_i0store <= 1'h0;
     end else begin
-      r_d_i0store <= x_d_i0store;
+      r_d_bits_i0store <= x_d_bits_i0store;
     end
   end
   always @(posedge rvclkhdr_8_io_l1clk or posedge reset) begin
     if (reset) begin
-      r_d_i0div <= 1'h0;
+      r_d_bits_i0div <= 1'h0;
     end else begin
-      r_d_i0div <= x_d_i0div;
+      r_d_bits_i0div <= x_d_bits_i0div;
     end
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_i0store <= 1'h0;
+      x_d_bits_i0store <= 1'h0;
     end else begin
-      x_d_i0store <= i0_dp_store & i0_legal_decode_d;
+      x_d_bits_i0store <= i0_dp_store & i0_legal_decode_d;
     end
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_i0div <= 1'h0;
+      x_d_bits_i0div <= 1'h0;
     end else begin
-      x_d_i0div <= i0_dp_div & i0_legal_decode_d;
+      x_d_bits_i0div <= i0_dp_div & i0_legal_decode_d;
     end
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_csrwen <= 1'h0;
+      x_d_bits_csrwen <= 1'h0;
     end else begin
-      x_d_csrwen <= io_dec_csr_wen_unq_d & i0_legal_decode_d;
+      x_d_bits_csrwen <= io_dec_csr_wen_unq_d & i0_legal_decode_d;
     end
   end
   always @(posedge rvclkhdr_7_io_l1clk or posedge reset) begin
     if (reset) begin
-      x_d_csrwaddr <= 12'h0;
+      x_d_bits_csrwaddr <= 12'h0;
     end else begin
-      x_d_csrwaddr <= io_dec_i0_instr_d[31:20];
+      x_d_bits_csrwaddr <= io_dec_i0_instr_d[31:20];
     end
   end
   always @(posedge rvclkhdr_11_io_l1clk or posedge reset) begin

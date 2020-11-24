@@ -133,11 +133,11 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val x_t_in = Wire(new el2_trap_pkt_t)
   val r_t = Wire(new el2_trap_pkt_t)
   val r_t_in    = Wire(new el2_trap_pkt_t)
-  val d_d = Wire(new el2_dest_pkt_t)
-  val x_d = Wire(new el2_dest_pkt_t)
-  val r_d = Wire(new el2_dest_pkt_t)
-  val r_d_in = Wire(new el2_dest_pkt_t)
-  val wbd = Wire(new el2_dest_pkt_t)
+  val d_d = Wire(Valid(new el2_dest_pkt_t))
+  val x_d = Wire(Valid(new el2_dest_pkt_t))
+  val r_d = Wire(Valid(new el2_dest_pkt_t))
+  val r_d_in = Wire(Valid(new el2_dest_pkt_t))
+  val wbd = Wire(Valid(new el2_dest_pkt_t))
   val i0_d_c = Wire(new el2_class_pkt_t)
   val i0_rs1_class_d = Wire(new el2_class_pkt_t)
   val i0_rs2_class_d = Wire(new el2_class_pkt_t)
@@ -311,12 +311,12 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val cam_data_reset        = io.lsu_nonblock_load_data_valid | io.lsu_nonblock_load_data_error
   val cam_data_reset_tag    = io.lsu_nonblock_load_data_tag
 
-  val nonblock_load_rd   = Mux(x_d.i0load.asBool, x_d.i0rd, 0.U(5.W))  // rd data
+  val nonblock_load_rd   = Mux(x_d.bits.i0load.asBool, x_d.bits.i0rd, 0.U(5.W))  // rd data
   val load_data_tag = io.lsu_nonblock_load_data_tag
   // case of multiple loads to same dest ie. x1 ... you have to invalidate the older one
   // don't writeback a nonblock load
   val nonblock_load_valid_m_delay=withClock(io.active_clk){RegEnable(io.lsu_nonblock_load_valid_m,0.U, i0_r_ctl_en.asBool)}
-  val i0_load_kill_wen_r = nonblock_load_valid_m_delay &  r_d.i0load
+  val i0_load_kill_wen_r = nonblock_load_valid_m_delay &  r_d.bits.i0load
   for(i <- 0 until  LSU_NUM_NBLOAD){
     cam_inv_reset_val(i) := cam_inv_reset   & (cam_inv_reset_tag === cam(i).bits.tag) & cam(i).valid
     cam_data_reset_val(i) := cam_data_reset & (cam_data_reset_tag === cam(i).bits.tag) & cam_raw(i).valid
@@ -331,7 +331,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
       cam_in(i).bits.wb        := 0.U(1.W)
       cam_in(i).bits.tag       := cam_write_tag
       cam_in(i).bits.rd        := nonblock_load_rd
-    }.elsewhen(cam_inv_reset_val(i).asBool || (i0_wen_r.asBool && (r_d_in.i0rd === cam(i).bits.rd) && cam(i).bits.wb.asBool)){
+    }.elsewhen(cam_inv_reset_val(i).asBool || (i0_wen_r.asBool && (r_d_in.bits.i0rd === cam(i).bits.rd) && cam(i).bits.wb.asBool)){
       cam_in(i).valid := 0.U
     }.otherwise{
       cam_in(i)      := cam(i)
@@ -350,7 +350,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
 
   io.dec_nonblock_load_waddr:=0.U(5.W)
   // cancel if any younger inst (including another nonblock) committing this cycle
-  val nonblock_load_cancel = ((r_d_in.i0rd === io.dec_nonblock_load_waddr) & i0_wen_r)
+  val nonblock_load_cancel = ((r_d_in.bits.i0rd === io.dec_nonblock_load_waddr) & i0_wen_r)
   io.dec_nonblock_load_wen := (io.lsu_nonblock_load_data_valid && nonblock_load_write.reduce(_|_).asBool && !nonblock_load_cancel)
   val i0_nonblock_boundary_stall = ((nonblock_load_rd===i0r.rs1) & io.lsu_nonblock_load_valid_m & io.dec_i0_rs1_en_d)|((nonblock_load_rd===i0r.rs2) & io.lsu_nonblock_load_valid_m & io.dec_i0_rs2_en_d)
 
@@ -464,14 +464,14 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   //dec_csr_wen_unq_d assigned as csr_write above
 
   io.dec_csr_rdaddr_d  :=  i0(31,20)
-  io.dec_csr_wraddr_r :=  r_d.csrwaddr //r_d is a el2_dest_pkt
+  io.dec_csr_wraddr_r :=  r_d.bits.csrwaddr //r_d is a el2_dest_pkt
 
   // make sure csr doesn't write same cycle as dec_tlu_flush_lower_wb
   // also use valid so it's flushable
-  io.dec_csr_wen_r := r_d.csrwen & r_d.i0valid & !io.dec_tlu_i0_kill_writeb_r;
+  io.dec_csr_wen_r := r_d.bits.csrwen & r_d.valid & !io.dec_tlu_i0_kill_writeb_r;
 
   // If we are writing MIE or MSTATUS, hold off the external interrupt for a cycle on the write.
-  io.dec_csr_stall_int_ff := ((r_d.csrwaddr === "h300".U) | (r_d.csrwaddr === "h304".U)) & r_d.csrwen & r_d.i0valid & !io.dec_tlu_i0_kill_writeb_wb;
+  io.dec_csr_stall_int_ff := ((r_d.bits.csrwaddr === "h300".U) | (r_d.bits.csrwaddr === "h304".U)) & r_d.bits.csrwen & r_d.valid & !io.dec_tlu_i0_kill_writeb_wb;
 
   val csr_read_x = withClock(io.active_clk){RegNext(csr_ren_qual_d,init=0.B)}
   val csr_clr_x = withClock(io.active_clk){RegNext(csr_clr_d, init=0.B)}
@@ -511,9 +511,9 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val pause_stall = pause_state
 
   // for csr write only data is produced by the alu
-  io.dec_csr_wrdata_r  := Mux(r_d.csrwonly.asBool,i0_result_corr_r,write_csr_data)
+  io.dec_csr_wrdata_r  := Mux(r_d.bits.csrwonly.asBool,i0_result_corr_r,write_csr_data)
 
-  val prior_csr_write = x_d.csrwonly | r_d.csrwonly | wbd.csrwonly;
+  val prior_csr_write = x_d.bits.csrwonly | r_d.bits.csrwonly | wbd.bits.csrwonly;
 
   val debug_fence_i     = io.dec_debug_fence_d & io.dbg_cmd_wrdata(0)
   val debug_fence_raw   = io.dec_debug_fence_d & io.dbg_cmd_wrdata(1)
@@ -559,8 +559,8 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   io.dec_pmu_postsync_stall := postsync_stall.asBool
   io.dec_pmu_presync_stall  := presync_stall.asBool
 
-  val prior_inflight_x    =  x_d.i0valid
-  val prior_inflight_wb   =  r_d.i0valid
+  val prior_inflight_x    =  x_d.valid
+  val prior_inflight_wb   =  r_d.valid
   val prior_inflight = prior_inflight_x | prior_inflight_wb
   val prior_inflight_eff = Mux(i0_dp.div,prior_inflight_x,prior_inflight)
 
@@ -575,7 +575,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   mul_decode_d := i0_exulegal_decode_d & i0_dp.mul
   div_decode_d := i0_exulegal_decode_d & i0_dp.div
 
-  io.dec_tlu_i0_valid_r     :=  r_d.i0valid & !io.dec_tlu_flush_lower_wb
+  io.dec_tlu_i0_valid_r     :=  r_d.valid & !io.dec_tlu_flush_lower_wb
 
   //traps for TLU (tlu stuff)
   d_t.legal              :=  i0_legal_decode_d
@@ -604,13 +604,13 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
 
   r_t_in :=  r_t
 
-  r_t_in.i0trigger              := (repl(4,(r_d.i0load | r_d.i0store)) & lsu_trigger_match_r) | r_t.i0trigger
+  r_t_in.i0trigger              := (repl(4,(r_d.bits.i0load | r_d.bits.i0store)) & lsu_trigger_match_r) | r_t.i0trigger
   r_t_in.pmu_lsu_misaligned     := lsu_pmu_misaligned_r   // only valid if a load/store is valid in DC3 stage
 
   when (io.dec_tlu_flush_lower_wb.asBool) {r_t_in := 0.U.asTypeOf(r_t_in) }
 
   io.dec_tlu_packet_r                 :=  r_t_in
-  io.dec_tlu_packet_r.pmu_divide      :=  r_d.i0div & r_d.i0valid
+  io.dec_tlu_packet_r.pmu_divide      :=  r_d.bits.i0div & r_d.valid
   // end tlu stuff
 
   flush_final_r := withClock(data_gate_clk){RegNext(io.exu_flush_final, 0.U)}
@@ -662,52 +662,52 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   io.dec_data_en          := Cat(i0_x_data_en, i0_r_data_en)
   io.dec_ctl_en           := Cat(i0_x_ctl_en,  i0_r_ctl_en)
 
-  d_d.i0rd                  :=  i0r.rd
-  d_d.i0v                   :=  i0_rd_en_d  & i0_legal_decode_d
-  d_d.i0valid               :=  io.dec_i0_decode_d  // has flush_final_r
+  d_d.bits.i0rd                  :=  i0r.rd
+  d_d.bits.i0v                   :=  i0_rd_en_d  & i0_legal_decode_d
+  d_d.valid               :=  io.dec_i0_decode_d  // has flush_final_r
 
-  d_d.i0load                :=  i0_dp.load  & i0_legal_decode_d
-  d_d.i0store               :=  i0_dp.store & i0_legal_decode_d
-  d_d.i0div                 :=  i0_dp.div   & i0_legal_decode_d
+  d_d.bits.i0load                :=  i0_dp.load  & i0_legal_decode_d
+  d_d.bits.i0store               :=  i0_dp.store & i0_legal_decode_d
+  d_d.bits.i0div                 :=  i0_dp.div   & i0_legal_decode_d
 
-  d_d.csrwen                :=  io.dec_csr_wen_unq_d   & i0_legal_decode_d
-  d_d.csrwonly              :=  i0_csr_write_only_d & io.dec_i0_decode_d
-  d_d.csrwaddr              :=  i0(31,20)
+  d_d.bits.csrwen                :=  io.dec_csr_wen_unq_d   & i0_legal_decode_d
+  d_d.bits.csrwonly              :=  i0_csr_write_only_d & io.dec_i0_decode_d
+  d_d.bits.csrwaddr              :=  i0(31,20)
 
   x_d := rvdffe(d_d, i0_x_ctl_en.asBool,clock,io.scan_mode)
-  val x_d_in = Wire(new el2_dest_pkt_t)
+  val x_d_in = Wire(Valid(new el2_dest_pkt_t))
   x_d_in := x_d
-  x_d_in.i0v         := x_d.i0v     & !io.dec_tlu_flush_lower_wb & !io.dec_tlu_flush_lower_r
-  x_d_in.i0valid     := x_d.i0valid & !io.dec_tlu_flush_lower_wb & !io.dec_tlu_flush_lower_r
+  x_d_in.bits.i0v         := x_d.bits.i0v     & !io.dec_tlu_flush_lower_wb & !io.dec_tlu_flush_lower_r
+  x_d_in.valid     := x_d.valid & !io.dec_tlu_flush_lower_wb & !io.dec_tlu_flush_lower_r
 
   r_d := rvdffe(x_d_in,i0_r_ctl_en.asBool,clock,io.scan_mode)
   r_d_in := r_d
-  r_d_in.i0rd   :=  r_d.i0rd
+  r_d_in.bits.i0rd   :=  r_d.bits.i0rd
 
-  r_d_in.i0v         := (r_d.i0v      & !io.dec_tlu_flush_lower_wb)
-  r_d_in.i0valid     := (r_d.i0valid  & !io.dec_tlu_flush_lower_wb)
-  r_d_in.i0load      :=  r_d.i0load   & !io.dec_tlu_flush_lower_wb
-  r_d_in.i0store     :=  r_d.i0store  & !io.dec_tlu_flush_lower_wb
+  r_d_in.bits.i0v         := (r_d.bits.i0v      & !io.dec_tlu_flush_lower_wb)
+  r_d_in.valid     := (r_d.valid  & !io.dec_tlu_flush_lower_wb)
+  r_d_in.bits.i0load      :=  r_d.bits.i0load   & !io.dec_tlu_flush_lower_wb
+  r_d_in.bits.i0store     :=  r_d.bits.i0store  & !io.dec_tlu_flush_lower_wb
 
   wbd := rvdffe(r_d_in,i0_wb_ctl_en.asBool,clock,io.scan_mode)
 
-  io.dec_i0_waddr_r       :=  r_d_in.i0rd
-  i0_wen_r              :=  r_d_in.i0v & !io.dec_tlu_i0_kill_writeb_r
-  io.dec_i0_wen_r              :=  i0_wen_r   & !r_d_in.i0div & !i0_load_kill_wen_r  // don't write a nonblock load 1st time down the pipe
+  io.dec_i0_waddr_r       :=  r_d_in.bits.i0rd
+  i0_wen_r              :=  r_d_in.bits.i0v & !io.dec_tlu_i0_kill_writeb_r
+  io.dec_i0_wen_r              :=  i0_wen_r   & !r_d_in.bits.i0div & !i0_load_kill_wen_r  // don't write a nonblock load 1st time down the pipe
   io.dec_i0_wdata_r      :=  i0_result_corr_r
 
   val i0_result_r_raw = rvdffe(i0_result_x,i0_r_data_en.asBool,clock,io.scan_mode)
   if ( LOAD_TO_USE_PLUS1 == 1 ) {
     i0_result_x         := io.exu_i0_result_x
-    i0_result_r         := Mux((r_d.i0v & r_d.i0load).asBool,io.lsu_result_m, i0_result_r_raw)
+    i0_result_r         := Mux((r_d.bits.i0v & r_d.bits.i0load).asBool,io.lsu_result_m, i0_result_r_raw)
   }
   else {
-    i0_result_x          := Mux((x_d.i0v & x_d.i0load).asBool,io.lsu_result_m,io.exu_i0_result_x)
+    i0_result_x          := Mux((x_d.bits.i0v & x_d.bits.i0load).asBool,io.lsu_result_m,io.exu_i0_result_x)
     i0_result_r          := i0_result_r_raw
   }
 
   // correct lsu load data - don't use for bypass, do pass down the pipe
-  i0_result_corr_r  := Mux((r_d.i0v & r_d.i0load).asBool,io.lsu_result_corr_r,i0_result_r_raw)
+  i0_result_corr_r  := Mux((r_d.bits.i0v & r_d.bits.i0load).asBool,io.lsu_result_corr_r,i0_result_r_raw)
   io.dec_i0_br_immed_d := Mux((io.i0_ap.predict_nt & !i0_dp.jal).asBool,i0_br_offset,Cat(repl(10,0.U),i0_ap_pc4,i0_ap_pc2))
   val last_br_immed_d = WireInit(UInt(12.W),0.U)
   last_br_immed_d := Mux((io.i0_ap.predict_nt).asBool,Cat(repl(10,0.U),i0_ap_pc4,i0_ap_pc2),i0_br_offset)
@@ -716,16 +716,16 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
 
   // divide stuff
 
-  val div_e1_to_r         = (x_d.i0div & x_d.i0valid) | (r_d.i0div & r_d.i0valid)
+  val div_e1_to_r         = (x_d.bits.i0div & x_d.valid) | (r_d.bits.i0div & r_d.valid)
 
-  val div_flush              = (x_d.i0div & x_d.i0valid & (x_d.i0rd === 0.U(5.W)))   |
-    (x_d.i0div & x_d.i0valid & io.dec_tlu_flush_lower_r ) |
-    (r_d.i0div & r_d.i0valid & io.dec_tlu_flush_lower_r & io.dec_tlu_i0_kill_writeb_r)
+  val div_flush              = (x_d.bits.i0div & x_d.valid & (x_d.bits.i0rd === 0.U(5.W)))   |
+    (x_d.bits.i0div & x_d.valid & io.dec_tlu_flush_lower_r ) |
+    (r_d.bits.i0div & r_d.valid & io.dec_tlu_flush_lower_r & io.dec_tlu_i0_kill_writeb_r)
 
   // cancel if any younger inst committing this cycle to same dest as nonblock divide
 
   val nonblock_div_cancel    = (io.dec_div_active &  div_flush) |
-    (io.dec_div_active & !div_e1_to_r & (r_d.i0rd === io.div_waddr_wb) & i0_wen_r)
+    (io.dec_div_active & !div_e1_to_r & (r_d.bits.i0rd === io.div_waddr_wb) & i0_wen_r)
 
   io.dec_div_cancel         :=  nonblock_div_cancel.asBool
   val i0_div_decode_d            =  i0_legal_decode_d & i0_dp.div
@@ -765,11 +765,11 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
 
   // scheduling logic for primary alu's
 
-  val i0_rs1_depend_i0_x  = io.dec_i0_rs1_en_d & x_d.i0v & (x_d.i0rd === i0r.rs1)
-  val i0_rs1_depend_i0_r  = io.dec_i0_rs1_en_d & r_d.i0v & (r_d.i0rd === i0r.rs1)
+  val i0_rs1_depend_i0_x  = io.dec_i0_rs1_en_d & x_d.bits.i0v & (x_d.bits.i0rd === i0r.rs1)
+  val i0_rs1_depend_i0_r  = io.dec_i0_rs1_en_d & r_d.bits.i0v & (r_d.bits.i0rd === i0r.rs1)
 
-  val i0_rs2_depend_i0_x  = io.dec_i0_rs2_en_d & x_d.i0v & (x_d.i0rd === i0r.rs2)
-  val i0_rs2_depend_i0_r  = io.dec_i0_rs2_en_d & r_d.i0v & (r_d.i0rd === i0r.rs2)
+  val i0_rs2_depend_i0_x  = io.dec_i0_rs2_en_d & x_d.bits.i0v & (x_d.bits.i0rd === i0r.rs2)
+  val i0_rs2_depend_i0_r  = io.dec_i0_rs2_en_d & r_d.bits.i0v & (r_d.bits.i0rd === i0r.rs2)
   // order the producers as follows:  , i0_x, i0_r, i0_wb
   i0_rs1_class_d := Mux(i0_rs1_depend_i0_x.asBool,i0_x_c,Mux(i0_rs1_depend_i0_r.asBool, i0_r_c, 0.U.asTypeOf(i0_rs1_class_d)))
   i0_rs1_depth_d := Mux(i0_rs1_depend_i0_x.asBool,1.U(2.W),Mux(i0_rs1_depend_i0_r.asBool, 2.U(2.W), 0.U))
