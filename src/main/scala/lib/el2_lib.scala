@@ -1,7 +1,7 @@
 package lib
 import chisel3._
 import chisel3.util._
-import el2_mem.waleed.{DCCM_ENABLE, ICACHE_ECC, ICACHE_WAYPACK, ICCM_ENABLE, bool2int}
+import el2_mem.quasar.{DCCM_ENABLE, ICACHE_ECC, ICACHE_WAYPACK, ICCM_ENABLE, bool2int}
 trait param {
   val BHT_ADDR_HI            = 9
   val BHT_ADDR_LO            = 2
