@@ -42,7 +42,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
     val ifu_i0_bp_btag          = Output(UInt(BTB_BTAG_SIZE.W))
     val ifu_pmu_instr_aligned   = Output(Bool())
     val ifu_i0_cinst            = Output(UInt(16.W))
-    val i0_brp                  = Output(new el2_br_pkt_t)
+    val i0_brp                  = Valid(new el2_br_pkt_t)
   })
   io.ifu_i0_valid := 0.U
   io.ifu_i0_icaf := 0.U
@@ -377,25 +377,25 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
 
   io.i0_brp.valid :=(first2B & alignbrend(0)) | (first4B & alignbrend(1)) | (first4B & alignval(1) & alignbrend(0))
 
-  io.i0_brp.ret := (first2B & alignret(0)) | (first4B & alignret(1))
+  io.i0_brp.bits.ret := (first2B & alignret(0)) | (first4B & alignret(1))
 
   val i0_brp_pc4 = (first2B & alignpc4(0)) | (first4B & alignpc4(1))
 
-  io.i0_brp.way := Mux((first2B | alignbrend(0)).asBool, alignway(0),  alignway(1))
+  io.i0_brp.bits.way := Mux((first2B | alignbrend(0)).asBool, alignway(0),  alignway(1))
 
-  io.i0_brp.hist := Cat((first2B & alignhist1(0)) | (first4B & alignhist1(1)),
+  io.i0_brp.bits.hist := Cat((first2B & alignhist1(0)) | (first4B & alignhist1(1)),
     (first2B & alignhist0(0)) | (first4B & alignhist0(1)))
 
   val i0_ends_f1 = first4B & alignfromf1
-  io.i0_brp.toffset := Mux(i0_ends_f1.asBool, f1poffset, f0poffset)
+  io.i0_brp.bits.toffset := Mux(i0_ends_f1.asBool, f1poffset, f0poffset)
 
-  io.i0_brp.prett := Mux(i0_ends_f1.asBool, f1prett, f0prett)
+  io.i0_brp.bits.prett := Mux(i0_ends_f1.asBool, f1prett, f0prett)
 
-  io.i0_brp.br_start_error  := (first4B & alignval(1) & alignbrend(0))
+  io.i0_brp.bits.br_start_error  := (first4B & alignval(1) & alignbrend(0))
 
-  io.i0_brp.bank            := Mux((first2B | alignbrend(0)).asBool, firstpc(0), secondpc(0))
+  io.i0_brp.bits.bank            := Mux((first2B | alignbrend(0)).asBool, firstpc(0), secondpc(0))
 
-  io.i0_brp.br_error := (io.i0_brp.valid &  i0_brp_pc4 &  first2B) | (io.i0_brp.valid & !i0_brp_pc4 &  first4B)
+  io.i0_brp.bits.br_error := (io.i0_brp.valid &  i0_brp_pc4 &  first2B) | (io.i0_brp.valid & !i0_brp_pc4 &  first4B)
 
   io.ifu_i0_bp_index := Mux((first2B | alignbrend(0)).asBool, firstpc_hash, secondpc_hash)
 

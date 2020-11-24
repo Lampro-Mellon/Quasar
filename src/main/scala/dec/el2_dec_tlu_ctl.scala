@@ -188,7 +188,7 @@ class el2_dec_tlu_ctl_IO extends Bundle with el2_lib {
   val  dec_tlu_meipt              = Output(UInt(4.W)) // to PIC
   val  dec_csr_rddata_d           = Output(UInt(32.W))      // csr read data at wb
   val dec_csr_legal_d             = Output(UInt(1.W))              // csr indicates legal operation
-  val dec_tlu_br0_r_pkt           = Output(new el2_br_tlu_pkt_t) // branch pkt to bp
+  val dec_tlu_br0_r_pkt           = Valid(new el2_br_tlu_pkt_t) // branch pkt to bp
   val dec_tlu_i0_kill_writeb_wb   = Output(UInt(1.W))    // I0 is flushed, don't writeback any results to arch state
   val dec_tlu_flush_lower_wb      = Output(UInt(1.W))       // commit has a flush (exception, int, mispredict at e4)
   val dec_tlu_i0_commit_cmt       = Output(UInt(1.W))        // committed an instruction
@@ -727,12 +727,12 @@ class el2_dec_tlu_ctl extends Module with el2_lib with RequireAsyncReset with CS
   val dec_tlu_br0_v_r = io.exu_i0_br_valid_r & io.dec_tlu_i0_valid_r & ~tlu_flush_lower_r_d1 & (~io.exu_i0_br_mp_r | ~io.exu_pmu_i0_br_ataken)
 
 
-  io.dec_tlu_br0_r_pkt.hist 			:= io.exu_i0_br_hist_r
-  io.dec_tlu_br0_r_pkt.br_error 		:= dec_tlu_br0_error_r
-  io.dec_tlu_br0_r_pkt.br_start_error 	:= dec_tlu_br0_start_error_r
+  io.dec_tlu_br0_r_pkt.bits.hist 			:= io.exu_i0_br_hist_r
+  io.dec_tlu_br0_r_pkt.bits.br_error 		:= dec_tlu_br0_error_r
+  io.dec_tlu_br0_r_pkt.bits.br_start_error 	:= dec_tlu_br0_start_error_r
   io.dec_tlu_br0_r_pkt.valid 			:= dec_tlu_br0_v_r
-  io.dec_tlu_br0_r_pkt.way 			:= io.exu_i0_br_way_r
-  io.dec_tlu_br0_r_pkt.middle 			:= io.exu_i0_br_middle_r
+  io.dec_tlu_br0_r_pkt.bits.way 			:= io.exu_i0_br_way_r
+  io.dec_tlu_br0_r_pkt.bits.middle 			:= io.exu_i0_br_middle_r
 
 
   ebreak_r  :=  (io.dec_tlu_packet_r.pmu_i0_itype === EBREAK)  & io.dec_tlu_i0_valid_r & ~i0_trigger_hit_r & ~dcsr(DCSR_EBREAKM) & ~rfpc_i0_r

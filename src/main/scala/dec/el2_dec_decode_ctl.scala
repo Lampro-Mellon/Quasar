@@ -35,7 +35,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     val dec_i0_icaf_f1_d           =   Input(Bool())            // i0 instruction access fault at decode for f1 fetch group
     val dec_i0_icaf_type_d         =   Input(UInt(2.W))      // i0 instruction access fault type
     val dec_i0_dbecc_d             =   Input(Bool())            // icache/iccm double-bit error
-    val dec_i0_brp                 =   Input(new el2_br_pkt_t)          // branch packet
+    val dec_i0_brp                 =   Flipped(Valid(new el2_br_pkt_t))          // branch packet
     val dec_i0_bp_index            =   Input(UInt(((BTB_ADDR_HI-BTB_ADDR_LO)+1).W))    // i0 branch index
     val dec_i0_bp_fghr             =   Input(UInt(BHT_GHR_SIZE.W))   // BP FGHR
     val dec_i0_bp_btag             =   Input(UInt(BTB_BTAG_SIZE.W))   // BP tag
@@ -230,24 +230,24 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   io.dec_i0_predict_p_d.bits.pcall        :=  i0_pcall  // don't mark as pcall if branch error
   io.dec_i0_predict_p_d.bits.pja          :=  i0_pja
   io.dec_i0_predict_p_d.bits.pret         :=  i0_pret
-  io.dec_i0_predict_p_d.bits.prett        :=  io.dec_i0_brp.prett
+  io.dec_i0_predict_p_d.bits.prett        :=  io.dec_i0_brp.bits.prett
   io.dec_i0_predict_p_d.bits.pc4          :=  io.dec_i0_pc4_d
-  io.dec_i0_predict_p_d.bits.hist         :=  io.dec_i0_brp.hist
+  io.dec_i0_predict_p_d.bits.hist         :=  io.dec_i0_brp.bits.hist
   io.dec_i0_predict_p_d.valid        :=  i0_brp_valid & i0_legal_decode_d
   val i0_notbr_error                 =  i0_brp_valid & !(i0_dp_raw.condbr | i0_pcall_raw | i0_pja_raw | i0_pret_raw)
 
   // no toffset error for a pret
-  val i0_br_toffset_error     =  i0_brp_valid & io.dec_i0_brp.hist(1) & (io.dec_i0_brp.toffset =/= i0_br_offset) & !i0_pret_raw
-  val i0_ret_error            =  i0_brp_valid & io.dec_i0_brp.ret & !i0_pret_raw;
-  val i0_br_error             =  io.dec_i0_brp.br_error | i0_notbr_error | i0_br_toffset_error | i0_ret_error
+  val i0_br_toffset_error     =  i0_brp_valid & io.dec_i0_brp.bits.hist(1) & (io.dec_i0_brp.bits.toffset =/= i0_br_offset) & !i0_pret_raw
+  val i0_ret_error            =  i0_brp_valid & io.dec_i0_brp.bits.ret & !i0_pret_raw;
+  val i0_br_error             =  io.dec_i0_brp.bits.br_error | i0_notbr_error | i0_br_toffset_error | i0_ret_error
   io.dec_i0_predict_p_d.bits.br_error                  :=  i0_br_error & i0_legal_decode_d & !leak1_mode
-  io.dec_i0_predict_p_d.bits.br_start_error            :=  io.dec_i0_brp.br_start_error & i0_legal_decode_d & !leak1_mode
+  io.dec_i0_predict_p_d.bits.br_start_error            :=  io.dec_i0_brp.bits.br_start_error & i0_legal_decode_d & !leak1_mode
   io.i0_predict_index_d        :=  io.dec_i0_bp_index
   io.i0_predict_btag_d         :=  io.dec_i0_bp_btag
-  val i0_br_error_all          = (i0_br_error | io.dec_i0_brp.br_start_error) & !leak1_mode
+  val i0_br_error_all          = (i0_br_error | io.dec_i0_brp.bits.br_start_error) & !leak1_mode
   io.dec_i0_predict_p_d.bits.toffset            :=  i0_br_offset
   io.i0_predict_fghr_d         :=  io.dec_i0_bp_fghr
-  io.dec_i0_predict_p_d.bits.way                       :=  io.dec_i0_brp.way
+  io.dec_i0_predict_p_d.bits.way                       :=  io.dec_i0_brp.bits.way
   //   end
 
   // on br error turn anything into a nop
@@ -273,8 +273,8 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   // branches that can be predicted
   val i0_predict_br  =  i0_dp.condbr | i0_pcall | i0_pja | i0_pret;
 
-  val i0_predict_nt    = !(io.dec_i0_brp.hist(1) & i0_brp_valid) & i0_predict_br
-  val i0_predict_t     =  (io.dec_i0_brp.hist(1) & i0_brp_valid) & i0_predict_br
+  val i0_predict_nt    = !(io.dec_i0_brp.bits.hist(1) & i0_brp_valid) & i0_predict_br
+  val i0_predict_t     =  (io.dec_i0_brp.bits.hist(1) & i0_brp_valid) & i0_predict_br
   val i0_ap_pc2  = !io.dec_i0_pc4_d
   val i0_ap_pc4  =  io.dec_i0_pc4_d
   io.i0_ap.predict_nt    := i0_predict_nt

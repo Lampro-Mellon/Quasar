@@ -49,7 +49,7 @@ class el2_rets_pkt_t extends Bundle {
 }
 
 class el2_br_pkt_t extends Bundle {
-  val valid          = UInt(1.W)
+ // val valid          = UInt(1.W)
   val toffset        = UInt(12.W)
   val hist           = UInt(2.W)
   val br_error       = UInt(1.W)
@@ -62,7 +62,7 @@ class el2_br_pkt_t extends Bundle {
 
 
 class el2_br_tlu_pkt_t extends Bundle {
-  val valid           = UInt(1.W)
+ // val valid           = UInt(1.W)
   val hist            = UInt(2.W)
   val br_error        = UInt(1.W)
   val br_start_error  = UInt(1.W)

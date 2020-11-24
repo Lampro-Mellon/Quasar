@@ -384,7 +384,7 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   ifu.io.exu_mp_fghr := exu.io.exu_mp_fghr
   ifu.io.exu_mp_index := exu.io.exu_mp_index
   ifu.io.exu_mp_btag := exu.io.exu_mp_btag
-  ifu.io.dec_tlu_br0_r_pkt := dec.io.dec_tlu_br0_r_pkt
+  ifu.io.dec_tlu_br0_r_pkt <> dec.io.dec_tlu_br0_r_pkt
   ifu.io.exu_i0_br_fghr_r := exu.io.exu_i0_br_fghr_r
   ifu.io.exu_i0_br_index_r := exu.io.exu_i0_br_index_r
   ifu.io.dec_tlu_flush_lower_wb := dec.io.dec_tlu_flush_lower_r
