@@ -241,7 +241,7 @@ class el2_lsu extends Module with RequireAsyncReset with param with el2_lib {
   dccm_ctl.io.lsu_c2_r_clk                   := clkdomain.io.lsu_c2_m_clk
   dccm_ctl.io.lsu_free_c2_clk                := clkdomain.io.lsu_c2_r_clk
   dccm_ctl.io.lsu_c1_r_clk                   := clkdomain.io.lsu_free_c2_clk
-  dccm_ctl.io.lsu_store_c1_r_clk             := clkdomain.io.lsu_c1_r_clk
+  dccm_ctl.io.lsu_store_c1_r_clk             := clkdomain.io.lsu_store_c1_r_clk
   //dccm_ctl.io.clk                            := clock
   dccm_ctl.io.lsu_pkt_d                      <> lsu_lsc_ctl.io.lsu_pkt_d
   dccm_ctl.io.lsu_pkt_m                      <> lsu_lsc_ctl.io.lsu_pkt_m

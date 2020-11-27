@@ -130,7 +130,7 @@ class mem_ctl_bundle extends Bundle with el2_lib{
   val scan_mode = Input(Bool())
 
 }
-class el2_ifu_mem_ctl extends Module with el2_lib {
+class el2_ifu_mem_ctl extends Module with el2_lib with RequireAsyncReset {
   val io = IO(new mem_ctl_bundle)
   io.ifu_axi_wvalid := 0.U
   io.ifu_axi_wdata := 0.U
@@ -178,13 +178,12 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val bus_ifu_wr_en_ff = WireInit(Bool(), false.B)
   val last_beat = WireInit(Bool(), false.B)
   val last_data_recieved_ff = WireInit(Bool(), false.B)
-  //val flush_final_f = WireInit(Bool(), 0.U)
   val stream_eol_f = WireInit(Bool(), false.B)
   val ic_miss_under_miss_f = WireInit(Bool(), false.B)
   val ic_ignore_2nd_miss_f = WireInit(Bool(), false.B)
   val ic_debug_rd_en_ff = WireInit(Bool(), false.B)
   val debug_data_clk = rvclkhdr(clock, ic_debug_rd_en_ff, io.scan_mode)
-  val flush_final_f = RegNext(io.exu_flush_final, 0.U)
+  val flush_final_f = withClock(io.free_clk){RegNext(io.exu_flush_final, 0.U)}
   val fetch_bf_f_c1_clken = io.ifc_fetch_req_bf_raw | ifc_fetch_req_f | miss_pending | io.exu_flush_final | scnd_miss_req
   val debug_c1_clken = io.ic_debug_rd_en | io.ic_debug_wr_en
   val debug_c1_clk = rvclkhdr(clock, debug_c1_clken, io.scan_mode)
@@ -210,8 +209,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
             Mux(((bus_ifu_wr_en_ff & last_beat) & !uncacheable_miss_ff).asBool, idle_C,
               Mux((ic_byp_hit_f & !io.exu_flush_final & !(bus_ifu_wr_en_ff & last_beat) & !ifu_bp_hit_taken_q_f & !uncacheable_miss_ff).asBool, stream_C,
                 Mux((bus_ifu_wr_en_ff & !io.exu_flush_final & !(bus_ifu_wr_en_ff & last_beat) & !ifu_bp_hit_taken_q_f & !uncacheable_miss_ff).asBool, stream_C,
-                Mux((!ic_byp_hit_f  &  !io.exu_flush_final &  (bus_ifu_wr_en_ff & last_beat)       & !uncacheable_miss_ff).asBool, idle_C,
-                  Mux(((io.exu_flush_final | ifu_bp_hit_taken_q_f) & !(bus_ifu_wr_en_ff & last_beat)).asBool, hit_u_miss_C, idle_C))))))))
+                  Mux((!ic_byp_hit_f  &  !io.exu_flush_final &  (bus_ifu_wr_en_ff & last_beat)       & !uncacheable_miss_ff).asBool, idle_C,
+                    Mux(((io.exu_flush_final | ifu_bp_hit_taken_q_f) & !(bus_ifu_wr_en_ff & last_beat)).asBool, hit_u_miss_C, idle_C))))))))
       miss_state_en := io.dec_tlu_force_halt | io.exu_flush_final | ic_byp_hit_f | ifu_bp_hit_taken_q_f | (bus_ifu_wr_en_ff & last_beat) | (bus_ifu_wr_en_ff & !uncacheable_miss_ff)
     }
     is (crit_wrd_rdy_C){
@@ -242,7 +241,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
       miss_state_en := (bus_ifu_wr_en_ff & last_beat) | io.exu_flush_final | io.dec_tlu_force_halt
     }
   }
-  miss_state := RegEnable(miss_nxtstate, 0.U, miss_state_en.asBool)
+  miss_state := withClock(io.free_clk){RegEnable(miss_nxtstate, 0.U, miss_state_en.asBool)}
   val crit_byp_hit_f = WireInit(Bool(), 0.U)
   val way_status_mb_scnd_ff = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
   val way_status = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
@@ -255,7 +254,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   miss_pending := miss_state =/= idle_C
   val crit_wd_byp_ok_ff = (miss_state === crit_byp_ok_C) | ((miss_state === crit_wrd_rdy_C) & !flush_final_f)
   val sel_hold_imb = (miss_pending & !(bus_ifu_wr_en_ff & last_beat) & !((miss_state === crit_wrd_rdy_C) & io.exu_flush_final) &
-                      !((miss_state === crit_wrd_rdy_C) & crit_byp_hit_f) ) | ic_act_miss_f |
+    !((miss_state === crit_wrd_rdy_C) & crit_byp_hit_f) ) | ic_act_miss_f |
     (miss_pending & (miss_nxtstate === crit_wrd_rdy_C))
 
   val sel_hold_imb_scnd = ((miss_state === scnd_miss_C) | ic_miss_under_miss_f) & !flush_final_f
@@ -296,17 +295,17 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val way_status_mb_ff = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
   val way_status_rep_new = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
   val way_status_mb_in = Mux((scnd_miss_req & !scnd_miss_index_match).asBool, way_status_mb_scnd_ff,
-      Mux((scnd_miss_req &  scnd_miss_index_match).asBool, way_status_rep_new,
-        Mux(miss_pending.asBool, way_status_mb_ff, way_status)))
+    Mux((scnd_miss_req &  scnd_miss_index_match).asBool, way_status_rep_new,
+      Mux(miss_pending.asBool, way_status_mb_ff, way_status)))
   val replace_way_mb_any = Wire(Vec(ICACHE_NUM_WAYS, UInt(1.W)))
   val tagv_mb_ff = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
   val tagv_mb_in = Mux(scnd_miss_req.asBool, tagv_mb_scnd_ff | (Fill(ICACHE_NUM_WAYS, scnd_miss_index_match) & replace_way_mb_any.reverse.reduce(Cat(_,_))),
-  Mux(miss_pending.asBool, tagv_mb_ff, io.ic_tag_valid & Fill(ICACHE_NUM_WAYS, !reset_all_tags)))
+    Mux(miss_pending.asBool, tagv_mb_ff, io.ic_tag_valid & Fill(ICACHE_NUM_WAYS, !reset_all_tags)))
   val scnd_miss_req_q = WireInit(Bool(), false.B)
   val reset_ic_ff = WireInit(Bool(), false.B)
   val reset_ic_in = miss_pending & !scnd_miss_req_q &  (reset_all_tags |  reset_ic_ff)
-  reset_ic_ff := RegNext(reset_ic_in)
-  val fetch_uncacheable_ff = RegNext(io.ifc_fetch_uncacheable_bf, 0.U)
+  reset_ic_ff := withClock(io.free_clk){RegNext(reset_ic_in)}
+  val fetch_uncacheable_ff = withClock(io.active_clk){RegNext(io.ifc_fetch_uncacheable_bf, 0.U)}
   ifu_fetch_addr_int_f := withClock(fetch_bf_f_c1_clk){RegNext(io.ifc_fetch_addr_bf, 0.U)}
   val vaddr_f = ifu_fetch_addr_int_f(ICACHE_BEAT_ADDR_HI-1, 0)
   uncacheable_miss_ff := withClock(fetch_bf_f_c1_clk){RegNext(uncacheable_miss_in, 0.U)}
@@ -320,7 +319,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   tagv_mb_ff := withClock(fetch_bf_f_c1_clk){RegNext(tagv_mb_in, 0.U)}
   val stream_miss_f = WireInit(Bool(), 0.U)
   val ifc_fetch_req_qual_bf  = io.ifc_fetch_req_bf  & !((miss_state===crit_wrd_rdy_C) & flush_final_f) & !stream_miss_f
-  val ifc_fetch_req_f_raw = RegNext(ifc_fetch_req_qual_bf, 0.U)
+  val ifc_fetch_req_f_raw = withClock(io.active_clk){RegNext(ifc_fetch_req_qual_bf, 0.U)}
   ifc_fetch_req_f := ifc_fetch_req_f_raw & !io.exu_flush_final
   ifc_iccm_access_f := withClock(fetch_bf_f_c1_clk){RegNext(io.ifc_iccm_access_bf, 0.U)}
   val ifc_region_acc_fault_final_bf = WireInit(Bool(), 0.U)
@@ -333,7 +332,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val reset_tag_valid_for_miss = WireInit(Bool(), false.B)
   val sel_mb_addr = (miss_pending & write_ic_16_bytes & !uncacheable_miss_ff) | reset_tag_valid_for_miss
   val ifu_ic_rw_int_addr = Mux1H(Seq(sel_mb_addr -> Cat(imb_ff(30,ICACHE_BEAT_ADDR_HI) , ic_wr_addr_bits_hi_3 , imb_ff(1,0)),
-                                    !sel_mb_addr -> io.ifc_fetch_addr_bf))
+    !sel_mb_addr -> io.ifc_fetch_addr_bf))
   val bus_ifu_wr_en_ff_q = WireInit(Bool(), false.B)
   val sel_mb_status_addr = miss_pending & write_ic_16_bytes & !uncacheable_miss_ff & last_beat & bus_ifu_wr_en_ff_q
   val ifu_status_wr_addr = Mux(sel_mb_status_addr, Cat(imb_ff(30, ICACHE_BEAT_ADDR_HI),ic_wr_addr_bits_hi_3, imb_ff(1,0)), ifu_fetch_addr_int_f)
@@ -350,7 +349,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   io.ic_error_start := ((if(ICACHE_ECC)io.ic_eccerr.orR()else io.ic_parerr.orR()) & ic_act_hit_f) | ic_rd_parity_final_err
   val ic_debug_tag_val_rd_out = WireInit(Bool(), 0.U)
   val ic_debug_ict_array_sel_ff = WireInit(Bool(), 0.U)
-  val ifu_ic_debug_rd_data_in = Mux(ic_debug_ict_array_sel_ff.asBool, if(ICACHE_ECC) Cat(0.U(2.W),io.ictag_debug_rd_data(25,21),0.U(32.W),io.ictag_debug_rd_data(20,0), 0.U(7-ICACHE_STATUS_BITS), way_status, 0.U(3.W),ic_debug_tag_val_rd_out)
+  val ifu_ic_debug_rd_data_in = Mux(ic_debug_ict_array_sel_ff.asBool, if(ICACHE_ECC) Cat(0.U(2.W),io.ictag_debug_rd_data(25,21),0.U(32.W),io.ictag_debug_rd_data(20,0), 0.U((7-ICACHE_STATUS_BITS).W), way_status, 0.U(3.W),ic_debug_tag_val_rd_out)
   else Cat(0.U(6.W),io.ictag_debug_rd_data(21),0.U(32.W),io.ictag_debug_rd_data(20,0),0.U(7-ICACHE_STATUS_BITS),way_status ,0.U(3.W) ,ic_debug_tag_val_rd_out) ,
     io.ic_debug_rd_data)
   io.ifu_ic_debug_rd_data := withClock(debug_data_clk){RegNext(ifu_ic_debug_rd_data_in, 0.U)}
@@ -400,8 +399,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val ic_miss_buff_data = Wire(Vec(2*ICACHE_NUM_BEATS, UInt(32.W)))
   for(i<- 0 until ICACHE_NUM_BEATS){
     val wr_data_c1_clk = write_fill_data.map(rvclkhdr(clock, _ , io.scan_mode))
-  ic_miss_buff_data(2*i) := withClock(wr_data_c1_clk(i)){RegNext(ic_miss_buff_data_in(31,0), 0.U)}
-  ic_miss_buff_data(2*i+1) := withClock(wr_data_c1_clk(i)){RegNext(ic_miss_buff_data_in(63,32), 0.U)}}
+    ic_miss_buff_data(2*i) := withClock(wr_data_c1_clk(i)){RegNext(ic_miss_buff_data_in(31,0), 0.U)}
+    ic_miss_buff_data(2*i+1) := withClock(wr_data_c1_clk(i)){RegNext(ic_miss_buff_data_in(63,32), 0.U)}}
   val ic_miss_buff_data_valid = WireInit(UInt(ICACHE_NUM_BEATS.W), 0.U)
   val ic_miss_buff_data_valid_in = (0 until ICACHE_NUM_BEATS).map(i=>write_fill_data(i)|(ic_miss_buff_data_valid(i)&(!ic_act_miss_f)))
   ic_miss_buff_data_valid := withClock(io.free_clk){RegNext(ic_miss_buff_data_valid_in.map(i=>i.asUInt()).reverse.reduce(Cat(_,_)), 0.U)}
@@ -416,16 +415,16 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val bypass_index_5_3_inc = bypass_index(bypass_index.getWidth-1,2) + 1.U
   val bypass_valid_value_check = Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(bypass_index(bypass_index.getWidth-1,2)===i.U).asBool->ic_miss_buff_data_valid_in(i)))
   val bypass_data_ready_in = (bypass_valid_value_check & !bypass_index(1) & !bypass_index(0)) |
-                             (bypass_valid_value_check & !bypass_index(1) & bypass_index(0)) |
-                             (bypass_valid_value_check & bypass_index(1) & !bypass_index(0)) |
-      (bypass_valid_value_check & bypass_index(1) & bypass_index(0) & Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(bypass_index_5_3_inc===i.U).asBool->ic_miss_buff_data_valid_in(i)))) |
-                             (bypass_valid_value_check & bypass_index(ICACHE_BEAT_ADDR_HI-1,2)===Fill(ICACHE_BEAT_ADDR_HI,1.U))
+    (bypass_valid_value_check & !bypass_index(1) & bypass_index(0)) |
+    (bypass_valid_value_check & bypass_index(1) & !bypass_index(0)) |
+    (bypass_valid_value_check & bypass_index(1) & bypass_index(0) & Mux1H((0 until ICACHE_NUM_BEATS).map(i=>(bypass_index_5_3_inc===i.U).asBool->ic_miss_buff_data_valid_in(i)))) |
+    (bypass_valid_value_check & bypass_index(ICACHE_BEAT_ADDR_HI-1,2)===Fill(ICACHE_BEAT_ADDR_HI,1.U))
 
 
   val ic_crit_wd_rdy_new_ff = WireInit(Bool(), 0.U)
   val ic_crit_wd_rdy_new_in = (bypass_data_ready_in & crit_wd_byp_ok_ff &  uncacheable_miss_ff & !io.exu_flush_final & !ifu_bp_hit_taken_q_f) |
-                              (                       crit_wd_byp_ok_ff & !uncacheable_miss_ff & !io.exu_flush_final & !ifu_bp_hit_taken_q_f) |
-                              (ic_crit_wd_rdy_new_ff & crit_wd_byp_ok_ff & !fetch_req_icache_f & !io.exu_flush_final)
+    (                       crit_wd_byp_ok_ff & !uncacheable_miss_ff & !io.exu_flush_final & !ifu_bp_hit_taken_q_f) |
+    (ic_crit_wd_rdy_new_ff & crit_wd_byp_ok_ff & !fetch_req_icache_f & !io.exu_flush_final)
   ic_crit_wd_rdy_new_ff := withClock(io.free_clk){RegNext(ic_crit_wd_rdy_new_in, 0.U)}
   val byp_fetch_index = ifu_fetch_addr_int_f(ICACHE_BEAT_ADDR_HI-1,0)
   val byp_fetch_index_0 = Cat(ifu_fetch_addr_int_f(ICACHE_BEAT_ADDR_HI-1,2), 0.U)
@@ -499,7 +498,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
       perr_sel_invalidate := io.dec_tlu_flush_lower_wb & io.dec_tlu_force_halt
     }
     is(ecc_wff_C){
-      perr_nxtstate := Mux(((io.dec_tlu_flush_err_wb & io.dec_tlu_flush_lower_wb ) | io.dec_tlu_force_halt).asBool(), err_idle_C, ecc_cor_C)
+      perr_nxtstate := Mux(((!io.dec_tlu_flush_err_wb & io.dec_tlu_flush_lower_wb ) | io.dec_tlu_force_halt).asBool(), err_idle_C, ecc_cor_C)
       perr_state_en := io.dec_tlu_flush_lower_wb | io.dec_tlu_force_halt
     }
     is(dma_sb_err_C){
@@ -516,7 +515,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val err_stop_nxtstate = WireInit(UInt(2.W), 0.U)
   val err_stop_state_en = WireInit(Bool(), false.B)
   io.iccm_correction_state := false.B
-//  val err_stop_fetch := WireInit(Bool(), false.B)
+  //  val err_stop_fetch := WireInit(Bool(), false.B)
   switch(err_stop_state){
     is(err_stop_idle_C){
       err_stop_nxtstate := err_fetch1_C
@@ -547,8 +546,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   }
   err_stop_state := withClock(io.free_clk){RegEnable(err_stop_nxtstate, 0.U, err_stop_state_en)}
   bus_ifu_bus_clk_en := io.ifu_bus_clk_en
-    val busclk = rvclkhdr(clock, bus_ifu_bus_clk_en, io.scan_mode)
-    val busclk_force = rvclkhdr(clock, bus_ifu_bus_clk_en | io.dec_tlu_force_halt , io.scan_mode)
+  val busclk = rvclkhdr(clock, bus_ifu_bus_clk_en, io.scan_mode)
+  val busclk_force = rvclkhdr(clock, bus_ifu_bus_clk_en | io.dec_tlu_force_halt , io.scan_mode)
   val bus_ifu_bus_clk_en_ff = withClock(io.free_clk){RegNext(bus_ifu_bus_clk_en, 0.U)}
   scnd_miss_req_q := withClock(io.free_clk){RegNext(scnd_miss_req_in, 0.U)}
   val scnd_miss_req_ff2 = withClock(io.free_clk){RegNext(scnd_miss_req, 0.U)}
@@ -561,7 +560,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   ifu_bus_cmd_valid := withClock(busclk_force){RegNext(ifc_bus_ic_req_ff_in, 0.U)}
   val bus_cmd_sent = WireInit(Bool(), false.B)
   val bus_cmd_req_in = (ic_act_miss_f | bus_cmd_req_hold) & !bus_cmd_sent & !io.dec_tlu_force_halt
-  bus_cmd_sent := withClock(io.free_clk){RegNext(bus_cmd_req_in, false.B)}
+  bus_cmd_req_hold := withClock(io.free_clk){RegNext(bus_cmd_req_in, false.B)}
   // AXI Read-Channel
   io.ifu_axi_arvalid := ifu_bus_cmd_valid
   io.ifu_axi_arid := bus_rd_addr_count & Fill(IFU_BUS_TAG, ifu_bus_cmd_valid)
@@ -604,8 +603,8 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   last_data_recieved_ff := withClock(io.free_clk){RegNext(last_data_recieved_in, 0.U)}
   // Request Address Count
   val bus_new_rd_addr_count = Mux(!miss_pending, imb_ff(ICACHE_BEAT_ADDR_HI-1, 2),
-      Mux(scnd_miss_req_q, imb_scnd_ff(ICACHE_BEAT_ADDR_HI-1, 2),
-        Mux(bus_cmd_sent, bus_rd_addr_count + 1.U, bus_rd_addr_count)))
+    Mux(scnd_miss_req_q, imb_scnd_ff(ICACHE_BEAT_ADDR_HI-1, 2),
+      Mux(bus_cmd_sent, bus_rd_addr_count + 1.U, bus_rd_addr_count)))
   bus_rd_addr_count := withClock(busclk_reset){RegNext(bus_new_rd_addr_count, 0.U)}
   // Command beat Count
   val bus_inc_cmd_beat_cnt = ifu_bus_cmd_valid & ifu_bus_cmd_ready & miss_pending & !io.dec_tlu_force_halt
@@ -661,7 +660,7 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   val iccm_dma_rvalid_temp = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(iccm_dma_rvalid_in, false.B)} else 0.U
   io.iccm_dma_rvalid := iccm_dma_rvalid_temp
   val iccm_dma_ecc_error = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(iccm_dma_ecc_error_in, false.B)} else 0.U
-  io.iccm_dma_ecc_error := iccm_dma_ecc_error_in
+  io.iccm_dma_ecc_error := iccm_dma_ecc_error
   val iccm_dma_rdata_temp = if(ICCM_ENABLE) withClock(io.free_clk){RegNext(iccm_dma_rdata_in, 0.U)} else 0.U
   io.iccm_dma_rdata := iccm_dma_rdata_temp
   val iccm_ecc_corr_index_ff = WireInit(UInt((ICCM_BITS-2).W), 0.U)
@@ -699,106 +698,106 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
       ((miss_state===miss_wait_C) & !miss_state_en)                                    |
       ((miss_state===crit_wrd_rdy_C) & !miss_state_en)  |
       ((miss_state===crit_byp_ok_C) &  miss_state_en &  (miss_nxtstate===miss_wait_C))  ))  |
-      (io.ifc_fetch_req_bf & io.exu_flush_final  & !io.ifc_fetch_uncacheable_bf & !io.ifc_iccm_access_bf)
+    (io.ifc_fetch_req_bf & io.exu_flush_final  & !io.ifc_fetch_uncacheable_bf & !io.ifc_iccm_access_bf)
   val bus_ic_wr_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
   io.ic_wr_en := bus_ic_wr_en & Fill(ICACHE_NUM_WAYS, write_ic_16_bytes)
   io.ic_write_stall := write_ic_16_bytes & !((((miss_state===crit_byp_ok_C) | ((miss_state===stream_C) & !(io.exu_flush_final | ifu_bp_hit_taken_q_f  | stream_eol_f ))) & !(bus_ifu_wr_en_ff & last_beat & !uncacheable_miss_ff)))
   reset_all_tags := withClock(io.active_clk){RegNext(io.dec_tlu_fence_i_wb, false.B)}
 
-    val ic_valid = !ifu_wr_cumulative_err_data & !(reset_ic_in | reset_ic_ff) & !reset_tag_valid_for_miss
-    val ifu_status_wr_addr_w_debug = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en) & io.ic_debug_tag_array, io.ic_debug_addr(ICACHE_INDEX_HI - 3, ICACHE_TAG_INDEX_LO - 3),
-      ifu_status_wr_addr(ICACHE_INDEX_HI - 1, ICACHE_TAG_INDEX_LO - 1))
-    val ifu_status_wr_addr_ff = withClock(io.free_clk) {
-      RegNext(ifu_status_wr_addr_w_debug, 0.U)
-    }
-    val way_status_wr_en = WireInit(Bool(), false.B)
-    val way_status_wr_en_w_debug = way_status_wr_en | (io.ic_debug_wr_en & io.ic_debug_tag_array)
-    val way_status_wr_en_ff = withClock(io.free_clk) {
-      RegNext(way_status_wr_en_w_debug, false.B)
-    }
-    val way_status_new = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
-    val way_status_new_w_debug = Mux(io.ic_debug_wr_en & io.ic_debug_tag_array,
-      if (ICACHE_STATUS_BITS == 1) io.ic_debug_wr_data(4) else io.ic_debug_wr_data(6, 4), way_status_new)
-    val way_status_new_ff = withClock(io.free_clk) {
-      RegNext(way_status_new_w_debug, 0.U)
-    }
-    val way_status_clken = (0 until ICACHE_TAG_DEPTH / 8).map(i => ifu_status_wr_addr_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, 3) === i.U)
-   val way_status_clk = way_status_clken.map(rvclkhdr(clock, _, io.scan_mode))
-    val way_status_out = Wire(Vec(ICACHE_TAG_DEPTH, UInt(ICACHE_STATUS_BITS.W)))
-    for (i <- 0 until ICACHE_TAG_DEPTH / 8; j <- 0 until 8)
-      way_status_out((8 * i) + j) := withClock(way_status_clk(i)){RegEnable(way_status_new_ff, 0.U, (ifu_status_wr_addr_ff(2,0)===j.U) & way_status_wr_en_ff)}
+  val ic_valid = !ifu_wr_cumulative_err_data & !(reset_ic_in | reset_ic_ff) & !reset_tag_valid_for_miss
+  val ifu_status_wr_addr_w_debug = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en) & io.ic_debug_tag_array, io.ic_debug_addr(ICACHE_INDEX_HI - 3, ICACHE_TAG_INDEX_LO - 3),
+    ifu_status_wr_addr(ICACHE_INDEX_HI - 1, ICACHE_TAG_INDEX_LO - 1))
+  val ifu_status_wr_addr_ff = withClock(io.free_clk) {
+    RegNext(ifu_status_wr_addr_w_debug, 0.U)
+  }
+  val way_status_wr_en = WireInit(Bool(), false.B)
+  val way_status_wr_en_w_debug = way_status_wr_en | (io.ic_debug_wr_en & io.ic_debug_tag_array)
+  val way_status_wr_en_ff = withClock(io.free_clk) {
+    RegNext(way_status_wr_en_w_debug, false.B)
+  }
+  val way_status_new = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
+  val way_status_new_w_debug = Mux(io.ic_debug_wr_en & io.ic_debug_tag_array,
+    if (ICACHE_STATUS_BITS == 1) io.ic_debug_wr_data(4) else io.ic_debug_wr_data(6, 4), way_status_new)
+  val way_status_new_ff = withClock(io.free_clk) {
+    RegNext(way_status_new_w_debug, 0.U)
+  }
+  val way_status_clken = (0 until ICACHE_TAG_DEPTH / 8).map(i => ifu_status_wr_addr_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, 3) === i.U)
+  val way_status_clk = way_status_clken.map(rvclkhdr(clock, _, io.scan_mode))
+  val way_status_out = Wire(Vec(ICACHE_TAG_DEPTH, UInt(ICACHE_STATUS_BITS.W)))
+  for (i <- 0 until ICACHE_TAG_DEPTH / 8; j <- 0 until 8)
+    way_status_out((8 * i) + j) := withClock(way_status_clk(i)){RegEnable(way_status_new_ff, 0.U, (ifu_status_wr_addr_ff(2,0)===j.U) & way_status_wr_en_ff)}
   val test_way_status_out = (0 until ICACHE_TAG_DEPTH).map(i=>way_status_out(i).asUInt).reverse.reduce(Cat(_,_))
- // io.test_way_status_out := test_way_status_out
+  // io.test_way_status_out := test_way_status_out
   val test_way_status_clken = (0 until ICACHE_TAG_DEPTH/8).map(i=>way_status_clken(i).asUInt()).reverse.reduce(Cat(_,_))
   //io.test_way_status_clken := test_way_status_clken
   way_status := Mux1H((0 until ICACHE_TAG_DEPTH).map(i=>(ifu_ic_rw_int_addr_ff === i.U) -> way_status_out(i)))
-    val ifu_ic_rw_int_addr_w_debug = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en) & io.ic_debug_tag_array,
-      io.ic_debug_addr(ICACHE_INDEX_HI - 3, ICACHE_TAG_INDEX_LO - 3), ifu_ic_rw_int_addr(ICACHE_INDEX_HI - 1, ICACHE_TAG_INDEX_LO - 1))
-    ifu_ic_rw_int_addr_ff := withClock(io.free_clk) {
-      RegNext(ifu_ic_rw_int_addr_w_debug, 0.U)
-    }
-    val ifu_tag_wren = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
-    val ic_debug_tag_wr_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
-    val ifu_tag_wren_w_debug = ifu_tag_wren | ic_debug_tag_wr_en
-    val ifu_tag_wren_ff = withClock(io.free_clk) {
-      RegNext(ifu_tag_wren_w_debug, 0.U)
-    }
-    val ic_valid_w_debug = Mux(io.ic_debug_wr_en & io.ic_debug_tag_array, io.ic_debug_wr_data(0), ic_valid)
-    val ic_valid_ff = withClock(io.free_clk) {
-      RegNext(ic_valid_w_debug, false.B)
-    }
-    val tag_valid_clken = (0 until (ICACHE_TAG_DEPTH / 32)).map(i => (0 until ICACHE_NUM_WAYS).map(j =>
-      if (ICACHE_TAG_DEPTH == 32) ifu_tag_wren_ff(j) | perr_err_inv_way(j) | reset_all_tags
-      else ((ifu_ic_rw_int_addr_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, 5) === i.U) & ifu_tag_wren_ff(j)) |
-        ((perr_ic_index_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, 5) === i.U) & perr_err_inv_way(j)) |
-        reset_all_tags).reverse.reduce(Cat(_, _)))
-    val tag_valid_clk = (0 until ICACHE_TAG_DEPTH / 32).map(i => (0 until ICACHE_NUM_WAYS).map(j => rvclkhdr(clock, tag_valid_clken(i)(j), io.scan_mode)))
-    val ic_tag_valid_out = Wire(Vec(ICACHE_NUM_WAYS, Vec(ICACHE_TAG_DEPTH, Bool())))
-   // io.valids := Cat((0 until ICACHE_TAG_DEPTH).map(i=>ic_tag_valid_out(1)(i).asUInt()).reverse.reduce(Cat(_,_)),
-     // (0 until ICACHE_TAG_DEPTH).map(i=>ic_tag_valid_out(0)(i).asUInt()).reverse.reduce(Cat(_,_)))
+  val ifu_ic_rw_int_addr_w_debug = Mux((io.ic_debug_rd_en | io.ic_debug_wr_en) & io.ic_debug_tag_array,
+    io.ic_debug_addr(ICACHE_INDEX_HI - 3, ICACHE_TAG_INDEX_LO - 3), ifu_ic_rw_int_addr(ICACHE_INDEX_HI - 1, ICACHE_TAG_INDEX_LO - 1))
+  ifu_ic_rw_int_addr_ff := withClock(io.free_clk) {
+    RegNext(ifu_ic_rw_int_addr_w_debug, 0.U)
+  }
+  val ifu_tag_wren = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
+  val ic_debug_tag_wr_en = WireInit(UInt(ICACHE_NUM_WAYS.W), 0.U)
+  val ifu_tag_wren_w_debug = ifu_tag_wren | ic_debug_tag_wr_en
+  val ifu_tag_wren_ff = withClock(io.free_clk) {
+    RegNext(ifu_tag_wren_w_debug, 0.U)
+  }
+  val ic_valid_w_debug = Mux(io.ic_debug_wr_en & io.ic_debug_tag_array, io.ic_debug_wr_data(0), ic_valid)
+  val ic_valid_ff = withClock(io.free_clk) {
+    RegNext(ic_valid_w_debug, false.B)
+  }
+  val tag_valid_clken = (0 until (ICACHE_TAG_DEPTH / 32)).map(i => (0 until ICACHE_NUM_WAYS).map(j =>
+    if (ICACHE_TAG_DEPTH == 32) ifu_tag_wren_ff(j) | perr_err_inv_way(j) | reset_all_tags
+    else ((ifu_ic_rw_int_addr_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, 5) === i.U) & ifu_tag_wren_ff(j)) |
+      ((perr_ic_index_ff(ICACHE_INDEX_HI - ICACHE_TAG_INDEX_LO, 5) === i.U) & perr_err_inv_way(j)) |
+      reset_all_tags).reverse.reduce(Cat(_, _)))
+  val tag_valid_clk = (0 until ICACHE_TAG_DEPTH / 32).map(i => (0 until ICACHE_NUM_WAYS).map(j => rvclkhdr(clock, tag_valid_clken(i)(j), io.scan_mode)))
+  val ic_tag_valid_out = Wire(Vec(ICACHE_NUM_WAYS, Vec(ICACHE_TAG_DEPTH, Bool())))
+  // io.valids := Cat((0 until ICACHE_TAG_DEPTH).map(i=>ic_tag_valid_out(1)(i).asUInt()).reverse.reduce(Cat(_,_)),
+  // (0 until ICACHE_TAG_DEPTH).map(i=>ic_tag_valid_out(0)(i).asUInt()).reverse.reduce(Cat(_,_)))
 
-    for (i <- 0 until (ICACHE_TAG_DEPTH / 32); j <- 0 until ICACHE_NUM_WAYS; k <- 0 until 32)
-      ic_tag_valid_out(j)((32 * i) + k) := withClock(tag_valid_clk(i)(j)){RegEnable(ic_valid_ff & !reset_all_tags.asBool & !perr_sel_invalidate, false.B,
-          ((((ifu_ic_rw_int_addr_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j)) | ((perr_ic_index_ff === (k + (32 * i)).U) & perr_err_inv_way(j)) | reset_all_tags)).asBool)}
+  for (i <- 0 until (ICACHE_TAG_DEPTH / 32); j <- 0 until ICACHE_NUM_WAYS; k <- 0 until 32)
+    ic_tag_valid_out(j)((32 * i) + k) := withClock(tag_valid_clk(i)(j)){RegEnable(ic_valid_ff & !reset_all_tags.asBool & !perr_sel_invalidate, false.B,
+      ((((ifu_ic_rw_int_addr_ff === (k + (32 * i)).U) & ifu_tag_wren_ff(j)) | ((perr_ic_index_ff === (k + (32 * i)).U) & perr_err_inv_way(j)) | reset_all_tags)).asBool)}
 
-    val ic_tag_valid_unq = (0 until ICACHE_NUM_WAYS).map(k => (0 until ICACHE_TAG_DEPTH).map(j =>
-      Mux(ifu_ic_rw_int_addr_ff === j.U, ic_tag_valid_out(k)(j), false.B).asUInt).reduce(_|_)).reverse.reduce(Cat(_,_))
+  val ic_tag_valid_unq = (0 until ICACHE_NUM_WAYS).map(k => (0 until ICACHE_TAG_DEPTH).map(j =>
+    Mux(ifu_ic_rw_int_addr_ff === j.U, ic_tag_valid_out(k)(j), false.B).asUInt).reduce(_|_)).reverse.reduce(Cat(_,_))
 
-    // Making a sudo LRU
-    // val replace_way_mb_any = Wire(Vec(ICACHE_NUM_WAYS, Bool()))
-    val way_status_hit_new = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
-    if (ICACHE_NUM_WAYS == 4) {
-      replace_way_mb_any(3) := (way_status_mb_ff(2) & way_status_mb_ff(0) & tagv_mb_ff(3, 0).andR) |
-        (!tagv_mb_ff(3) & tagv_mb_ff(2) & tagv_mb_ff(1) & tagv_mb_ff(0))
-      replace_way_mb_any(2) := (!way_status_mb_ff(2) & way_status_mb_ff(0) & tagv_mb_ff(3, 0).andR) |
-        (!tagv_mb_ff(2) & tagv_mb_ff(1) & tagv_mb_ff(0))
-      replace_way_mb_any(1) := (way_status_mb_ff(1) & !way_status_mb_ff(0) & tagv_mb_ff(3, 0).andR) |
-        (!tagv_mb_ff(1) & tagv_mb_ff(0))
-      replace_way_mb_any(0) := (!way_status_mb_ff(1) & !way_status_mb_ff(0) & tagv_mb_ff(3, 0).andR) | !tagv_mb_ff(0)
+  // Making a sudo LRU
+  // val replace_way_mb_any = Wire(Vec(ICACHE_NUM_WAYS, Bool()))
+  val way_status_hit_new = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
+  if (ICACHE_NUM_WAYS == 4) {
+    replace_way_mb_any(3) := (way_status_mb_ff(2) & way_status_mb_ff(0) & tagv_mb_ff(3, 0).andR) |
+      (!tagv_mb_ff(3) & tagv_mb_ff(2) & tagv_mb_ff(1) & tagv_mb_ff(0))
+    replace_way_mb_any(2) := (!way_status_mb_ff(2) & way_status_mb_ff(0) & tagv_mb_ff(3, 0).andR) |
+      (!tagv_mb_ff(2) & tagv_mb_ff(1) & tagv_mb_ff(0))
+    replace_way_mb_any(1) := (way_status_mb_ff(1) & !way_status_mb_ff(0) & tagv_mb_ff(3, 0).andR) |
+      (!tagv_mb_ff(1) & tagv_mb_ff(0))
+    replace_way_mb_any(0) := (!way_status_mb_ff(1) & !way_status_mb_ff(0) & tagv_mb_ff(3, 0).andR) | !tagv_mb_ff(0)
 
-      way_status_hit_new := Mux1H(Seq(io.ic_rd_hit(0) -> Cat(way_status(2), 3.U),
-        io.ic_rd_hit(1) -> Cat(way_status(2), 1.U(2.W)),
-        io.ic_rd_hit(2) -> Cat(1.U, way_status(1), 0.U),
-        io.ic_rd_hit(3) -> Cat(0.U, way_status(1), 0.U)))
+    way_status_hit_new := Mux1H(Seq(io.ic_rd_hit(0) -> Cat(way_status(2), 3.U),
+      io.ic_rd_hit(1) -> Cat(way_status(2), 1.U(2.W)),
+      io.ic_rd_hit(2) -> Cat(1.U, way_status(1), 0.U),
+      io.ic_rd_hit(3) -> Cat(0.U, way_status(1), 0.U)))
 
-      way_status_rep_new := Mux1H(Seq(io.ic_rd_hit(0) -> Cat(way_status_mb_ff(2), 3.U),
-        io.ic_rd_hit(1) -> Cat(way_status_mb_ff(2), 1.U(2.W)),
-        io.ic_rd_hit(2) -> Cat(1.U, way_status_mb_ff(1), 0.U),
-        io.ic_rd_hit(3) -> Cat(0.U, way_status_mb_ff(1), 0.U)))
-    }
-    else {
-      replace_way_mb_any(0) := (!way_status_mb_ff & tagv_mb_ff(0) & tagv_mb_ff(1)) | !tagv_mb_ff(0)
-      replace_way_mb_any(1) := (way_status_mb_ff & tagv_mb_ff(0) & tagv_mb_ff(1)) | !tagv_mb_ff(1) & tagv_mb_ff(0)
-      way_status_hit_new := io.ic_rd_hit(0)
-      way_status_rep_new := replace_way_mb_any(0)
-    }
-    way_status_new := Mux((bus_ifu_wr_en_ff_q & last_beat).asBool, way_status_rep_new, way_status_hit_new)
-    way_status_wr_en := (bus_ifu_wr_en_ff_q & last_beat) | ic_act_hit_f
-    val bus_wren = (0 until ICACHE_NUM_WAYS).map(i => bus_ifu_wr_en_ff_q & replace_way_mb_any(i) & miss_pending)
+    way_status_rep_new := Mux1H(Seq(io.ic_rd_hit(0) -> Cat(way_status_mb_ff(2), 3.U),
+      io.ic_rd_hit(1) -> Cat(way_status_mb_ff(2), 1.U(2.W)),
+      io.ic_rd_hit(2) -> Cat(1.U, way_status_mb_ff(1), 0.U),
+      io.ic_rd_hit(3) -> Cat(0.U, way_status_mb_ff(1), 0.U)))
+  }
+  else {
+    replace_way_mb_any(0) := (!way_status_mb_ff & tagv_mb_ff(0) & tagv_mb_ff(1)) | !tagv_mb_ff(0)
+    replace_way_mb_any(1) := (way_status_mb_ff & tagv_mb_ff(0) & tagv_mb_ff(1)) | !tagv_mb_ff(1) & tagv_mb_ff(0)
+    way_status_hit_new := io.ic_rd_hit(0)
+    way_status_rep_new := replace_way_mb_any(0)
+  }
+  way_status_new := Mux((bus_ifu_wr_en_ff_q & last_beat).asBool, way_status_rep_new, way_status_hit_new)
+  way_status_wr_en := (bus_ifu_wr_en_ff_q & last_beat) | ic_act_hit_f
+  val bus_wren = (0 until ICACHE_NUM_WAYS).map(i => bus_ifu_wr_en_ff_q & replace_way_mb_any(i) & miss_pending)
 
-    val bus_wren_last = (0 until ICACHE_NUM_WAYS).map(i => bus_ifu_wr_en_ff_wo_err & replace_way_mb_any(i) & miss_pending & bus_last_data_beat)
-    val wren_reset_miss = (0 until ICACHE_NUM_WAYS).map(i => replace_way_mb_any(i) & reset_tag_valid_for_miss)
-    ifu_tag_wren := (0 until ICACHE_NUM_WAYS).map(i => bus_wren_last(i) | wren_reset_miss(i)).reverse.reduce(Cat(_, _))
+  val bus_wren_last = (0 until ICACHE_NUM_WAYS).map(i => bus_ifu_wr_en_ff_wo_err & replace_way_mb_any(i) & miss_pending & bus_last_data_beat)
+  val wren_reset_miss = (0 until ICACHE_NUM_WAYS).map(i => replace_way_mb_any(i) & reset_tag_valid_for_miss)
+  ifu_tag_wren := (0 until ICACHE_NUM_WAYS).map(i => bus_wren_last(i) | wren_reset_miss(i)).reverse.reduce(Cat(_, _))
 
   bus_ic_wr_en := bus_wren.reverse.reduce(Cat(_,_))
   if(!ICACHE_ENABLE){
@@ -838,15 +837,15 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
   ic_debug_ict_array_sel_ff := withClock(debug_c1_clk){RegNext(ic_debug_ict_array_sel_in, 0.U)}
   ic_debug_rd_en_ff := withClock(io.free_clk){RegNext(io.ic_debug_rd_en, false.B)}
   io.ifu_ic_debug_rd_data_valid := withClock(io.free_clk){RegEnable(ic_debug_rd_en_ff, 0.U, ic_debug_rd_en_ff.asBool)}
-  val ifc_region_acc_okay = Cat(INST_ACCESS_ENABLE0.U,INST_ACCESS_ENABLE1.U,INST_ACCESS_ENABLE2.U,INST_ACCESS_ENABLE3.U,INST_ACCESS_ENABLE4.U,INST_ACCESS_ENABLE5.U,INST_ACCESS_ENABLE6.U,INST_ACCESS_ENABLE7.U).orR() |
-    INST_ACCESS_ENABLE0.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK0).U) === (aslong(INST_ACCESS_ADDR0).U | aslong(INST_ACCESS_MASK0).U)) |
-    INST_ACCESS_ENABLE1.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK1).U) === (aslong(INST_ACCESS_ADDR1).U | aslong(INST_ACCESS_MASK1).U)) |
-    INST_ACCESS_ENABLE2.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK2).U) === (aslong(INST_ACCESS_ADDR2).U | aslong(INST_ACCESS_MASK2).U)) |
-    INST_ACCESS_ENABLE3.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK3).U) === (aslong(INST_ACCESS_ADDR3).U | aslong(INST_ACCESS_MASK3).U)) |
-    INST_ACCESS_ENABLE4.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK4).U) === (aslong(INST_ACCESS_ADDR4).U | aslong(INST_ACCESS_MASK4).U)) |
-    INST_ACCESS_ENABLE5.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK5).U) === (aslong(INST_ACCESS_ADDR5).U | aslong(INST_ACCESS_MASK5).U)) |
-    INST_ACCESS_ENABLE6.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK6).U) === (aslong(INST_ACCESS_ADDR6).U | aslong(INST_ACCESS_MASK6).U)) |
-    INST_ACCESS_ENABLE7.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK7).U) === (aslong(INST_ACCESS_ADDR7).U | aslong(INST_ACCESS_MASK7).U))
+  val ifc_region_acc_okay = !(Cat(INST_ACCESS_ENABLE0.U,INST_ACCESS_ENABLE1.U,INST_ACCESS_ENABLE2.U,INST_ACCESS_ENABLE3.U,INST_ACCESS_ENABLE4.U,INST_ACCESS_ENABLE5.U,INST_ACCESS_ENABLE6.U,INST_ACCESS_ENABLE7.U).orR()) |
+    (INST_ACCESS_ENABLE0.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK0).U) === (aslong(INST_ACCESS_ADDR0).U | aslong(INST_ACCESS_MASK0).U))) |
+    (INST_ACCESS_ENABLE1.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK1).U) === (aslong(INST_ACCESS_ADDR1).U | aslong(INST_ACCESS_MASK1).U))) |
+    (INST_ACCESS_ENABLE2.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK2).U) === (aslong(INST_ACCESS_ADDR2).U | aslong(INST_ACCESS_MASK2).U))) |
+    (INST_ACCESS_ENABLE3.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK3).U) === (aslong(INST_ACCESS_ADDR3).U | aslong(INST_ACCESS_MASK3).U))) |
+    (INST_ACCESS_ENABLE4.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK4).U) === (aslong(INST_ACCESS_ADDR4).U | aslong(INST_ACCESS_MASK4).U))) |
+    (INST_ACCESS_ENABLE5.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK5).U) === (aslong(INST_ACCESS_ADDR5).U | aslong(INST_ACCESS_MASK5).U))) |
+    (INST_ACCESS_ENABLE6.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK6).U) === (aslong(INST_ACCESS_ADDR6).U | aslong(INST_ACCESS_MASK6).U))) |
+    (INST_ACCESS_ENABLE7.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK7).U) === (aslong(INST_ACCESS_ADDR7).U | aslong(INST_ACCESS_MASK7).U)))
   val ifc_region_acc_fault_memory_bf = !io.ifc_iccm_access_bf & !ifc_region_acc_okay & io.ifc_fetch_req_bf
   ifc_region_acc_fault_final_bf := io.ifc_region_acc_fault_bf | ifc_region_acc_fault_memory_bf
   ifc_region_acc_fault_memory_f := withClock(io.free_clk){RegNext(ifc_region_acc_fault_memory_bf, false.B)}
@@ -855,4 +854,3 @@ class el2_ifu_mem_ctl extends Module with el2_lib {
 object ifu_mem extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_mem_ctl()))
 }
-

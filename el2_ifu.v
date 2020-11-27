@@ -570,13 +570,13 @@ module el2_ifu_mem_ctl(
   reg [31:0] _RAND_447;
   reg [31:0] _RAND_448;
   reg [31:0] _RAND_449;
-  reg [63:0] _RAND_450;
-  reg [31:0] _RAND_451;
+  reg [31:0] _RAND_450;
+  reg [63:0] _RAND_451;
   reg [31:0] _RAND_452;
   reg [31:0] _RAND_453;
   reg [31:0] _RAND_454;
-  reg [63:0] _RAND_455;
-  reg [31:0] _RAND_456;
+  reg [31:0] _RAND_455;
+  reg [63:0] _RAND_456;
   reg [31:0] _RAND_457;
   reg [31:0] _RAND_458;
   reg [31:0] _RAND_459;
@@ -590,6 +590,7 @@ module el2_ifu_mem_ctl(
   reg [31:0] _RAND_467;
   reg [31:0] _RAND_468;
   reg [31:0] _RAND_469;
+  reg [31:0] _RAND_470;
 `endif // RANDOMIZE_REG_INIT
   wire  rvclkhdr_io_l1clk; // @[el2_lib.scala 483:22]
   wire  rvclkhdr_io_clk; // @[el2_lib.scala 483:22]
@@ -3407,8 +3408,10 @@ module el2_ifu_mem_ctl(
   wire  _GEN_41 = _T_2481 ? _T_2499 : _GEN_37; // @[Conditional.scala 39:67]
   wire  _GEN_43 = _T_2481 | _GEN_39; // @[Conditional.scala 39:67]
   wire  err_stop_state_en = _T_2476 ? _T_2480 : _GEN_41; // @[Conditional.scala 40:58]
+  reg  bus_cmd_req_hold; // @[el2_ifu_mem_ctl.scala 564:53]
+  wire  _T_2541 = ic_act_miss_f | bus_cmd_req_hold; // @[el2_ifu_mem_ctl.scala 560:45]
   reg  ifu_bus_cmd_valid; // @[el2_ifu_mem_ctl.scala 561:55]
-  wire  _T_2542 = ic_act_miss_f | ifu_bus_cmd_valid; // @[el2_ifu_mem_ctl.scala 560:64]
+  wire  _T_2542 = _T_2541 | ifu_bus_cmd_valid; // @[el2_ifu_mem_ctl.scala 560:64]
   wire  _T_2544 = _T_2542 & _T_2573; // @[el2_ifu_mem_ctl.scala 560:85]
   reg [2:0] bus_cmd_beat_count; // @[Reg.scala 27:20]
   wire  _T_2546 = bus_cmd_beat_count == 3'h7; // @[el2_ifu_mem_ctl.scala 560:133]
@@ -3420,6 +3423,8 @@ module el2_ifu_mem_ctl(
   wire  _T_2567 = io_ifu_axi_arvalid & ifu_bus_arready; // @[el2_ifu_mem_ctl.scala 595:35]
   wire  _T_2568 = _T_2567 & miss_pending; // @[el2_ifu_mem_ctl.scala 595:53]
   wire  bus_cmd_sent = _T_2568 & _T_2573; // @[el2_ifu_mem_ctl.scala 595:68]
+  wire  _T_2553 = ~bus_cmd_sent; // @[el2_ifu_mem_ctl.scala 563:61]
+  wire  _T_2554 = _T_2541 & _T_2553; // @[el2_ifu_mem_ctl.scala 563:59]
   wire [2:0] _T_2558 = ifu_bus_cmd_valid ? 3'h7 : 3'h0; // @[Bitwise.scala 72:12]
   wire [31:0] _T_2560 = {miss_addr,bus_rd_addr_count,3'h0}; // @[Cat.scala 29:58]
   wire [31:0] _T_2562 = ifu_bus_cmd_valid ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
@@ -6899,55 +6904,57 @@ initial begin
   _RAND_444 = {1{`RANDOM}};
   dma_sb_err_state_ff = _RAND_444[0:0];
   _RAND_445 = {1{`RANDOM}};
-  ifu_bus_cmd_valid = _RAND_445[0:0];
+  bus_cmd_req_hold = _RAND_445[0:0];
   _RAND_446 = {1{`RANDOM}};
-  bus_cmd_beat_count = _RAND_446[2:0];
+  ifu_bus_cmd_valid = _RAND_446[0:0];
   _RAND_447 = {1{`RANDOM}};
-  ifu_bus_arready_unq_ff = _RAND_447[0:0];
+  bus_cmd_beat_count = _RAND_447[2:0];
   _RAND_448 = {1{`RANDOM}};
-  ifu_bus_arvalid_ff = _RAND_448[0:0];
+  ifu_bus_arready_unq_ff = _RAND_448[0:0];
   _RAND_449 = {1{`RANDOM}};
-  ifc_dma_access_ok_prev = _RAND_449[0:0];
-  _RAND_450 = {2{`RANDOM}};
-  iccm_ecc_corr_data_ff = _RAND_450[38:0];
-  _RAND_451 = {1{`RANDOM}};
-  dma_mem_addr_ff = _RAND_451[1:0];
+  ifu_bus_arvalid_ff = _RAND_449[0:0];
+  _RAND_450 = {1{`RANDOM}};
+  ifc_dma_access_ok_prev = _RAND_450[0:0];
+  _RAND_451 = {2{`RANDOM}};
+  iccm_ecc_corr_data_ff = _RAND_451[38:0];
   _RAND_452 = {1{`RANDOM}};
-  dma_mem_tag_ff = _RAND_452[2:0];
+  dma_mem_addr_ff = _RAND_452[1:0];
   _RAND_453 = {1{`RANDOM}};
-  iccm_dma_rtag_temp = _RAND_453[2:0];
+  dma_mem_tag_ff = _RAND_453[2:0];
   _RAND_454 = {1{`RANDOM}};
-  iccm_dma_rvalid_temp = _RAND_454[0:0];
-  _RAND_455 = {2{`RANDOM}};
-  iccm_dma_rdata_temp = _RAND_455[63:0];
-  _RAND_456 = {1{`RANDOM}};
-  iccm_ecc_corr_index_ff = _RAND_456[13:0];
+  iccm_dma_rtag_temp = _RAND_454[2:0];
+  _RAND_455 = {1{`RANDOM}};
+  iccm_dma_rvalid_temp = _RAND_455[0:0];
+  _RAND_456 = {2{`RANDOM}};
+  iccm_dma_rdata_temp = _RAND_456[63:0];
   _RAND_457 = {1{`RANDOM}};
-  iccm_rd_ecc_single_err_ff = _RAND_457[0:0];
+  iccm_ecc_corr_index_ff = _RAND_457[13:0];
   _RAND_458 = {1{`RANDOM}};
-  iccm_rw_addr_f = _RAND_458[13:0];
+  iccm_rd_ecc_single_err_ff = _RAND_458[0:0];
   _RAND_459 = {1{`RANDOM}};
-  ifu_status_wr_addr_ff = _RAND_459[6:0];
+  iccm_rw_addr_f = _RAND_459[13:0];
   _RAND_460 = {1{`RANDOM}};
-  way_status_wr_en_ff = _RAND_460[0:0];
+  ifu_status_wr_addr_ff = _RAND_460[6:0];
   _RAND_461 = {1{`RANDOM}};
-  way_status_new_ff = _RAND_461[0:0];
+  way_status_wr_en_ff = _RAND_461[0:0];
   _RAND_462 = {1{`RANDOM}};
-  ifu_tag_wren_ff = _RAND_462[1:0];
+  way_status_new_ff = _RAND_462[0:0];
   _RAND_463 = {1{`RANDOM}};
-  ic_valid_ff = _RAND_463[0:0];
+  ifu_tag_wren_ff = _RAND_463[1:0];
   _RAND_464 = {1{`RANDOM}};
-  _T_9747 = _RAND_464[0:0];
+  ic_valid_ff = _RAND_464[0:0];
   _RAND_465 = {1{`RANDOM}};
-  _T_9748 = _RAND_465[0:0];
+  _T_9747 = _RAND_465[0:0];
   _RAND_466 = {1{`RANDOM}};
-  _T_9749 = _RAND_466[0:0];
+  _T_9748 = _RAND_466[0:0];
   _RAND_467 = {1{`RANDOM}};
-  _T_9753 = _RAND_467[0:0];
+  _T_9749 = _RAND_467[0:0];
   _RAND_468 = {1{`RANDOM}};
-  _T_9754 = _RAND_468[0:0];
+  _T_9753 = _RAND_468[0:0];
   _RAND_469 = {1{`RANDOM}};
-  _T_9775 = _RAND_469[0:0];
+  _T_9754 = _RAND_469[0:0];
+  _RAND_470 = {1{`RANDOM}};
+  _T_9775 = _RAND_470[0:0];
 `endif // RANDOMIZE_REG_INIT
   if (reset) begin
     flush_final_f = 1'h0;
@@ -8277,6 +8284,9 @@ initial begin
   end
   if (reset) begin
     dma_sb_err_state_ff = 1'h0;
+  end
+  if (reset) begin
+    bus_cmd_req_hold = 1'h0;
   end
   if (reset) begin
     ifu_bus_cmd_valid = 1'h0;
@@ -11614,6 +11624,13 @@ end // initial
       dma_sb_err_state_ff <= 1'h0;
     end else begin
       dma_sb_err_state_ff <= perr_state == 3'h4;
+    end
+  end
+  always @(posedge io_free_clk or posedge reset) begin
+    if (reset) begin
+      bus_cmd_req_hold <= 1'h0;
+    end else begin
+      bus_cmd_req_hold <= _T_2554 & _T_2573;
     end
   end
   always @(posedge rvclkhdr_69_io_l1clk or posedge reset) begin

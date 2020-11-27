@@ -4825,6 +4825,7 @@ module el2_lsu_clkdomain(
   output  io_lsu_c2_m_clk,
   output  io_lsu_c2_r_clk,
   output  io_lsu_store_c1_m_clk,
+  output  io_lsu_store_c1_r_clk,
   output  io_lsu_stbuf_c1_clk,
   output  io_lsu_bus_obuf_c1_clk,
   output  io_lsu_bus_ibuf_c1_clk,
@@ -4991,6 +4992,7 @@ module el2_lsu_clkdomain(
   assign io_lsu_c2_m_clk = rvclkhdr_2_io_l1clk; // @[el2_lsu_clkdomain.scala 88:26]
   assign io_lsu_c2_r_clk = rvclkhdr_3_io_l1clk; // @[el2_lsu_clkdomain.scala 89:26]
   assign io_lsu_store_c1_m_clk = rvclkhdr_4_io_l1clk; // @[el2_lsu_clkdomain.scala 90:26]
+  assign io_lsu_store_c1_r_clk = rvclkhdr_5_io_l1clk; // @[el2_lsu_clkdomain.scala 91:26]
   assign io_lsu_stbuf_c1_clk = rvclkhdr_6_io_l1clk; // @[el2_lsu_clkdomain.scala 92:26]
   assign io_lsu_bus_obuf_c1_clk = rvclkhdr_8_io_l1clk; // @[el2_lsu_clkdomain.scala 94:26]
   assign io_lsu_bus_ibuf_c1_clk = rvclkhdr_7_io_l1clk; // @[el2_lsu_clkdomain.scala 93:26]
@@ -10840,6 +10842,7 @@ module el2_lsu(
   wire  clkdomain_io_lsu_c2_m_clk; // @[el2_lsu.scala 161:30]
   wire  clkdomain_io_lsu_c2_r_clk; // @[el2_lsu.scala 161:30]
   wire  clkdomain_io_lsu_store_c1_m_clk; // @[el2_lsu.scala 161:30]
+  wire  clkdomain_io_lsu_store_c1_r_clk; // @[el2_lsu.scala 161:30]
   wire  clkdomain_io_lsu_stbuf_c1_clk; // @[el2_lsu.scala 161:30]
   wire  clkdomain_io_lsu_bus_obuf_c1_clk; // @[el2_lsu.scala 161:30]
   wire  clkdomain_io_lsu_bus_ibuf_c1_clk; // @[el2_lsu.scala 161:30]
@@ -11324,6 +11327,7 @@ module el2_lsu(
     .io_lsu_c2_m_clk(clkdomain_io_lsu_c2_m_clk),
     .io_lsu_c2_r_clk(clkdomain_io_lsu_c2_r_clk),
     .io_lsu_store_c1_m_clk(clkdomain_io_lsu_store_c1_m_clk),
+    .io_lsu_store_c1_r_clk(clkdomain_io_lsu_store_c1_r_clk),
     .io_lsu_stbuf_c1_clk(clkdomain_io_lsu_stbuf_c1_clk),
     .io_lsu_bus_obuf_c1_clk(clkdomain_io_lsu_bus_obuf_c1_clk),
     .io_lsu_bus_ibuf_c1_clk(clkdomain_io_lsu_bus_ibuf_c1_clk),
@@ -11545,7 +11549,7 @@ module el2_lsu(
   assign dccm_ctl_io_lsu_c2_m_clk = clkdomain_io_lsu_c2_m_clk; // @[el2_lsu.scala 240:46]
   assign dccm_ctl_io_lsu_c2_r_clk = clkdomain_io_lsu_c2_m_clk; // @[el2_lsu.scala 241:46]
   assign dccm_ctl_io_lsu_free_c2_clk = clkdomain_io_lsu_c2_r_clk; // @[el2_lsu.scala 242:46]
-  assign dccm_ctl_io_lsu_store_c1_r_clk = clkdomain_io_lsu_c1_r_clk; // @[el2_lsu.scala 244:46]
+  assign dccm_ctl_io_lsu_store_c1_r_clk = clkdomain_io_lsu_store_c1_r_clk; // @[el2_lsu.scala 244:46]
   assign dccm_ctl_io_lsu_pkt_d_valid = lsu_lsc_ctl_io_lsu_pkt_d_valid; // @[el2_lsu.scala 246:46]
   assign dccm_ctl_io_lsu_pkt_d_bits_word = lsu_lsc_ctl_io_lsu_pkt_d_bits_word; // @[el2_lsu.scala 246:46]
   assign dccm_ctl_io_lsu_pkt_d_bits_dword = lsu_lsc_ctl_io_lsu_pkt_d_bits_dword; // @[el2_lsu.scala 246:46]

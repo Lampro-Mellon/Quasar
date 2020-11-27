@@ -1,59 +1,109 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_by",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_by",
     "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_by",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_by",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_sz"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_single_ecc_error_incr",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_end_addr_d",
     "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_valid",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_single_ecc_error_r",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_commit_r",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_dma",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_double_ecc_error_r",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_flush_r",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_store",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_load"
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_load_ldst_bypass_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_exu_lsu_rs1_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_addr",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_load_ldst_bypass_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_bus_read_data_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_offset_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_external_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_by",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_unsign",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_dword",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_dword",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_sz"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_word",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_load_ldst_bypass_d",
     "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_load_ldst_bypass_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_fast_int",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_fast_int",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_half",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_half",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_sz"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_store",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_addr_d",
     "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_store",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_load_ldst_bypass_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_exu_lsu_rs1_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_addr",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_write"
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_offset_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_load_ldst_bypass_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_bus_read_data_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_external_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_by",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_unsign"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_store_data_bypass_d",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_word",
     "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_store_data_bypass_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d"
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_sz"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_unsign",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_store_data_m",
     "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_unsign",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d"
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_picm_mask_data_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_store_data_bypass_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_in_pic_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_bus_read_data_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_external_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_by",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_unsign"
     ]
   },
   {
@@ -65,197 +115,27 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_valid",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_load",
     "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_dccm_req",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_valid",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_flush_m_up",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_fast_int"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_store_data_m",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_picm_mask_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_store_data_bypass_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_in_pic_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_word",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_bus_read_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_external_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_by",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_unsign"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_dword",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_dword",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_sz"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_in_pic_d",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_load_ldst_bypass_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_exu_lsu_rs1_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_addr",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_load_ldst_bypass_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_offset_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_word",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_bus_read_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_external_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_by",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_unsign",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_dword",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_word",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_dword",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_word",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_sz"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_addr_d",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_load_ldst_bypass_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_exu_lsu_rs1_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_addr",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_offset_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_load_ldst_bypass_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_word",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_bus_read_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_external_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_by",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_unsign"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_m",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_word",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_bus_read_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_external_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_by",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_unsign"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_corr_r",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_word",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_corr_r",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_by",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_unsign"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_half",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_sz"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_end_addr_d",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_load_ldst_bypass_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_exu_lsu_rs1_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_addr",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_load_ldst_bypass_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_word",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_bus_read_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_offset_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_external_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_by",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_unsign",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_dword",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_word",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_dword",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_word",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_sz"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_load",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_load",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_load",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_write"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_load_ldst_bypass_d",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_store_data_bypass_d",
     "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_load_ldst_bypass_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_store_data_bypass_d",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_store_data_bypass_m",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_dma",
     "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_store_data_bypass_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_dma",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_dma",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_dma",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_fast_int",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_fast_int",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_commit_r",
-    "sources":[
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_dma",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_valid",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_flush_r",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_store",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_load"
     ]
   },
   {
@@ -263,25 +143,145 @@
     "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_in_dccm_d",
     "sources":[
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_load_ldst_bypass_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_load_ldst_bypass_d",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_exu_lsu_rs1_d",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_addr",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_load_ldst_bypass_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_load_ldst_bypass_d",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_offset_d",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_word",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_bus_read_data_m",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_half",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_external_m",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_by",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_unsign",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_dword",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_word",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_dword",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_half",
-      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_by",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_unsign",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_dword",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_dword",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_sz"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_store",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_store",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_write"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_commit_r",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_bits_dma",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_valid",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_flush_r",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_bits_store",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_bits_load"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_unsign",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_unsign",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_in_pic_d",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_load_ldst_bypass_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_exu_lsu_rs1_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_addr",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_load_ldst_bypass_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_offset_d",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_bus_read_data_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_external_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_by",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_unsign",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_dword",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_dword",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_sz"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_single_ecc_error_incr",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_valid",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_single_ecc_error_r",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_commit_r",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_bits_dma",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_double_ecc_error_r",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_flush_r",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_bits_store",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_bits_load"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_valid",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_dccm_req",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_valid",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_flush_m_up",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_fast_int"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_m",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_bus_read_data_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_addr_external_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_by",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_m_bits_unsign"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_store_data_bypass_m",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_store_data_bypass_m",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_result_corr_r",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_bits_word",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_ld_data_corr_r",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_bits_half",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_bits_by",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_r_bits_unsign"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_pkt_d_bits_dword",
+    "sources":[
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_lsu_p_bits_dword",
+      "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dec_lsu_valid_raw_d",
       "~el2_lsu_lsc_ctl|el2_lsu_lsc_ctl>io_dma_mem_sz"
     ]
   },

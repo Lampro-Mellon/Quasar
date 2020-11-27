@@ -15,18 +15,38 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_nonblock_load_valid_m",
+    "sources":[
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_bits_load",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_flush_m_up",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_busreq_m",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_valid",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_is_sideeffects_m",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_addr_m",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_end_addr_m",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_bits_by",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_r_bits_store",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_bits_word",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_bits_half",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_r_valid",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_addr_r",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_end_addr_r"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_lsu_bus_intf|el2_lsu_bus_intf>io_bus_read_data_m",
     "sources":[
       "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_addr_m",
       "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_busreq_m",
       "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_end_addr_m",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_r_store",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_r_bits_store",
       "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_store_data_r",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_by",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_bits_by",
       "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_r_valid",
       "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_addr_r",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_word",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_half",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_bits_word",
+      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_bits_half",
       "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_end_addr_r"
     ]
   },
@@ -37,26 +57,6 @@
       "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_axi_arready",
       "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_axi_awready",
       "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_axi_wready"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_nonblock_load_valid_m",
-    "sources":[
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_load",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_flush_m_up",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_busreq_m",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_valid",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_is_sideeffects_m",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_addr_m",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_end_addr_m",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_by",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_r_store",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_word",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_m_half",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_pkt_r_valid",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_lsu_addr_r",
-      "~el2_lsu_bus_intf|el2_lsu_bus_intf>io_end_addr_r"
     ]
   },
   {

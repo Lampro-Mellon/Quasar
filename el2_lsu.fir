@@ -15374,7 +15374,7 @@ circuit el2_lsu :
     dccm_ctl.io.lsu_c2_r_clk <= clkdomain.io.lsu_c2_m_clk @[el2_lsu.scala 241:46]
     dccm_ctl.io.lsu_free_c2_clk <= clkdomain.io.lsu_c2_r_clk @[el2_lsu.scala 242:46]
     dccm_ctl.io.lsu_c1_r_clk <= clkdomain.io.lsu_free_c2_clk @[el2_lsu.scala 243:46]
-    dccm_ctl.io.lsu_store_c1_r_clk <= clkdomain.io.lsu_c1_r_clk @[el2_lsu.scala 244:46]
+    dccm_ctl.io.lsu_store_c1_r_clk <= clkdomain.io.lsu_store_c1_r_clk @[el2_lsu.scala 244:46]
     dccm_ctl.io.lsu_pkt_d.bits.store_data_bypass_m <= lsu_lsc_ctl.io.lsu_pkt_d.bits.store_data_bypass_m @[el2_lsu.scala 246:46]
     dccm_ctl.io.lsu_pkt_d.bits.load_ldst_bypass_d <= lsu_lsc_ctl.io.lsu_pkt_d.bits.load_ldst_bypass_d @[el2_lsu.scala 246:46]
     dccm_ctl.io.lsu_pkt_d.bits.store_data_bypass_d <= lsu_lsc_ctl.io.lsu_pkt_d.bits.store_data_bypass_d @[el2_lsu.scala 246:46]

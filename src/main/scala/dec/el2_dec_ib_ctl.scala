@@ -92,5 +92,5 @@ class el2_dec_ib_ctl_IO extends Bundle with param{
   val dec_debug_fence_d     =Output(UInt(1.W))  // debug fence inst
 }
 object ib_gen extends App{
-  chisel3.Driver.emitVerilog(new el2_dec_ib_ctl)
+  println(chisel3.Driver.emitVerilog(new el2_dec_ib_ctl))
 }

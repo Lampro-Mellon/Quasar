@@ -10,7 +10,7 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
     val clk_override          = Input(Bool())
     val scan_mode             = Input(Bool())
 
-    // Debug signals      
+    // Debug signals
     val dbg_cmd_addr          = Input(UInt(32.W))
     val dbg_cmd_wrdata        = Input(UInt(32.W))
     val dbg_cmd_valid         = Input(Bool())
@@ -24,7 +24,7 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
     val dma_dbg_cmd_fail      = Output(Bool())
     val dma_dbg_rddata        = Output(UInt(32.W))
 
-    // Core side signals    
+    // Core side signals
     val dma_dccm_req          = Output(Bool())    // DMA dccm request (only one of dccm/iccm will be set)
     val dma_iccm_req          = Output(Bool())    // DMA iccm request
     val dma_mem_tag           = Output(UInt(3.W)) // DMA Buffer entry number
@@ -552,5 +552,5 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
   bus_rsp_sent 			    := ((io.dma_axi_bvalid & io.dma_axi_bready) | (io.dma_axi_rvalid & io.dma_axi_rready))
 }
 object dma extends App{
-  chisel3.Driver.emitVerilog(new el2_dma_ctrl)
+  println(chisel3.Driver.emitVerilog(new el2_dma_ctrl))
 }

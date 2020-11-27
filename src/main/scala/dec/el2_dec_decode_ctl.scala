@@ -821,5 +821,5 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
 }
 
 object dec_decode extends App{
-  chisel3.Driver.emitVerilog(new el2_dec_decode_ctl)
+  println(chisel3.Driver.emitVerilog(new el2_dec_decode_ctl))
 }
