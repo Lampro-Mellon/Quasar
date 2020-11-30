@@ -11547,8 +11547,8 @@ module el2_lsu(
   assign dccm_ctl_clock = clock;
   assign dccm_ctl_reset = reset;
   assign dccm_ctl_io_lsu_c2_m_clk = clkdomain_io_lsu_c2_m_clk; // @[el2_lsu.scala 240:46]
-  assign dccm_ctl_io_lsu_c2_r_clk = clkdomain_io_lsu_c2_m_clk; // @[el2_lsu.scala 241:46]
-  assign dccm_ctl_io_lsu_free_c2_clk = clkdomain_io_lsu_c2_r_clk; // @[el2_lsu.scala 242:46]
+  assign dccm_ctl_io_lsu_c2_r_clk = clkdomain_io_lsu_c2_r_clk; // @[el2_lsu.scala 241:46]
+  assign dccm_ctl_io_lsu_free_c2_clk = clkdomain_io_lsu_free_c2_clk; // @[el2_lsu.scala 242:46]
   assign dccm_ctl_io_lsu_store_c1_r_clk = clkdomain_io_lsu_store_c1_r_clk; // @[el2_lsu.scala 244:46]
   assign dccm_ctl_io_lsu_pkt_d_valid = lsu_lsc_ctl_io_lsu_pkt_d_valid; // @[el2_lsu.scala 246:46]
   assign dccm_ctl_io_lsu_pkt_d_bits_word = lsu_lsc_ctl_io_lsu_pkt_d_bits_word; // @[el2_lsu.scala 246:46]
