@@ -58,8 +58,7 @@ class axi4_to_ahb_IO extends Bundle with Config {
 class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config {
   val io = IO(new axi4_to_ahb_IO)
   val idle :: cmd_rd :: cmd_wr :: data_rd :: data_wr :: done :: stream_rd :: stream_err_rd :: nil = Enum(8)
-  val state = RegInit(idle) // typedef enum
-  val buf_state = RegInit(idle)
+  val buf_state = WireInit(idle)
   val buf_nxtstate = RegInit(idle)
   //logic signals
   val slave_valid = WireInit(Bool(), init = false.B)
@@ -385,7 +384,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
     RegEnable(buf_aligned_in, 0.U, buf_wr_en.asBool())
   }
   buf_byteen := withClock(buf_clk) {
-    RegEnable(buf_byteen(7, 0), 0.U, buf_wr_en.asBool())
+    RegEnable(buf_byteen_in(7, 0), 0.U, buf_wr_en.asBool())
   }
   //e
   buf_data := rvdffe(buf_data_in(63, 0),(buf_data_wr_en & io.bus_clk_en).asBool(),clock,io.scan_mode)
@@ -430,7 +429,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   ahbm_data_clken := io.bus_clk_en & ((buf_state =/= idle) | io.clk_override)
 
   //Clkhdr
-  buf_clk := rvclkhdr(clock, buf_clken, io.scan_mode)
+  buf_clk  := rvclkhdr(clock, buf_clken, io.scan_mode)
   ahbm_clk := rvclkhdr(clock, io.bus_clk_en, io.scan_mode)
   ahbm_addr_clk := rvclkhdr(clock, ahbm_addr_clken, io.scan_mode)
   ahbm_data_clk := rvclkhdr(clock, ahbm_data_clken, io.scan_mode)
