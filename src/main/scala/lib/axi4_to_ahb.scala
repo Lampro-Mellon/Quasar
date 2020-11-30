@@ -349,14 +349,14 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   last_addr_en := (io.ahb_htrans(1, 0) =/= "b0".U) & io.ahb_hready & io.ahb_hwrite
 
   //rvdffsc
-  wrbuf_vld      := withClock(bus_clk) {RegEnable("b1".U & Fill("b1".U.getWidth, wrbuf_rst), 0.U, wrbuf_en.asBool())}
-  wrbuf_data_vld := withClock(bus_clk) {RegEnable("b1".U & Fill("b1".U.getWidth, wrbuf_rst), 0.U, wrbuf_data_en.asBool())}
+  wrbuf_vld      := withClock(bus_clk) {RegNext(Mux(wrbuf_en.asBool(),1.U,wrbuf_vld) & !wrbuf_rst, 0.U)}
+  wrbuf_data_vld := withClock(bus_clk) {RegNext(Mux(wrbuf_data_en.asBool(),1.U, wrbuf_data_vld) & !wrbuf_rst, 0.U)}
   //rvdffs
   wrbuf_tag := withClock(bus_clk) {RegEnable(io.axi_awid(TAG - 1, 0), 0.U, wrbuf_en.asBool())}
   wrbuf_size := withClock(bus_clk) {RegEnable(io.axi_awsize(2, 0), 0.U, wrbuf_en.asBool())}
   //rvdffe
-  wrbuf_addr := RegEnable(io.axi_awaddr, 0.U, wrbuf_en.asBool())
-  wrbuf_data := RegEnable(io.axi_wdata, 0.U, wrbuf_data_en.asBool())
+  wrbuf_addr := rvdffe(io.axi_awaddr, wrbuf_en.asBool,clock,io.scan_mode)
+  wrbuf_data := rvdffe(io.axi_wdata, wrbuf_data_en.asBool,clock,io.scan_mode)
   //rvdffs
   wrbuf_byteen := withClock(bus_clk) {
     RegEnable(io.axi_wstrb(7, 0), 0.U, wrbuf_data_en.asBool())
@@ -366,7 +366,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   }
   //sc
   buf_state := withClock(ahbm_clk) {
-    RegEnable(buf_nxtstate & Fill(buf_nxtstate.getWidth, buf_rst), 0.U, buf_state_en.asBool())
+    RegNext(Mux(buf_state_en.asBool(),buf_nxtstate,buf_state) & !buf_rst, 0.U)
   }
   //s
   buf_write := withClock(buf_clk) {
@@ -376,7 +376,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
     RegEnable(buf_tag_in(TAG - 1, 0), 0.U, buf_wr_en.asBool())
   }
   //e
-  buf_addr := RegEnable(buf_addr_in(31, 0), 0.U, (buf_wr_en & io.bus_clk_en).asBool)
+  buf_addr := rvdffe(buf_addr_in(31, 0),(buf_wr_en & io.bus_clk_en).asBool,clock,io.scan_mode)
   //s
   buf_size := withClock(buf_clk) {
     RegEnable(buf_size(1, 0), 0.U, buf_wr_en.asBool())
@@ -388,7 +388,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
     RegEnable(buf_byteen(7, 0), 0.U, buf_wr_en.asBool())
   }
   //e
-  buf_data := RegEnable(buf_data_in(63, 0), 0.U, (buf_data_wr_en & io.bus_clk_en).asBool())
+  buf_data := rvdffe(buf_data_in(63, 0),(buf_data_wr_en & io.bus_clk_en).asBool(),clock,io.scan_mode)
   //s
   slvbuf_write := withClock(buf_clk) {
     RegEnable(buf_write, 0.U, slvbuf_wr_en.asBool())
@@ -401,7 +401,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   }
   //sc
   cmd_doneQ := withClock(ahbm_clk) {
-    RegEnable("b1".U & Fill("b1".U.getWidth, cmd_done_rst), 0.U, cmd_done.asBool())
+    RegNext(Mux(cmd_done.asBool(),1.U,cmd_doneQ) & !cmd_done_rst, 0.U)
   }
   //rvdffs
   buf_cmd_byte_ptrQ := withClock(ahbm_clk) {
