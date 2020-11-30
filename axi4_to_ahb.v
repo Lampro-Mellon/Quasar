@@ -52,7 +52,7 @@ module axi4_to_ahb(
   output        io_axi_arready,
   output        io_axi_rvalid,
   output        io_axi_rid,
-  output [31:0] io_axi_rdata,
+  output [63:0] io_axi_rdata,
   output [1:0]  io_axi_rresp,
   output        io_axi_rlast,
   output [31:0] io_ahb_haddr,
@@ -230,7 +230,7 @@ module axi4_to_ahb(
   assign io_axi_arready = ~wr_cmd_vld; // @[axi4_to_ahb.scala 190:18]
   assign io_axi_rvalid = 1'h0; // @[axi4_to_ahb.scala 207:17]
   assign io_axi_rid = 1'h0; // @[axi4_to_ahb.scala 209:14]
-  assign io_axi_rdata = ahb_hrdata_q[31:0]; // @[axi4_to_ahb.scala 210:16]
+  assign io_axi_rdata = ahb_hrdata_q; // @[axi4_to_ahb.scala 210:16]
   assign io_axi_rresp = 2'h0; // @[axi4_to_ahb.scala 208:16]
   assign io_axi_rlast = 1'h1; // @[axi4_to_ahb.scala 191:16]
   assign io_ahb_haddr = master_valid ? _T_575 : _T_578; // @[axi4_to_ahb.scala 335:16]

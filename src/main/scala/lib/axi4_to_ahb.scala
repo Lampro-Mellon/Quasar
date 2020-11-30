@@ -41,7 +41,7 @@ class axi4_to_ahb_IO extends Bundle with Config {
   val axi_arready = Output(Bool())
   val axi_rvalid = Output(Bool())
   val axi_rid = Output(UInt(TAG.W)) // [TAG-1:0]
-  val axi_rdata = Output(UInt(32.W)) // [63:0]
+  val axi_rdata = Output(UInt(64.W)) // [63:0]
   val axi_rresp = Output(UInt(2.W)) // 1:0]
   val axi_rlast = Output(Bool())
   // AHB-Lite signals
