@@ -378,7 +378,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   buf_addr := rvdffe(buf_addr_in(31, 0),(buf_wr_en & io.bus_clk_en).asBool,clock,io.scan_mode)
   //s
   buf_size := withClock(buf_clk) {
-    RegEnable(buf_size(1, 0), 0.U, buf_wr_en.asBool())
+    RegEnable(buf_size_in(1, 0), 0.U, buf_wr_en.asBool())
   }
   buf_aligned := withClock(buf_clk) {
     RegEnable(buf_aligned_in, 0.U, buf_wr_en.asBool())

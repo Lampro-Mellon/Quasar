@@ -91,6 +91,7 @@ module axi4_to_ahb(
   reg [31:0] _RAND_23;
   reg [31:0] _RAND_24;
   reg [31:0] _RAND_25;
+  reg [31:0] _RAND_26;
 `endif // RANDOMIZE_REG_INIT
   wire  rvclkhdr_io_l1clk; // @[el2_lib.scala 483:22]
   wire  rvclkhdr_io_clk; // @[el2_lib.scala 483:22]
@@ -438,6 +439,10 @@ module axi4_to_ahb(
   wire [2:0] buf_size_in = {{1'd0}, _T_536}; // @[axi4_to_ahb.scala 328:15]
   wire [1:0] _T_584 = _T_582 & buf_size_in[1:0]; // @[axi4_to_ahb.scala 335:80]
   wire [2:0] _T_585 = {1'h0,_T_584}; // @[Cat.scala 29:58]
+  wire [1:0] _T_587 = buf_aligned ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
+  reg [1:0] buf_size; // @[Reg.scala 27:20]
+  wire [1:0] _T_589 = _T_587 & buf_size; // @[axi4_to_ahb.scala 335:138]
+  wire [2:0] _T_590 = {1'h0,_T_589}; // @[Cat.scala 29:58]
   wire  _T_593 = ~io_axi_arprot[2]; // @[axi4_to_ahb.scala 339:33]
   wire [1:0] _T_594 = {1'h1,_T_593}; // @[Cat.scala 29:58]
   reg  buf_write; // @[Reg.scala 27:20]
@@ -531,7 +536,7 @@ module axi4_to_ahb(
   assign io_ahb_hburst = 3'h0; // @[axi4_to_ahb.scala 337:17]
   assign io_ahb_hmastlock = 1'h0; // @[axi4_to_ahb.scala 338:20]
   assign io_ahb_hprot = {{2'd0}, _T_594}; // @[axi4_to_ahb.scala 339:16]
-  assign io_ahb_hsize = bypass_en ? _T_585 : 3'h0; // @[axi4_to_ahb.scala 335:16]
+  assign io_ahb_hsize = bypass_en ? _T_585 : _T_590; // @[axi4_to_ahb.scala 335:16]
   assign io_ahb_htrans = _T_63 ? _T_114 : _GEN_90; // @[axi4_to_ahb.scala 219:17 axi4_to_ahb.scala 235:21 axi4_to_ahb.scala 247:21 axi4_to_ahb.scala 262:21 axi4_to_ahb.scala 272:21 axi4_to_ahb.scala 292:21 axi4_to_ahb.scala 306:21]
   assign io_ahb_hwrite = bypass_en ? _T_149 : buf_write; // @[axi4_to_ahb.scala 340:17]
   assign io_ahb_hwdata = buf_data; // @[axi4_to_ahb.scala 341:17]
@@ -649,9 +654,11 @@ initial begin
   _RAND_23 = {1{`RANDOM}};
   buf_aligned = _RAND_23[0:0];
   _RAND_24 = {1{`RANDOM}};
-  buf_write = _RAND_24[0:0];
+  buf_size = _RAND_24[1:0];
   _RAND_25 = {1{`RANDOM}};
-  buf_tag = _RAND_25[0:0];
+  buf_write = _RAND_25[0:0];
+  _RAND_26 = {1{`RANDOM}};
+  buf_tag = _RAND_26[0:0];
 `endif // RANDOMIZE_REG_INIT
   if (reset) begin
     buf_nxtstate = 3'h0;
@@ -724,6 +731,9 @@ initial begin
   end
   if (reset) begin
     buf_aligned = 1'h0;
+  end
+  if (reset) begin
+    buf_size = 2'h0;
   end
   if (reset) begin
     buf_write = 1'h0;
@@ -1063,6 +1073,13 @@ end // initial
       buf_aligned <= 1'h0;
     end else if (buf_wr_en) begin
       buf_aligned <= buf_aligned_in;
+    end
+  end
+  always @(posedge buf_clk or posedge reset) begin
+    if (reset) begin
+      buf_size <= 2'h0;
+    end else if (buf_wr_en) begin
+      buf_size <= buf_size_in[1:0];
     end
   end
   always @(posedge buf_clk or posedge reset) begin
