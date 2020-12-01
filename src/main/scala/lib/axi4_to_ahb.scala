@@ -171,10 +171,10 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
 
   def get_write_addr(byteen_e: UInt) = {
     val byteen_e = WireInit(0.U(8.W))
-    val addr = ("h0".U & (Fill(3, (byteen_e(7, 0) === "hff".U) | (byteen_e(7, 0) === "h0f".U) | (byteen_e(7, 0) === "h03".U))) |
+    val addr = ("h0".U & (Fill(3, ((byteen_e(7, 0) === "hff".U) | (byteen_e(7, 0) === "h0f".U) | (byteen_e(7, 0) === "h03".U))))) |
       ("h2".U & (Fill(3, (byteen_e(7, 0) === "h0c".U)))) |
-      ("h4".U & (Fill(3, ((byteen_e(7, 0) === "hf0".U) | (byteen_e(7, 0) === "h03".U)))) |
-        ("h6".U & (Fill(3, (byteen_e(7, 0) === "hc0".U))))))
+      ("h4".U & (Fill(3, ((byteen_e(7, 0) === "hf0".U) | (byteen_e(7, 0) === "h03".U))))) |
+        ("h6".U & (Fill(3, (byteen_e(7, 0) === "hc0".U))))
     addr
   }
 
