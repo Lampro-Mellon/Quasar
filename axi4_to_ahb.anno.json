@@ -21,9 +21,7 @@
     "class":"firrtl.transforms.CombinationalPath",
     "sink":"~axi4_to_ahb|axi4_to_ahb>io_axi_wready",
     "sources":[
-      "~axi4_to_ahb|axi4_to_ahb>io_axi_arvalid",
-      "~axi4_to_ahb|axi4_to_ahb>io_axi_bready",
-      "~axi4_to_ahb|axi4_to_ahb>io_axi_rready"
+      "~axi4_to_ahb|axi4_to_ahb>io_axi_arvalid"
     ]
   },
   {
@@ -33,6 +31,13 @@
       "~axi4_to_ahb|axi4_to_ahb>io_axi_arvalid",
       "~axi4_to_ahb|axi4_to_ahb>io_axi_bready",
       "~axi4_to_ahb|axi4_to_ahb>io_axi_rready"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~axi4_to_ahb|axi4_to_ahb>io_axi_awready",
+    "sources":[
+      "~axi4_to_ahb|axi4_to_ahb>io_axi_arvalid"
     ]
   },
   {
@@ -51,24 +56,6 @@
     "sources":[
       "~axi4_to_ahb|axi4_to_ahb>io_axi_arvalid",
       "~axi4_to_ahb|axi4_to_ahb>io_axi_arsize",
-      "~axi4_to_ahb|axi4_to_ahb>io_axi_bready",
-      "~axi4_to_ahb|axi4_to_ahb>io_axi_rready"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~axi4_to_ahb|axi4_to_ahb>io_axi_awready",
-    "sources":[
-      "~axi4_to_ahb|axi4_to_ahb>io_axi_arvalid",
-      "~axi4_to_ahb|axi4_to_ahb>io_axi_bready",
-      "~axi4_to_ahb|axi4_to_ahb>io_axi_rready"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~axi4_to_ahb|axi4_to_ahb>io_axi_arready",
-    "sources":[
-      "~axi4_to_ahb|axi4_to_ahb>io_axi_arvalid",
       "~axi4_to_ahb|axi4_to_ahb>io_axi_bready",
       "~axi4_to_ahb|axi4_to_ahb>io_axi_rready"
     ]

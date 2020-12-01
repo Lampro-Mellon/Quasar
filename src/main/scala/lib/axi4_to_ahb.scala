@@ -57,9 +57,9 @@ class axi4_to_ahb_IO extends Bundle with Config {
 
 class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config {
   val io = IO(new axi4_to_ahb_IO)
-  val idle :: cmd_rd :: cmd_wr :: data_rd :: data_wr :: done :: stream_rd :: stream_err_rd :: nil = Enum(8)
+  val idle :: cmd_rd :: cmd_wr :: data_rd :: data_wr :: done :: stream_rd :: stream_err_rd :: Nil = Enum(8)
   val buf_state = WireInit(idle)
-  val buf_nxtstate = RegInit(idle)
+  val buf_nxtstate = WireInit(idle)
   //logic signals
   val slave_valid = WireInit(Bool(), init = false.B)
   val slave_ready = WireInit(Bool(), init = false.B)
@@ -178,16 +178,16 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
     MuxCase(0.U, temp)
   }
 
-  // Write buffer
-  wrbuf_en := io.axi_awvalid & io.axi_awready & master_ready
-  wrbuf_data_en := io.axi_wvalid & io.axi_wready & master_ready
-  wrbuf_cmd_sent := master_valid & master_ready & (master_opc(2, 1) === "b01".U)
-  wrbuf_rst := wrbuf_cmd_sent & !wrbuf_en
-
-  io.axi_awready := !(wrbuf_vld & !wrbuf_cmd_sent) & master_ready
-  io.axi_wready := !(wrbuf_data_vld & !wrbuf_cmd_sent) & master_ready
-  io.axi_arready := !(wrbuf_vld & wrbuf_data_vld) & master_ready
-  io.axi_rlast := true.B
+//  // Write buffer
+//  wrbuf_en := io.axi_awvalid & io.axi_awready & master_ready
+//  wrbuf_data_en := io.axi_wvalid & io.axi_wready & master_ready
+//  wrbuf_cmd_sent := master_valid & master_ready & (master_opc(2, 1) === "b01".U)
+//  wrbuf_rst := wrbuf_cmd_sent & !wrbuf_en
+//
+//  io.axi_awready := !(wrbuf_vld & !wrbuf_cmd_sent) & master_ready
+//  io.axi_wready := !(wrbuf_data_vld & !wrbuf_cmd_sent) & master_ready
+//  io.axi_arready := !(wrbuf_vld & wrbuf_data_vld) & master_ready
+//  io.axi_rlast := true.B
 
   wr_cmd_vld := wrbuf_vld & wrbuf_data_vld
   master_valid := wr_cmd_vld | io.axi_arvalid
@@ -217,13 +217,28 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
 
   //State machine
   io.ahb_htrans := 0.U
-  master_ready := 0.U
-  buf_state_en := 0.U
+  //master_ready := 0.U
+  buf_state_en := false.B
+  buf_nxtstate   := idle
+  buf_wr_en      := 0.U
+  buf_data_wr_en := 0.U
+  slvbuf_error_in   := 0.U
+  slvbuf_error_en   := 0.U
+  buf_write_in   := 0.U
+  cmd_done       := 0.U
+  trxn_done      := 0.U
+  buf_cmd_byte_ptr_en := 0.U
+  buf_cmd_byte_ptr := 0.U
+  slave_valid_pre   := 0.U
+  slvbuf_wr_en    := 0.U
+  bypass_en        := 0.U
+  rd_bypass_idle := 0.U
+
   switch(buf_state) {
     is(idle) {
-      master_ready := 1.U
+      val master_ready = 1.U
       buf_write_in := (master_opc(2, 1) === "b01".U)
-      buf_nxtstate := Mux(buf_write_in.asBool(), cmd_wr, cmd_rd)
+      val buf_nxtstate = Mux(buf_write_in.asBool(), cmd_wr, cmd_rd)
       buf_state_en := master_valid & master_ready
       buf_wr_en := buf_state_en
       buf_data_wr_en := buf_state_en & (buf_nxtstate === cmd_wr)
@@ -236,11 +251,11 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
     }
 
     is(cmd_rd) {
-      buf_nxtstate := Mux((master_valid & (master_opc(2, 0) === "b000".U)).asBool(), stream_rd, data_rd)
+     val buf_nxtstate = Mux((master_valid & (master_opc(2, 0) === "b000".U)).asBool(), stream_rd, data_rd)
       buf_state_en := ahb_hready_q & (ahb_htrans_q(1, 0) =/= "b0".U) & !ahb_hwrite_q
       cmd_done := buf_state_en & !master_valid
       slvbuf_wr_en := buf_state_en
-      master_ready := (ahb_hready_q & (ahb_htrans_q(1, 0) =/= "b0".U) & !ahb_hwrite_q) & (buf_nxtstate === stream_rd) ////////////TBD////////
+      val master_ready = (ahb_hready_q & (ahb_htrans_q(1, 0) =/= "b0".U) & !ahb_hwrite_q) & (buf_nxtstate === stream_rd) ////////////TBD////////
       buf_wr_en := master_ready
       bypass_en := master_ready & master_valid
       buf_cmd_byte_ptr := Mux(bypass_en.asBool(), master_addr(2, 0), buf_addr(2, 0))
@@ -248,9 +263,9 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
     }
 
     is(stream_rd) {
-      master_ready := (ahb_hready_q & !ahb_hresp_q) & !(master_valid & master_opc(2, 1) === "b01".U)
+     val master_ready = (ahb_hready_q & !ahb_hresp_q) & !(master_valid & master_opc(2, 1) === "b01".U)
       buf_wr_en := (master_valid & master_ready & (master_opc(2, 0) === "b000".U)) // update the fifo if we are streaming the read commands
-      buf_nxtstate := Mux(ahb_hresp_q.asBool(), stream_err_rd, Mux(buf_wr_en.asBool(), stream_rd, data_rd)) // assuming that the master accpets the slave response right away.
+     val buf_nxtstate = Mux(ahb_hresp_q.asBool(), stream_err_rd, Mux(buf_wr_en.asBool(), stream_rd, data_rd)) // assuming that the master accpets the slave response right away.
       buf_state_en := (ahb_hready_q | ahb_hresp_q)
       buf_data_wr_en := buf_state_en
       slvbuf_error_in := ahb_hresp_q
@@ -294,7 +309,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
 
     is(data_wr) {
       buf_state_en := (cmd_doneQ & ahb_hready_q) | ahb_hresp_q
-      master_ready := ((cmd_doneQ & ahb_hready_q) | ahb_hresp_q) & !ahb_hresp_q & slave_ready //////////TBD///////// // Ready to accept new command if current command done and no error
+     val master_ready = ((cmd_doneQ & ahb_hready_q) | ahb_hresp_q) & !ahb_hresp_q & slave_ready //////////TBD///////// // Ready to accept new command if current command done and no error
       buf_nxtstate := Mux((ahb_hresp_q | !slave_ready).asBool(), done, Mux((master_valid & master_ready).asBool(), Mux((master_opc(2, 1) === "b01".U), cmd_wr, cmd_rd), idle))
       slvbuf_error_in := ahb_hresp_q
       slvbuf_error_en := buf_state_en
@@ -346,6 +361,16 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   slave_tag := slvbuf_tag(TAG - 1, 0)
 
   last_addr_en := (io.ahb_htrans(1, 0) =/= "b0".U) & io.ahb_hready & io.ahb_hwrite
+  // Write buffer
+  wrbuf_en := io.axi_awvalid & io.axi_awready & master_ready
+  wrbuf_data_en := io.axi_wvalid & io.axi_wready & master_ready
+  wrbuf_cmd_sent := master_valid & master_ready & (master_opc(2, 1) === "b01".U)
+  wrbuf_rst := wrbuf_cmd_sent & !wrbuf_en
+
+  io.axi_awready := !(wrbuf_vld & !wrbuf_cmd_sent) & master_ready
+  io.axi_wready := !(wrbuf_data_vld & !wrbuf_cmd_sent) & master_ready
+  io.axi_arready := !(wrbuf_vld & wrbuf_data_vld) & master_ready
+  io.axi_rlast := true.B
 
   //rvdffsc
   wrbuf_vld      := withClock(bus_clk) {RegNext(Mux(wrbuf_en.asBool(),1.U,wrbuf_vld) & !wrbuf_rst, 0.U)}
