@@ -248,7 +248,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
       buf_write_in := (master_opc(2, 1) === "b01".U)
       buf_nxtstate := Mux(buf_write_in.asBool(), cmd_wr, cmd_rd)
       buf_state_en := master_valid & 1.U
-    //  buf_wr_en := buf_state_en
+      buf_wr_en := buf_state_en
       buf_data_wr_en := buf_state_en & (buf_nxtstate === cmd_wr)
       buf_cmd_byte_ptr_en := buf_state_en
       // ---------------------FROM FUNCTION CHECK LATER
@@ -264,7 +264,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
       cmd_done := buf_state_en & !master_valid
       slvbuf_wr_en := buf_state_en
       master_ready := (ahb_hready_q & (ahb_htrans_q(1, 0) =/= "b0".U) & !ahb_hwrite_q) & (Mux((master_valid & (master_opc(2, 0) === "b000".U)).asBool(), stream_rd, data_rd) === stream_rd) ////////////TBD////////
-     // buf_wr_en := master_ready
+      buf_wr_en := master_ready
       bypass_en := master_ready & master_valid
       buf_cmd_byte_ptr := Mux(bypass_en.asBool(), master_addr(2, 0), buf_addr(2, 0))
       io.ahb_htrans := "b10".U & (Fill(2, (!buf_state_en | bypass_en)))
@@ -272,7 +272,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
 
     is(stream_rd) {
       master_ready := (ahb_hready_q & !ahb_hresp_q) & !(master_valid & master_opc(2, 1) === "b01".U)
-     // buf_wr_en := (master_valid & master_ready & (master_opc(2, 0) === "b000".U)) // update the fifo if we are streaming the read commands
+      buf_wr_en := (master_valid & master_ready & (master_opc(2, 0) === "b000".U)) // update the fifo if we are streaming the read commands
       buf_nxtstate := Mux(ahb_hresp_q.asBool(), stream_err_rd, Mux((master_valid & master_ready & (master_opc(2, 0) === "b000".U)).asBool(), stream_rd, data_rd)) // assuming that the master accpets the slave response right away.
       buf_state_en := (ahb_hready_q | ahb_hresp_q)
       buf_data_wr_en := buf_state_en
@@ -283,7 +283,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
       bypass_en := master_ready & master_valid & (buf_nxtstate === stream_rd) & buf_state_en
       buf_cmd_byte_ptr := Mux(bypass_en.asBool(), master_addr(2, 0), buf_addr(2, 0))
       io.ahb_htrans := "b10".U & Fill(2, (!((buf_nxtstate =/= stream_rd) & buf_state_en)))
-      slvbuf_wr_en := (master_valid & master_ready & (master_opc(2, 0) === "b000".U)) // shifting the contents from the buf to slv_buf for streaming cases
+      slvbuf_wr_en := buf_wr_en// shifting the contents from the buf to slv_buf for streaming cases
     }
 
     is(stream_err_rd) {
