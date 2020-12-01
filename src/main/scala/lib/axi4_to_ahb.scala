@@ -65,9 +65,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   val idle :: cmd_rd :: cmd_wr :: data_rd :: data_wr :: done :: stream_rd :: stream_err_rd :: Nil = Enum(8)
   val buf_state = WireInit(idle)
   val buf_nxtstate = WireInit(idle)
-  buf_state := withClock(ahbm_clk) {
-    RegNext(Mux(buf_state_en.asBool(),buf_nxtstate,buf_state) & !buf_rst, 0.U)
-  }
+  buf_state := withClock(ahbm_clk) { RegNext(Mux(buf_state_en.asBool(),buf_nxtstate,buf_state) & !buf_rst, 0.U) }
   //logic signals
   val slave_valid = WireInit(Bool(), init = false.B)
   val slave_ready = WireInit(Bool(), init = false.B)
@@ -244,7 +242,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
 
   switch(buf_state) {
     is(idle) {
-     // master_ready := 1.U
+      master_ready := 1.U
       buf_write_in := (master_opc(2, 1) === "b01".U)
       buf_nxtstate := Mux(buf_write_in.asBool(), cmd_wr, cmd_rd)
       buf_state_en := master_valid & 1.U
