@@ -385,8 +385,8 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   wrbuf_tag := withClock(bus_clk) {RegEnable(io.axi_awid(TAG - 1, 0), 0.U, wrbuf_en.asBool())}
   wrbuf_size := withClock(bus_clk) {RegEnable(io.axi_awsize(2, 0), 0.U, wrbuf_en.asBool())}
   //rvdffe
-  wrbuf_addr := rvdffe(io.axi_awaddr, wrbuf_en.asBool,clock,io.scan_mode)
-  wrbuf_data := rvdffe(io.axi_wdata, wrbuf_data_en.asBool,clock,io.scan_mode)
+  wrbuf_addr := rvdffe(io.axi_awaddr, wrbuf_en.asBool,bus_clk,io.scan_mode)
+  wrbuf_data := rvdffe(io.axi_wdata, wrbuf_data_en.asBool,bus_clk,io.scan_mode)
   //rvdffs
   wrbuf_byteen := withClock(bus_clk) {
     RegEnable(io.axi_wstrb(7, 0), 0.U, wrbuf_data_en.asBool())

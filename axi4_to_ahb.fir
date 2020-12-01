@@ -1241,7 +1241,7 @@ circuit axi4_to_ahb :
     inst rvclkhdr_2 of rvclkhdr_2 @[el2_lib.scala 508:23]
     rvclkhdr_2.clock <= clock
     rvclkhdr_2.reset <= reset
-    rvclkhdr_2.io.clk <= clock @[el2_lib.scala 510:18]
+    rvclkhdr_2.io.clk <= bus_clk @[el2_lib.scala 510:18]
     rvclkhdr_2.io.en <= _T_650 @[el2_lib.scala 511:17]
     rvclkhdr_2.io.scan_mode <= io.scan_mode @[el2_lib.scala 512:24]
     reg _T_651 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_lib.scala 514:16]
@@ -1251,7 +1251,7 @@ circuit axi4_to_ahb :
     inst rvclkhdr_3 of rvclkhdr_3 @[el2_lib.scala 508:23]
     rvclkhdr_3.clock <= clock
     rvclkhdr_3.reset <= reset
-    rvclkhdr_3.io.clk <= clock @[el2_lib.scala 510:18]
+    rvclkhdr_3.io.clk <= bus_clk @[el2_lib.scala 510:18]
     rvclkhdr_3.io.en <= _T_652 @[el2_lib.scala 511:17]
     rvclkhdr_3.io.scan_mode <= io.scan_mode @[el2_lib.scala 512:24]
     reg _T_653 : UInt, rvclkhdr_3.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_lib.scala 514:16]
