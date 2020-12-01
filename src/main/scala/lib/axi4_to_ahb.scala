@@ -164,15 +164,15 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
     val byteen = WireInit(0.U(8.W))
 
     val size = ("b11".U & Fill(2, (byteen(7, 0) === "hff".U))) |
-      ("b10".U & (Fill(2, ((byteen(7, 0) === "hf0".U) | (byteen(7, 0) === "h0f".U))))) |
-      ("b01".U & (Fill(2, ((byteen(7, 0) === "hc0".U) | (byteen(7, 0) === "h30".U) | (byteen(7, 0) === "h0c".U) | (byteen(7, 0) === "h03".U)))))
+      ("b10".U & (Fill(2, ((byteen(7, 0) === "hf0".U) | (byteen(7, 0) === "h0f".U(8.W)))))) |
+      ("b01".U(2.W) & (Fill(2, ((byteen(7, 0) === "hc0".U) | (byteen(7, 0) === "h30".U) | (byteen(7, 0) === "h0c".U(8.W)) | (byteen(7, 0) === "h03".U(8.W))))))
     size
   }
   def get_write_addr(byteen_e: UInt) = {
     val byteen_e = WireInit(0.U(8.W))
-    val addr = ("h0".U & (Fill(3, ((byteen_e(7, 0) === "hff".U) | (byteen_e(7, 0) === "h0f".U) | (byteen_e(7, 0) === "h03".U))))) |
-      ("h2".U & (Fill(3, (byteen_e(7, 0) === "h0c".U)))) |
-      ("h4".U & (Fill(3, ((byteen_e(7, 0) === "hf0".U) | (byteen_e(7, 0) === "h03".U))))) |
+    val addr = ("h0".U(3.W) & (Fill(3, ((byteen_e(7, 0) === "hff".U) | (byteen_e(7, 0) === "h0f".U(8.W)) | (byteen_e(7, 0) === "h03".U(8.W)))))) |
+      ("h2".U & (Fill(3, (byteen_e(7, 0) === "h0c".U(8.W))))) |
+      ("h4".U & (Fill(3, ((byteen_e(7, 0) === "hf0".U) | (byteen_e(7, 0) === "h03".U(8.W)))))) |
         ("h6".U & (Fill(3, (byteen_e(7, 0) === "hc0".U))))
     addr
   }
@@ -344,14 +344,14 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   buf_tag_in := master_tag(TAG - 1, 0)
   buf_byteen_in := wrbuf_byteen(7,0)
   buf_data_in := Mux((buf_state === data_rd), ahb_hrdata_q(63, 0), master_wdata(63, 0))
-  buf_size_in := Mux((buf_aligned_in & (master_size(1, 0) === "b11".U) & (master_opc(2, 1) === "b01".U)).asBool(), get_write_size(master_byteen(7, 0)), master_size(1, 0))
-  buf_aligned_in := (master_opc(2, 0) === "b0".U) | // reads are always aligned since they are either DW or sideeffects
-    (master_size(1, 0) === "b0".U) | (master_size(1, 0) === "b01".U) | (master_size(1, 0) === "b10".U) | // Always aligned for Byte/HW/Word since they can be only for non-idempotent. IFU/SB are always aligned
+  buf_size_in := Mux((buf_aligned_in & (master_size(1,0) === "b11".U) & (master_opc(2, 1) === "b01".U)).asBool(),get_write_size(master_byteen(7,0)), master_size(1,0))
+  buf_aligned_in := (master_opc(2, 0) === 0.U) | // reads are always aligned since they are either DW or sideeffects
+    (master_size(1, 0) === 0.U) | (master_size(1, 0) === "b01".U(2.W)) | (master_size(1, 0) === "b10".U) | // Always aligned for Byte/HW/Word since they can be only for non-idempotent. IFU/SB are always aligned
     ((master_size(1, 0) === "b11".U) & ((master_byteen(7, 0) === "h3".U) | (master_byteen(7, 0) === "hc".U) | (master_byteen(7, 0) === "h30".U) | (master_byteen(7, 0) === "hc0".U) |
       (master_byteen(7, 0) === "hf".U) | (master_byteen(7, 0) === "hf0".U) | (master_byteen(7, 0) === "hff".U)))
   // Generate the ahb signals
   io.ahb_haddr := Mux(bypass_en.asBool(), Cat(master_addr(31, 3), buf_cmd_byte_ptr(2, 0)), Cat(buf_addr(31, 3), buf_cmd_byte_ptr(2, 0)))
-  io.ahb_hsize := Mux(bypass_en.asBool(), Cat(0.U, (Fill(2, buf_aligned_in) & buf_size_in(1, 0))), (Cat("b0".U, (Fill(2, buf_aligned) & buf_size(1, 0)))))
+  io.ahb_hsize := Mux(bypass_en.asBool(), Cat(0.U, (Fill(2, buf_aligned_in) & buf_size_in(1, 0))), Cat("b0".U, (Fill(2, buf_aligned) & buf_size(1, 0))))
 
   io.ahb_hburst := "b0".U
   io.ahb_hmastlock := "b0".U
