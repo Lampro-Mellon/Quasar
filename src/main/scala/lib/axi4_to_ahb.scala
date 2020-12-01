@@ -344,7 +344,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
 
   buf_rst := false.B
   cmd_done_rst := slave_valid_pre
-  buf_addr_in := Cat(master_addr, Mux((buf_aligned_in & (master_opc(2, 1) === "b01".U)).asBool(), get_write_addr(master_byteen(7, 0)), master_addr(2, 0)))
+  buf_addr_in := Cat(master_addr(31,3),Mux((buf_aligned_in & (master_opc(2, 1) === "b01".U)).asBool(), get_write_addr(master_byteen(7, 0)), master_addr(2, 0)))
   buf_tag_in := master_tag(TAG - 1, 0)
   buf_byteen_in := wrbuf_byteen(7,0)
   buf_data_in := Mux((buf_state === data_rd), ahb_hrdata_q(63, 0), master_wdata(63, 0))
