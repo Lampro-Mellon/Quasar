@@ -176,7 +176,6 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
         ("h6".U & (Fill(3, (byteen_e(7, 0) === "hc0".U))))
     addr
   }
-
   def get_nxtbyte_ptr(current_byte_ptr: UInt, byteen: UInt, get_next: Bool): UInt = {
     val start_ptr = Mux(get_next, current_byte_ptr + 1.U, current_byte_ptr)
     val temp = (0 until 8).map(j => (byteen(j) & (j.asUInt() >= start_ptr)) -> j.U)
