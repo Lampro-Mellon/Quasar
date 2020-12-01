@@ -163,9 +163,9 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
 
     val byteen = WireInit(0.U(8.W))
 
-    val size = ("b11".U & (Fill(2, (byteen(7, 0) === "hff".U))) |
-      ("b10".U & (Fill(2, (byteen(7, 0) === "hf0".U) | (byteen(7, 0) === "h0f".U)))) |
-      ("b01".U & (Fill(2, (byteen(7, 0) === "hc0".U) | (byteen(7, 0) === "h30".U) | (byteen(7, 0) === "h0c".U) | (byteen(7, 0) === "h03".U)))))
+    val size = ("b11".U & Fill(2, (byteen(7, 0) === "hff".U))) |
+      ("b10".U & (Fill(2, ((byteen(7, 0) === "hf0".U) | (byteen(7, 0) === "h0f".U))))) |
+      ("b01".U & (Fill(2, ((byteen(7, 0) === "hc0".U) | (byteen(7, 0) === "h30".U) | (byteen(7, 0) === "h0c".U) | (byteen(7, 0) === "h03".U)))))
     size
   }
 
@@ -223,7 +223,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
 
   //State machine
   io.ahb_htrans := 0.U
-  master_ready := 1.U
+  master_ready := 0.U
   buf_state_en := false.B
   buf_nxtstate   := idle
   //buf_wr_en      := 0.U
@@ -250,7 +250,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
       buf_data_wr_en := buf_state_en & (buf_nxtstate === cmd_wr)
       buf_cmd_byte_ptr_en := buf_state_en
       // ---------------------FROM FUNCTION CHECK LATER
-      buf_cmd_byte_ptr := Mux(buf_write_in.asBool(), (get_nxtbyte_ptr("b0".U, buf_byteen_in(7, 0), false.B)).asInstanceOf[UInt], master_addr(2, 0))
+      buf_cmd_byte_ptr := Mux(buf_write_in.asBool(), (get_nxtbyte_ptr(0.U, buf_byteen_in(7, 0), false.B)).asInstanceOf[UInt], master_addr(2, 0))
       bypass_en := buf_state_en
       rd_bypass_idle := bypass_en & (buf_nxtstate === cmd_rd)
       io.ahb_htrans := (Fill(2, bypass_en)) & "b10".U
@@ -330,7 +330,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
       buf_cmd_byte_ptr_en := trxn_done | bypass_en
       //val  tmp_func         = get_nxtbyte_ptr(Fill(3,0.U),buf_byteen_in(7,0),false.B)
       //val  tmp_func2        = get_nxtbyte_ptr(buf_cmd_byte_ptrQ(2,0),buf_byteen(7,0),true.B)
-      buf_cmd_byte_ptr := Mux(bypass_en, get_nxtbyte_ptr(Fill(3, 0.U), buf_byteen_in(7, 0), false.B), Mux(trxn_done, get_nxtbyte_ptr(buf_cmd_byte_ptrQ(2, 0), buf_byteen(7, 0), true.B), buf_cmd_byte_ptrQ))
+      buf_cmd_byte_ptr := Mux(bypass_en, get_nxtbyte_ptr(0.U, buf_byteen_in(7, 0), false.B), Mux(trxn_done, get_nxtbyte_ptr(buf_cmd_byte_ptrQ(2, 0), buf_byteen(7, 0), true.B), buf_cmd_byte_ptrQ))
     }
     is(done) {
       buf_nxtstate := idle
@@ -353,7 +353,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
       (master_byteen(7, 0) === "hf".U) | (master_byteen(7, 0) === "hf0".U) | (master_byteen(7, 0) === "hff".U)))
   // Generate the ahb signals
   io.ahb_haddr := Mux(bypass_en.asBool(), Cat(master_addr(31, 3), buf_cmd_byte_ptr(2, 0)), Cat(buf_addr(31, 3), buf_cmd_byte_ptr(2, 0)))
-  io.ahb_hsize := Mux(bypass_en.asBool(), Cat("b0".U, (Fill(2, buf_aligned_in) & buf_size_in(1, 0))), (Cat("b0".U, (Fill(2, buf_aligned) & buf_size(1, 0)))))
+  io.ahb_hsize := Mux(bypass_en.asBool(), Cat(0.U, (Fill(2, buf_aligned_in) & buf_size_in(1, 0))), (Cat("b0".U, (Fill(2, buf_aligned) & buf_size(1, 0)))))
 
   io.ahb_hburst := "b0".U
   io.ahb_hmastlock := "b0".U
