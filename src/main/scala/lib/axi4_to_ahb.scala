@@ -155,22 +155,14 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   val ahbm_addr_clken = WireInit(Bool(), init = false.B)
   val ahbm_data_clken = WireInit(Bool(), init = false.B)
   val buf_clk = Wire(Clock())
-  //val slvbuf_clk           = Wire(Clock())
-//  val ahbm_clk = Wire(Clock())
-//  val ahbm_addr_clk = Wire(Clock())
-//  val ahbm_data_clk = Wire(Clock())
 
   def get_write_size(byteen: UInt) = {
-
-   // val byteen = WireInit(0.U(8.W))
-
-    val size = ("b11".U & Fill(2, (byteen(7, 0) === "hff".U))) |
+  val size = ("b11".U & Fill(2, (byteen(7, 0) === "hff".U))) |
       ("b10".U & (Fill(2, ((byteen(7, 0) === "hf0".U) | (byteen(7, 0) === "h0f".U(8.W)))))) |
       ("b01".U(2.W) & (Fill(2, ((byteen(7, 0) === "hc0".U) | (byteen(7, 0) === "h30".U) | (byteen(7, 0) === "h0c".U(8.W)) | (byteen(7, 0) === "h03".U(8.W))))))
     size
   }
   def get_write_addr(byteen_e: UInt) = {
-  //  val byteen_e = WireInit(0.U(8.W))
     val addr = ("h0".U(3.W) & (Fill(3, ((byteen_e(7, 0) === "hff".U) | (byteen_e(7, 0) === "h0f".U(8.W)) | (byteen_e(7, 0) === "h03".U(8.W)))))) |
       ("h2".U & (Fill(3, (byteen_e(7, 0) === "h0c".U(8.W))))) |
       ("h4".U & (Fill(3, ((byteen_e(7, 0) === "hf0".U) | (byteen_e(7, 0) === "h03".U(8.W)))))) |
@@ -179,22 +171,10 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
     addr
   }
   def get_nxtbyte_ptr(current_byte_ptr: UInt, byteen: UInt, get_next: Bool): UInt = {
-    val start_ptr = Mux(get_next, current_byte_ptr + 1.U(3.W), current_byte_ptr)
+    val start_ptr = Mux(get_next, current_byte_ptr + 1.U, current_byte_ptr)
     val temp = (0 until 8).map(j => (byteen(j) & (j.asUInt() >= start_ptr)).orR -> j.U)
     MuxCase(0.U, temp)
   }
-
-//  // Write buffer
-//  wrbuf_en := io.axi_awvalid & io.axi_awready & master_ready
-//  wrbuf_data_en := io.axi_wvalid & io.axi_wready & master_ready
-//  wrbuf_cmd_sent := master_valid & master_ready & (master_opc(2, 1) === "b01".U)
-//  wrbuf_rst := wrbuf_cmd_sent & !wrbuf_en
-//
-//  io.axi_awready := !(wrbuf_vld & !wrbuf_cmd_sent) & master_ready
-//  io.axi_wready := !(wrbuf_data_vld & !wrbuf_cmd_sent) & master_ready
-//  io.axi_arready := !(wrbuf_vld & wrbuf_data_vld) & master_ready
-//  io.axi_rlast := true.B
-
   wr_cmd_vld := wrbuf_vld & wrbuf_data_vld
   master_valid := wr_cmd_vld | io.axi_arvalid
   master_tag := Mux(wr_cmd_vld.asBool(), wrbuf_tag(TAG - 1, 0), io.axi_arid(TAG - 1, 0))
@@ -315,7 +295,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
 
     is(data_wr) {
       buf_state_en := (cmd_doneQ & ahb_hready_q) | ahb_hresp_q
-      master_ready := ((cmd_doneQ & ahb_hready_q) | ahb_hresp_q) & !ahb_hresp_q & slave_ready //////////TBD///////// // Ready to accept new command if current command done and no error
+      master_ready := ((cmd_doneQ & ahb_hready_q) | ahb_hresp_q) & !ahb_hresp_q & slave_ready
       buf_nxtstate := Mux((ahb_hresp_q | !slave_ready).asBool(), done, Mux((master_valid & master_ready).asBool(), Mux((master_opc(2, 1) === "b01".U), cmd_wr, cmd_rd), idle))
       slvbuf_error_in := ahb_hresp_q
       slvbuf_error_en := buf_state_en
@@ -328,8 +308,6 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
       slave_valid_pre := buf_state_en & (buf_nxtstate =/= done)
       trxn_done := ahb_hready_q & ahb_hwrite_q & (ahb_htrans_q(1, 0) =/= "b0".U)
       buf_cmd_byte_ptr_en := trxn_done | bypass_en
-      //val  tmp_func         = get_nxtbyte_ptr(Fill(3,0.U),buf_byteen_in(7,0),false.B)
-      //val  tmp_func2        = get_nxtbyte_ptr(buf_cmd_byte_ptrQ(2,0),buf_byteen(7,0),true.B)
       buf_cmd_byte_ptr := Mux(bypass_en, get_nxtbyte_ptr(0.U, buf_byteen_in(7, 0), false.B), Mux(trxn_done, get_nxtbyte_ptr(buf_cmd_byte_ptrQ(2, 0), buf_byteen(7, 0), true.B), buf_cmd_byte_ptrQ))
 
     }
@@ -378,82 +356,31 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   io.axi_arready := !(wrbuf_vld & wrbuf_data_vld) & master_ready
   io.axi_rlast := true.B
 
-  //rvdffsc
-  wrbuf_vld      := withClock(bus_clk) {RegNext(Mux(wrbuf_en.asBool(),1.U,wrbuf_vld) & !wrbuf_rst, 0.U)}
-  wrbuf_data_vld := withClock(bus_clk) {RegNext(Mux(wrbuf_data_en.asBool(),1.U, wrbuf_data_vld) & !wrbuf_rst, 0.U)}
-  //rvdffs
-  wrbuf_tag := withClock(bus_clk) {RegEnable(io.axi_awid(TAG - 1, 0), 0.U, wrbuf_en.asBool())}
-  wrbuf_size := withClock(bus_clk) {RegEnable(io.axi_awsize(2, 0), 0.U, wrbuf_en.asBool())}
-  //rvdffe
-  wrbuf_addr := rvdffe(io.axi_awaddr, wrbuf_en.asBool,bus_clk,io.scan_mode)
-  wrbuf_data := rvdffe(io.axi_wdata, wrbuf_data_en.asBool,bus_clk,io.scan_mode)
-  //rvdffs
-  wrbuf_byteen := withClock(bus_clk) {
-    RegEnable(io.axi_wstrb(7, 0), 0.U, wrbuf_data_en.asBool())
-  }
-  last_bus_addr := withClock(ahbm_clk) {
-    RegEnable(io.ahb_haddr(31, 0), 0.U, last_addr_en.asBool())
-  }
-  //sc
-//  buf_state := withClock(ahbm_clk) {
-//    RegNext(Mux(buf_state_en.asBool(),buf_nxtstate,buf_state) & !buf_rst, 0.U)
-//  }
-  //s
-  buf_write := withClock(buf_clk) {
-    RegEnable(buf_write_in, 0.U, buf_wr_en.asBool())
-  }
-  buf_tag := withClock(buf_clk) {
-    RegEnable(buf_tag_in(TAG - 1, 0), 0.U, buf_wr_en.asBool())
-  }
-  //e
-  buf_addr := rvdffe(buf_addr_in(31, 0),(buf_wr_en & io.bus_clk_en).asBool,clock,io.scan_mode)
-  //s
-  buf_size := withClock(buf_clk) {
-    RegEnable(buf_size_in(1, 0), 0.U, buf_wr_en.asBool())
-  }
-  buf_aligned := withClock(buf_clk) {
-    RegEnable(buf_aligned_in, 0.U, buf_wr_en.asBool())
-  }
-  buf_byteen := withClock(buf_clk) {
-    RegEnable(buf_byteen_in(7, 0), 0.U, buf_wr_en.asBool())
-  }
-  //e
-  buf_data := rvdffe(buf_data_in(63, 0),(buf_data_wr_en & io.bus_clk_en).asBool(),clock,io.scan_mode)
-  //s
-  slvbuf_write := withClock(buf_clk) {
-    RegEnable(buf_write, 0.U, slvbuf_wr_en.asBool())
-  }
-  slvbuf_tag := withClock(buf_clk) {
-    RegEnable(buf_tag(TAG - 1, 0), 0.U, slvbuf_wr_en.asBool())
-  }
-  slvbuf_error := withClock(ahbm_clk) {
-    RegEnable(slvbuf_error_in, 0.U, slvbuf_error_en.asBool())
-  }
-  //sc
-  cmd_doneQ := withClock(ahbm_clk) {
-    RegNext(Mux(cmd_done.asBool(),1.U,cmd_doneQ) & !cmd_done_rst, 0.U)
-  }
-  //rvdffs
-  buf_cmd_byte_ptrQ := withClock(ahbm_clk) {
-    RegEnable(buf_cmd_byte_ptr(2, 0), 0.U, buf_cmd_byte_ptr_en.asBool())
-  }
-
-  //rvdff
-  ahb_hready_q := withClock(ahbm_clk) {
-    RegNext(io.ahb_hready, 0.U)
-  }
-  ahb_htrans_q := withClock(ahbm_clk) {
-    RegNext(io.ahb_htrans(1, 0), 0.U)
-  }
-  ahb_hwrite_q := withClock(ahbm_addr_clk) {
-    RegNext(io.ahb_hwrite, 0.U)
-  }
-  ahb_hresp_q := withClock(ahbm_clk) {
-    RegNext(io.ahb_hresp, 0.U)
-  }
-  ahb_hrdata_q := withClock(ahbm_data_clk) {
-    RegNext(io.ahb_hrdata(63, 0), 0.U)
-  }
+  wrbuf_vld         := withClock(bus_clk) {RegNext(Mux(wrbuf_en.asBool(),1.U,wrbuf_vld) & !wrbuf_rst, 0.U)}
+  wrbuf_data_vld    := withClock(bus_clk) {RegNext(Mux(wrbuf_data_en.asBool(),1.U, wrbuf_data_vld) & !wrbuf_rst, 0.U)}
+  wrbuf_tag         := withClock(bus_clk) {RegEnable(io.axi_awid(TAG - 1, 0), 0.U, wrbuf_en.asBool())}
+  wrbuf_size        := withClock(bus_clk) {RegEnable(io.axi_awsize(2, 0), 0.U, wrbuf_en.asBool())}
+  wrbuf_addr        := rvdffe(io.axi_awaddr, wrbuf_en.asBool,bus_clk,io.scan_mode)
+  wrbuf_data        := rvdffe(io.axi_wdata, wrbuf_data_en.asBool,bus_clk,io.scan_mode)
+  wrbuf_byteen      := withClock(bus_clk) {RegEnable(io.axi_wstrb(7, 0), 0.U, wrbuf_data_en.asBool())}
+  last_bus_addr     := withClock(ahbm_clk) {RegEnable(io.ahb_haddr(31, 0), 0.U, last_addr_en.asBool())}
+  buf_write         := withClock(buf_clk) {RegEnable(buf_write_in, 0.U, buf_wr_en.asBool())}
+  buf_tag           := withClock(buf_clk) {RegEnable(buf_tag_in(TAG - 1, 0), 0.U, buf_wr_en.asBool())}
+  buf_addr          := rvdffe(buf_addr_in(31, 0),(buf_wr_en & io.bus_clk_en).asBool,clock,io.scan_mode)
+  buf_size          := withClock(buf_clk) {RegEnable(buf_size_in(1, 0), 0.U, buf_wr_en.asBool())}
+  buf_aligned       := withClock(buf_clk) {RegEnable(buf_aligned_in, 0.U, buf_wr_en.asBool())}
+  buf_byteen        := withClock(buf_clk) {RegEnable(buf_byteen_in(7, 0), 0.U, buf_wr_en.asBool())}
+  buf_data          := rvdffe(buf_data_in(63, 0),(buf_data_wr_en & io.bus_clk_en).asBool(),clock,io.scan_mode)
+  slvbuf_write      := withClock(buf_clk) {RegEnable(buf_write, 0.U, slvbuf_wr_en.asBool())}
+  slvbuf_tag        := withClock(buf_clk) {RegEnable(buf_tag(TAG - 1, 0), 0.U, slvbuf_wr_en.asBool())}
+  slvbuf_error      := withClock(ahbm_clk) {RegEnable(slvbuf_error_in, 0.U, slvbuf_error_en.asBool())}
+  cmd_doneQ         := withClock(ahbm_clk) {RegNext(Mux(cmd_done.asBool(),1.U,cmd_doneQ) & !cmd_done_rst, 0.U)}
+  buf_cmd_byte_ptrQ := withClock(ahbm_clk) {RegEnable(buf_cmd_byte_ptr(2, 0), 0.U, buf_cmd_byte_ptr_en.asBool())}
+  ahb_hready_q      := withClock(ahbm_clk) {RegNext(io.ahb_hready, 0.U)}
+  ahb_htrans_q      := withClock(ahbm_clk) {RegNext(io.ahb_htrans(1, 0), 0.U)}
+  ahb_hwrite_q      := withClock(ahbm_addr_clk) {RegNext(io.ahb_hwrite, 0.U)}
+  ahb_hresp_q       := withClock(ahbm_clk) {RegNext(io.ahb_hresp, 0.U)}
+  ahb_hrdata_q      := withClock(ahbm_data_clk) {RegNext(io.ahb_hrdata(63, 0), 0.U)}
 
   buf_clken := io.bus_clk_en & (buf_wr_en | slvbuf_wr_en | io.clk_override)
   ahbm_addr_clken := io.bus_clk_en & ((io.ahb_hready & io.ahb_htrans(1)) | io.clk_override)
