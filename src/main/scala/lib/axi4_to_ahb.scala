@@ -57,7 +57,7 @@ class axi4_to_ahb_IO extends Bundle with Config {
 
 class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config {
   val io = IO(new axi4_to_ahb_IO)
-  val buf_rst = WireInit(0.U(3.W))
+  val buf_rst = WireInit(0.U(1.W))
   val buf_state_en = WireInit(Bool(), init = false.B)
   val ahbm_clk = Wire(Clock())
   val ahbm_addr_clk = Wire(Clock())
@@ -65,7 +65,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   val idle :: cmd_rd :: cmd_wr :: data_rd :: data_wr :: done :: stream_rd :: stream_err_rd :: Nil = Enum(8)
   val buf_state = WireInit(0.U(3.W))
   val buf_nxtstate = WireInit(0.U(3.W))
-  buf_state := withClock(ahbm_clk) { RegNext((Mux(buf_state_en.asBool() ,buf_nxtstate,buf_state) & ~buf_rst), 0.U) }
+  buf_state := withClock(ahbm_clk) { RegNext((Mux(buf_state_en.asBool() ,buf_nxtstate,buf_state) & Fill(3,!buf_rst)), 0.U) }
   //logic signals
   val slave_valid = WireInit(Bool(), init = false.B)
   val slave_ready = WireInit(Bool(), init = false.B)
@@ -338,6 +338,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
       slave_valid_pre := true.B
     }
   }
+ // buf_rst := 0.U
   cmd_done_rst := slave_valid_pre
   buf_addr_in := Cat(master_addr(31,3),Mux((buf_aligned_in & (master_opc(2, 1) === "b01".U)).asBool(), get_write_addr(master_byteen(7, 0)), master_addr(2, 0)))
   buf_tag_in := master_tag(TAG - 1, 0)
