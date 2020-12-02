@@ -130,7 +130,7 @@ class ahb_to_axi4 extends Module with el2_lib with RequireAsyncReset {
       is(wr) { // Write command recieved last cycle
         buf_nxtstate := Mux((io.ahb_hresp | (io.ahb_htrans(1, 0) === "b0".U) | !io.ahb_hsel).asBool, idle, Mux(io.ahb_hwrite, wr, rd))
         buf_state_en := (!cmdbuf_full | io.ahb_hresp)
-        cmdbuf_wr_en := !cmdbuf_full & !(io.ahb_hresp | ((io.ahb_htrans(1, 0) === "b01".U) & io.ahb_hsel)) // Dont send command to the buffer in case of an error or when the master is not ready with the data now.
+        cmdbuf_wr_en := !cmdbuf_full & !(io.ahb_hresp | ((io.ahb_htrans(1, 0) === "b01".U(2.W)) & io.ahb_hsel)) // Dont send command to the buffer in case of an error or when the master is not ready with the data now.
       }
       is(rd) { // Read command recieved last cycle.
         buf_nxtstate := Mux(io.ahb_hresp, idle, pend) // If error go to idle, else wait for read data
@@ -187,10 +187,8 @@ class ahb_to_axi4 extends Module with el2_lib with RequireAsyncReset {
 
     cmdbuf_rst                  := (((io.axi_awvalid & io.axi_awready) | (io.axi_arvalid & io.axi_arready)) & !cmdbuf_wr_en) | (io.ahb_hresp & !cmdbuf_write)
     cmdbuf_full                 := (cmdbuf_vld & !((io.axi_awvalid & io.axi_awready) | (io.axi_arvalid & io.axi_arready)))
-
     //rvdffsc
-    cmdbuf_vld                  := withClock(bus_clk) {
-        RegEnable("b1".U & Fill("b1".U.getWidth, cmdbuf_rst), 0.U, cmdbuf_wr_en.asBool())}
+    cmdbuf_vld                  := withClock(bus_clk) {RegNext((Mux(cmdbuf_wr_en.asBool(),"b1".U,cmdbuf_vld) & !cmdbuf_rst), 0.U)}
 
     //dffs
     cmdbuf_write                := withClock(bus_clk) {

@@ -120,8 +120,8 @@ module ahb_to_axi4(
   wire  _T_14 = io_ahb_hresp | _T_13; // @[ahb_to_axi4.scala 131:43]
   wire  _T_15 = ~io_ahb_hsel; // @[ahb_to_axi4.scala 131:80]
   wire  _T_16 = _T_14 | _T_15; // @[ahb_to_axi4.scala 131:78]
-  wire  bus_clk = rvclkhdr_5_io_l1clk; // @[ahb_to_axi4.scala 98:35 ahb_to_axi4.scala 236:29]
-  reg  cmdbuf_vld; // @[Reg.scala 27:20]
+  wire  bus_clk = rvclkhdr_5_io_l1clk; // @[ahb_to_axi4.scala 98:35 ahb_to_axi4.scala 234:29]
+  reg  cmdbuf_vld; // @[ahb_to_axi4.scala 191:63]
   wire  _T_150 = io_axi_awvalid & io_axi_awready; // @[ahb_to_axi4.scala 189:68]
   wire  _T_151 = io_axi_arvalid & io_axi_arready; // @[ahb_to_axi4.scala 189:104]
   wire  _T_152 = _T_150 | _T_151; // @[ahb_to_axi4.scala 189:86]
@@ -130,7 +130,7 @@ module ahb_to_axi4(
   wire  _T_20 = ~cmdbuf_full; // @[ahb_to_axi4.scala 132:26]
   wire  _T_21 = _T_20 | io_ahb_hresp; // @[ahb_to_axi4.scala 132:39]
   wire  _T_24 = io_ahb_htrans == 2'h1; // @[ahb_to_axi4.scala 133:79]
-  wire  _T_25 = _T_24 & io_ahb_hsel; // @[ahb_to_axi4.scala 133:92]
+  wire  _T_25 = _T_24 & io_ahb_hsel; // @[ahb_to_axi4.scala 133:97]
   wire  _T_26 = io_ahb_hresp | _T_25; // @[ahb_to_axi4.scala 133:55]
   wire  _T_27 = ~_T_26; // @[ahb_to_axi4.scala 133:40]
   wire  _T_28 = _T_20 & _T_27; // @[ahb_to_axi4.scala 133:38]
@@ -163,21 +163,21 @@ module ahb_to_axi4(
   wire  _T_52 = ahb_hsize_q == 3'h1; // @[ahb_to_axi4.scala 150:62]
   wire [7:0] _T_54 = _T_52 ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
   wire [8:0] _T_56 = 9'h3 << ahb_haddr_q[2:0]; // @[ahb_to_axi4.scala 150:80]
-  wire [8:0] _GEN_24 = {{1'd0}, _T_54}; // @[ahb_to_axi4.scala 150:72]
-  wire [8:0] _T_57 = _GEN_24 & _T_56; // @[ahb_to_axi4.scala 150:72]
-  wire [8:0] _GEN_25 = {{1'd0}, _T_50}; // @[ahb_to_axi4.scala 149:111]
-  wire [8:0] _T_58 = _GEN_25 | _T_57; // @[ahb_to_axi4.scala 149:111]
+  wire [8:0] _GEN_23 = {{1'd0}, _T_54}; // @[ahb_to_axi4.scala 150:72]
+  wire [8:0] _T_57 = _GEN_23 & _T_56; // @[ahb_to_axi4.scala 150:72]
+  wire [8:0] _GEN_24 = {{1'd0}, _T_50}; // @[ahb_to_axi4.scala 149:111]
+  wire [8:0] _T_58 = _GEN_24 | _T_57; // @[ahb_to_axi4.scala 149:111]
   wire  _T_60 = ahb_hsize_q == 3'h2; // @[ahb_to_axi4.scala 151:62]
   wire [7:0] _T_62 = _T_60 ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
   wire [10:0] _T_64 = 11'hf << ahb_haddr_q[2:0]; // @[ahb_to_axi4.scala 151:80]
-  wire [10:0] _GEN_26 = {{3'd0}, _T_62}; // @[ahb_to_axi4.scala 151:72]
-  wire [10:0] _T_65 = _GEN_26 & _T_64; // @[ahb_to_axi4.scala 151:72]
-  wire [10:0] _GEN_27 = {{2'd0}, _T_58}; // @[ahb_to_axi4.scala 150:111]
-  wire [10:0] _T_66 = _GEN_27 | _T_65; // @[ahb_to_axi4.scala 150:111]
+  wire [10:0] _GEN_25 = {{3'd0}, _T_62}; // @[ahb_to_axi4.scala 151:72]
+  wire [10:0] _T_65 = _GEN_25 & _T_64; // @[ahb_to_axi4.scala 151:72]
+  wire [10:0] _GEN_26 = {{2'd0}, _T_58}; // @[ahb_to_axi4.scala 150:111]
+  wire [10:0] _T_66 = _GEN_26 | _T_65; // @[ahb_to_axi4.scala 150:111]
   wire  _T_68 = ahb_hsize_q == 3'h3; // @[ahb_to_axi4.scala 152:62]
   wire [7:0] _T_70 = _T_68 ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  wire [10:0] _GEN_28 = {{3'd0}, _T_70}; // @[ahb_to_axi4.scala 151:111]
-  wire [10:0] _T_72 = _T_66 | _GEN_28; // @[ahb_to_axi4.scala 151:111]
+  wire [10:0] _GEN_27 = {{3'd0}, _T_70}; // @[ahb_to_axi4.scala 151:111]
+  wire [10:0] _T_72 = _T_66 | _GEN_27; // @[ahb_to_axi4.scala 151:111]
   reg  ahb_hready_q; // @[ahb_to_axi4.scala 174:62]
   wire  _T_73 = ~ahb_hready_q; // @[ahb_to_axi4.scala 155:68]
   reg  ahb_hresp_q; // @[ahb_to_axi4.scala 173:62]
@@ -222,12 +222,14 @@ module ahb_to_axi4(
   wire  _T_146 = _T_152 & _T_145; // @[ahb_to_axi4.scala 188:109]
   wire  _T_148 = io_ahb_hresp & _T_37; // @[ahb_to_axi4.scala 188:142]
   wire  cmdbuf_rst = _T_146 | _T_148; // @[ahb_to_axi4.scala 188:126]
-  reg [2:0] _T_161; // @[Reg.scala 27:20]
+  wire  _T_156 = cmdbuf_wr_en | cmdbuf_vld; // @[ahb_to_axi4.scala 191:68]
+  wire  _T_157 = ~cmdbuf_rst; // @[ahb_to_axi4.scala 191:112]
+  reg [2:0] _T_163; // @[Reg.scala 27:20]
   reg [7:0] cmdbuf_wstrb; // @[Reg.scala 27:20]
   wire [7:0] master_wstrb = _T_72[7:0]; // @[ahb_to_axi4.scala 149:33]
   reg [31:0] cmdbuf_addr; // @[el2_lib.scala 514:16]
   reg [63:0] cmdbuf_wdata; // @[el2_lib.scala 514:16]
-  wire [1:0] cmdbuf_size = _T_161[1:0]; // @[ahb_to_axi4.scala 199:33]
+  wire [1:0] cmdbuf_size = _T_163[1:0]; // @[ahb_to_axi4.scala 197:33]
   rvclkhdr rvclkhdr ( // @[el2_lib.scala 483:22]
     .io_l1clk(rvclkhdr_io_l1clk),
     .io_clk(rvclkhdr_io_clk),
@@ -264,24 +266,24 @@ module ahb_to_axi4(
     .io_en(rvclkhdr_5_io_en),
     .io_scan_mode(rvclkhdr_5_io_scan_mode)
   );
-  assign io_axi_awvalid = cmdbuf_vld & cmdbuf_write; // @[ahb_to_axi4.scala 210:29]
-  assign io_axi_awaddr = cmdbuf_addr; // @[ahb_to_axi4.scala 212:29]
-  assign io_axi_awsize = {1'h0,cmdbuf_size}; // @[ahb_to_axi4.scala 213:29]
-  assign io_axi_awprot = 3'h0; // @[ahb_to_axi4.scala 214:29]
-  assign io_axi_awlen = 8'h0; // @[ahb_to_axi4.scala 215:29]
-  assign io_axi_awburst = 2'h1; // @[ahb_to_axi4.scala 216:29]
-  assign io_axi_wvalid = cmdbuf_vld & cmdbuf_write; // @[ahb_to_axi4.scala 218:29]
-  assign io_axi_wdata = cmdbuf_wdata; // @[ahb_to_axi4.scala 219:29]
-  assign io_axi_wstrb = cmdbuf_wstrb; // @[ahb_to_axi4.scala 220:29]
-  assign io_axi_wlast = 1'h1; // @[ahb_to_axi4.scala 221:29]
-  assign io_axi_bready = 1'h1; // @[ahb_to_axi4.scala 223:29]
-  assign io_axi_arvalid = cmdbuf_vld & _T_37; // @[ahb_to_axi4.scala 225:29]
-  assign io_axi_araddr = cmdbuf_addr; // @[ahb_to_axi4.scala 227:29]
-  assign io_axi_arsize = {1'h0,cmdbuf_size}; // @[ahb_to_axi4.scala 228:29]
-  assign io_axi_arprot = 3'h0; // @[ahb_to_axi4.scala 229:29]
-  assign io_axi_arlen = 8'h0; // @[ahb_to_axi4.scala 230:29]
-  assign io_axi_arburst = 2'h1; // @[ahb_to_axi4.scala 231:29]
-  assign io_axi_rready = 1'h1; // @[ahb_to_axi4.scala 233:29]
+  assign io_axi_awvalid = cmdbuf_vld & cmdbuf_write; // @[ahb_to_axi4.scala 208:29]
+  assign io_axi_awaddr = cmdbuf_addr; // @[ahb_to_axi4.scala 210:29]
+  assign io_axi_awsize = {1'h0,cmdbuf_size}; // @[ahb_to_axi4.scala 211:29]
+  assign io_axi_awprot = 3'h0; // @[ahb_to_axi4.scala 212:29]
+  assign io_axi_awlen = 8'h0; // @[ahb_to_axi4.scala 213:29]
+  assign io_axi_awburst = 2'h1; // @[ahb_to_axi4.scala 214:29]
+  assign io_axi_wvalid = cmdbuf_vld & cmdbuf_write; // @[ahb_to_axi4.scala 216:29]
+  assign io_axi_wdata = cmdbuf_wdata; // @[ahb_to_axi4.scala 217:29]
+  assign io_axi_wstrb = cmdbuf_wstrb; // @[ahb_to_axi4.scala 218:29]
+  assign io_axi_wlast = 1'h1; // @[ahb_to_axi4.scala 219:29]
+  assign io_axi_bready = 1'h1; // @[ahb_to_axi4.scala 221:29]
+  assign io_axi_arvalid = cmdbuf_vld & _T_37; // @[ahb_to_axi4.scala 223:29]
+  assign io_axi_araddr = cmdbuf_addr; // @[ahb_to_axi4.scala 225:29]
+  assign io_axi_arsize = {1'h0,cmdbuf_size}; // @[ahb_to_axi4.scala 226:29]
+  assign io_axi_arprot = 3'h0; // @[ahb_to_axi4.scala 227:29]
+  assign io_axi_arlen = 8'h0; // @[ahb_to_axi4.scala 228:29]
+  assign io_axi_arburst = 2'h1; // @[ahb_to_axi4.scala 229:29]
+  assign io_axi_rready = 1'h1; // @[ahb_to_axi4.scala 231:29]
   assign io_ahb_hrdata = buf_rdata; // @[ahb_to_axi4.scala 158:33]
   assign io_ahb_hreadyout = io_ahb_hresp ? _T_74 : _T_84; // @[ahb_to_axi4.scala 155:33]
   assign io_ahb_hresp = _T_126 | _T_74; // @[ahb_to_axi4.scala 159:33]
@@ -361,7 +363,7 @@ initial begin
   _RAND_10 = {1{`RANDOM}};
   ahb_hwrite_q = _RAND_10[0:0];
   _RAND_11 = {1{`RANDOM}};
-  _T_161 = _RAND_11[2:0];
+  _T_163 = _RAND_11[2:0];
   _RAND_12 = {1{`RANDOM}};
   cmdbuf_wstrb = _RAND_12[7:0];
   _RAND_13 = {1{`RANDOM}};
@@ -403,7 +405,7 @@ initial begin
     ahb_hwrite_q = 1'h0;
   end
   if (reset) begin
-    _T_161 = 3'h0;
+    _T_163 = 3'h0;
   end
   if (reset) begin
     cmdbuf_wstrb = 8'h0;
@@ -459,8 +461,8 @@ end // initial
   always @(posedge bus_clk or posedge reset) begin
     if (reset) begin
       cmdbuf_vld <= 1'h0;
-    end else if (cmdbuf_wr_en) begin
-      cmdbuf_vld <= cmdbuf_rst;
+    end else begin
+      cmdbuf_vld <= _T_156 & _T_157;
     end
   end
   always @(posedge bus_clk or posedge reset) begin
@@ -527,9 +529,9 @@ end // initial
   end
   always @(posedge bus_clk or posedge reset) begin
     if (reset) begin
-      _T_161 <= 3'h0;
+      _T_163 <= 3'h0;
     end else if (cmdbuf_wr_en) begin
-      _T_161 <= ahb_hsize_q;
+      _T_163 <= ahb_hsize_q;
     end
   end
   always @(posedge bus_clk or posedge reset) begin
