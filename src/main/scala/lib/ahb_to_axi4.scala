@@ -74,8 +74,8 @@ class ahb_to_axi4 extends Module with el2_lib with RequireAsyncReset {
     val ahb_hresp_q         = WireInit(Bool(), false.B)
 
     //Miscellaneous signals
-    val ahb_addr_in_iccm    = WireInit(Bool(), false.B)
-    val ahb_addr_in_iccm_region_nc = WireInit(Bool(), false.B)
+   // val ahb_addr_in_iccm    = WireInit(Bool(), false.B)
+   // val ahb_addr_in_iccm_region_nc = WireInit(Bool(), false.B)
 
     // signals needed for the read data coming back from the core and to block any further commands as AHB is a blocking bus
     val buf_rdata_en        = WireInit(Bool(), false.B)
@@ -98,21 +98,20 @@ class ahb_to_axi4 extends Module with el2_lib with RequireAsyncReset {
     val bus_clk             = Wire(Clock())
 
   // Address check  dccm
-    val (ahb_addr_in_dccm, ahb_addr_in_dccm_region_nc) = rvrangecheck_ch(ahb_haddr_q.asUInt,aslong(DCCM_SADR).asUInt(),DCCM_SIZE)
-
+    val (ahb_addr_in_dccm_region_nc,ahb_addr_in_dccm) = rvrangecheck(DCCM_SADR,DCCM_SIZE,ahb_haddr_q)
+   val (ahb_addr_in_iccm_region_nc,ahb_addr_in_iccm) = if(ICCM_ENABLE) rvrangecheck(ICCM_SADR ,ICCM_SIZE,ahb_haddr_q) else (0.U,0.U)
   // Address check  iccm
-    if (ICCM_ENABLE == 1) {
-    ahb_addr_in_iccm            := rvrangecheck_ch(ahb_haddr_q.asUInt, aslong(ICCM_SADR).asUInt(), ICCM_SIZE)._1
-    ahb_addr_in_iccm_region_nc  := rvrangecheck_ch(ahb_haddr_q.asUInt, aslong(ICCM_SADR).asUInt(), ICCM_SIZE)._2
-  }
-  else {
-      ahb_addr_in_iccm := 0.U
-      ahb_addr_in_iccm_region_nc := 0.U
-
-    }
+//    if (ICCM_ENABLE == 1) {
+//    ahb_addr_in_iccm            := rvrangecheck(ahb_haddr_q.asUInt, aslong(ICCM_SADR).asUInt(), ICCM_SIZE)._1
+//    ahb_addr_in_iccm_region_nc  := rvrangecheck(ahb_haddr_q.asUInt, aslong(ICCM_SADR).asUInt(), ICCM_SIZE)._2
+//  }
+//  else {
+//      ahb_addr_in_iccm := 0.U
+//      ahb_addr_in_iccm_region_nc := 0.U
+//
+//    }
+val (ahb_addr_in_pic_region_nc, ahb_addr_in_pic) = rvrangecheck(PIC_BASE_ADDR,PIC_SIZE,ahb_haddr_q)
   // PIC memory address check
-  val (ahb_addr_in_pic, ahb_addr_in_pic_region_nc) = rvrangecheck_ch(ahb_haddr_q.asUInt,aslong(PIC_BASE_ADDR).asUInt(),PIC_SIZE)
-
   // FSM to control the bus states and when to block the hready and load the command buffer
     val buf_state                = WireInit(idle)
     val buf_nxtstate             = WireInit(idle)
