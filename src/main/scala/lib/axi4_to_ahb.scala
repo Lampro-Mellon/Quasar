@@ -172,7 +172,8 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   }
   def get_nxtbyte_ptr(current_byte_ptr: UInt, byteen: UInt, get_next: Bool): UInt = {
     val start_ptr = Mux(get_next, current_byte_ptr + 1.U, current_byte_ptr)
-    MuxCase(0.U,(0 until 8).map(j => (byteen(j) & (j.asUInt() >= start_ptr)).orR -> j.U) )
+    val temp = (0 until 8).map(j => (byteen(j) & (j.asUInt() >= start_ptr)) -> j.U).reverse
+    MuxCase(7.U, temp)
   }
   wr_cmd_vld := wrbuf_vld & wrbuf_data_vld
   master_valid := wr_cmd_vld | io.axi_arvalid
@@ -301,7 +302,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
       buf_write_in := (master_opc(2, 1) === "b01".U)
       buf_wr_en := buf_state_en & ((buf_nxtstate === cmd_wr) | (buf_nxtstate === cmd_rd))
       buf_data_wr_en := buf_wr_en
-      cmd_done := (ahb_hresp_q | (ahb_hready_q & (ahb_htrans_q(1, 0) =/= "b0".U) & ((buf_cmd_byte_ptrQ === "b111".U) | (buf_byteen((get_nxtbyte_ptr(buf_cmd_byte_ptrQ(2, 0), buf_byteen(7, 0), true.B))) === "b0".U))))
+      cmd_done := (ahb_hresp_q | (ahb_hready_q & (ahb_htrans_q(1, 0) =/= "b0".U(2.W)) & ((buf_cmd_byte_ptrQ === "b111".U) | (buf_byteen((get_nxtbyte_ptr(buf_cmd_byte_ptrQ(2, 0), buf_byteen(7, 0), true.B))) === "b0".U))))
       bypass_en := buf_state_en & buf_write_in & (buf_nxtstate === cmd_wr) // Only bypass for writes for the time being
       io.ahb_htrans := Fill(2, (!(cmd_done | cmd_doneQ) | bypass_en)) & "b10".U
       slave_valid_pre := buf_state_en & (buf_nxtstate =/= done)
