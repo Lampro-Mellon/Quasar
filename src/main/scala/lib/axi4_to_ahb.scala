@@ -65,7 +65,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   val idle :: cmd_rd :: cmd_wr :: data_rd :: data_wr :: done :: stream_rd :: stream_err_rd :: Nil = Enum(8)
   val buf_state = WireInit(idle)
   val buf_nxtstate = WireInit(idle)
-  buf_state := withClock(ahbm_clk) { RegNext(Mux(buf_state_en.asBool(),buf_nxtstate,buf_state) & !buf_rst, 0.U) }
+  buf_state := withClock(ahbm_clk) { RegNext(Mux((buf_state_en & !buf_rst).asBool ,buf_nxtstate,buf_state) , 0.U) }
   //logic signals
   val slave_valid = WireInit(Bool(), init = false.B)
   val slave_ready = WireInit(Bool(), init = false.B)
@@ -173,6 +173,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
     val addr = ("h0".U(3.W) & (Fill(3, ((byteen_e(7, 0) === "hff".U) | (byteen_e(7, 0) === "h0f".U(8.W)) | (byteen_e(7, 0) === "h03".U(8.W)))))) |
       ("h2".U & (Fill(3, (byteen_e(7, 0) === "h0c".U(8.W))))) |
       ("h4".U & (Fill(3, ((byteen_e(7, 0) === "hf0".U) | (byteen_e(7, 0) === "h03".U(8.W)))))) |
+        ("h6".U & (Fill(3, (byteen_e(7, 0) === "hc0".U))))
         ("h6".U & (Fill(3, (byteen_e(7, 0) === "hc0".U))))
     addr
   }
