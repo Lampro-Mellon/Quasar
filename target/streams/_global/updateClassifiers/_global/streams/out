@@ -1,3 +1,4 @@
-[debug] "not up to date. inChanged = true, force = false
-[debug] Updating ProjectRef(uri("file:/home/waleedbinehsan/Desktop/SweRV-Chisel/"), "swerv-chisel")...
-[debug] Done updating ProjectRef(uri("file:/home/waleedbinehsan/Desktop/SweRV-Chisel/"), "swerv-chisel")
+[warn] paradise_2.12.10-2.1.0-sources.jar no longer exists at /home/waleedbinehsan/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalamacros/paradise_2.12.10/2.1.0/paradise_2.12.10-2.1.0-sources.jar
+[debug] "not up to date. inChanged = false, force = false
+[debug] Updating ProjectRef(uri("file:/home/laraibkhan/Desktop/SweRV-Chislified/"), "swerv-chislified")...
+[debug] Done updating ProjectRef(uri("file:/home/laraibkhan/Desktop/SweRV-Chislified/"), "swerv-chislified")

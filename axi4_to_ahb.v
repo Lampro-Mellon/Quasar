@@ -245,21 +245,21 @@ module axi4_to_ahb(
   wire  _T_23 = slave_valid_pre & slave_ready; // @[axi4_to_ahb.scala 206:32]
   wire  buf_clk = rvclkhdr_6_io_l1clk; // @[axi4_to_ahb.scala 156:21 axi4_to_ahb.scala 461:12]
   reg  slvbuf_write; // @[Reg.scala 27:20]
-  wire [1:0] _T_594 = slvbuf_write ? 2'h3 : 2'h0; // @[axi4_to_ahb.scala 363:23]
+  wire [1:0] _T_592 = slvbuf_write ? 2'h3 : 2'h0; // @[axi4_to_ahb.scala 363:23]
   reg  slvbuf_error; // @[Reg.scala 27:20]
-  wire [1:0] _T_596 = slvbuf_error ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
-  wire [1:0] _T_597 = _T_596 & 2'h2; // @[axi4_to_ahb.scala 363:88]
-  wire [3:0] slave_opc = {_T_594,_T_597}; // @[Cat.scala 29:58]
+  wire [1:0] _T_594 = slvbuf_error ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
+  wire [1:0] _T_595 = _T_594 & 2'h2; // @[axi4_to_ahb.scala 363:88]
+  wire [3:0] slave_opc = {_T_592,_T_595}; // @[Cat.scala 29:58]
   wire [1:0] _T_28 = slave_opc[1] ? 2'h3 : 2'h0; // @[axi4_to_ahb.scala 207:49]
   reg  slvbuf_tag; // @[Reg.scala 27:20]
   wire  _T_33 = slave_opc[3:2] == 2'h0; // @[axi4_to_ahb.scala 210:65]
   reg [31:0] last_bus_addr; // @[Reg.scala 27:20]
-  wire [63:0] _T_601 = {last_bus_addr,last_bus_addr}; // @[Cat.scala 29:58]
-  wire  _T_602 = buf_state == 3'h5; // @[axi4_to_ahb.scala 364:91]
+  wire [63:0] _T_599 = {last_bus_addr,last_bus_addr}; // @[Cat.scala 29:58]
+  wire  _T_600 = buf_state == 3'h5; // @[axi4_to_ahb.scala 364:91]
   reg [63:0] buf_data; // @[el2_lib.scala 514:16]
   wire  ahbm_data_clk = rvclkhdr_9_io_l1clk; // @[axi4_to_ahb.scala 64:27 axi4_to_ahb.scala 464:17]
   reg [63:0] ahb_hrdata_q; // @[axi4_to_ahb.scala 453:12]
-  wire [63:0] _T_605 = _T_602 ? buf_data : ahb_hrdata_q; // @[axi4_to_ahb.scala 364:79]
+  wire [63:0] _T_603 = _T_600 ? buf_data : ahb_hrdata_q; // @[axi4_to_ahb.scala 364:79]
   wire  _T_42 = io_axi_awvalid & io_axi_awready; // @[axi4_to_ahb.scala 217:56]
   wire  _T_43 = io_axi_wvalid & io_axi_wready; // @[axi4_to_ahb.scala 217:91]
   wire  _T_44 = _T_42 | _T_43; // @[axi4_to_ahb.scala 217:74]
@@ -407,72 +407,92 @@ module axi4_to_ahb(
   wire [2:0] buf_cmd_byte_ptr = _T_47 ? _T_93 : _GEN_89; // @[Conditional.scala 40:58]
   wire  slvbuf_wr_en = _T_47 ? 1'h0 : _GEN_85; // @[Conditional.scala 40:58]
   wire  slvbuf_error_en = _T_47 ? 1'h0 : _GEN_93; // @[Conditional.scala 40:58]
-  wire  _T_533 = master_size[1:0] == 2'h0; // @[axi4_to_ahb.scala 349:24]
-  wire  _T_534 = _T_101 | _T_533; // @[axi4_to_ahb.scala 348:48]
-  wire  _T_536 = master_size[1:0] == 2'h1; // @[axi4_to_ahb.scala 349:54]
-  wire  _T_537 = _T_534 | _T_536; // @[axi4_to_ahb.scala 349:33]
-  wire  _T_539 = master_size[1:0] == 2'h2; // @[axi4_to_ahb.scala 349:93]
-  wire  _T_540 = _T_537 | _T_539; // @[axi4_to_ahb.scala 349:72]
-  wire  _T_542 = master_size[1:0] == 2'h3; // @[axi4_to_ahb.scala 350:25]
-  wire  _T_544 = wrbuf_byteen == 8'h3; // @[axi4_to_ahb.scala 350:62]
-  wire  _T_546 = wrbuf_byteen == 8'hc; // @[axi4_to_ahb.scala 350:97]
-  wire  _T_547 = _T_544 | _T_546; // @[axi4_to_ahb.scala 350:74]
-  wire  _T_549 = wrbuf_byteen == 8'h30; // @[axi4_to_ahb.scala 350:132]
-  wire  _T_550 = _T_547 | _T_549; // @[axi4_to_ahb.scala 350:109]
-  wire  _T_552 = wrbuf_byteen == 8'hc0; // @[axi4_to_ahb.scala 350:168]
-  wire  _T_553 = _T_550 | _T_552; // @[axi4_to_ahb.scala 350:145]
-  wire  _T_555 = wrbuf_byteen == 8'hf; // @[axi4_to_ahb.scala 351:28]
-  wire  _T_556 = _T_553 | _T_555; // @[axi4_to_ahb.scala 350:181]
-  wire  _T_558 = wrbuf_byteen == 8'hf0; // @[axi4_to_ahb.scala 351:63]
-  wire  _T_559 = _T_556 | _T_558; // @[axi4_to_ahb.scala 351:40]
-  wire  _T_561 = wrbuf_byteen == 8'hff; // @[axi4_to_ahb.scala 351:99]
-  wire  _T_562 = _T_559 | _T_561; // @[axi4_to_ahb.scala 351:76]
-  wire  _T_563 = _T_542 & _T_562; // @[axi4_to_ahb.scala 350:38]
-  wire  buf_aligned_in = _T_540 | _T_563; // @[axi4_to_ahb.scala 349:106]
+  wire  _T_531 = master_size[1:0] == 2'h0; // @[axi4_to_ahb.scala 349:24]
+  wire  _T_532 = _T_101 | _T_531; // @[axi4_to_ahb.scala 348:48]
+  wire  _T_534 = master_size[1:0] == 2'h1; // @[axi4_to_ahb.scala 349:54]
+  wire  _T_535 = _T_532 | _T_534; // @[axi4_to_ahb.scala 349:33]
+  wire  _T_537 = master_size[1:0] == 2'h2; // @[axi4_to_ahb.scala 349:93]
+  wire  _T_538 = _T_535 | _T_537; // @[axi4_to_ahb.scala 349:72]
+  wire  _T_540 = master_size[1:0] == 2'h3; // @[axi4_to_ahb.scala 350:25]
+  wire  _T_542 = wrbuf_byteen == 8'h3; // @[axi4_to_ahb.scala 350:62]
+  wire  _T_544 = wrbuf_byteen == 8'hc; // @[axi4_to_ahb.scala 350:97]
+  wire  _T_545 = _T_542 | _T_544; // @[axi4_to_ahb.scala 350:74]
+  wire  _T_547 = wrbuf_byteen == 8'h30; // @[axi4_to_ahb.scala 350:132]
+  wire  _T_548 = _T_545 | _T_547; // @[axi4_to_ahb.scala 350:109]
+  wire  _T_550 = wrbuf_byteen == 8'hc0; // @[axi4_to_ahb.scala 350:168]
+  wire  _T_551 = _T_548 | _T_550; // @[axi4_to_ahb.scala 350:145]
+  wire  _T_553 = wrbuf_byteen == 8'hf; // @[axi4_to_ahb.scala 351:28]
+  wire  _T_554 = _T_551 | _T_553; // @[axi4_to_ahb.scala 350:181]
+  wire  _T_556 = wrbuf_byteen == 8'hf0; // @[axi4_to_ahb.scala 351:63]
+  wire  _T_557 = _T_554 | _T_556; // @[axi4_to_ahb.scala 351:40]
+  wire  _T_559 = wrbuf_byteen == 8'hff; // @[axi4_to_ahb.scala 351:99]
+  wire  _T_560 = _T_557 | _T_559; // @[axi4_to_ahb.scala 351:76]
+  wire  _T_561 = _T_540 & _T_560; // @[axi4_to_ahb.scala 350:38]
+  wire  buf_aligned_in = _T_538 | _T_561; // @[axi4_to_ahb.scala 349:106]
   wire  _T_445 = buf_aligned_in & _T_49; // @[axi4_to_ahb.scala 343:60]
-  wire [2:0] _T_482 = _T_445 ? 3'h0 : master_addr[2:0]; // @[axi4_to_ahb.scala 343:43]
-  wire  _T_486 = buf_state == 3'h3; // @[axi4_to_ahb.scala 346:33]
-  wire  _T_492 = buf_aligned_in & _T_542; // @[axi4_to_ahb.scala 347:38]
-  wire  _T_495 = _T_492 & _T_49; // @[axi4_to_ahb.scala 347:71]
-  wire [1:0] _T_529 = _T_495 ? 2'h0 : master_size[1:0]; // @[axi4_to_ahb.scala 347:21]
-  wire [31:0] _T_568 = {master_addr[31:3],buf_cmd_byte_ptr}; // @[Cat.scala 29:58]
-  wire [31:0] _T_571 = {buf_addr[31:3],buf_cmd_byte_ptr}; // @[Cat.scala 29:58]
-  wire [1:0] _T_575 = buf_aligned_in ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
-  wire [2:0] buf_size_in = {{1'd0}, _T_529}; // @[axi4_to_ahb.scala 347:15]
-  wire [1:0] _T_577 = _T_575 & buf_size_in[1:0]; // @[axi4_to_ahb.scala 354:77]
-  wire [2:0] _T_578 = {1'h0,_T_577}; // @[Cat.scala 29:58]
-  wire [1:0] _T_580 = buf_aligned ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
+  wire [2:0] _T_462 = _T_544 ? 3'h7 : 3'h0; // @[Bitwise.scala 72:12]
+  wire [2:0] _T_463 = 3'h2 & _T_462; // @[axi4_to_ahb.scala 174:15]
+  wire  _T_469 = _T_556 | _T_542; // @[axi4_to_ahb.scala 175:56]
+  wire [2:0] _T_471 = _T_469 ? 3'h7 : 3'h0; // @[Bitwise.scala 72:12]
+  wire [2:0] _T_472 = 3'h4 & _T_471; // @[axi4_to_ahb.scala 175:15]
+  wire [2:0] _T_473 = _T_463 | _T_472; // @[axi4_to_ahb.scala 174:63]
+  wire [2:0] _T_477 = _T_550 ? 3'h7 : 3'h0; // @[Bitwise.scala 72:12]
+  wire [2:0] _T_478 = 3'h6 & _T_477; // @[axi4_to_ahb.scala 176:17]
+  wire [2:0] _T_479 = _T_473 | _T_478; // @[axi4_to_ahb.scala 175:96]
+  wire [2:0] _T_481 = _T_445 ? _T_479 : master_addr[2:0]; // @[axi4_to_ahb.scala 343:43]
+  wire  _T_485 = buf_state == 3'h3; // @[axi4_to_ahb.scala 346:33]
+  wire  _T_491 = buf_aligned_in & _T_540; // @[axi4_to_ahb.scala 347:38]
+  wire  _T_494 = _T_491 & _T_49; // @[axi4_to_ahb.scala 347:71]
+  wire [1:0] _T_500 = _T_559 ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
+  wire  _T_506 = _T_556 | _T_553; // @[axi4_to_ahb.scala 167:55]
+  wire [1:0] _T_508 = _T_506 ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
+  wire [1:0] _T_509 = 2'h2 & _T_508; // @[axi4_to_ahb.scala 167:16]
+  wire [1:0] _T_510 = _T_500 | _T_509; // @[axi4_to_ahb.scala 166:64]
+  wire  _T_515 = _T_550 | _T_547; // @[axi4_to_ahb.scala 168:60]
+  wire  _T_518 = _T_515 | _T_544; // @[axi4_to_ahb.scala 168:89]
+  wire  _T_521 = _T_518 | _T_542; // @[axi4_to_ahb.scala 168:123]
+  wire [1:0] _T_523 = _T_521 ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
+  wire [1:0] _T_524 = 2'h1 & _T_523; // @[axi4_to_ahb.scala 168:21]
+  wire [1:0] _T_525 = _T_510 | _T_524; // @[axi4_to_ahb.scala 167:93]
+  wire [1:0] _T_527 = _T_494 ? _T_525 : master_size[1:0]; // @[axi4_to_ahb.scala 347:21]
+  wire [31:0] _T_566 = {master_addr[31:3],buf_cmd_byte_ptr}; // @[Cat.scala 29:58]
+  wire [31:0] _T_569 = {buf_addr[31:3],buf_cmd_byte_ptr}; // @[Cat.scala 29:58]
+  wire [1:0] _T_573 = buf_aligned_in ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
+  wire [2:0] buf_size_in = {{1'd0}, _T_527}; // @[axi4_to_ahb.scala 347:15]
+  wire [1:0] _T_575 = _T_573 & buf_size_in[1:0]; // @[axi4_to_ahb.scala 354:77]
+  wire [2:0] _T_576 = {1'h0,_T_575}; // @[Cat.scala 29:58]
+  wire [1:0] _T_578 = buf_aligned ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
   reg [1:0] buf_size; // @[Reg.scala 27:20]
-  wire [1:0] _T_582 = _T_580 & buf_size; // @[axi4_to_ahb.scala 354:134]
-  wire [2:0] _T_583 = {1'h0,_T_582}; // @[Cat.scala 29:58]
-  wire  _T_586 = ~io_axi_arprot[2]; // @[axi4_to_ahb.scala 358:33]
-  wire [1:0] _T_587 = {1'h1,_T_586}; // @[Cat.scala 29:58]
+  wire [1:0] _T_580 = _T_578 & buf_size; // @[axi4_to_ahb.scala 354:134]
+  wire [2:0] _T_581 = {1'h0,_T_580}; // @[Cat.scala 29:58]
+  wire  _T_584 = ~io_axi_arprot[2]; // @[axi4_to_ahb.scala 358:33]
+  wire [1:0] _T_585 = {1'h1,_T_584}; // @[Cat.scala 29:58]
   reg  buf_write; // @[Reg.scala 27:20]
-  wire  _T_609 = io_ahb_htrans != 2'h0; // @[axi4_to_ahb.scala 367:40]
-  wire  _T_610 = _T_609 & io_ahb_hready; // @[axi4_to_ahb.scala 367:52]
-  wire  last_addr_en = _T_610 & io_ahb_hwrite; // @[axi4_to_ahb.scala 367:68]
+  wire  _T_607 = io_ahb_htrans != 2'h0; // @[axi4_to_ahb.scala 367:40]
+  wire  _T_608 = _T_607 & io_ahb_hready; // @[axi4_to_ahb.scala 367:52]
+  wire  last_addr_en = _T_608 & io_ahb_hwrite; // @[axi4_to_ahb.scala 367:68]
   wire  wrbuf_en = _T_42 & master_ready; // @[axi4_to_ahb.scala 369:47]
   wire  wrbuf_data_en = _T_43 & master_ready; // @[axi4_to_ahb.scala 370:50]
   wire  wrbuf_cmd_sent = _T_147 & _T_49; // @[axi4_to_ahb.scala 371:49]
-  wire  _T_620 = ~wrbuf_en; // @[axi4_to_ahb.scala 372:33]
-  wire  wrbuf_rst = wrbuf_cmd_sent & _T_620; // @[axi4_to_ahb.scala 372:31]
-  wire  _T_622 = ~wrbuf_cmd_sent; // @[axi4_to_ahb.scala 374:35]
-  wire  _T_623 = wrbuf_vld & _T_622; // @[axi4_to_ahb.scala 374:33]
-  wire  _T_624 = ~_T_623; // @[axi4_to_ahb.scala 374:21]
-  wire  _T_627 = wrbuf_data_vld & _T_622; // @[axi4_to_ahb.scala 375:37]
-  wire  _T_628 = ~_T_627; // @[axi4_to_ahb.scala 375:20]
-  wire  _T_631 = ~wr_cmd_vld; // @[axi4_to_ahb.scala 376:21]
-  wire  _T_634 = wrbuf_en | wrbuf_vld; // @[axi4_to_ahb.scala 380:52]
-  wire  _T_635 = ~wrbuf_rst; // @[axi4_to_ahb.scala 380:88]
-  wire  _T_639 = wrbuf_data_en | wrbuf_data_vld; // @[axi4_to_ahb.scala 381:52]
+  wire  _T_618 = ~wrbuf_en; // @[axi4_to_ahb.scala 372:33]
+  wire  wrbuf_rst = wrbuf_cmd_sent & _T_618; // @[axi4_to_ahb.scala 372:31]
+  wire  _T_620 = ~wrbuf_cmd_sent; // @[axi4_to_ahb.scala 374:35]
+  wire  _T_621 = wrbuf_vld & _T_620; // @[axi4_to_ahb.scala 374:33]
+  wire  _T_622 = ~_T_621; // @[axi4_to_ahb.scala 374:21]
+  wire  _T_625 = wrbuf_data_vld & _T_620; // @[axi4_to_ahb.scala 375:37]
+  wire  _T_626 = ~_T_625; // @[axi4_to_ahb.scala 375:20]
+  wire  _T_629 = ~wr_cmd_vld; // @[axi4_to_ahb.scala 376:21]
+  wire  _T_632 = wrbuf_en | wrbuf_vld; // @[axi4_to_ahb.scala 380:52]
+  wire  _T_633 = ~wrbuf_rst; // @[axi4_to_ahb.scala 380:88]
+  wire  _T_637 = wrbuf_data_en | wrbuf_data_vld; // @[axi4_to_ahb.scala 381:52]
   reg  buf_tag; // @[Reg.scala 27:20]
-  wire  _T_689 = ~slave_valid_pre; // @[axi4_to_ahb.scala 432:52]
-  wire  _T_702 = buf_wr_en | slvbuf_wr_en; // @[axi4_to_ahb.scala 456:43]
-  wire  _T_703 = _T_702 | io_clk_override; // @[axi4_to_ahb.scala 456:58]
-  wire  _T_706 = io_ahb_hready & io_ahb_htrans[1]; // @[axi4_to_ahb.scala 457:54]
-  wire  _T_707 = _T_706 | io_clk_override; // @[axi4_to_ahb.scala 457:74]
-  wire  _T_709 = buf_state != 3'h0; // @[axi4_to_ahb.scala 458:50]
-  wire  _T_710 = _T_709 | io_clk_override; // @[axi4_to_ahb.scala 458:60]
+  wire  _T_687 = ~slave_valid_pre; // @[axi4_to_ahb.scala 432:52]
+  wire  _T_700 = buf_wr_en | slvbuf_wr_en; // @[axi4_to_ahb.scala 456:43]
+  wire  _T_701 = _T_700 | io_clk_override; // @[axi4_to_ahb.scala 456:58]
+  wire  _T_704 = io_ahb_hready & io_ahb_htrans[1]; // @[axi4_to_ahb.scala 457:54]
+  wire  _T_705 = _T_704 | io_clk_override; // @[axi4_to_ahb.scala 457:74]
+  wire  _T_707 = buf_state != 3'h0; // @[axi4_to_ahb.scala 458:50]
+  wire  _T_708 = _T_707 | io_clk_override; // @[axi4_to_ahb.scala 458:60]
   rvclkhdr rvclkhdr ( // @[el2_lib.scala 483:22]
     .io_l1clk(rvclkhdr_io_l1clk),
     .io_clk(rvclkhdr_io_clk),
@@ -533,22 +553,22 @@ module axi4_to_ahb(
     .io_en(rvclkhdr_9_io_en),
     .io_scan_mode(rvclkhdr_9_io_scan_mode)
   );
-  assign io_axi_awready = _T_624 & master_ready; // @[axi4_to_ahb.scala 374:18]
-  assign io_axi_wready = _T_628 & master_ready; // @[axi4_to_ahb.scala 375:17]
+  assign io_axi_awready = _T_622 & master_ready; // @[axi4_to_ahb.scala 374:18]
+  assign io_axi_wready = _T_626 & master_ready; // @[axi4_to_ahb.scala 375:17]
   assign io_axi_bvalid = _T_23 & slave_opc[3]; // @[axi4_to_ahb.scala 206:17]
   assign io_axi_bresp = slave_opc[0] ? 2'h2 : _T_28; // @[axi4_to_ahb.scala 207:16]
   assign io_axi_bid = slvbuf_tag; // @[axi4_to_ahb.scala 208:14]
-  assign io_axi_arready = _T_631 & master_ready; // @[axi4_to_ahb.scala 376:18]
+  assign io_axi_arready = _T_629 & master_ready; // @[axi4_to_ahb.scala 376:18]
   assign io_axi_rvalid = _T_23 & _T_33; // @[axi4_to_ahb.scala 210:17]
   assign io_axi_rid = slvbuf_tag; // @[axi4_to_ahb.scala 212:14]
-  assign io_axi_rdata = slvbuf_error ? _T_601 : _T_605; // @[axi4_to_ahb.scala 213:16]
+  assign io_axi_rdata = slvbuf_error ? _T_599 : _T_603; // @[axi4_to_ahb.scala 213:16]
   assign io_axi_rresp = slave_opc[0] ? 2'h2 : _T_28; // @[axi4_to_ahb.scala 211:16]
   assign io_axi_rlast = 1'h1; // @[axi4_to_ahb.scala 377:16]
-  assign io_ahb_haddr = bypass_en ? _T_568 : _T_571; // @[axi4_to_ahb.scala 353:16]
+  assign io_ahb_haddr = bypass_en ? _T_566 : _T_569; // @[axi4_to_ahb.scala 353:16]
   assign io_ahb_hburst = 3'h0; // @[axi4_to_ahb.scala 356:17]
   assign io_ahb_hmastlock = 1'h0; // @[axi4_to_ahb.scala 357:20]
-  assign io_ahb_hprot = {{2'd0}, _T_587}; // @[axi4_to_ahb.scala 358:16]
-  assign io_ahb_hsize = bypass_en ? _T_578 : _T_583; // @[axi4_to_ahb.scala 354:16]
+  assign io_ahb_hprot = {{2'd0}, _T_585}; // @[axi4_to_ahb.scala 358:16]
+  assign io_ahb_hsize = bypass_en ? _T_576 : _T_581; // @[axi4_to_ahb.scala 354:16]
   assign io_ahb_htrans = _T_47 ? _T_98 : _GEN_90; // @[axi4_to_ahb.scala 223:17 axi4_to_ahb.scala 254:21 axi4_to_ahb.scala 266:21 axi4_to_ahb.scala 281:21 axi4_to_ahb.scala 291:21 axi4_to_ahb.scala 311:21 axi4_to_ahb.scala 325:21]
   assign io_ahb_hwrite = bypass_en ? _T_49 : buf_write; // @[axi4_to_ahb.scala 359:17]
   assign io_ahb_hwdata = buf_data; // @[axi4_to_ahb.scala 360:17]
@@ -571,16 +591,16 @@ module axi4_to_ahb(
   assign rvclkhdr_5_io_en = buf_data_wr_en & io_bus_clk_en; // @[el2_lib.scala 511:17]
   assign rvclkhdr_5_io_scan_mode = io_scan_mode; // @[el2_lib.scala 512:24]
   assign rvclkhdr_6_io_clk = clock; // @[el2_lib.scala 484:17]
-  assign rvclkhdr_6_io_en = io_bus_clk_en & _T_703; // @[el2_lib.scala 485:16]
+  assign rvclkhdr_6_io_en = io_bus_clk_en & _T_701; // @[el2_lib.scala 485:16]
   assign rvclkhdr_6_io_scan_mode = io_scan_mode; // @[el2_lib.scala 486:23]
   assign rvclkhdr_7_io_clk = clock; // @[el2_lib.scala 484:17]
   assign rvclkhdr_7_io_en = io_bus_clk_en; // @[el2_lib.scala 485:16]
   assign rvclkhdr_7_io_scan_mode = io_scan_mode; // @[el2_lib.scala 486:23]
   assign rvclkhdr_8_io_clk = clock; // @[el2_lib.scala 484:17]
-  assign rvclkhdr_8_io_en = io_bus_clk_en & _T_707; // @[el2_lib.scala 485:16]
+  assign rvclkhdr_8_io_en = io_bus_clk_en & _T_705; // @[el2_lib.scala 485:16]
   assign rvclkhdr_8_io_scan_mode = io_scan_mode; // @[el2_lib.scala 486:23]
   assign rvclkhdr_9_io_clk = clock; // @[el2_lib.scala 484:17]
-  assign rvclkhdr_9_io_en = io_bus_clk_en & _T_710; // @[el2_lib.scala 485:16]
+  assign rvclkhdr_9_io_en = io_bus_clk_en & _T_708; // @[el2_lib.scala 485:16]
   assign rvclkhdr_9_io_scan_mode = io_scan_mode; // @[el2_lib.scala 486:23]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
@@ -765,14 +785,14 @@ end // initial
     if (reset) begin
       wrbuf_vld <= 1'h0;
     end else begin
-      wrbuf_vld <= _T_634 & _T_635;
+      wrbuf_vld <= _T_632 & _T_633;
     end
   end
   always @(posedge bus_clk or posedge reset) begin
     if (reset) begin
       wrbuf_data_vld <= 1'h0;
     end else begin
-      wrbuf_data_vld <= _T_639 & _T_635;
+      wrbuf_data_vld <= _T_637 & _T_633;
     end
   end
   always @(posedge ahbm_clk or posedge reset) begin
@@ -807,7 +827,7 @@ end // initial
     if (reset) begin
       cmd_doneQ <= 1'h0;
     end else begin
-      cmd_doneQ <= _T_274 & _T_689;
+      cmd_doneQ <= _T_274 & _T_687;
     end
   end
   always @(posedge bus_clk or posedge reset) begin
@@ -890,7 +910,7 @@ end // initial
   always @(posedge rvclkhdr_5_io_l1clk or posedge reset) begin
     if (reset) begin
       buf_data <= 64'h0;
-    end else if (_T_486) begin
+    end else if (_T_485) begin
       buf_data <= ahb_hrdata_q;
     end else begin
       buf_data <= wrbuf_data;
@@ -907,7 +927,7 @@ end // initial
     if (reset) begin
       buf_addr <= 32'h0;
     end else begin
-      buf_addr <= {master_addr[31:3],_T_482};
+      buf_addr <= {master_addr[31:3],_T_481};
     end
   end
   always @(posedge ahbm_clk or posedge reset) begin
