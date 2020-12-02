@@ -203,8 +203,8 @@ class ahb_to_axi4 extends Module with el2_lib with RequireAsyncReset {
         RegEnable(master_wstrb, 0.U, cmdbuf_wr_en.asBool())}
 
     //rvdffe
-    cmdbuf_addr := RegEnable(ahb_haddr_q, 0.U, cmdbuf_wr_en.asBool())
-    cmdbuf_wdata := RegEnable(io.ahb_hwdata, 0.U, cmdbuf_wr_en.asBool())
+    cmdbuf_addr := rvdffe(ahb_haddr_q, cmdbuf_wr_en.asBool(),clock,io.scan_mode)
+    cmdbuf_wdata := rvdffe(io.ahb_hwdata, cmdbuf_wr_en.asBool(),clock,io.scan_mode)
 
     // AXI Write Command Channel
     io.axi_awvalid          := cmdbuf_vld & cmdbuf_write

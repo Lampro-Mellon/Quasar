@@ -94,10 +94,18 @@ module ahb_to_axi4(
   wire  rvclkhdr_2_io_clk; // @[el2_lib.scala 483:22]
   wire  rvclkhdr_2_io_en; // @[el2_lib.scala 483:22]
   wire  rvclkhdr_2_io_scan_mode; // @[el2_lib.scala 483:22]
-  wire  rvclkhdr_3_io_l1clk; // @[el2_lib.scala 483:22]
-  wire  rvclkhdr_3_io_clk; // @[el2_lib.scala 483:22]
-  wire  rvclkhdr_3_io_en; // @[el2_lib.scala 483:22]
-  wire  rvclkhdr_3_io_scan_mode; // @[el2_lib.scala 483:22]
+  wire  rvclkhdr_3_io_l1clk; // @[el2_lib.scala 508:23]
+  wire  rvclkhdr_3_io_clk; // @[el2_lib.scala 508:23]
+  wire  rvclkhdr_3_io_en; // @[el2_lib.scala 508:23]
+  wire  rvclkhdr_3_io_scan_mode; // @[el2_lib.scala 508:23]
+  wire  rvclkhdr_4_io_l1clk; // @[el2_lib.scala 508:23]
+  wire  rvclkhdr_4_io_clk; // @[el2_lib.scala 508:23]
+  wire  rvclkhdr_4_io_en; // @[el2_lib.scala 508:23]
+  wire  rvclkhdr_4_io_scan_mode; // @[el2_lib.scala 508:23]
+  wire  rvclkhdr_5_io_l1clk; // @[el2_lib.scala 483:22]
+  wire  rvclkhdr_5_io_clk; // @[el2_lib.scala 483:22]
+  wire  rvclkhdr_5_io_en; // @[el2_lib.scala 483:22]
+  wire  rvclkhdr_5_io_scan_mode; // @[el2_lib.scala 483:22]
   wire  ahb_addr_clk = rvclkhdr_1_io_l1clk; // @[ahb_to_axi4.scala 85:35 ahb_to_axi4.scala 185:33]
   reg [31:0] ahb_haddr_q; // @[ahb_to_axi4.scala 178:67]
   wire  ahb_addr_in_dccm = ahb_haddr_q[31:16] == 16'hf004; // @[el2_lib.scala 501:39]
@@ -112,7 +120,7 @@ module ahb_to_axi4(
   wire  _T_14 = io_ahb_hresp | _T_13; // @[ahb_to_axi4.scala 131:43]
   wire  _T_15 = ~io_ahb_hsel; // @[ahb_to_axi4.scala 131:80]
   wire  _T_16 = _T_14 | _T_15; // @[ahb_to_axi4.scala 131:78]
-  wire  bus_clk = rvclkhdr_3_io_l1clk; // @[ahb_to_axi4.scala 98:35 ahb_to_axi4.scala 236:29]
+  wire  bus_clk = rvclkhdr_5_io_l1clk; // @[ahb_to_axi4.scala 98:35 ahb_to_axi4.scala 236:29]
   reg  cmdbuf_vld; // @[Reg.scala 27:20]
   wire  _T_150 = io_axi_awvalid & io_axi_awready; // @[ahb_to_axi4.scala 189:68]
   wire  _T_151 = io_axi_arvalid & io_axi_arready; // @[ahb_to_axi4.scala 189:104]
@@ -155,21 +163,21 @@ module ahb_to_axi4(
   wire  _T_52 = ahb_hsize_q == 3'h1; // @[ahb_to_axi4.scala 150:62]
   wire [7:0] _T_54 = _T_52 ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
   wire [8:0] _T_56 = 9'h3 << ahb_haddr_q[2:0]; // @[ahb_to_axi4.scala 150:80]
-  wire [8:0] _GEN_26 = {{1'd0}, _T_54}; // @[ahb_to_axi4.scala 150:72]
-  wire [8:0] _T_57 = _GEN_26 & _T_56; // @[ahb_to_axi4.scala 150:72]
-  wire [8:0] _GEN_27 = {{1'd0}, _T_50}; // @[ahb_to_axi4.scala 149:111]
-  wire [8:0] _T_58 = _GEN_27 | _T_57; // @[ahb_to_axi4.scala 149:111]
+  wire [8:0] _GEN_24 = {{1'd0}, _T_54}; // @[ahb_to_axi4.scala 150:72]
+  wire [8:0] _T_57 = _GEN_24 & _T_56; // @[ahb_to_axi4.scala 150:72]
+  wire [8:0] _GEN_25 = {{1'd0}, _T_50}; // @[ahb_to_axi4.scala 149:111]
+  wire [8:0] _T_58 = _GEN_25 | _T_57; // @[ahb_to_axi4.scala 149:111]
   wire  _T_60 = ahb_hsize_q == 3'h2; // @[ahb_to_axi4.scala 151:62]
   wire [7:0] _T_62 = _T_60 ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
   wire [10:0] _T_64 = 11'hf << ahb_haddr_q[2:0]; // @[ahb_to_axi4.scala 151:80]
-  wire [10:0] _GEN_28 = {{3'd0}, _T_62}; // @[ahb_to_axi4.scala 151:72]
-  wire [10:0] _T_65 = _GEN_28 & _T_64; // @[ahb_to_axi4.scala 151:72]
-  wire [10:0] _GEN_29 = {{2'd0}, _T_58}; // @[ahb_to_axi4.scala 150:111]
-  wire [10:0] _T_66 = _GEN_29 | _T_65; // @[ahb_to_axi4.scala 150:111]
+  wire [10:0] _GEN_26 = {{3'd0}, _T_62}; // @[ahb_to_axi4.scala 151:72]
+  wire [10:0] _T_65 = _GEN_26 & _T_64; // @[ahb_to_axi4.scala 151:72]
+  wire [10:0] _GEN_27 = {{2'd0}, _T_58}; // @[ahb_to_axi4.scala 150:111]
+  wire [10:0] _T_66 = _GEN_27 | _T_65; // @[ahb_to_axi4.scala 150:111]
   wire  _T_68 = ahb_hsize_q == 3'h3; // @[ahb_to_axi4.scala 152:62]
   wire [7:0] _T_70 = _T_68 ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  wire [10:0] _GEN_30 = {{3'd0}, _T_70}; // @[ahb_to_axi4.scala 151:111]
-  wire [10:0] _T_72 = _T_66 | _GEN_30; // @[ahb_to_axi4.scala 151:111]
+  wire [10:0] _GEN_28 = {{3'd0}, _T_70}; // @[ahb_to_axi4.scala 151:111]
+  wire [10:0] _T_72 = _T_66 | _GEN_28; // @[ahb_to_axi4.scala 151:111]
   reg  ahb_hready_q; // @[ahb_to_axi4.scala 174:62]
   wire  _T_73 = ~ahb_hready_q; // @[ahb_to_axi4.scala 155:68]
   reg  ahb_hresp_q; // @[ahb_to_axi4.scala 173:62]
@@ -217,8 +225,8 @@ module ahb_to_axi4(
   reg [2:0] _T_161; // @[Reg.scala 27:20]
   reg [7:0] cmdbuf_wstrb; // @[Reg.scala 27:20]
   wire [7:0] master_wstrb = _T_72[7:0]; // @[ahb_to_axi4.scala 149:33]
-  reg [31:0] cmdbuf_addr; // @[Reg.scala 27:20]
-  reg [63:0] cmdbuf_wdata; // @[Reg.scala 27:20]
+  reg [31:0] cmdbuf_addr; // @[el2_lib.scala 514:16]
+  reg [63:0] cmdbuf_wdata; // @[el2_lib.scala 514:16]
   wire [1:0] cmdbuf_size = _T_161[1:0]; // @[ahb_to_axi4.scala 199:33]
   rvclkhdr rvclkhdr ( // @[el2_lib.scala 483:22]
     .io_l1clk(rvclkhdr_io_l1clk),
@@ -238,11 +246,23 @@ module ahb_to_axi4(
     .io_en(rvclkhdr_2_io_en),
     .io_scan_mode(rvclkhdr_2_io_scan_mode)
   );
-  rvclkhdr rvclkhdr_3 ( // @[el2_lib.scala 483:22]
+  rvclkhdr rvclkhdr_3 ( // @[el2_lib.scala 508:23]
     .io_l1clk(rvclkhdr_3_io_l1clk),
     .io_clk(rvclkhdr_3_io_clk),
     .io_en(rvclkhdr_3_io_en),
     .io_scan_mode(rvclkhdr_3_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_4 ( // @[el2_lib.scala 508:23]
+    .io_l1clk(rvclkhdr_4_io_l1clk),
+    .io_clk(rvclkhdr_4_io_clk),
+    .io_en(rvclkhdr_4_io_en),
+    .io_scan_mode(rvclkhdr_4_io_scan_mode)
+  );
+  rvclkhdr rvclkhdr_5 ( // @[el2_lib.scala 483:22]
+    .io_l1clk(rvclkhdr_5_io_l1clk),
+    .io_clk(rvclkhdr_5_io_clk),
+    .io_en(rvclkhdr_5_io_en),
+    .io_scan_mode(rvclkhdr_5_io_scan_mode)
   );
   assign io_axi_awvalid = cmdbuf_vld & cmdbuf_write; // @[ahb_to_axi4.scala 210:29]
   assign io_axi_awaddr = cmdbuf_addr; // @[ahb_to_axi4.scala 212:29]
@@ -274,9 +294,15 @@ module ahb_to_axi4(
   assign rvclkhdr_2_io_clk = clock; // @[el2_lib.scala 484:17]
   assign rvclkhdr_2_io_en = io_bus_clk_en & buf_rdata_en; // @[el2_lib.scala 485:16]
   assign rvclkhdr_2_io_scan_mode = io_scan_mode; // @[el2_lib.scala 486:23]
-  assign rvclkhdr_3_io_clk = clock; // @[el2_lib.scala 484:17]
-  assign rvclkhdr_3_io_en = io_bus_clk_en; // @[el2_lib.scala 485:16]
-  assign rvclkhdr_3_io_scan_mode = io_scan_mode; // @[el2_lib.scala 486:23]
+  assign rvclkhdr_3_io_clk = clock; // @[el2_lib.scala 510:18]
+  assign rvclkhdr_3_io_en = _T_6 ? 1'h0 : _GEN_11; // @[el2_lib.scala 511:17]
+  assign rvclkhdr_3_io_scan_mode = io_scan_mode; // @[el2_lib.scala 512:24]
+  assign rvclkhdr_4_io_clk = clock; // @[el2_lib.scala 510:18]
+  assign rvclkhdr_4_io_en = _T_6 ? 1'h0 : _GEN_11; // @[el2_lib.scala 511:17]
+  assign rvclkhdr_4_io_scan_mode = io_scan_mode; // @[el2_lib.scala 512:24]
+  assign rvclkhdr_5_io_clk = clock; // @[el2_lib.scala 484:17]
+  assign rvclkhdr_5_io_en = io_bus_clk_en; // @[el2_lib.scala 485:16]
+  assign rvclkhdr_5_io_scan_mode = io_scan_mode; // @[el2_lib.scala 486:23]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -513,17 +539,17 @@ end // initial
       cmdbuf_wstrb <= master_wstrb;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge rvclkhdr_3_io_l1clk or posedge reset) begin
     if (reset) begin
       cmdbuf_addr <= 32'h0;
-    end else if (cmdbuf_wr_en) begin
+    end else begin
       cmdbuf_addr <= ahb_haddr_q;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge rvclkhdr_4_io_l1clk or posedge reset) begin
     if (reset) begin
       cmdbuf_wdata <= 64'h0;
-    end else if (cmdbuf_wr_en) begin
+    end else begin
       cmdbuf_wdata <= io_ahb_hwdata;
     end
   end

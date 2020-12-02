@@ -96,6 +96,54 @@ circuit ahb_to_axi4 :
     clkhdr.EN <= io.en @[el2_lib.scala 477:18]
     clkhdr.SE <= io.scan_mode @[el2_lib.scala 478:18]
     
+  extmodule gated_latch_4 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = gated_latch
+    
+    
+  module rvclkhdr_4 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of gated_latch_4 @[el2_lib.scala 474:26]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[el2_lib.scala 475:14]
+    clkhdr.CK <= io.clk @[el2_lib.scala 476:18]
+    clkhdr.EN <= io.en @[el2_lib.scala 477:18]
+    clkhdr.SE <= io.scan_mode @[el2_lib.scala 478:18]
+    
+  extmodule gated_latch_5 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = gated_latch
+    
+    
+  module rvclkhdr_5 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of gated_latch_5 @[el2_lib.scala 474:26]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[el2_lib.scala 475:14]
+    clkhdr.CK <= io.clk @[el2_lib.scala 476:18]
+    clkhdr.EN <= io.en @[el2_lib.scala 477:18]
+    clkhdr.SE <= io.scan_mode @[el2_lib.scala 478:18]
+    
   module ahb_to_axi4 : 
     input clock : Clock
     input reset : AsyncReset
@@ -432,17 +480,25 @@ circuit ahb_to_axi4 :
       _T_163 <= master_wstrb @[Reg.scala 28:23]
       skip @[Reg.scala 28:19]
     cmdbuf_wstrb <= _T_163 @[ahb_to_axi4.scala 202:33]
-    node _T_164 = bits(cmdbuf_wr_en, 0, 0) @[ahb_to_axi4.scala 206:67]
-    reg _T_165 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_164 : @[Reg.scala 28:19]
-      _T_165 <= ahb_haddr_q @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    node _T_164 = bits(cmdbuf_wr_en, 0, 0) @[ahb_to_axi4.scala 206:59]
+    inst rvclkhdr_3 of rvclkhdr_3 @[el2_lib.scala 508:23]
+    rvclkhdr_3.clock <= clock
+    rvclkhdr_3.reset <= reset
+    rvclkhdr_3.io.clk <= clock @[el2_lib.scala 510:18]
+    rvclkhdr_3.io.en <= _T_164 @[el2_lib.scala 511:17]
+    rvclkhdr_3.io.scan_mode <= io.scan_mode @[el2_lib.scala 512:24]
+    reg _T_165 : UInt, rvclkhdr_3.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_lib.scala 514:16]
+    _T_165 <= ahb_haddr_q @[el2_lib.scala 514:16]
     cmdbuf_addr <= _T_165 @[ahb_to_axi4.scala 206:17]
-    node _T_166 = bits(cmdbuf_wr_en, 0, 0) @[ahb_to_axi4.scala 207:70]
-    reg _T_167 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when _T_166 : @[Reg.scala 28:19]
-      _T_167 <= io.ahb_hwdata @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    node _T_166 = bits(cmdbuf_wr_en, 0, 0) @[ahb_to_axi4.scala 207:62]
+    inst rvclkhdr_4 of rvclkhdr_4 @[el2_lib.scala 508:23]
+    rvclkhdr_4.clock <= clock
+    rvclkhdr_4.reset <= reset
+    rvclkhdr_4.io.clk <= clock @[el2_lib.scala 510:18]
+    rvclkhdr_4.io.en <= _T_166 @[el2_lib.scala 511:17]
+    rvclkhdr_4.io.scan_mode <= io.scan_mode @[el2_lib.scala 512:24]
+    reg _T_167 : UInt, rvclkhdr_4.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[el2_lib.scala 514:16]
+    _T_167 <= io.ahb_hwdata @[el2_lib.scala 514:16]
     cmdbuf_wdata <= _T_167 @[ahb_to_axi4.scala 207:18]
     node _T_168 = and(cmdbuf_vld, cmdbuf_write) @[ahb_to_axi4.scala 210:43]
     io.axi_awvalid <= _T_168 @[ahb_to_axi4.scala 210:29]
@@ -476,11 +532,11 @@ circuit ahb_to_axi4 :
     io.axi_arlen <= _T_179 @[ahb_to_axi4.scala 230:29]
     io.axi_arburst <= UInt<1>("h01") @[ahb_to_axi4.scala 231:29]
     io.axi_rready <= UInt<1>("h01") @[ahb_to_axi4.scala 233:29]
-    inst rvclkhdr_3 of rvclkhdr_3 @[el2_lib.scala 483:22]
-    rvclkhdr_3.clock <= clock
-    rvclkhdr_3.reset <= reset
-    rvclkhdr_3.io.clk <= clock @[el2_lib.scala 484:17]
-    rvclkhdr_3.io.en <= io.bus_clk_en @[el2_lib.scala 485:16]
-    rvclkhdr_3.io.scan_mode <= io.scan_mode @[el2_lib.scala 486:23]
-    bus_clk <= rvclkhdr_3.io.l1clk @[ahb_to_axi4.scala 236:29]
+    inst rvclkhdr_5 of rvclkhdr_5 @[el2_lib.scala 483:22]
+    rvclkhdr_5.clock <= clock
+    rvclkhdr_5.reset <= reset
+    rvclkhdr_5.io.clk <= clock @[el2_lib.scala 484:17]
+    rvclkhdr_5.io.en <= io.bus_clk_en @[el2_lib.scala 485:16]
+    rvclkhdr_5.io.scan_mode <= io.scan_mode @[el2_lib.scala 486:23]
+    bus_clk <= rvclkhdr_5.io.l1clk @[ahb_to_axi4.scala 236:29]
     
