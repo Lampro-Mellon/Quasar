@@ -1,10 +1,10 @@
-# Quasar RISC-V Core from LAMPRO MELLON
+# Quasar RISC-V Core from Lampro Mellon
 
 This repository contains the Quasar Core design in CHISEL.
 
 ## Background
 
-Quasar is Chiselified version of EL2 SweRV RISC-V Core.
+Quasar is a Chiselified version of EL2 SweRV RISC-V Core.
 
 ## Directory Structure
 
@@ -44,7 +44,7 @@ Quasar is Chiselified version of EL2 SweRV RISC-V Core.
 
 ## Dependencies
 
-- Verilator **(4.020 or later)** must be installed on the system if running with verilator
+- Verilator **(4.020 or later)** must be installed on the system if running with verilator.
 - RISCV tool chain (based on gcc version 7.3 or higher) must be
 installed so that it can be used to prepare RISCV binaries to run.
 - Sbt **(1.3.13 or later)** must be installed on the system.
