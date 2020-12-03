@@ -172,8 +172,8 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   }
   def get_nxtbyte_ptr(current_byte_ptr: UInt, byteen: UInt, get_next: Bool): UInt = {
     val start_ptr = Mux(get_next, current_byte_ptr + 1.U, current_byte_ptr)
-    val temp = (0 until 8).map(j => (byteen(j) & (j.asUInt() >= start_ptr)).orR -> j.U).reverse
-    MuxCase(7.U, temp)
+    val temp = (0 until 8).map(j => (byteen(j) & (j.asUInt() >= start_ptr)) -> j.U).reverse
+    MuxCase(8.U, temp)
   }
   wr_cmd_vld := wrbuf_vld & wrbuf_data_vld
   master_valid := wr_cmd_vld | io.axi_arvalid
@@ -296,19 +296,19 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
     is(data_wr) {
       buf_state_en := (cmd_doneQ & ahb_hready_q) | ahb_hresp_q
       master_ready := ((cmd_doneQ & ahb_hready_q) | ahb_hresp_q) & !ahb_hresp_q & slave_ready
-      buf_nxtstate := Mux((ahb_hresp_q | !slave_ready).asBool(), done, Mux((master_valid & master_ready).asBool(), Mux((master_opc(2, 1) === "b01".U), cmd_wr, cmd_rd), idle))
+      buf_nxtstate := Mux((ahb_hresp_q | !slave_ready).asBool(), done, Mux((master_valid & master_ready).asBool(), Mux((master_opc(2, 1) === "b01".U(2.W)), cmd_wr, cmd_rd), idle))
       slvbuf_error_in := ahb_hresp_q
       slvbuf_error_en := buf_state_en
       buf_write_in := (master_opc(2, 1) === "b01".U)
       buf_wr_en := buf_state_en & ((buf_nxtstate === cmd_wr) | (buf_nxtstate === cmd_rd))
       buf_data_wr_en := buf_wr_en
-      cmd_done := (ahb_hresp_q | (ahb_hready_q & (ahb_htrans_q(1, 0) =/= "b0".U(2.W)) & ((buf_cmd_byte_ptrQ === "b111".U) | (buf_byteen((get_nxtbyte_ptr(buf_cmd_byte_ptrQ(2, 0), buf_byteen(7, 0), true.B))) === "b0".U))))
+      cmd_done := (ahb_hresp_q | (ahb_hready_q & (ahb_htrans_q(1, 0) =/= "b0".U(2.W)) & ((buf_cmd_byte_ptrQ === "b111".U) | (buf_byteen(get_nxtbyte_ptr(buf_cmd_byte_ptrQ(2, 0), buf_byteen(7, 0), true.B)) === "b0".U))))
       bypass_en := buf_state_en & buf_write_in & (buf_nxtstate === cmd_wr) // Only bypass for writes for the time being
       io.ahb_htrans := Fill(2, (!(cmd_done | cmd_doneQ) | bypass_en)) & "b10".U
       slave_valid_pre := buf_state_en & (buf_nxtstate =/= done)
-      trxn_done := ahb_hready_q & ahb_hwrite_q & (ahb_htrans_q(1, 0) =/= "b0".U)
+      trxn_done := ahb_hready_q & ahb_hwrite_q & (ahb_htrans_q(1, 0) =/= "b0".U(2.W))
       buf_cmd_byte_ptr_en := trxn_done | bypass_en
-      buf_cmd_byte_ptr := Mux(bypass_en, get_nxtbyte_ptr(0.U, buf_byteen_in(7, 0), false.B), Mux(trxn_done, get_nxtbyte_ptr(buf_cmd_byte_ptrQ(2, 0), buf_byteen(7, 0), true.B), buf_cmd_byte_ptrQ))
+      buf_cmd_byte_ptr := Mux(bypass_en, get_nxtbyte_ptr(0.U(3.W), buf_byteen_in(7, 0), false.B), Mux(trxn_done, get_nxtbyte_ptr(buf_cmd_byte_ptrQ(2, 0), buf_byteen(7, 0), true.B), buf_cmd_byte_ptrQ))
 
     }
     is(done) {
