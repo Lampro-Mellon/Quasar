@@ -54,7 +54,7 @@ installed so that it can be used to prepare RISCV binaries to run.
 1. Clone the repository
 2. Setup RV_ROOT to point to the path in your local filesystem
 3. Determine your configuration {optional}
-4. Run make with tools/Makefile
+4. Run make with Makefile
 
 ## Release Notes for this version
 Please see [release notes](release-notes.md) for changes and bug fixes in this version of Quasar.
@@ -80,7 +80,7 @@ This script derives the following consistent set of include files :
 
     $RV_ROOT/configs/snapshots/default
     ├── common_defines.vh                       # `defines for testbench or design
-    ├── defines.h                               # #defines for C/assembly headers
+    ├── defines.h                               # defines for C/assembly headers
     ├── eh2_param.vh                            # Design parameters
     ├── eh2_pdef.vh                             # Parameter structure
     ├── pd_defines.vh                           # `defines for physical design
@@ -92,46 +92,78 @@ This script derives the following consistent set of include files :
 
 while in a work directory:
 
-1. Set the RV_ROOT environment variable to the root of the SweRV directory structure.
+##### 1. Set the RV_ROOT environment variable to the root of the Quasar directory structure.
+
 Example for bash shell:  
-    `export RV_ROOT=/path/to/swerv`  
+    `export RV_ROOT=/path/to/quasar`  
 Example for csh or its derivatives:  
-    `setenv RV_ROOT /path/to/swerv
+    `setenv RV_ROOT /path/to/quasar`
     
-2. Create your specific configuration    
+##### 2. Create your specific configuration
 
-Enter here
+ *(Skip if default is sufficient)*  
+*(Name your snapshot to distinguish it from the default. Without an explicit name, it will update/override the __default__ snapshot)*. For example, if `mybuild` is the name for the snapshot:
 
-3. Running a simple Hello World program (verilator)
+set BUILD_PATH environment variable:
 
-Enter here
+`setenv BUILD_PATH snapshots/mybuild`
+
+`$RV_ROOT/configs/swerv.config [configuration options..] -snapshot=mybuild`
+
+Snapshots are placed in `$BUILD_PATH` directory
+
+##### 3. Running a simple Hello World program (verilator)
+
+`make -f $RV_ROOT/Makefile`
+
+This command will build a verilator model of Quasar with AXI bus, and
+execute a short sequence of instructions that writes out "HELLO WORLD"
+to the bus.
 
 The simulation produces output on the screen like:
 
-Enter here
+`***********************************************************************`
+
 
 The simulation generates following files:
 
-Enter here
+ `console.log` contains what the cpu writes to the console address of 0xd0580000.  
+ `exec.log` shows instruction trace with GPR updates.  
+ `trace_port.csv` contains a log of the trace port.  
+ When `debug=1` is provided, a vcd file `sim.vcd` is created and can be browsed by gtkwave or similar waveform viewers.
 
-You can re-execute simulation using: 
-
-Enter here
+You can re-execute simulation using:  
+    `make -f $RV_ROOT/Makefile verilator`
 
 The simulation run/build command has following generic form:
 
-Enter here
+    make -f $RV_ROOT/tools/Makefile [<simulator>] [debug=1] [snapshot=mybuild] [target=<target>] [TEST=<test>] [TEST_DIR=<path_to_test_dir>]
 
-where,
+where:
+``` 
+<simulator> -  can be 'verilator' (by default) 'irun' - Cadence xrun, 'vcs' - Synopsys VCS, 'vlog' Mentor Questa
+               'riviera'- Aldec Riviera-PRO. if not provided, 'make' cleans work directory, builds verilator executable and runs a test.
+debug=1     -  allows VCD generation for verilator and VCS and SHM waves for irun option.
+<target>    -  predefined CPU configurations 'default' ( by default), 'default_ahb', 'typical_pd', 'high_perf' 
+TEST        -  allows to run a C (<test>.c) or assembly (<test>.s) test, hello_world is run by default 
+TEST_DIR    -  alternative to test source directory testbench/asm or testbench/tests
+<snapshot>  -  run and build executable model of custom CPU configuration, remember to provide 'snapshot' argument 
+               for runs on custom configurations.
+CONF_PARAMS -  allows to provide -set options to swerv.conf script to alter predefined EL2 targets parameters
+```
+Example:
 
-Enter here
+    make -f $RV_ROOT/Makefile verilator TEST=cmark
+
+will build and simulate  testbench/asm/cmark.c program with verilator 
+
 
 If you want to compile a test only, you can run:
 
-Enter here
+    make -f $RV_ROOT/Makefile program.hex TEST=<test> [TEST_DIR=/path/to/dir]
 
 
-The  `*************************` directory contains following tests ready to simulate:
+The `$RV_ROOT/testbench/asm` directory contains following tests ready to simulate:
 ```
 hello_world      - default tes to run, prints Hello World message to screen and console.log
 hello_world_dccm  - the same as above, but takes the string from preloaded DCCM.
@@ -141,4 +173,9 @@ cmark             - coremark benchmark running with code and data in external me
 cmark_dccm        - the same as above, running data and stack from DCCM (faster)
 cmark_iccm        - the same as above with preloaded code to ICCM. 
 ```
+
+The `$RV_ROOT/testbench/hex` directory contains precompiled hex files of the tests, ready for simulation in case RISCV SW tools are not installed.
+
+**Note**: The testbench has a simple synthesizable bridge that allows you to load the ICCM via load/store instructions. This is only supported for AXI4 builds.
+
 
