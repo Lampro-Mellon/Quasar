@@ -31,7 +31,7 @@ Quasar is a Chiselified version of EL2 SweRV RISC-V Core.
     │   └── test                              
     │       └── scala                         
     │           └── lib                       
-    ├── Docs                                #  spec. document
+    ├── Docs                                #  Spec. document
     ├── rtl                                 #  Chisel generated verilog
     │   ├── *****                           #      
     │   └── *****                           #
@@ -44,7 +44,7 @@ Quasar is a Chiselified version of EL2 SweRV RISC-V Core.
 
 ## Dependencies
 
-- Verilator **(4.020 or later)** must be installed on the system if running with verilator.
+- Verilator **(4.030 or later)** must be installed on the system if running with verilator.
 - RISCV tool chain (based on gcc version 7.3 or higher) must be
 installed so that it can be used to prepare RISCV binaries to run.
 - Sbt **(1.3.13 or later)** must be installed on the system.
@@ -61,7 +61,32 @@ Please see [release notes](release-notes.md) for changes and bug fixes in this v
 
 ### Configurations
 
-This script derives the following consistent set of include files :
+Quasar can be configured by running the `****************************` script:
+
+`% ****************************` for detailed help options
+
+For example to build with a DCCM of size 64 Kb:  
+
+`% *******************************`  
+
+This will update the **default** snapshot in $RV_ROOT/configs/snapshots/default/ with parameters for a 64K DCCM.  
+
+Add `-snapshot=dccm64`, for example, if you wish to name your build snapshot *dccm64* and refer to it during the build.  
+
+There are 4 predefined target configurations: `default`, `default_mt`, `typical_pd` and `high_perf` that can be selected via 
+the `-target=name` option to swerv.config.
+
+This script derives the following consistent set of include files :  
+
+    $RV_ROOT/configs/snapshots/default
+    ├── common_defines.vh                       # `defines for testbench or design
+    ├── defines.h                               # #defines for C/assembly headers
+    ├── eh2_param.vh                            # Design parameters
+    ├── eh2_pdef.vh                             # Parameter structure
+    ├── pd_defines.vh                           # `defines for physical design
+    ├── perl_configs.pl                         # Perl %configs hash for scripting
+    ├── pic_map_auto.h                          # PIC memory map based on configure size
+    └── whisper.json                            # JSON file for swerv-iss
 
 ### Building a model
 
@@ -106,7 +131,7 @@ If you want to compile a test only, you can run:
 Enter here
 
 
-The  `$RV_ROOT/testbench/asm` directory contains following tests ready to simulate:
+The  `*************************` directory contains following tests ready to simulate:
 ```
 hello_world      - default tes to run, prints Hello World message to screen and console.log
 hello_world_dccm  - the same as above, but takes the string from preloaded DCCM.
@@ -116,9 +141,4 @@ cmark             - coremark benchmark running with code and data in external me
 cmark_dccm        - the same as above, running data and stack from DCCM (faster)
 cmark_iccm        - the same as above with preloaded code to ICCM. 
 ```
-
-
-
-
-**Building an FPGA speed optimized model:**  
 
