@@ -12,27 +12,28 @@ Enter here
     │   ├── project                         #        
     │   └── target                          #   
     ├── src
-    │   ├── main                            #
-    │       ├── resource                    #
-    │           └── vsrc                    #
-    │       └── scala                       #
-    │           ├── dbg                     #
-    │           ├── dec                     #               
-    │           ├── dmi                     #   
-    │           ├── exu                     #
-    │           ├── ifu                     #   
-    │           ├── include                 #   
-    │           ├── lib                     #   
-    │           ├── lsu                     #       
-    │           ├── snapshot                #   
+    │   ├── main                            
+    │       ├── resource                    
+    │           └── vsrc                    #  Blackbox files
+    │       └── scala                       #  Design root dir
+    │           ├── dbg                     #  Debugger
+    │           ├── dec                     #  Decode, Registers and Exceptions 
+    │           ├── dmi                     #  DMI block
+    │           ├── exu                     #  EXU (ALU/MUL/DIV)
+    │           ├── ifu                     #  Fetch & Branch Prediction
+    │           ├── include                 #  Bundles file
+    │           ├── lib                     #  Bridges and Libraries 
+    │           ├── lsu                     #  Load/Store    
+    │           ├── snapshot                #  Configurations Dir
     │           ├── el2_dma_ctrl.scala      #   
     │           ├── el2_pic_ctl.scala       # 
     │           └── el2_swerv.scala         #       
     │   └── test                            #   
     │       └── scala                       #   
     │           └── lib                     #   
-    ├── rtl                                 #
-    │   ├── *****                           #   
+    ├── Docs                                #  Spec. Document
+    ├── rtl                                 #  Chisel generated verilog
+    │   ├── *****                           #      
     │   └── *****                           #
     ├── target                              #
     │   ├── scala-2.12                      #
