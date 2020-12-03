@@ -172,7 +172,7 @@ class axi4_to_ahb extends Module with el2_lib with RequireAsyncReset with Config
   }
   def get_nxtbyte_ptr(current_byte_ptr: UInt, byteen: UInt, get_next: Bool): UInt = {
     val start_ptr = Mux(get_next, current_byte_ptr + 1.U, current_byte_ptr)
-    val temp = (0 until 8).map(j => (byteen(j) & (j.asUInt() >= start_ptr)) -> j.U).reverse
+    val temp = (0 until 8).map(j => (byteen(j) & (j.asUInt() >= start_ptr)).orR -> j.U).reverse
     MuxCase(7.U, temp)
   }
   wr_cmd_vld := wrbuf_vld & wrbuf_data_vld
