@@ -8,42 +8,45 @@ Enter here
 
 ## Directory Structure
 
-    ├── .idea                               #
-    │   ├── codeStyles                      #   
-    │   ├── libraries                       #       
-    │   └── modules                         #
     ├── project                             # 
-    │   ├── project/target/config-classes   #   
-    │   └── target                          #   
+    │   ├── project                         #        
+    │   └── target                          #   
     ├── src
-    │   ├── main                            #
-    │       ├── resource/vsrc               #
-    │       └── scala                       #
-    │           ├── dbg                     #
-    │           ├── dec                     #   
-    │           ├── dmi                     #   
-    │           ├── exu                     #
-    │           ├── ifu                     #   
-    │           ├── include                 #   
-    │           ├── lib                     #   
-    │           ├── lsu                     #       
-    │           ├── snapshot                #   
-    │           ├── el2_dma_ctrl.scala      #   
-    │           ├── el2_pic_ctl.scala       # 
-    │           └── el2_swerv.scala         #       
-    │   └── test/scala/lib                  #     
+    │   ├── main                            #
+    │       ├── resource                    #
+    │           └── vsrc                    #
+    │       └── scala                       #
+    │           ├── dbg                     #
+    │           ├── dec                     #               
+    │           ├── dmi                     #   
+    │           ├── exu                     #
+    │           ├── ifu                     #   
+    │           ├── include                 #   
+    │           ├── lib                     #   
+    │           ├── lsu                     #       
+    │           ├── snapshot                #   
+    │           ├── el2_dma_ctrl.scala      #   
+    │           ├── el2_pic_ctl.scala       # 
+    │           └── el2_swerv.scala         #       
+    │   └── test                            #   
+    │       └── scala                       #   
+    │           └── lib                     #   
+    ├── rtl                                 #
+    │   ├── *****                           #   
+    │   └── *****                           #
     ├── target                              #
-        ├── scala-2.12                      #
-        └── streams                         #    
-    └── test_run_dir                        #
+    │   ├── scala-2.12                      #
+    │   └── streams                         #    
+    ├── test_run_dir                        #
+    └── build.sbt                           #  Scala-based DSL  
 
 
 ## Dependencies
 
 - Verilator **(4.020 or later)** must be installed on the system if running with verilator
-- If adding/removing instructions, espresso must be installed (used by *tools/coredecode*)
 - RISCV tool chain (based on gcc version 7.3 or higher) must be
 installed so that it can be used to prepare RISCV binaries to run.
+- Sbt **(1.3.13 or later)** must be installed on the system.
 
 ## Quickstart guide
 
