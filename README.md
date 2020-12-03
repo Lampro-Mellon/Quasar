@@ -1,16 +1,16 @@
-# EL2 SweRV RISC-V Core Chiselified Version from LAMPRO MELLON
+# Quasar RISC-V Core from LAMPRO MELLON
 
-This repository contains the SweRV-EL2 Core design in CHISEL
+This repository contains the Quasar Core design in CHISEL.
 
 ## Background
 
-Enter here
+Quasar is Chiselified version of EL2 SweRV RISC-V Core.
 
 ## Directory Structure
 
-    ├── project                             # 
-    │   ├── project                         #        
-    │   └── target                          #   
+    ├── project                             
+    │   ├── project                                
+    │   └── target                            
     ├── src
     │   ├── main                            
     │       ├── resource                    
@@ -28,17 +28,17 @@ Enter here
     │           ├── el2_dma_ctrl.scala      #   
     │           ├── el2_pic_ctl.scala       # 
     │           └── el2_swerv.scala         #       
-    │   └── test                            #   
-    │       └── scala                       #   
-    │           └── lib                     #   
-    ├── Docs                                #  Spec. Document
+    │   └── test                              
+    │       └── scala                         
+    │           └── lib                       
+    ├── Docs                                #  spec. document
     ├── rtl                                 #  Chisel generated verilog
     │   ├── *****                           #      
     │   └── *****                           #
-    ├── target                              #
-    │   ├── scala-2.12                      #
-    │   └── streams                         #    
-    ├── test_run_dir                        #
+    ├── target                              
+    │   ├── scala-2.12                      
+    │   └── streams                            
+    ├── test_run_dir                        
     └── build.sbt                           #  Scala-based DSL  
 
 
@@ -55,6 +55,9 @@ installed so that it can be used to prepare RISCV binaries to run.
 2. Setup RV_ROOT to point to the path in your local filesystem
 3. Determine your configuration {optional}
 4. Run make with tools/Makefile
+
+## Release Notes for this version
+Please see [release notes](release-notes.md) for changes and bug fixes in this version of Quasar.
 
 ### Configurations
 
