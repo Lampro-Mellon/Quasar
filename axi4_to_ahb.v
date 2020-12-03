@@ -263,15 +263,14 @@ module axi4_to_ahb(
   wire  _T_46 = _T_44 | _T_45; // @[axi4_to_ahb.scala 199:74]
   wire  _T_55 = buf_nxtstate == 3'h2; // @[axi4_to_ahb.scala 230:54]
   wire  _T_56 = buf_state_en & _T_55; // @[axi4_to_ahb.scala 230:38]
-  wire [3:0] _T_86 = wrbuf_byteen[0] ? 4'h0 : 4'h8; // @[Mux.scala 98:16]
-  wire [3:0] _T_87 = wrbuf_byteen[1] ? 4'h1 : _T_86; // @[Mux.scala 98:16]
-  wire [3:0] _T_88 = wrbuf_byteen[2] ? 4'h2 : _T_87; // @[Mux.scala 98:16]
-  wire [3:0] _T_89 = wrbuf_byteen[3] ? 4'h3 : _T_88; // @[Mux.scala 98:16]
-  wire [3:0] _T_90 = wrbuf_byteen[4] ? 4'h4 : _T_89; // @[Mux.scala 98:16]
-  wire [3:0] _T_91 = wrbuf_byteen[5] ? 4'h5 : _T_90; // @[Mux.scala 98:16]
-  wire [3:0] _T_92 = wrbuf_byteen[6] ? 4'h6 : _T_91; // @[Mux.scala 98:16]
-  wire [3:0] _T_93 = wrbuf_byteen[7] ? 4'h7 : _T_92; // @[Mux.scala 98:16]
-  wire [3:0] _T_95 = buf_write_in ? _T_93 : {{1'd0}, master_addr[2:0]}; // @[axi4_to_ahb.scala 233:30]
+  wire [2:0] _T_87 = wrbuf_byteen[6] ? 3'h6 : 3'h7; // @[Mux.scala 98:16]
+  wire [2:0] _T_88 = wrbuf_byteen[5] ? 3'h5 : _T_87; // @[Mux.scala 98:16]
+  wire [2:0] _T_89 = wrbuf_byteen[4] ? 3'h4 : _T_88; // @[Mux.scala 98:16]
+  wire [2:0] _T_90 = wrbuf_byteen[3] ? 3'h3 : _T_89; // @[Mux.scala 98:16]
+  wire [2:0] _T_91 = wrbuf_byteen[2] ? 3'h2 : _T_90; // @[Mux.scala 98:16]
+  wire [2:0] _T_92 = wrbuf_byteen[1] ? 3'h1 : _T_91; // @[Mux.scala 98:16]
+  wire [2:0] _T_93 = wrbuf_byteen[0] ? 3'h0 : _T_92; // @[Mux.scala 98:16]
+  wire [2:0] _T_95 = buf_write_in ? _T_93 : master_addr[2:0]; // @[axi4_to_ahb.scala 233:30]
   wire  _T_96 = buf_nxtstate == 3'h1; // @[axi4_to_ahb.scala 235:51]
   wire  _T_126 = master_ready & master_valid; // @[axi4_to_ahb.scala 246:33]
   wire  _T_162 = buf_nxtstate == 3'h6; // @[axi4_to_ahb.scala 261:64]
@@ -320,15 +319,14 @@ module axi4_to_ahb(
   wire  _T_216 = buf_byteen[5] & _T_215; // @[axi4_to_ahb.scala 175:48]
   wire  _T_218 = 3'h6 >= _T_197; // @[axi4_to_ahb.scala 175:62]
   wire  _T_219 = buf_byteen[6] & _T_218; // @[axi4_to_ahb.scala 175:48]
-  wire [3:0] _T_223 = _T_201 ? 4'h0 : 4'h8; // @[Mux.scala 98:16]
-  wire [3:0] _T_224 = _T_204 ? 4'h1 : _T_223; // @[Mux.scala 98:16]
-  wire [3:0] _T_225 = _T_207 ? 4'h2 : _T_224; // @[Mux.scala 98:16]
-  wire [3:0] _T_226 = _T_210 ? 4'h3 : _T_225; // @[Mux.scala 98:16]
-  wire [3:0] _T_227 = _T_213 ? 4'h4 : _T_226; // @[Mux.scala 98:16]
-  wire [3:0] _T_228 = _T_216 ? 4'h5 : _T_227; // @[Mux.scala 98:16]
-  wire [3:0] _T_229 = _T_219 ? 4'h6 : _T_228; // @[Mux.scala 98:16]
-  wire [3:0] _T_230 = buf_byteen[7] ? 4'h7 : _T_229; // @[Mux.scala 98:16]
-  wire [3:0] _T_231 = trxn_done ? _T_230 : {{1'd0}, buf_cmd_byte_ptrQ}; // @[axi4_to_ahb.scala 291:30]
+  wire [2:0] _T_224 = _T_219 ? 3'h6 : 3'h7; // @[Mux.scala 98:16]
+  wire [2:0] _T_225 = _T_216 ? 3'h5 : _T_224; // @[Mux.scala 98:16]
+  wire [2:0] _T_226 = _T_213 ? 3'h4 : _T_225; // @[Mux.scala 98:16]
+  wire [2:0] _T_227 = _T_210 ? 3'h3 : _T_226; // @[Mux.scala 98:16]
+  wire [2:0] _T_228 = _T_207 ? 3'h2 : _T_227; // @[Mux.scala 98:16]
+  wire [2:0] _T_229 = _T_204 ? 3'h1 : _T_228; // @[Mux.scala 98:16]
+  wire [2:0] _T_230 = _T_201 ? 3'h0 : _T_229; // @[Mux.scala 98:16]
+  wire [2:0] _T_231 = trxn_done ? _T_230 : buf_cmd_byte_ptrQ; // @[axi4_to_ahb.scala 291:30]
   wire  _T_232 = buf_cmd_byte_ptrQ == 3'h7; // @[axi4_to_ahb.scala 292:65]
   reg  buf_aligned; // @[Reg.scala 27:20]
   wire  _T_233 = buf_aligned | _T_232; // @[axi4_to_ahb.scala 292:44]
@@ -356,7 +354,7 @@ module axi4_to_ahb(
   wire [1:0] _T_356 = _T_354 ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
   wire [1:0] _T_357 = _T_356 & 2'h2; // @[axi4_to_ahb.scala 308:71]
   wire  _T_364 = trxn_done | bypass_en; // @[axi4_to_ahb.scala 311:40]
-  wire [3:0] _T_439 = bypass_en ? _T_93 : _T_231; // @[axi4_to_ahb.scala 312:30]
+  wire [2:0] _T_439 = bypass_en ? _T_93 : _T_231; // @[axi4_to_ahb.scala 312:30]
   wire  _GEN_6 = _T_281 & ahb_hresp_q; // @[Conditional.scala 39:67]
   wire  _GEN_7 = _T_281 ? buf_state_en : _T_440; // @[Conditional.scala 39:67]
   wire  _GEN_9 = _T_281 & _T_301; // @[Conditional.scala 39:67]
@@ -369,10 +367,10 @@ module axi4_to_ahb(
   wire  _GEN_10 = _T_281 & buf_wr_en; // @[Conditional.scala 39:67]
   wire [1:0] _GEN_13 = _T_281 ? _T_357 : 2'h0; // @[Conditional.scala 39:67]
   wire  _GEN_16 = _T_281 & _T_364; // @[Conditional.scala 39:67]
-  wire [3:0] _GEN_17 = _T_281 ? _T_439 : 4'h0; // @[Conditional.scala 39:67]
+  wire [2:0] _GEN_17 = _T_281 ? _T_439 : 3'h0; // @[Conditional.scala 39:67]
   wire  _GEN_21 = _T_188 ? buf_state_en : _GEN_16; // @[Conditional.scala 39:67]
   wire  _GEN_22 = _T_188 & buf_state_en; // @[Conditional.scala 39:67]
-  wire [3:0] _GEN_23 = _T_188 ? _T_231 : _GEN_17; // @[Conditional.scala 39:67]
+  wire [2:0] _GEN_23 = _T_188 ? _T_231 : _GEN_17; // @[Conditional.scala 39:67]
   wire [1:0] _GEN_25 = _T_188 ? _T_280 : _GEN_13; // @[Conditional.scala 39:67]
   wire  _GEN_28 = _T_188 ? 1'h0 : _GEN_7; // @[Conditional.scala 39:67]
   wire  _GEN_31 = _T_188 ? 1'h0 : _GEN_10; // @[Conditional.scala 39:67]
@@ -380,29 +378,29 @@ module axi4_to_ahb(
   wire  _GEN_38 = _T_186 ? buf_state_en : _GEN_28; // @[Conditional.scala 39:67]
   wire  _GEN_39 = _T_186 ? buf_state_en : _GEN_22; // @[Conditional.scala 39:67]
   wire  _GEN_41 = _T_186 ? 1'h0 : _GEN_21; // @[Conditional.scala 39:67]
-  wire [3:0] _GEN_42 = _T_186 ? 4'h0 : _GEN_23; // @[Conditional.scala 39:67]
+  wire [2:0] _GEN_42 = _T_186 ? 3'h0 : _GEN_23; // @[Conditional.scala 39:67]
   wire [1:0] _GEN_44 = _T_186 ? 2'h0 : _GEN_25; // @[Conditional.scala 39:67]
   wire  _GEN_53 = _T_175 ? buf_state_en : _GEN_39; // @[Conditional.scala 39:67]
-  wire [3:0] _GEN_54 = _T_175 ? {{1'd0}, buf_addr[2:0]} : _GEN_42; // @[Conditional.scala 39:67]
+  wire [2:0] _GEN_54 = _T_175 ? buf_addr[2:0] : _GEN_42; // @[Conditional.scala 39:67]
   wire [1:0] _GEN_55 = _T_175 ? _T_185 : _GEN_44; // @[Conditional.scala 39:67]
   wire  _GEN_56 = _T_175 ? 1'h0 : _GEN_36; // @[Conditional.scala 39:67]
   wire  _GEN_58 = _T_175 ? 1'h0 : _GEN_38; // @[Conditional.scala 39:67]
   wire  _GEN_60 = _T_175 ? 1'h0 : _GEN_41; // @[Conditional.scala 39:67]
   wire  _GEN_70 = _T_136 ? buf_state_en : _GEN_56; // @[Conditional.scala 39:67]
   wire  _GEN_72 = _T_136 ? buf_state_en : _GEN_58; // @[Conditional.scala 39:67]
-  wire [3:0] _GEN_76 = _T_136 ? {{1'd0}, _T_130} : _GEN_54; // @[Conditional.scala 39:67]
+  wire [2:0] _GEN_76 = _T_136 ? _T_130 : _GEN_54; // @[Conditional.scala 39:67]
   wire [1:0] _GEN_77 = _T_136 ? _T_174 : _GEN_55; // @[Conditional.scala 39:67]
   wire  _GEN_78 = _T_136 ? buf_wr_en : _GEN_53; // @[Conditional.scala 39:67]
   wire  _GEN_80 = _T_136 ? 1'h0 : _GEN_60; // @[Conditional.scala 39:67]
   wire  _GEN_85 = _T_101 ? buf_state_en : _GEN_78; // @[Conditional.scala 39:67]
-  wire [3:0] _GEN_89 = _T_101 ? {{1'd0}, _T_130} : _GEN_76; // @[Conditional.scala 39:67]
+  wire [2:0] _GEN_89 = _T_101 ? _T_130 : _GEN_76; // @[Conditional.scala 39:67]
   wire [1:0] _GEN_90 = _T_101 ? _T_135 : _GEN_77; // @[Conditional.scala 39:67]
   wire  _GEN_91 = _T_101 ? 1'h0 : _GEN_70; // @[Conditional.scala 39:67]
   wire  _GEN_93 = _T_101 ? 1'h0 : _GEN_72; // @[Conditional.scala 39:67]
   wire  _GEN_96 = _T_101 ? 1'h0 : _GEN_80; // @[Conditional.scala 39:67]
   wire  buf_data_wr_en = _T_49 ? _T_56 : _GEN_91; // @[Conditional.scala 40:58]
   wire  buf_cmd_byte_ptr_en = _T_49 ? buf_state_en : _GEN_96; // @[Conditional.scala 40:58]
-  wire [3:0] _GEN_105 = _T_49 ? _T_95 : _GEN_89; // @[Conditional.scala 40:58]
+  wire [2:0] buf_cmd_byte_ptr = _T_49 ? _T_95 : _GEN_89; // @[Conditional.scala 40:58]
   wire  slvbuf_wr_en = _T_49 ? 1'h0 : _GEN_85; // @[Conditional.scala 40:58]
   wire  slvbuf_error_en = _T_49 ? 1'h0 : _GEN_93; // @[Conditional.scala 40:58]
   wire  _T_535 = master_size[1:0] == 2'h0; // @[axi4_to_ahb.scala 348:24]
@@ -453,7 +451,6 @@ module axi4_to_ahb(
   wire [1:0] _T_528 = 2'h1 & _T_527; // @[axi4_to_ahb.scala 162:21]
   wire [1:0] _T_529 = _T_514 | _T_528; // @[axi4_to_ahb.scala 161:93]
   wire [1:0] _T_531 = _T_498 ? _T_529 : master_size[1:0]; // @[axi4_to_ahb.scala 346:21]
-  wire [2:0] buf_cmd_byte_ptr = _GEN_105[2:0]; // @[axi4_to_ahb.scala 217:20 axi4_to_ahb.scala 233:24 axi4_to_ahb.scala 247:24 axi4_to_ahb.scala 262:24 axi4_to_ahb.scala 272:24 axi4_to_ahb.scala 291:24 axi4_to_ahb.scala 312:24]
   wire [31:0] _T_570 = {master_addr[31:3],buf_cmd_byte_ptr}; // @[Cat.scala 29:58]
   wire [31:0] _T_573 = {buf_addr[31:3],buf_cmd_byte_ptr}; // @[Cat.scala 29:58]
   wire [1:0] _T_577 = buf_aligned_in ? 2'h3 : 2'h0; // @[Bitwise.scala 72:12]
@@ -973,7 +970,105 @@ end // initial
     if (reset) begin
       buf_cmd_byte_ptrQ <= 3'h0;
     end else if (buf_cmd_byte_ptr_en) begin
-      buf_cmd_byte_ptrQ <= buf_cmd_byte_ptr;
+      if (_T_49) begin
+        if (buf_write_in) begin
+          if (wrbuf_byteen[0]) begin
+            buf_cmd_byte_ptrQ <= 3'h0;
+          end else if (wrbuf_byteen[1]) begin
+            buf_cmd_byte_ptrQ <= 3'h1;
+          end else if (wrbuf_byteen[2]) begin
+            buf_cmd_byte_ptrQ <= 3'h2;
+          end else if (wrbuf_byteen[3]) begin
+            buf_cmd_byte_ptrQ <= 3'h3;
+          end else if (wrbuf_byteen[4]) begin
+            buf_cmd_byte_ptrQ <= 3'h4;
+          end else if (wrbuf_byteen[5]) begin
+            buf_cmd_byte_ptrQ <= 3'h5;
+          end else if (wrbuf_byteen[6]) begin
+            buf_cmd_byte_ptrQ <= 3'h6;
+          end else begin
+            buf_cmd_byte_ptrQ <= 3'h7;
+          end
+        end else begin
+          buf_cmd_byte_ptrQ <= master_addr[2:0];
+        end
+      end else if (_T_101) begin
+        if (bypass_en) begin
+          buf_cmd_byte_ptrQ <= master_addr[2:0];
+        end else begin
+          buf_cmd_byte_ptrQ <= buf_addr[2:0];
+        end
+      end else if (_T_136) begin
+        if (bypass_en) begin
+          buf_cmd_byte_ptrQ <= master_addr[2:0];
+        end else begin
+          buf_cmd_byte_ptrQ <= buf_addr[2:0];
+        end
+      end else if (_T_175) begin
+        buf_cmd_byte_ptrQ <= buf_addr[2:0];
+      end else if (_T_186) begin
+        buf_cmd_byte_ptrQ <= 3'h0;
+      end else if (_T_188) begin
+        if (trxn_done) begin
+          if (_T_201) begin
+            buf_cmd_byte_ptrQ <= 3'h0;
+          end else if (_T_204) begin
+            buf_cmd_byte_ptrQ <= 3'h1;
+          end else if (_T_207) begin
+            buf_cmd_byte_ptrQ <= 3'h2;
+          end else if (_T_210) begin
+            buf_cmd_byte_ptrQ <= 3'h3;
+          end else if (_T_213) begin
+            buf_cmd_byte_ptrQ <= 3'h4;
+          end else if (_T_216) begin
+            buf_cmd_byte_ptrQ <= 3'h5;
+          end else if (_T_219) begin
+            buf_cmd_byte_ptrQ <= 3'h6;
+          end else begin
+            buf_cmd_byte_ptrQ <= 3'h7;
+          end
+        end
+      end else if (_T_281) begin
+        if (bypass_en) begin
+          if (wrbuf_byteen[0]) begin
+            buf_cmd_byte_ptrQ <= 3'h0;
+          end else if (wrbuf_byteen[1]) begin
+            buf_cmd_byte_ptrQ <= 3'h1;
+          end else if (wrbuf_byteen[2]) begin
+            buf_cmd_byte_ptrQ <= 3'h2;
+          end else if (wrbuf_byteen[3]) begin
+            buf_cmd_byte_ptrQ <= 3'h3;
+          end else if (wrbuf_byteen[4]) begin
+            buf_cmd_byte_ptrQ <= 3'h4;
+          end else if (wrbuf_byteen[5]) begin
+            buf_cmd_byte_ptrQ <= 3'h5;
+          end else if (wrbuf_byteen[6]) begin
+            buf_cmd_byte_ptrQ <= 3'h6;
+          end else begin
+            buf_cmd_byte_ptrQ <= 3'h7;
+          end
+        end else if (trxn_done) begin
+          if (_T_201) begin
+            buf_cmd_byte_ptrQ <= 3'h0;
+          end else if (_T_204) begin
+            buf_cmd_byte_ptrQ <= 3'h1;
+          end else if (_T_207) begin
+            buf_cmd_byte_ptrQ <= 3'h2;
+          end else if (_T_210) begin
+            buf_cmd_byte_ptrQ <= 3'h3;
+          end else if (_T_213) begin
+            buf_cmd_byte_ptrQ <= 3'h4;
+          end else if (_T_216) begin
+            buf_cmd_byte_ptrQ <= 3'h5;
+          end else if (_T_219) begin
+            buf_cmd_byte_ptrQ <= 3'h6;
+          end else begin
+            buf_cmd_byte_ptrQ <= 3'h7;
+          end
+        end
+      end else begin
+        buf_cmd_byte_ptrQ <= 3'h0;
+      end
     end
   end
   always @(posedge buf_clk or posedge reset) begin
