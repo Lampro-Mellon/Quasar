@@ -3,6 +3,29 @@ import lib._
 import chisel3._
 import chisel3.util._
 import include._
+class aln_ib extends Bundle with el2_lib{
+  val ifu_i0_icaf             = Output(Bool())
+  val ifu_i0_icaf_type        = Output(UInt(2.W))
+  val ifu_i0_icaf_f1          = Output(Bool())
+  val ifu_i0_dbecc            = Output(Bool())
+  val ifu_i0_bp_index         = Output(UInt((BTB_ADDR_HI-BTB_ADDR_LO+1).W))
+  val ifu_i0_bp_fghr          = Output(UInt(BHT_GHR_SIZE.W))
+  val ifu_i0_bp_btag          = Output(UInt(BTB_BTAG_SIZE.W))
+  val ifu_i0_valid            = Output(Bool())
+  val ifu_i0_instr            = Output(UInt(32.W))
+  val ifu_i0_pc               = Output(UInt(31.W))
+  val ifu_i0_pc4              = Output(Bool())
+  val i0_brp                  = Valid(new el2_br_pkt_t)
+}
+class aln_dec extends Bundle{
+  val dec_i0_decode_d = Input(Bool()) // Dec
+  val ifu_i0_cinst            = Output(UInt(16.W)) // Dec
+}
+class dec_aln extends Bundle with el2_lib {
+  val aln_dec = new aln_dec
+  val aln_ib = new aln_ib
+  val ifu_pmu_instr_aligned   = Output(Bool()) // TLU
+}
 
 class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
   val io = IO(new Bundle{
@@ -22,43 +45,30 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
     val ifu_bp_valid_f          = Input(UInt(2.W))
     val ifu_bp_ret_f            = Input(UInt(2.W))
     val exu_flush_final         = Input(Bool())
-    val dec_i0_decode_d         = Input(Bool())
+    val dec_aln                 = new dec_aln
     val ifu_fetch_data_f        = Input(UInt(32.W))
     val ifu_fetch_val           = Input(UInt(2.W))
     val ifu_fetch_pc            = Input(UInt(31.W))
    /////////////////////////////////////////////////
-    val ifu_i0_valid            = Output(Bool())
-    val ifu_i0_icaf             = Output(Bool())
-    val ifu_i0_icaf_type        = Output(UInt(2.W))
-    val ifu_i0_icaf_f1          = Output(Bool())
-    val ifu_i0_dbecc            = Output(Bool())
-    val ifu_i0_instr            = Output(UInt(32.W))
-    val ifu_i0_pc               = Output(UInt(31.W))
-    val ifu_i0_pc4              = Output(Bool())
     val ifu_fb_consume1         = Output(Bool())
     val ifu_fb_consume2         = Output(Bool())
-    val ifu_i0_bp_index         = Output(UInt((BTB_ADDR_HI-BTB_ADDR_LO+1).W))
-    val ifu_i0_bp_fghr          = Output(UInt(BHT_GHR_SIZE.W))
-    val ifu_i0_bp_btag          = Output(UInt(BTB_BTAG_SIZE.W))
-    val ifu_pmu_instr_aligned   = Output(Bool())
-    val ifu_i0_cinst            = Output(UInt(16.W))
-    val i0_brp                  = Valid(new el2_br_pkt_t)
+
   })
-  io.ifu_i0_valid := 0.U
-  io.ifu_i0_icaf := 0.U
-  io.ifu_i0_icaf_type := 0.U
-  io.ifu_i0_icaf_f1 := 0.U
-  io.ifu_i0_dbecc := 0.U
-  io.ifu_i0_instr := 0.U
-  io.ifu_i0_pc := 0.U
-  io.ifu_i0_pc4 := 0.U
+  io.dec_aln.aln_ib.ifu_i0_valid := 0.U
+  io.dec_aln.aln_ib.ifu_i0_icaf := 0.U
+  io.dec_aln.aln_ib.ifu_i0_icaf_type := 0.U
+  io.dec_aln.aln_ib.ifu_i0_icaf_f1 := 0.U
+  io.dec_aln.aln_ib.ifu_i0_dbecc := 0.U
+  io.dec_aln.aln_ib.ifu_i0_instr := 0.U
+  io.dec_aln.aln_ib.ifu_i0_pc := 0.U
+  io.dec_aln.aln_ib.ifu_i0_pc4 := 0.U
   io.ifu_fb_consume1 := 0.U
   io.ifu_fb_consume2 := 0.U
-  io.ifu_i0_bp_index := 0.U
-  io.ifu_i0_bp_fghr := 0.U
-  io.ifu_i0_bp_btag := 0.U
-  io.ifu_pmu_instr_aligned := 0.U
-  io.ifu_i0_cinst := 0.U
+  io.dec_aln.aln_ib.ifu_i0_bp_index := 0.U
+  io.dec_aln.aln_ib.ifu_i0_bp_fghr := 0.U
+  io.dec_aln.aln_ib.ifu_i0_bp_btag := 0.U
+  io.dec_aln.ifu_pmu_instr_aligned := 0.U
+  io.dec_aln.aln_dec.ifu_i0_cinst := 0.U
   val MHI = 46+BHT_GHR_SIZE // 54
   val MSIZE = 47+BHT_GHR_SIZE // 55
   val BRDATA_SIZE = 12
@@ -337,35 +347,35 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
 
   val secondpc = Mux1H(Seq(f0val(1).asBool()->f0pc_plus1 , (!f0val(1) & f0val(0)).asBool->f1pc))
 
-  io.ifu_i0_pc := f0pc
+  io.dec_aln.aln_ib.ifu_i0_pc := f0pc
 
   val firstpc = f0pc
 
-  io.ifu_i0_pc4 := first4B
+  io.dec_aln.aln_ib.ifu_i0_pc4 := first4B
 
-  io.ifu_i0_cinst := aligndata(15,0)
+  io.dec_aln.aln_dec.ifu_i0_cinst := aligndata(15,0)
 
   first4B := aligndata(1,0) === 3.U
 
   val first2B = ~first4B
 
-  io.ifu_i0_valid := Mux1H(Seq(first4B.asBool -> alignval(1), first2B.asBool -> alignval(0)))
+  io.dec_aln.aln_ib.ifu_i0_valid := Mux1H(Seq(first4B.asBool -> alignval(1), first2B.asBool -> alignval(0)))
 
-  io.ifu_i0_icaf := Mux1H(Seq(first4B.asBool -> alignicaf.orR, first2B.asBool -> alignicaf(0)))
+  io.dec_aln.aln_ib.ifu_i0_icaf := Mux1H(Seq(first4B.asBool -> alignicaf.orR, first2B.asBool -> alignicaf(0)))
 
-  io.ifu_i0_icaf_type := Mux((first4B & !f0val(1) & f0val(0) & !alignicaf(0) & !aligndbecc(0)).asBool, f1ictype, f0ictype)
+  io.dec_aln.aln_ib.ifu_i0_icaf_type := Mux((first4B & !f0val(1) & f0val(0) & !alignicaf(0) & !aligndbecc(0)).asBool, f1ictype, f0ictype)
 
   val icaf_eff = alignicaf(1) | aligndbecc(1)
 
-  io.ifu_i0_icaf_f1 := first4B & icaf_eff & alignfromf1
+  io.dec_aln.aln_ib.ifu_i0_icaf_f1 := first4B & icaf_eff & alignfromf1
 
-  io.ifu_i0_dbecc := Mux1H(Seq(first4B.asBool->aligndbecc.orR, first2B.asBool->aligndbecc(0)))
+  io.dec_aln.aln_ib.ifu_i0_dbecc := Mux1H(Seq(first4B.asBool->aligndbecc.orR, first2B.asBool->aligndbecc(0)))
 
   val ifirst = aligndata
 
   val decompressed = Module(new el2_ifu_compress_ctl())
 
-  io.ifu_i0_instr := Mux1H(Seq(first4B.asBool -> ifirst, first2B.asBool -> decompressed.io.dout))
+  io.dec_aln.aln_ib.ifu_i0_instr := Mux1H(Seq(first4B.asBool -> ifirst, first2B.asBool -> decompressed.io.dout))
 
   val firstpc_hash =  el2_btb_addr_hash(f0pc)
 
@@ -375,39 +385,39 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
 
   val secondbrtag_hash = if(BTB_BTAG_FOLD) el2_btb_tag_hash_fold(secondpc) else el2_btb_tag_hash(secondpc)
 
-  io.i0_brp.valid :=(first2B & alignbrend(0)) | (first4B & alignbrend(1)) | (first4B & alignval(1) & alignbrend(0))
+  io.dec_aln.aln_ib.i0_brp.valid :=(first2B & alignbrend(0)) | (first4B & alignbrend(1)) | (first4B & alignval(1) & alignbrend(0))
 
-  io.i0_brp.bits.ret := (first2B & alignret(0)) | (first4B & alignret(1))
+  io.dec_aln.aln_ib.i0_brp.bits.ret := (first2B & alignret(0)) | (first4B & alignret(1))
 
   val i0_brp_pc4 = (first2B & alignpc4(0)) | (first4B & alignpc4(1))
 
-  io.i0_brp.bits.way := Mux((first2B | alignbrend(0)).asBool, alignway(0),  alignway(1))
+  io.dec_aln.aln_ib.i0_brp.bits.way := Mux((first2B | alignbrend(0)).asBool, alignway(0),  alignway(1))
 
-  io.i0_brp.bits.hist := Cat((first2B & alignhist1(0)) | (first4B & alignhist1(1)),
+  io.dec_aln.aln_ib.i0_brp.bits.hist := Cat((first2B & alignhist1(0)) | (first4B & alignhist1(1)),
     (first2B & alignhist0(0)) | (first4B & alignhist0(1)))
 
   val i0_ends_f1 = first4B & alignfromf1
-  io.i0_brp.bits.toffset := Mux(i0_ends_f1.asBool, f1poffset, f0poffset)
+  io.dec_aln.aln_ib.i0_brp.bits.toffset := Mux(i0_ends_f1.asBool, f1poffset, f0poffset)
 
-  io.i0_brp.bits.prett := Mux(i0_ends_f1.asBool, f1prett, f0prett)
+  io.dec_aln.aln_ib.i0_brp.bits.prett := Mux(i0_ends_f1.asBool, f1prett, f0prett)
 
-  io.i0_brp.bits.br_start_error  := (first4B & alignval(1) & alignbrend(0))
+  io.dec_aln.aln_ib.i0_brp.bits.br_start_error  := (first4B & alignval(1) & alignbrend(0))
 
-  io.i0_brp.bits.bank            := Mux((first2B | alignbrend(0)).asBool, firstpc(0), secondpc(0))
+  io.dec_aln.aln_ib.i0_brp.bits.bank            := Mux((first2B | alignbrend(0)).asBool, firstpc(0), secondpc(0))
 
-  io.i0_brp.bits.br_error := (io.i0_brp.valid &  i0_brp_pc4 &  first2B) | (io.i0_brp.valid & !i0_brp_pc4 &  first4B)
+  io.dec_aln.aln_ib.i0_brp.bits.br_error := (io.dec_aln.aln_ib.i0_brp.valid &  i0_brp_pc4 &  first2B) | (io.dec_aln.aln_ib.i0_brp.valid & !i0_brp_pc4 &  first4B)
 
-  io.ifu_i0_bp_index := Mux((first2B | alignbrend(0)).asBool, firstpc_hash, secondpc_hash)
+  io.dec_aln.aln_ib.ifu_i0_bp_index := Mux((first2B | alignbrend(0)).asBool, firstpc_hash, secondpc_hash)
 
-  io.ifu_i0_bp_fghr := Mux((first4B & alignfromf1).asBool, f1fghr, f0fghr)
+  io.dec_aln.aln_ib.ifu_i0_bp_fghr := Mux((first4B & alignfromf1).asBool, f1fghr, f0fghr)
 
-  io.ifu_i0_bp_btag := Mux((first2B | alignbrend(0)).asBool, firstbrtag_hash, secondbrtag_hash)
+  io.dec_aln.aln_ib.ifu_i0_bp_btag := Mux((first2B | alignbrend(0)).asBool, firstbrtag_hash, secondbrtag_hash)
 
   decompressed.io.din := aligndata
 
-  val i0_shift = io.dec_i0_decode_d & ~error_stall
+  val i0_shift = io.dec_aln.aln_dec.dec_i0_decode_d & ~error_stall
 
-  io.ifu_pmu_instr_aligned := i0_shift
+  io.dec_aln.ifu_pmu_instr_aligned := i0_shift
 
   shift_2B := i0_shift & first2B
   shift_4B := i0_shift & first4B
@@ -416,6 +426,7 @@ class el2_ifu_aln_ctl extends Module with el2_lib with RequireAsyncReset {
   f1_shift_2B :=  f0val(0) & !f0val(1) & shift_4B
 
 }
-object ifu_aln extends App {
+
+object ifc_aln extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_aln_ctl()))
 }

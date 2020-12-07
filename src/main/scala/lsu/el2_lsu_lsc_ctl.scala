@@ -29,8 +29,10 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset with el2_lib
     val flush_m_up = Input(UInt(1.W))
     val flush_r    = Input(UInt(1.W))
 
-    val exu_lsu_rs1_d = Input(UInt(32.W))         // address
-    val exu_lsu_rs2_d = Input(UInt(32.W))         // store data
+    val lsu_exu = new lsu_exu
+
+   // val exu_lsu_rs1_d = Input(UInt(32.W))         // address
+   // val exu_lsu_rs2_d = Input(UInt(32.W))         // store data
 
     val lsu_p = Flipped(Valid(new el2_lsu_pkt_t()))        // lsu control packet //coming from decode
     val dec_lsu_valid_raw_d = Input(UInt(1.W))   // Raw valid for address computation
@@ -78,11 +80,12 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset with el2_lib
     val addr_external_m   = Output(UInt(1.W))
 
     // DMA slave
-    val dma_dccm_req      = Input(UInt(1.W))
-    val dma_mem_addr      = Input(UInt(32.W))
-    val dma_mem_sz        = Input(UInt(3.W))
-    val dma_mem_write     = Input(UInt(1.W))
-    val dma_mem_wdata     = Input(UInt(64.W))
+    val dma_lsc_ctl = new dma_lsc_ctl
+//    val dma_dccm_req      = Input(UInt(1.W))
+//    val dma_mem_addr      = Input(UInt(32.W))
+//    val dma_mem_sz        = Input(UInt(3.W))
+//    val dma_mem_write     = Input(UInt(1.W))
+//    val dma_mem_wdata     = Input(UInt(64.W))
 
     // Store buffer related signals
     val lsu_pkt_d    = Valid(new el2_lsu_pkt_t())
@@ -98,7 +101,7 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset with el2_lib
   val lsu_pkt_r_in    = Wire(Valid(new el2_lsu_pkt_t()))
   val lsu_error_pkt_m = Wire(Valid(new el2_lsu_error_pkt_t()))
 
-  val lsu_rs1_d       = Mux(io.dec_lsu_valid_raw_d.asBool,io.exu_lsu_rs1_d,io.dma_mem_addr)
+  val lsu_rs1_d       = Mux(io.dec_lsu_valid_raw_d.asBool,io.lsu_exu.exu_lsu_rs1_d,io.dma_lsc_ctl.dma_mem_addr)
   val lsu_offset_d    = io.dec_lsu_offset_d(11,0) & Fill(12,io.dec_lsu_valid_raw_d)
   val rs1_d_raw       = lsu_rs1_d
   val offset_d        = lsu_offset_d
@@ -188,14 +191,14 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset with el2_lib
   }
   dma_pkt_d.bits.unsign   := 0.U
   dma_pkt_d.bits.fast_int := 0.U
-  dma_pkt_d.valid    := io.dma_dccm_req
+  dma_pkt_d.valid    := io.dma_lsc_ctl.dma_dccm_req
   dma_pkt_d.bits.dma      := 1.U
-  dma_pkt_d.bits.store    := io.dma_mem_write
-  dma_pkt_d.bits.load     := ~io.dma_mem_write
-  dma_pkt_d.bits.by       := (io.dma_mem_sz(2,0) === 0.U(3.W))
-  dma_pkt_d.bits.half     := (io.dma_mem_sz(2,0) === 1.U(3.W))
-  dma_pkt_d.bits.word     := (io.dma_mem_sz(2,0) === 2.U(3.W))
-  dma_pkt_d.bits.dword    := (io.dma_mem_sz(2,0) === 3.U(3.W))
+  dma_pkt_d.bits.store    := io.dma_lsc_ctl.dma_mem_write
+  dma_pkt_d.bits.load     := ~io.dma_lsc_ctl.dma_mem_write
+  dma_pkt_d.bits.by       := (io.dma_lsc_ctl.dma_mem_sz(2,0) === 0.U(3.W))
+  dma_pkt_d.bits.half     := (io.dma_lsc_ctl.dma_mem_sz(2,0) === 1.U(3.W))
+  dma_pkt_d.bits.word     := (io.dma_lsc_ctl.dma_mem_sz(2,0) === 2.U(3.W))
+  dma_pkt_d.bits.dword    := (io.dma_lsc_ctl.dma_mem_sz(2,0) === 3.U(3.W))
   dma_pkt_d.bits.store_data_bypass_d  := 0.U
   dma_pkt_d.bits.load_ldst_bypass_d   := 0.U
   dma_pkt_d.bits.store_data_bypass_m  := 0.U
@@ -208,7 +211,7 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset with el2_lib
   lsu_pkt_m_in     := io.lsu_pkt_d
   lsu_pkt_r_in     := io.lsu_pkt_m
 
-  io.lsu_pkt_d.valid   := (io.lsu_p.valid & !(io.flush_m_up &  !io.lsu_p.bits.fast_int)) | io.dma_dccm_req
+  io.lsu_pkt_d.valid   := (io.lsu_p.valid & !(io.flush_m_up &  !io.lsu_p.bits.fast_int)) | io.dma_lsc_ctl.dma_dccm_req
   lsu_pkt_m_in.valid   := io.lsu_pkt_d.valid  & !(io.flush_m_up &  !io.lsu_pkt_d.bits.dma)
   lsu_pkt_r_in.valid   := io.lsu_pkt_m.valid  & !(io.flush_m_up &  !io.lsu_pkt_m.bits.dma)
 
@@ -217,8 +220,8 @@ class  el2_lsu_lsc_ctl extends Module with RequireAsyncReset with el2_lib
   io.lsu_pkt_m.valid       := withClock(io.lsu_c2_m_clk){RegNext(lsu_pkt_m_in.valid,0.U)}
   io.lsu_pkt_r.valid       := withClock(io.lsu_c2_r_clk){RegNext(lsu_pkt_r_in.valid,0.U)}
 
-  val dma_mem_wdata_shifted = io.dma_mem_wdata(63,0) >> Cat(io.dma_mem_addr(2,0), 0.U(3.W))   // Shift the dma data to lower bits to make it consistent to lsu stores
-  val store_data_d          = Mux(io.dma_dccm_req.asBool,dma_mem_wdata_shifted(31,0),io.exu_lsu_rs2_d(31,0))  // Write to PIC still happens in r stage
+  val dma_mem_wdata_shifted = io.dma_lsc_ctl.dma_mem_wdata(63,0) >> Cat(io.dma_lsc_ctl.dma_mem_addr(2,0), 0.U(3.W))   // Shift the dma data to lower bits to make it consistent to lsu stores
+  val store_data_d          = Mux(io.dma_lsc_ctl.dma_dccm_req.asBool,dma_mem_wdata_shifted(31,0),io.lsu_exu.exu_lsu_rs2_d(31,0))  // Write to PIC still happens in r stage
   val store_data_m_in       = Mux(io.lsu_pkt_d.bits.store_data_bypass_d.asBool,io.lsu_result_m(31,0),store_data_d(31,0))
 
   val store_data_pre_m      =  withClock(io.lsu_store_c1_m_clk){RegNext(store_data_m_in,0.U)}

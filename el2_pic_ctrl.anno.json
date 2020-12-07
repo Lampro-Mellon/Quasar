@@ -1,7 +1,7 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_pic_ctrl|el2_pic_ctrl>io_picm_rd_data",
+    "sink":"~el2_pic_ctrl|el2_pic_ctrl>io_lsu_pic_picm_rd_data",
     "sources":[
       "~el2_pic_ctrl|el2_pic_ctrl>io_extintsrc_req"
     ]

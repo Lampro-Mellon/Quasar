@@ -5,14 +5,17 @@ import lib._
 import include._
 import chisel3.experimental.{ChiselEnum, chiselName}
 import chisel3.util.ImplicitConversions.intToUInt
+import ifu._
 
 @chiselName
 class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val io = IO(new Bundle {
     val scan_mode = Input(Bool())
-    val dec_tlu_external_ldfwd_disable = Input(Bool())
-    val dec_tlu_wb_coalescing_disable = Input(Bool())
-    val dec_tlu_sideeffect_posted_disable = Input(Bool())
+    val tlu_busbuff = new tlu_busbuff
+    val dctl_busbuff = new dctl_busbuff
+   // val dec_tlu_external_ldfwd_disable = Input(Bool())
+   // val dec_tlu_wb_coalescing_disable = Input(Bool())
+   // val dec_tlu_sideeffect_posted_disable = Input(Bool())
     val dec_tlu_force_halt = Input(Bool())
     val lsu_c2_r_clk = Input(Clock())
     val lsu_bus_ibuf_c1_clk = Input(Clock())
@@ -40,15 +43,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     val ldst_dual_m = Input(Bool())
     val ldst_dual_r = Input(Bool())
     val ldst_byteen_ext_m = Input(UInt(8.W))
-    val lsu_axi_wready = Input(Bool())
-    val lsu_axi_bvalid = Input(Bool())
-    val lsu_axi_bresp = Input(UInt(2.W))
-    val lsu_axi_bid = Input(UInt(LSU_BUS_TAG.W))
-    val lsu_axi_arready = Input(Bool())
-    val lsu_axi_rvalid = Input(Bool())
-    val lsu_axi_rid = Input(UInt(LSU_BUS_TAG.W))
-    val lsu_axi_rdata = Input(UInt(64.W))
-    val lsu_axi_rresp = Input(UInt(2.W))
+    val lsu_axi = new axi_channels
     val lsu_bus_clk_en = Input(Bool())
     val lsu_bus_clk_en_q = Input(Bool())
 
@@ -61,52 +56,23 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     val ld_byte_hit_buf_hi = Output((UInt(4.W)))
     val ld_fwddata_buf_lo = Output((UInt(32.W)))
     val ld_fwddata_buf_hi = Output((UInt(32.W)))
-    val lsu_imprecise_error_load_any = Output(Bool())
-    val lsu_imprecise_error_store_any = Output(Bool())
-    val lsu_imprecise_error_addr_any = Output(UInt(32.W))
-    val lsu_nonblock_load_valid_m = Output(Bool())
-    val lsu_nonblock_load_tag_m = Output(UInt(LSU_NUM_NBLOAD_WIDTH.W))
-    val lsu_nonblock_load_inv_r = Output(Bool())
-    val lsu_nonblock_load_inv_tag_r = Output(UInt(LSU_NUM_NBLOAD_WIDTH.W))
-    val lsu_nonblock_load_data_valid = Output(Bool())
-    val lsu_nonblock_load_data_error = Output(Bool())
-    val lsu_nonblock_load_data_tag = Output(UInt(LSU_NUM_NBLOAD_WIDTH.W))
-    val lsu_nonblock_load_data = Output(UInt(32.W))
-    val lsu_pmu_bus_trxn = Output(Bool())
-    val lsu_pmu_bus_misaligned = Output(Bool())
-    val lsu_pmu_bus_error = Output(Bool())
-    val lsu_pmu_bus_busy = Output(Bool())
+ //   val lsu_imprecise_error_load_any = Output(Bool())
+ //   val lsu_imprecise_error_store_any = Output(Bool())
+  //  val lsu_imprecise_error_addr_any = Output(UInt(32.W))
+ //   val lsu_nonblock_load_valid_m = Output(Bool())
+ //   val lsu_nonblock_load_tag_m = Output(UInt(LSU_NUM_NBLOAD_WIDTH.W))
+  //  val lsu_nonblock_load_inv_r = Output(Bool())
+  //  val lsu_nonblock_load_inv_tag_r = Output(UInt(LSU_NUM_NBLOAD_WIDTH.W))
+ //   val lsu_nonblock_load_data_valid = Output(Bool())
+ //   val lsu_nonblock_load_data_error = Output(Bool())
+  //  val lsu_nonblock_load_data_tag = Output(UInt(LSU_NUM_NBLOAD_WIDTH.W))
+ //   val lsu_nonblock_load_data = Output(UInt(32.W))
+  //  val lsu_pmu_bus_trxn = Output(Bool())
+  //  val lsu_pmu_bus_misaligned = Output(Bool())
+  //  val lsu_pmu_bus_error = Output(Bool())
+   // val lsu_pmu_bus_busy = Output(Bool())
 
     // AXI Signals
-    val lsu_axi_awvalid = Output(Bool())
-    val lsu_axi_awready = Input(Bool())
-    val lsu_axi_awid = Output(UInt(LSU_BUS_TAG.W))
-    val lsu_axi_awaddr = Output(UInt(32.W))
-    val lsu_axi_awregion = Output(UInt(4.W))
-    val lsu_axi_awlen = Output(UInt(8.W))
-    val lsu_axi_awsize = Output(UInt(3.W))
-    val lsu_axi_awburst = Output(UInt(2.W))
-    val lsu_axi_awlock = Output(Bool())
-    val lsu_axi_awcache = Output(UInt(4.W))
-    val lsu_axi_awprot = Output(UInt(3.W))
-    val lsu_axi_awqos = Output(UInt(4.W))
-    val lsu_axi_wvalid = Output(Bool())
-    val lsu_axi_wdata = Output(UInt(64.W))
-    val lsu_axi_wstrb = Output(UInt(8.W))
-    val lsu_axi_wlast = Output(Bool())
-    val lsu_axi_bready = Output(Bool())
-    val lsu_axi_arvalid = Output(Bool())
-    val lsu_axi_arid = Output(UInt(LSU_BUS_TAG.W))
-    val lsu_axi_araddr = Output(UInt(32.W))
-    val lsu_axi_arregion = Output(UInt(4.W))
-    val lsu_axi_arlen = Output(UInt(8.W))
-    val lsu_axi_arsize = Output(UInt(3.W))
-    val lsu_axi_arburst = Output(UInt(2.W))
-    val lsu_axi_arlock = Output(Bool())
-    val lsu_axi_arcache = Output(UInt(4.W))
-    val lsu_axi_arprot = Output(UInt(3.W))
-    val lsu_axi_arqos = Output(UInt(4.W))
-    val lsu_axi_rready = Output(Bool())
   })
   def indexing(in : UInt, index : UInt) = Mux1H((0 until math.pow(2, index.getWidth).asInstanceOf[Int]).map(i=>(index===i.U)->in(i)))
   def indexing(in : Vec[UInt], index : UInt) = Mux1H((0 until math.pow(2, index.getWidth).asInstanceOf[Int]).map(i=>(index===i.U)->in(i)))
@@ -228,7 +194,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
     (0 until DEPTH).map(i => Fill(8, ld_byte_hitvecfn_hi(0)(i)) & buf_data(i)(7 ,  0)).reduce(_ | _)) |
     (ld_fwddata_buf_hi_initial & ibuf_data)
 
-  val bus_coalescing_disable = io.dec_tlu_wb_coalescing_disable | BUILD_AHB_LITE.B
+  val bus_coalescing_disable = io.tlu_busbuff.dec_tlu_wb_coalescing_disable | BUILD_AHB_LITE.B
   val ldst_byteen_r = Mux1H(Seq(io.lsu_pkt_r.bits.by   -> 1.U(4.W),
     io.lsu_pkt_r.bits.half -> 3.U(4.W),
     io.lsu_pkt_r.bits.word -> 15.U(4.W)))
@@ -373,7 +339,7 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   val obuf_rdrsp_tag_in = Mux(bus_cmd_sent & !obuf_write, obuf_tag0, obuf_rdrsp_tag)
   val obuf_addr = WireInit(UInt(32.W), 0.U)
   val obuf_sideeffect = WireInit(Bool(), false.B)
-  obuf_nosend_in := (obuf_addr_in(31,3)===obuf_addr(31,3)) & obuf_aligned_in & !obuf_sideeffect & !obuf_write & !obuf_write_in & !io.dec_tlu_external_ldfwd_disable &
+  obuf_nosend_in := (obuf_addr_in(31,3)===obuf_addr(31,3)) & obuf_aligned_in & !obuf_sideeffect & !obuf_write & !obuf_write_in & !io.tlu_busbuff.dec_tlu_external_ldfwd_disable &
     ((obuf_valid & !obuf_nosend) | (obuf_rdrsp_pend & !(bus_rsp_read & (bus_rsp_read_tag === obuf_rdrsp_tag))))
   val obuf_byteen0_in = Mux(ibuf_buf_byp, Mux(io.lsu_addr_r(2), Cat(ldst_byteen_lo_r, 0.U(4.W)), Cat(0.U(4.W), ldst_byteen_lo_r)),
     Mux(indexing(buf_addr, CmdPtr0)(2).asBool(), Cat(indexing(buf_byteen, CmdPtr0), 0.U(4.W)), Cat(0.U(4.W),indexing(buf_byteen, CmdPtr0))))
@@ -581,95 +547,95 @@ class  el2_lsu_bus_buffer extends Module with RequireAsyncReset with el2_lib {
   io.lsu_bus_buffer_full_any := Mux(io.ldst_dual_d & io.dec_lsu_valid_raw_d, buf_numvld_any>=(DEPTH-1).U, buf_numvld_any===DEPTH.U)
   io.lsu_bus_buffer_empty_any := !(buf_state.map(_.orR).reduce(_|_)) & !ibuf_valid & !obuf_valid
 
-  io.lsu_nonblock_load_valid_m := io.lsu_busreq_m & io.lsu_pkt_m.valid & io.lsu_pkt_m.bits.load & !io.flush_m_up & !io.ld_full_hit_m
-  io.lsu_nonblock_load_tag_m := WrPtr0_m
+  io.dctl_busbuff.lsu_nonblock_load_valid_m := io.lsu_busreq_m & io.lsu_pkt_m.valid & io.lsu_pkt_m.bits.load & !io.flush_m_up & !io.ld_full_hit_m
+  io.dctl_busbuff.lsu_nonblock_load_tag_m := WrPtr0_m
   val lsu_nonblock_load_valid_r = WireInit(Bool(), false.B)
-  io.lsu_nonblock_load_inv_r := lsu_nonblock_load_valid_r & !io.lsu_commit_r
-  io.lsu_nonblock_load_inv_tag_r := WrPtr0_r
+  io.dctl_busbuff.lsu_nonblock_load_inv_r := lsu_nonblock_load_valid_r & !io.lsu_commit_r
+  io.dctl_busbuff.lsu_nonblock_load_inv_tag_r := WrPtr0_r
   val lsu_nonblock_load_data_ready = Mux1H((0 until DEPTH).map(i=>(buf_state(i)===done_C) -> (!(BUILD_AXI_NATIVE.B & buf_write(i)))))
-  io.lsu_nonblock_load_data_error := Mux1H((0 until DEPTH).map(i=>(buf_state(i)===done_C) -> (buf_error(i) & !buf_write(i))))
-  io.lsu_nonblock_load_data_tag := Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & !buf_write(i) & (!buf_dual(i) | !buf_dualhi(i))) -> i.U))
+  io.dctl_busbuff.lsu_nonblock_load_data_error := Mux1H((0 until DEPTH).map(i=>(buf_state(i)===done_C) -> (buf_error(i) & !buf_write(i))))
+  io.dctl_busbuff.lsu_nonblock_load_data_tag := Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & !buf_write(i) & (!buf_dual(i) | !buf_dualhi(i))) -> i.U))
   val lsu_nonblock_load_data_lo = Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & !buf_write(i) & (!buf_dual(i) | !buf_dualhi(i))) -> buf_data(i)))
   val lsu_nonblock_load_data_hi = Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & !buf_write(i) & (buf_dual(i) & buf_dualhi(i))) -> buf_data(i)))
-  val lsu_nonblock_addr_offset = indexing(buf_addr, io.lsu_nonblock_load_data_tag)(1,0)
-  val lsu_nonblock_sz = indexing(buf_sz, io.lsu_nonblock_load_data_tag)
-  val lsu_nonblock_unsign = indexing(buf_unsign, io.lsu_nonblock_load_data_tag)
-  val lsu_nonblock_dual = indexing(buf_dual.map(_.asUInt).reverse.reduce(Cat(_,_)), io.lsu_nonblock_load_data_tag)
+  val lsu_nonblock_addr_offset = indexing(buf_addr, io.dctl_busbuff.lsu_nonblock_load_data_tag)(1,0)
+  val lsu_nonblock_sz = indexing(buf_sz, io.dctl_busbuff.lsu_nonblock_load_data_tag)
+  val lsu_nonblock_unsign = indexing(buf_unsign, io.dctl_busbuff.lsu_nonblock_load_data_tag)
+  val lsu_nonblock_dual = indexing(buf_dual.map(_.asUInt).reverse.reduce(Cat(_,_)), io.dctl_busbuff.lsu_nonblock_load_data_tag)
   val lsu_nonblock_data_unalgn = Cat(lsu_nonblock_load_data_hi, lsu_nonblock_load_data_lo) >> (lsu_nonblock_addr_offset * 8.U)
 
-  io.lsu_nonblock_load_data_valid := lsu_nonblock_load_data_ready & !io.lsu_nonblock_load_data_error
-  io.lsu_nonblock_load_data := Mux1H(Seq((lsu_nonblock_unsign & (lsu_nonblock_sz===0.U)) -> Cat(0.U(24.W),lsu_nonblock_data_unalgn(7,0)),
+  io.dctl_busbuff.lsu_nonblock_load_data_valid := lsu_nonblock_load_data_ready & !io.dctl_busbuff.lsu_nonblock_load_data_error
+  io.dctl_busbuff.lsu_nonblock_load_data := Mux1H(Seq((lsu_nonblock_unsign & (lsu_nonblock_sz===0.U)) -> Cat(0.U(24.W),lsu_nonblock_data_unalgn(7,0)),
     (lsu_nonblock_unsign &  (lsu_nonblock_sz===1.U)) -> Cat(0.U(16.W),lsu_nonblock_data_unalgn(15,0)),
     (!lsu_nonblock_unsign & (lsu_nonblock_sz===0.U)) -> Cat(Fill(24,lsu_nonblock_data_unalgn(7)), lsu_nonblock_data_unalgn(7,0)),
     (!lsu_nonblock_unsign & (lsu_nonblock_sz===1.U)) -> Cat(Fill(16,lsu_nonblock_data_unalgn(15)), lsu_nonblock_data_unalgn(15,0)),
     (lsu_nonblock_sz===2.U)                          -> lsu_nonblock_data_unalgn))
-  bus_sideeffect_pend := (0 until DEPTH).map(i=>(buf_state(i)===resp_C) & buf_sideeffect(i) & io.dec_tlu_sideeffect_posted_disable).reduce(_|_)
+  bus_sideeffect_pend := (0 until DEPTH).map(i=>(buf_state(i)===resp_C) & buf_sideeffect(i) & io.tlu_busbuff.dec_tlu_sideeffect_posted_disable).reduce(_|_)
   bus_addr_match_pending := Mux1H((0 until DEPTH).map(i=>(buf_state(i)===resp_C)->
     (BUILD_AXI_NATIVE.B & obuf_valid & (obuf_addr(31,3)===buf_addr(i)(31,3)) & !((obuf_tag0===i.U) | (obuf_merge & (obuf_tag1===i.U))))))
 
-  bus_cmd_ready := Mux(obuf_write, Mux(obuf_cmd_done | obuf_data_done, Mux(obuf_cmd_done, io.lsu_axi_wready, io.lsu_axi_awready), io.lsu_axi_awready & io.lsu_axi_awready), io.lsu_axi_arready)
-  bus_wcmd_sent := io.lsu_axi_awvalid & io.lsu_axi_awready
-  bus_wdata_sent := io.lsu_axi_wvalid & io.lsu_axi_wready
-  bus_cmd_sent := ((obuf_cmd_done | bus_wcmd_sent) & (obuf_data_done | bus_wdata_sent)) | (io.lsu_axi_arvalid & io.lsu_axi_arready)
-  bus_rsp_read := io.lsu_axi_rvalid & io.lsu_axi_rready
-  bus_rsp_write := io.lsu_axi_bvalid & io.lsu_axi_bready
-  bus_rsp_read_tag := io.lsu_axi_rid
-  bus_rsp_write_tag := io.lsu_axi_bid
-  bus_rsp_write_error := bus_rsp_write & (io.lsu_axi_bresp =/= 0.U)
-  bus_rsp_read_error := bus_rsp_read & (io.lsu_axi_bresp =/= 0.U)
-  bus_rsp_rdata := io.lsu_axi_rdata
+  bus_cmd_ready := Mux(obuf_write, Mux(obuf_cmd_done | obuf_data_done, Mux(obuf_cmd_done, io.lsu_axi.w.ready, io.lsu_axi.aw.ready), io.lsu_axi.aw.ready & io.lsu_axi.aw.ready), io.lsu_axi.ar.ready)
+  bus_wcmd_sent := io.lsu_axi.aw.valid & io.lsu_axi.aw.ready
+  bus_wdata_sent := io.lsu_axi.w.valid & io.lsu_axi.w.ready
+  bus_cmd_sent := ((obuf_cmd_done | bus_wcmd_sent) & (obuf_data_done | bus_wdata_sent)) | (io.lsu_axi.ar.valid & io.lsu_axi.ar.ready)
+  bus_rsp_read := io.lsu_axi.r.valid & io.lsu_axi.r.ready
+  bus_rsp_write := io.lsu_axi.b.valid & io.lsu_axi.b.ready
+  bus_rsp_read_tag := io.lsu_axi.r.bits.id
+  bus_rsp_write_tag := io.lsu_axi.b.bits.id
+  bus_rsp_write_error := bus_rsp_write & (io.lsu_axi.b.bits.resp =/= 0.U)
+  bus_rsp_read_error := bus_rsp_read & (io.lsu_axi.b.bits.resp =/= 0.U)
+  bus_rsp_rdata := io.lsu_axi.r.bits.data
 
   // AXI Command signals
-  io.lsu_axi_awvalid := obuf_valid & obuf_write & !obuf_cmd_done & !bus_addr_match_pending
-  io.lsu_axi_awid := obuf_tag0
-  io.lsu_axi_awaddr := Mux(obuf_sideeffect, obuf_addr, Cat(obuf_addr(31,3), 0.U(3.W)))
-  io.lsu_axi_awsize := Mux(obuf_sideeffect, Cat(0.U, obuf_sz), 3.U(3.W))
-  io.lsu_axi_awprot := 0.U
-  io.lsu_axi_awcache := Mux(obuf_sideeffect, 0.U, 15.U)
-  io.lsu_axi_awregion := obuf_addr(31,28)
-  io.lsu_axi_awlen := 0.U
-  io.lsu_axi_awburst := 1.U(2.W)
-  io.lsu_axi_awqos := 0.U
-  io.lsu_axi_awlock := 0.U
+  io.lsu_axi.aw.valid := obuf_valid & obuf_write & !obuf_cmd_done & !bus_addr_match_pending
+  io.lsu_axi.aw.bits.id := obuf_tag0
+  io.lsu_axi.aw.bits.addr := Mux(obuf_sideeffect, obuf_addr, Cat(obuf_addr(31,3), 0.U(3.W)))
+  io.lsu_axi.aw.bits.size := Mux(obuf_sideeffect, Cat(0.U, obuf_sz), 3.U(3.W))
+  io.lsu_axi.aw.bits.prot := 0.U
+  io.lsu_axi.aw.bits.cache := Mux(obuf_sideeffect, 0.U, 15.U)
+  io.lsu_axi.aw.bits.region := obuf_addr(31,28)
+  io.lsu_axi.aw.bits.len := 0.U
+  io.lsu_axi.aw.bits.burst := 1.U(2.W)
+  io.lsu_axi.aw.bits.qos := 0.U
+  io.lsu_axi.aw.bits.lock := 0.U
 
-  io.lsu_axi_wvalid := obuf_valid & obuf_write & !obuf_data_done & !bus_addr_match_pending
-  io.lsu_axi_wstrb := obuf_byteen & Fill(8, obuf_write)
-  io.lsu_axi_wdata := obuf_data
-  io.lsu_axi_wlast := 1.U
+  io.lsu_axi.w.valid := obuf_valid & obuf_write & !obuf_data_done & !bus_addr_match_pending
+  io.lsu_axi.w.bits.strb := obuf_byteen & Fill(8, obuf_write)
+  io.lsu_axi.w.bits.data := obuf_data
+  io.lsu_axi.w.bits.last := 1.U
 
-  io.lsu_axi_arvalid := obuf_valid & !obuf_write & !obuf_nosend & !bus_addr_match_pending
-  io.lsu_axi_arid := obuf_tag0
-  io.lsu_axi_araddr := Mux(obuf_sideeffect, obuf_addr, Cat(obuf_addr(31,3),0.U(3.W)))
-  io.lsu_axi_arsize := Mux(obuf_sideeffect, Cat(0.U, obuf_sz), 3.U(3.W))
-  io.lsu_axi_arprot := 0.U
-  io.lsu_axi_arcache := Mux(obuf_sideeffect, 0.U(4.W), 15.U)
-  io.lsu_axi_arregion := obuf_addr(31,28)
-  io.lsu_axi_arlen := 0.U
-  io.lsu_axi_arburst := 1.U(2.W)
-  io.lsu_axi_arqos := 0.U
-  io.lsu_axi_arlock := 0.U
-  io.lsu_axi_bready := 1.U
-  io.lsu_axi_rready := 1.U
-  io.lsu_imprecise_error_store_any := Mux1H((0 until DEPTH).map(i=>(buf_state(i)===done_C)->(io.lsu_bus_clk_en_q & buf_error(i) & buf_write(i))))
+  io.lsu_axi.ar.valid := obuf_valid & !obuf_write & !obuf_nosend & !bus_addr_match_pending
+  io.lsu_axi.ar.bits.id := obuf_tag0
+  io.lsu_axi.ar.bits.addr := Mux(obuf_sideeffect, obuf_addr, Cat(obuf_addr(31,3),0.U(3.W)))
+  io.lsu_axi.ar.bits.size := Mux(obuf_sideeffect, Cat(0.U, obuf_sz), 3.U(3.W))
+  io.lsu_axi.ar.bits.prot := 0.U
+  io.lsu_axi.ar.bits.cache := Mux(obuf_sideeffect, 0.U(4.W), 15.U)
+  io.lsu_axi.ar.bits.region := obuf_addr(31,28)
+  io.lsu_axi.ar.bits.len := 0.U
+  io.lsu_axi.ar.bits.burst := 1.U(2.W)
+  io.lsu_axi.ar.bits.qos := 0.U
+  io.lsu_axi.ar.bits.lock := 0.U
+  io.lsu_axi.b.ready := 1.U
+  io.lsu_axi.r.ready := 1.U
+  io.tlu_busbuff.lsu_imprecise_error_store_any := Mux1H((0 until DEPTH).map(i=>(buf_state(i)===done_C)->(io.lsu_bus_clk_en_q & buf_error(i) & buf_write(i))))
   val lsu_imprecise_error_store_tag = Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & buf_error(i) & buf_write(i))->i.U))
 
-  io.lsu_imprecise_error_load_any := io.lsu_nonblock_load_data_error & !io.lsu_imprecise_error_store_any
-  io.lsu_imprecise_error_addr_any := Mux(io.lsu_imprecise_error_store_any, buf_addr(lsu_imprecise_error_store_tag), buf_addr(io.lsu_nonblock_load_data_tag))
+  io.tlu_busbuff.lsu_imprecise_error_load_any := io.dctl_busbuff.lsu_nonblock_load_data_error & !io.tlu_busbuff.lsu_imprecise_error_store_any
+  io.tlu_busbuff.lsu_imprecise_error_addr_any := Mux(io.tlu_busbuff.lsu_imprecise_error_store_any, buf_addr(lsu_imprecise_error_store_tag), buf_addr(io.dctl_busbuff.lsu_nonblock_load_data_tag))
   lsu_bus_cntr_overflow := 0.U
 
   io.lsu_bus_idle_any := 1.U
 
   // PMU signals
-  io.lsu_pmu_bus_trxn := (io.lsu_axi_awvalid & io.lsu_axi_awready) | (io.lsu_axi_wvalid & io.lsu_axi_wready) | (io.lsu_axi_arvalid & io.lsu_axi_arready)
-  io.lsu_pmu_bus_misaligned := io.lsu_busreq_r & io.ldst_dual_r & io.lsu_commit_r
-  io.lsu_pmu_bus_error := io.lsu_imprecise_error_load_any | io.lsu_imprecise_error_store_any
+  io.tlu_busbuff.lsu_pmu_bus_trxn := (io.lsu_axi.aw.valid & io.lsu_axi.aw.ready) | (io.lsu_axi.w.valid & io.lsu_axi.w.ready) | (io.lsu_axi.ar.valid & io.lsu_axi.ar.ready)
+  io.tlu_busbuff.lsu_pmu_bus_misaligned := io.lsu_busreq_r & io.ldst_dual_r & io.lsu_commit_r
+  io.tlu_busbuff.lsu_pmu_bus_error := io.tlu_busbuff.lsu_imprecise_error_load_any | io.tlu_busbuff.lsu_imprecise_error_store_any
 
-  io.lsu_pmu_bus_busy := (io.lsu_axi_awvalid & !io.lsu_axi_awready) | (io.lsu_axi_wvalid & !io.lsu_axi_wready) | (io.lsu_axi_arvalid & !io.lsu_axi_arready)
+  io.tlu_busbuff.lsu_pmu_bus_busy := (io.lsu_axi.aw.valid & !io.lsu_axi.aw.ready) | (io.lsu_axi.w.valid & !io.lsu_axi.w.ready) | (io.lsu_axi.ar.valid & !io.lsu_axi.ar.ready)
 
   WrPtr0_r := withClock(io.lsu_c2_r_clk){RegNext(WrPtr0_m, 0.U)}
   WrPtr1_r := withClock(io.lsu_c2_r_clk){RegNext(WrPtr1_m, 0.U)}
   io.lsu_busreq_r := withClock(io.lsu_c2_r_clk){RegNext(io.lsu_busreq_m & !io.flush_r & !io.ld_full_hit_m, false.B)}
-  lsu_nonblock_load_valid_r := withClock(io.lsu_c2_r_clk){RegNext(io.lsu_nonblock_load_valid_m, false.B)}
+  lsu_nonblock_load_valid_r := withClock(io.lsu_c2_r_clk){RegNext(io.dctl_busbuff.lsu_nonblock_load_valid_m, false.B)}
 }
 
 object BusBufmain extends App{

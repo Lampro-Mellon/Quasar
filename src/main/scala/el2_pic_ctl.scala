@@ -2,6 +2,7 @@ import chisel3._
 import chisel3.util._
 import include._
 import lib._
+import lsu._
 import chisel3.experimental.chiselName
 @chiselName
 class el2_pic_ctrl extends Module with RequireAsyncReset with el2_lib {
@@ -11,19 +12,20 @@ class el2_pic_ctrl extends Module with RequireAsyncReset with el2_lib {
     val active_clk             = Input(Clock () )
     val clk_override           = Input(Bool () )
     val extintsrc_req          = Input(UInt (PIC_TOTAL_INT_PLUS1.W))
-    val picm_rdaddr            = Input(UInt(32.W))
-    val picm_wraddr            = Input(UInt(32.W))
-    val picm_wr_data           = Input(UInt(32.W))
-    val picm_wren              = Input(Bool())
-    val picm_rden              = Input(Bool())
-    val picm_mken              = Input(Bool())
-    val meicurpl               = Input(UInt(4.W))
-    val meipt                  = Input(UInt(4.W))
+  val lsu_pic = Flipped(new lsu_pic)
+    //  val picm_rdaddr            = Input(UInt(32.W))
+ //   val picm_wraddr            = Input(UInt(32.W))
+  //  val picm_wr_data           = Input(UInt(32.W))
+  //  val picm_wren              = Input(Bool())
+  //  val picm_rden              = Input(Bool())
+  //  val picm_mken              = Input(Bool())
+   val meicurpl               = Input(UInt(4.W))
+   val meipt                  = Input(UInt(4.W))
 
     val mexintpend             = Output(Bool())
     val claimid                = Output(UInt(8.W))
     val pl                     = Output(UInt(4.W))
-    val picm_rd_data           = Output(UInt(32.W))
+  //  val picm_rd_data           = Output(UInt(32.W))
     val mhwakeup               = Output(Bool())
     //val level_intpend_w_prior_en = Output(Vec((NUM_LEVELS/2)+1, Vec(PIC_TOTAL_INT_PLUS1+3, UInt(INTPRIORITY_BITS.W))))
 
@@ -104,12 +106,12 @@ class el2_pic_ctrl extends Module with RequireAsyncReset with el2_lib {
   val pic_int_c1_clk               = Wire(Clock())
   val gw_config_c1_clk             = Wire(Clock())
 
-  withClock(pic_raddr_c1_clk) {picm_raddr_ff := RegNext(io.picm_rdaddr,0.U)}
-  withClock(pic_data_c1_clk)  {picm_waddr_ff := RegNext (io.picm_wraddr,0.U)}
-  withClock(io.active_clk)    {picm_wren_ff := RegNext(io.picm_wren,0.U)}
-  withClock(io.active_clk)    {picm_rden_ff := RegNext(io.picm_rden,0.U)}
-  withClock(io.active_clk)    {picm_mken_ff := RegNext(io.picm_mken,0.U)}
-  withClock(pic_data_c1_clk)  {picm_wr_data_ff := RegNext(io.picm_wr_data,0.U)}
+  withClock(pic_raddr_c1_clk) {picm_raddr_ff := RegNext(io.lsu_pic.picm_rdaddr,0.U)}
+  withClock(pic_data_c1_clk)  {picm_waddr_ff := RegNext (io.lsu_pic.picm_wraddr,0.U)}
+  withClock(io.active_clk)    {picm_wren_ff := RegNext(io.lsu_pic.picm_wren,0.U)}
+  withClock(io.active_clk)    {picm_rden_ff := RegNext(io.lsu_pic.picm_rden,0.U)}
+  withClock(io.active_clk)    {picm_mken_ff := RegNext(io.lsu_pic.picm_mken,0.U)}
+  withClock(pic_data_c1_clk)  {picm_wr_data_ff := RegNext(io.lsu_pic.picm_wr_data,0.U)}
 
   val temp_raddr_intenable_base_match =   ~(picm_raddr_ff ^ INTENABLE_BASE_ADDR.asUInt)
   val raddr_intenable_base_match     = temp_raddr_intenable_base_match(31,NUM_LEVELS+2).andR////   (31,NUM_LEVELS+2)
@@ -128,8 +130,8 @@ class el2_pic_ctrl extends Module with RequireAsyncReset with el2_lib {
 
   // ---- Clock gating section ------
   // c1 clock enables
-  val pic_raddr_c1_clken  = io.picm_mken | io.picm_rden | io.clk_override
-  val pic_data_c1_clken   = io.picm_wren | io.clk_override
+  val pic_raddr_c1_clken  = io.lsu_pic.picm_mken | io.lsu_pic.picm_rden | io.clk_override
+  val pic_data_c1_clken   = io.lsu_pic.picm_wren | io.clk_override
   val pic_pri_c1_clken    = (waddr_intpriority_base_match & picm_wren_ff)  | (raddr_intpriority_base_match & picm_rden_ff) | io.clk_override
   val pic_int_c1_clken    = (waddr_intenable_base_match & picm_wren_ff)  | (raddr_intenable_base_match & picm_rden_ff) | io.clk_override
   val gw_config_c1_clken  = (waddr_config_gw_base_match   & picm_wren_ff)  | (raddr_config_gw_base_match   & picm_rden_ff) | io.clk_override
@@ -308,7 +310,7 @@ class el2_pic_ctrl extends Module with RequireAsyncReset with el2_lib {
     (picm_mken_ff & mask(0)).asBool  ->  Fill(32,0.U)   ))
 
 
-  io.picm_rd_data := Mux(picm_bypass_ff.asBool, picm_wr_data_ff, picm_rd_data_in)
+  io.lsu_pic.picm_rd_data := Mux(picm_bypass_ff.asBool, picm_wr_data_ff, picm_rd_data_in)
   val address = picm_raddr_ff(14,0)
 
   mask := 1.U(4.W)

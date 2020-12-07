@@ -1,30 +1,32 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_dccm_stall_any",
-    "sources":[
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dec_tlu_dma_qos_prty",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_write"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_pmu_any_write",
     "sources":[
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_write",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_dccm_req",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_write",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_dccm_req",
       "~el2_dma_ctrl|el2_dma_ctrl>io_dma_iccm_req",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dccm_ready",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dccm_ready",
       "~el2_dma_ctrl|el2_dma_ctrl>io_iccm_ready"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_pmu_dccm_write",
+    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_pmu_any_read",
     "sources":[
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_dccm_req",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_write",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dccm_ready"
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_dccm_req",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_iccm_req",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_write",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dccm_ready",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_iccm_ready"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_dccm_ctl_dma_mem_addr",
+    "sources":[
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_addr",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_write"
     ]
   },
   {
@@ -32,49 +34,28 @@
     "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_iccm_stall_any",
     "sources":[
       "~el2_dma_ctrl|el2_dma_ctrl>io_dec_tlu_dma_qos_prty",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_write"
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_write"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_dccm_req",
+    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_sz",
     "sources":[
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dccm_ready",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_write"
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_write"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_addr",
+    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_dccm_ctl_dma_mem_wdata",
     "sources":[
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_write"
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_wdata"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_pmu_any_read",
+    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_addr",
     "sources":[
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_dccm_req",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_iccm_req",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_write",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dccm_ready",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_iccm_ready"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_pmu_dccm_read",
-    "sources":[
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_dccm_req",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_write",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dccm_ready"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_sz",
-    "sources":[
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_write"
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_write"
     ]
   },
   {
@@ -82,7 +63,41 @@
     "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_iccm_req",
     "sources":[
       "~el2_dma_ctrl|el2_dma_ctrl>io_iccm_ready",
-      "~el2_dma_ctrl|el2_dma_ctrl>io_dma_mem_write"
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_write"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_pmu_dccm_write",
+    "sources":[
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_dccm_req",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_write",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dccm_ready"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_pmu_dccm_read",
+    "sources":[
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_dccm_req",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_write",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dccm_ready"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_dma_dccm_stall_any",
+    "sources":[
+      "~el2_dma_ctrl|el2_dma_ctrl>io_dec_tlu_dma_qos_prty",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_write"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_dccm_req",
+    "sources":[
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dccm_ready",
+      "~el2_dma_ctrl|el2_dma_ctrl>io_lsu_dma_dma_lsc_ctl_dma_mem_write"
     ]
   },
   {

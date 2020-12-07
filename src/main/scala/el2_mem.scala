@@ -2,21 +2,37 @@ package el2_mem
 import chisel3._
 import chisel3.util.HasBlackBoxResource
 import lib._
+
+class mem_lsu extends Bundle with el2_lib{
+   val dccm_wren = Input(Bool())
+    val dccm_rden = Input(Bool())
+    val dccm_wr_addr_lo = Input(UInt(DCCM_BITS.W))
+   val dccm_wr_addr_hi = Input(UInt(DCCM_BITS.W))
+   val dccm_rd_addr_lo = Input(UInt(DCCM_BITS.W))
+   val dccm_rd_addr_hi = Input(UInt(DCCM_BITS.W))
+   val dccm_wr_data_lo = Input(UInt(DCCM_FDATA_WIDTH.W))
+   val dccm_wr_data_hi = Input(UInt(DCCM_FDATA_WIDTH.W))
+   val dccm_rd_data_lo = Output(UInt(DCCM_FDATA_WIDTH.W))
+  val dccm_rd_data_hi = Output(UInt(DCCM_FDATA_WIDTH.W))
+}
+
+
 class Mem_bundle extends Bundle with el2_lib {
   val clk = Input(Clock())
   val rst_l = Input(AsyncReset())
   val dccm_clk_override = Input(Bool())
   val icm_clk_override = Input(Bool())
   val dec_tlu_core_ecc_disable = Input(Bool())
-  val dccm_wren = Input(Bool())
-  val dccm_rden = Input(Bool())
-  val dccm_wr_addr_lo = Input(UInt(DCCM_BITS.W))
-  val dccm_wr_addr_hi = Input(UInt(DCCM_BITS.W))
-  val dccm_rd_addr_lo = Input(UInt(DCCM_BITS.W))
-  val dccm_rd_addr_hi = Input(UInt(DCCM_BITS.W))
-  val dccm_wr_data_lo = Input(UInt(DCCM_FDATA_WIDTH.W))
-  val dccm_wr_data_hi = Input(UInt(DCCM_FDATA_WIDTH.W))
-  val dccm_rd_data_lo = Output(UInt(DCCM_FDATA_WIDTH.W))
+  val mem_lsu = new mem_lsu
+ // val dccm_wren = Input(Bool())
+//  val dccm_rden = Input(Bool())
+//  val dccm_wr_addr_lo = Input(UInt(DCCM_BITS.W))
+ // val dccm_wr_addr_hi = Input(UInt(DCCM_BITS.W))
+ // val dccm_rd_addr_lo = Input(UInt(DCCM_BITS.W))
+ // val dccm_rd_addr_hi = Input(UInt(DCCM_BITS.W))
+ // val dccm_wr_data_lo = Input(UInt(DCCM_FDATA_WIDTH.W))
+ // val dccm_wr_data_hi = Input(UInt(DCCM_FDATA_WIDTH.W))
+ // val dccm_rd_data_lo = Output(UInt(DCCM_FDATA_WIDTH.W))
 
   val iccm_rw_addr = Input(UInt((ICCM_BITS-1).W))
   val iccm_buf_correct_ecc = Input(Bool())
@@ -44,7 +60,7 @@ class Mem_bundle extends Bundle with el2_lib {
   val scan_mode = Input(Bool())
 
   val iccm_rd_data_ecc = Output(UInt(78.W))
-  val dccm_rd_data_hi = Output(UInt(DCCM_FDATA_WIDTH.W))
+//  val dccm_rd_data_hi = Output(UInt(DCCM_FDATA_WIDTH.W))
   val ic_rd_data = Output(UInt(64.W))
   val ictag_debug_rd_data = Output(UInt(26.W))
   val ic_eccerr = Output(UInt(ICACHE_BANKS_WAY.W))

@@ -3,9 +3,7 @@ import include._
 import lib._
 import chisel3._
 import chisel3.util._
-
-
-
+import el2_mem._
 import chisel3.experimental.chiselName
 @chiselName
 class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
@@ -78,9 +76,9 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
     val store_data_m           = Input(UInt(32.W))
     val dma_dccm_wen           = Input(UInt(1.W))
     val dma_pic_wen            = Input(UInt(1.W))
-    val dma_mem_tag_m          = Input(UInt(3.W))
-    val dma_mem_addr           = Input(UInt(32.W))
-    val dma_mem_wdata          = Input(UInt(64.W))
+   val dma_mem_tag_m          = Input(UInt(3.W))
+//    val dma_mem_addr           = Input(UInt(32.W))
+  //  val dma_mem_wdata          = Input(UInt(64.W))
     val dma_dccm_wdata_lo      = Input(UInt(32.W))
     val dma_dccm_wdata_hi      = Input(UInt(32.W))
     val dma_dccm_wdata_ecc_hi  = Input(UInt(DCCM_ECC_WIDTH.W))
@@ -96,30 +94,33 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
     val lsu_stbuf_commit_any   = Output(UInt(1.W))
     val lsu_dccm_rden_m        = Output(UInt(1.W))
     val lsu_dccm_rden_r        = Output(UInt(1.W))
-    val dccm_dma_rvalid        = Output(UInt(1.W))
-    val dccm_dma_ecc_error     = Output(UInt(1.W))
-    val dccm_dma_rtag          = Output(UInt(3.W))
-    val dccm_dma_rdata         = Output(UInt(64.W))
-    val dccm_wren              = Output(UInt(1.W))
-    val dccm_rden              = Output(UInt(1.W))
-    val dccm_wr_addr_lo        = Output(UInt(DCCM_BITS.W))
-    val dccm_wr_data_lo        = Output(UInt(DCCM_FDATA_WIDTH.W))
-    val dccm_rd_addr_lo        = Output(UInt(DCCM_BITS.W))
-    val dccm_rd_data_lo        = Input(UInt(DCCM_FDATA_WIDTH.W))
-    val dccm_wr_addr_hi        = Output(UInt(DCCM_BITS.W))
-    val dccm_wr_data_hi        = Output(UInt(DCCM_FDATA_WIDTH.W))
-    val dccm_rd_addr_hi        = Output(UInt(DCCM_BITS.W))
-    val dccm_rd_data_hi        = Input(UInt(DCCM_FDATA_WIDTH.W))
-    val picm_wren              = Output(UInt(1.W))
-    val picm_rden              = Output(UInt(1.W))
-    val picm_mken              = Output(UInt(1.W))
-    val picm_rdaddr            = Output(UInt(32.W))
-    val picm_wraddr            = Output(UInt(32.W))
-    val picm_wr_data           = Output(UInt(32.W))
-    val picm_rd_data           = Input(UInt(32.W))
+    val dma_dccm_ctl = new dma_dccm_ctl
+//    val dccm_dma_rvalid        = Output(UInt(1.W))
+//    val dccm_dma_ecc_error     = Output(UInt(1.W))
+//    val dccm_dma_rtag          = Output(UInt(3.W))
+//    val dccm_dma_rdata         = Output(UInt(64.W))
+ //   val dccm_wren              = Output(UInt(1.W))
+ //   val dccm_rden              = Output(UInt(1.W))
+ //   val dccm_wr_addr_lo        = Output(UInt(DCCM_BITS.W))
+ //   val dccm_wr_data_lo        = Output(UInt(DCCM_FDATA_WIDTH.W))
+ //   val dccm_rd_addr_lo        = Output(UInt(DCCM_BITS.W))
+ //   val dccm_rd_data_lo        = Input(UInt(DCCM_FDATA_WIDTH.W))
+ //   val dccm_wr_addr_hi        = Output(UInt(DCCM_BITS.W))
+ //   val dccm_wr_data_hi        = Output(UInt(DCCM_FDATA_WIDTH.W))
+  //  val dccm_rd_addr_hi        = Output(UInt(DCCM_BITS.W))
+  //  val dccm_rd_data_hi        = Input(UInt(DCCM_FDATA_WIDTH.W))
+    val lsu_mem = Flipped(new mem_lsu)
+    val lsu_pic = new lsu_pic
+//    val picm_wren              = Output(UInt(1.W))
+//    val picm_rden              = Output(UInt(1.W))
+//    val picm_mken              = Output(UInt(1.W))
+//    val picm_rdaddr            = Output(UInt(32.W))
+//    val picm_wraddr            = Output(UInt(32.W))
+//    val picm_wr_data           = Output(UInt(32.W))
+//    val picm_rd_data           = Input(UInt(32.W))
     val scan_mode              = Input(UInt(1.W))
   })
-  val picm_rd_data_m     = Cat(io.picm_rd_data,io.picm_rd_data) //used in both if and else
+  val picm_rd_data_m     = Cat(io.lsu_pic.picm_rd_data,io.lsu_pic.picm_rd_data) //used in both if and else
   val dccm_rdata_corr_r  = Cat(io.sec_data_hi_r,io.sec_data_lo_r)
   val dccm_rdata_corr_m  = Cat(io.sec_data_hi_m,io.sec_data_lo_m)
   val dccm_rdata_r       = Cat(io.dccm_rdata_hi_r,io.dccm_rdata_lo_r)
@@ -137,9 +138,9 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
 
   //Forwarding stbuf
   if (LOAD_TO_USE_PLUS1 == 1){
-    io.dccm_dma_rvalid    := io.lsu_pkt_r.valid & io.lsu_pkt_r.bits.load & io.lsu_pkt_r.bits.dma
-    io.dccm_dma_ecc_error := io.lsu_double_ecc_error_r //from ecc
-    io.dccm_dma_rdata     := lsu_rdata_corr_r
+    io.dma_dccm_ctl.dccm_dma_rvalid    := io.lsu_pkt_r.valid & io.lsu_pkt_r.bits.load & io.lsu_pkt_r.bits.dma
+    io.dma_dccm_ctl.dccm_dma_ecc_error := io.lsu_double_ecc_error_r //from ecc
+    io.dma_dccm_ctl.dccm_dma_rdata     := lsu_rdata_corr_r
     //Registers
     io.dccm_rdata_hi_r    := rvdffe(io.dccm_rdata_hi_m,io.lsu_dccm_rden_m.asBool,clock,io.scan_mode.asBool)
     io.dccm_rdata_lo_r    := rvdffe(io.dccm_rdata_lo_m,io.lsu_dccm_rden_m.asBool,clock,io.scan_mode.asBool)
@@ -149,7 +150,7 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
     stbuf_fwddata_r       := withClock(io.lsu_c2_r_clk){RegNext(Cat(io.stbuf_fwddata_hi_m  ,io.stbuf_fwddata_lo_m  ),0.U)}
     picm_rd_data_r_32     := withClock(io.lsu_c2_r_clk){RegNext(picm_rd_data_m(31,0),0.U)}
     picm_rd_data_r        := Cat(picm_rd_data_r_32,picm_rd_data_r_32)
-    io.dccm_dma_rtag      := withClock(io.lsu_c1_r_clk){RegNext(io.dma_mem_tag_m,0.U)}
+    io.dma_dccm_ctl.dccm_dma_rtag      := withClock(io.lsu_c1_r_clk){RegNext(io.dma_mem_tag_m,0.U)}
 
     lsu_rdata_corr_r      := Reverse(Cat(VecInit.tabulate(8)(i=> Reverse(Mux(stbuf_fwdbyteen_r(i).asBool,stbuf_fwddata_r((8*i)+7,8*i),Mux(io.addr_in_pic_r.asBool,picm_rd_data_r((8*i)+7,8*i),dccm_rdata_corr_r((8*i)+7,8*i)))))))
     lsu_rdata_r           := Reverse(Cat(VecInit.tabulate(8)(i=> Reverse(Mux(stbuf_fwdbyteen_r(i).asBool,stbuf_fwddata_r((8*i)+7,8*i),Mux(io.addr_in_pic_r.asBool,picm_rd_data_r((8*i)+7,8*i),dccm_rdata_r((8*i)+7,8*i)))))))
@@ -158,10 +159,10 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
   }
 
   else{
-    io.dccm_dma_rvalid     := io.lsu_pkt_m.valid & io.lsu_pkt_m.bits.load & io.lsu_pkt_m.bits.dma
-    io.dccm_dma_ecc_error  := io.lsu_double_ecc_error_m //from ecc
-    io.dccm_dma_rdata      := lsu_rdata_corr_m
-    io.dccm_dma_rtag       := io.dma_mem_tag_m
+    io.dma_dccm_ctl.dccm_dma_rvalid     := io.lsu_pkt_m.valid & io.lsu_pkt_m.bits.load & io.lsu_pkt_m.bits.dma
+    io.dma_dccm_ctl.dccm_dma_ecc_error  := io.lsu_double_ecc_error_m //from ecc
+    io.dma_dccm_ctl.dccm_dma_rdata      := lsu_rdata_corr_m
+    io.dma_dccm_ctl.dccm_dma_rtag       := io.dma_mem_tag_m
     io.dccm_rdata_lo_r     := 0.U
     io.dccm_rdata_hi_r     := 0.U
     io.dccm_data_ecc_hi_r  := 0.U
@@ -204,27 +205,27 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
 
 
   //DCCM inputs
-  io.dccm_wren       := lsu_dccm_wren_d | io.lsu_stbuf_commit_any | io.ld_single_ecc_error_r_ff
-  io.dccm_rden       := lsu_dccm_rden_d & io.addr_in_dccm_d
+  io.lsu_mem.dccm_wren       := lsu_dccm_wren_d | io.lsu_stbuf_commit_any | io.ld_single_ecc_error_r_ff
+  io.lsu_mem.dccm_rden       := lsu_dccm_rden_d & io.addr_in_dccm_d
 
-  io.dccm_wr_addr_lo := Mux(io.ld_single_ecc_error_r_ff.asBool,
+  io.lsu_mem.dccm_wr_addr_lo := Mux(io.ld_single_ecc_error_r_ff.asBool,
     Mux(ld_single_ecc_error_lo_r_ff===1.U,ld_sec_addr_lo_r_ff(DCCM_BITS-1,0),ld_sec_addr_hi_r_ff(DCCM_BITS-1,0)),
     Mux(lsu_dccm_wren_d.asBool,io.lsu_addr_d(DCCM_BITS-1,0),io.stbuf_addr_any(DCCM_BITS-1,0)))
 
-  io.dccm_wr_addr_hi := Mux(io.ld_single_ecc_error_r_ff.asBool,
+  io.lsu_mem.dccm_wr_addr_hi := Mux(io.ld_single_ecc_error_r_ff.asBool,
     Mux(ld_single_ecc_error_hi_r_ff===1.U, ld_sec_addr_hi_r_ff(DCCM_BITS-1,0), ld_sec_addr_lo_r_ff(DCCM_BITS-1,0)),
     Mux(lsu_dccm_wren_d.asBool, io.end_addr_d(DCCM_BITS-1,0),io.stbuf_addr_any(DCCM_BITS-1,0)))
 
-  io.dccm_rd_addr_lo := io.lsu_addr_d(DCCM_BITS-1,0)
-  io.dccm_rd_addr_hi := io.end_addr_d(DCCM_BITS-1,0)
+  io.lsu_mem.dccm_rd_addr_lo := io.lsu_addr_d(DCCM_BITS-1,0)
+  io.lsu_mem.dccm_rd_addr_hi := io.end_addr_d(DCCM_BITS-1,0)
 
-  io.dccm_wr_data_lo := Mux(io.ld_single_ecc_error_r_ff.asBool,
+  io.lsu_mem.dccm_wr_data_lo := Mux(io.ld_single_ecc_error_r_ff.asBool,
     Mux(ld_single_ecc_error_lo_r_ff===1.U,Cat(io.sec_data_ecc_lo_r_ff(DCCM_ECC_WIDTH-1,0),io.sec_data_lo_r_ff(DCCM_DATA_WIDTH-1,0))  ,
       Cat(io.sec_data_ecc_hi_r_ff(DCCM_ECC_WIDTH-1,0),io.sec_data_hi_r_ff(DCCM_DATA_WIDTH-1,0))) ,
     Mux(io.dma_dccm_wen.asBool,Cat(io.dma_dccm_wdata_ecc_lo(DCCM_ECC_WIDTH-1,0),io.dma_dccm_wdata_lo(DCCM_DATA_WIDTH-1,0)),
       Cat(io.stbuf_ecc_any(DCCM_ECC_WIDTH-1,0),io.stbuf_data_any(DCCM_DATA_WIDTH-1,0))))
 
-  io.dccm_wr_data_hi := Mux(io.ld_single_ecc_error_r_ff.asBool,
+  io.lsu_mem.dccm_wr_data_hi := Mux(io.ld_single_ecc_error_r_ff.asBool,
     Mux(ld_single_ecc_error_hi_r_ff===1.U, Cat(io.sec_data_ecc_hi_r_ff(DCCM_ECC_WIDTH-1,0),io.sec_data_hi_r_ff(DCCM_DATA_WIDTH-1,0)),
       Cat(io.sec_data_ecc_lo_r_ff(DCCM_ECC_WIDTH-1,0),io.sec_data_lo_r_ff(DCCM_DATA_WIDTH-1,0))),
     Mux(io.dma_dccm_wen.asBool, Cat(io.dma_dccm_wdata_ecc_hi(DCCM_ECC_WIDTH-1,0),io.dma_dccm_wdata_hi(DCCM_DATA_WIDTH-1,0)),
@@ -286,18 +287,18 @@ class  el2_lsu_dccm_ctl extends Module with RequireAsyncReset with el2_lib
     io.store_datafn_hi_r    := Reverse(Cat(VecInit.tabulate(4)(i=> Reverse(Mux((io.lsu_stbuf_commit_any & dccm_wr_bypass_d_r_hi & !store_byteen_ext_r(i+4)).asBool,io.stbuf_data_any((8*i)+7,8*i),io.store_data_hi_r((8*i)+7,8*i))))))
     io.store_data_r         := (Cat(io.store_data_hi_r(31,0),io.store_data_lo_r(31,0)) >> 8.U*io.lsu_addr_r(1,0)) & Reverse(Cat(VecInit.tabulate(4)(i=> Fill(8,store_byteen_r(i)))))
   }
-  io.dccm_rdata_lo_m      := io.dccm_rd_data_lo(DCCM_DATA_WIDTH-1,0)  //4 lines
-  io.dccm_rdata_hi_m      := io.dccm_rd_data_hi(DCCM_DATA_WIDTH-1,0)
-  io.dccm_data_ecc_lo_m   := io.dccm_rd_data_lo(DCCM_FDATA_WIDTH-1,DCCM_DATA_WIDTH)
-  io.dccm_data_ecc_hi_m   := io.dccm_rd_data_hi(DCCM_FDATA_WIDTH-1,DCCM_DATA_WIDTH)
+  io.dccm_rdata_lo_m      := io.lsu_mem.dccm_rd_data_lo(DCCM_DATA_WIDTH-1,0)  //4 lines
+  io.dccm_rdata_hi_m      := io.lsu_mem.dccm_rd_data_hi(DCCM_DATA_WIDTH-1,0)
+  io.dccm_data_ecc_lo_m   := io.lsu_mem.dccm_rd_data_lo(DCCM_FDATA_WIDTH-1,DCCM_DATA_WIDTH)
+  io.dccm_data_ecc_hi_m   := io.lsu_mem.dccm_rd_data_hi(DCCM_FDATA_WIDTH-1,DCCM_DATA_WIDTH)
 
-  io.picm_wren            := (io.lsu_pkt_r.valid & io.lsu_pkt_r.bits.store & io.addr_in_pic_r & io.lsu_commit_r) | io.dma_pic_wen
-  io.picm_rden            := io.lsu_pkt_d.valid  & io.lsu_pkt_d.bits.load  & io.addr_in_pic_d
-  io.picm_mken            := io.lsu_pkt_d.valid  & io.lsu_pkt_d.bits.store & io.addr_in_pic_d
-  io.picm_rdaddr          := aslong(PIC_BASE_ADDR).U | Cat(Fill(32-PIC_BITS,0.U),io.lsu_addr_d(PIC_BITS-1,0))
-  io.picm_wraddr          := aslong(PIC_BASE_ADDR).U | Cat(Fill(32-PIC_BITS,0.U),Mux(io.dma_pic_wen.asBool,io.dma_mem_addr(PIC_BITS-1,0),io.lsu_addr_r(PIC_BITS-1,0)))
+  io.lsu_pic.picm_wren            := (io.lsu_pkt_r.valid & io.lsu_pkt_r.bits.store & io.addr_in_pic_r & io.lsu_commit_r) | io.dma_pic_wen
+  io.lsu_pic.picm_rden            := io.lsu_pkt_d.valid  & io.lsu_pkt_d.bits.load  & io.addr_in_pic_d
+  io.lsu_pic.picm_mken            := io.lsu_pkt_d.valid  & io.lsu_pkt_d.bits.store & io.addr_in_pic_d
+  io.lsu_pic.picm_rdaddr          := aslong(PIC_BASE_ADDR).U | Cat(Fill(32-PIC_BITS,0.U),io.lsu_addr_d(PIC_BITS-1,0))
+  io.lsu_pic.picm_wraddr          := aslong(PIC_BASE_ADDR).U | Cat(Fill(32-PIC_BITS,0.U),Mux(io.dma_pic_wen.asBool,io.dma_dccm_ctl.dma_mem_addr(PIC_BITS-1,0),io.lsu_addr_r(PIC_BITS-1,0)))
   io.picm_mask_data_m     := picm_rd_data_m(31,0)
-  io.picm_wr_data         := Mux(io.dma_pic_wen.asBool,io.dma_mem_wdata(31,0),io.store_datafn_lo_r(31,0))
+  io.lsu_pic.picm_wr_data         := Mux(io.dma_pic_wen.asBool,io.dma_dccm_ctl.dma_mem_wdata(31,0),io.store_datafn_lo_r(31,0))
 
   if(DCCM_ENABLE){
     io.lsu_dccm_rden_m := withClock(io.lsu_c2_m_clk){RegNext(lsu_dccm_rden_d,0.U)}

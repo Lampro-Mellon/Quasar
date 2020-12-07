@@ -172,7 +172,6 @@ class el2_ifu_compress_ctl extends Module with el2_lib{
 
   io.dout:= l3 & repl(32, legal)
 }
-
-object ifu_compress extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_compress_ctl()))
+object compress extends App {
+  (new chisel3.stage.ChiselStage).emitVerilog(new el2_ifu_compress_ctl())
 }

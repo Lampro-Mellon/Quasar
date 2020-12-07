@@ -7,6 +7,7 @@ import lsu._
 import lib._
 import include._
 import dbg._
+import el2_mem._
 class el2_swerv_bundle extends Bundle with  el2_lib{
   val dbg_rst_l = Input(AsyncReset())
   val rst_vec = Input(UInt(31.W))
@@ -40,17 +41,18 @@ class el2_swerv_bundle extends Bundle with  el2_lib{
   val dec_tlu_perfcnt1 = Output(Bool())
   val dec_tlu_perfcnt2 = Output(Bool())
   val dec_tlu_perfcnt3 = Output(Bool())
-  val dccm_wren = Output(Bool())
-  val dccm_rden = Output(Bool())
-  val dccm_wr_addr_lo = Output(UInt(DCCM_BITS.W))
-  val dccm_wr_addr_hi = Output(UInt(DCCM_BITS.W))
-  val dccm_rd_addr_lo = Output(UInt(DCCM_BITS.W))
-  val dccm_rd_addr_hi = Output(UInt(DCCM_BITS.W))
+  val swerv_mem = Flipped(new mem_lsu)
+ // val dccm_wren = Output(Bool())
+ // val dccm_rden = Output(Bool())
+ // val dccm_wr_addr_lo = Output(UInt(DCCM_BITS.W))
+ // val dccm_wr_addr_hi = Output(UInt(DCCM_BITS.W))
+//  val dccm_rd_addr_lo = Output(UInt(DCCM_BITS.W))
+ // val dccm_rd_addr_hi = Output(UInt(DCCM_BITS.W))
 
-  val dccm_wr_data_lo = Output(UInt(DCCM_FDATA_WIDTH.W))
-  val dccm_wr_data_hi = Output(UInt(DCCM_FDATA_WIDTH.W))
-  val dccm_rd_data_lo = Input(UInt(DCCM_FDATA_WIDTH.W))
-  val dccm_rd_data_hi = Input(UInt(DCCM_FDATA_WIDTH.W))
+//  val dccm_wr_data_lo = Output(UInt(DCCM_FDATA_WIDTH.W))
+ // val dccm_wr_data_hi = Output(UInt(DCCM_FDATA_WIDTH.W))
+ // val dccm_rd_data_lo = Input(UInt(DCCM_FDATA_WIDTH.W))
+//  val dccm_rd_data_hi = Input(UInt(DCCM_FDATA_WIDTH.W))
 
   val iccm_rw_addr = Output(UInt((ICCM_BITS-1).W))
   val iccm_wren = Output(Bool())
@@ -549,8 +551,8 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   lsu.io.dec_lsu_valid_raw_d := dec.io.dec_lsu_valid_raw_d
   lsu.io.dec_tlu_mrac_ff := dec.io.dec_tlu_mrac_ff
   lsu.io.trigger_pkt_any <> dec.io.trigger_pkt_any
-  lsu.io.dccm_rd_data_lo := io.dccm_rd_data_lo
-  lsu.io.dccm_rd_data_hi := io.dccm_rd_data_hi
+//  lsu.io.dccm_rd_data_lo := io.dccm_rd_data_lo
+//  lsu.io.dccm_rd_data_hi := io.dccm_rd_data_hi
   lsu.io.lsu_axi_awready := Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_awready)
   lsu.io.lsu_axi_wready :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_wready)
   lsu.io.lsu_axi_bvalid :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi_bvalid)
@@ -685,14 +687,17 @@ class el2_swerv extends Module with RequireAsyncReset with el2_lib {
   io.dec_tlu_perfcnt2 := dec.io.dec_tlu_perfcnt2
   io.dec_tlu_perfcnt3 := dec.io.dec_tlu_perfcnt3
   // LSU Outputs
-  io.dccm_wren := lsu.io.dccm_wren
-  io.dccm_rden := lsu.io.dccm_rden
-  io.dccm_wr_addr_lo := lsu.io.dccm_wr_addr_lo
-  io.dccm_wr_addr_hi := lsu.io.dccm_wr_addr_hi
-  io.dccm_rd_addr_lo := lsu.io.dccm_rd_addr_lo
-  io.dccm_rd_addr_hi := lsu.io.dccm_rd_addr_hi
-  io.dccm_wr_data_lo := lsu.io.dccm_wr_data_lo
-  io.dccm_wr_data_hi := lsu.io.dccm_wr_data_hi
+  io.swerv_mem <> lsu.io.lsu_mem
+//  io.dccm_wren := lsu.io.dccm_wren
+//  io.dccm_rden := lsu.io.dccm_rden
+//  io.dccm_wr_addr_lo := lsu.io.dccm_wr_addr_lo
+//  io.dccm_wr_addr_hi := lsu.io.dccm_wr_addr_hi
+//  io.dccm_rd_addr_lo := lsu.io.dccm_rd_addr_lo
+//  io.dccm_rd_addr_hi := lsu.io.dccm_rd_addr_hi
+//  io.dccm_wr_data_lo := lsu.io.dccm_wr_data_lo
+//  io.dccm_wr_data_hi := lsu.io.dccm_wr_data_hi
+//  lsu.io.dccm_rd_data_lo := io.dccm_rd_data_lo
+//  lsu.io.dccm_rd_data_hi := io.dccm_rd_data_hi
   // IFU Outputs
   io.iccm_rw_addr := ifu.io.iccm_rw_addr
   io.iccm_wren := ifu.io.iccm_wren

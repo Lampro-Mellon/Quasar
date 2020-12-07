@@ -1,27 +1,34 @@
 package dec
 import chisel3._
+
 import scala.collection._
 import chisel3.util._
 import include._
 import lib._
+import exu._
+import ifu._
+import lsu._
 
 class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val io = IO(new Bundle{
-
+    val decode_exu = Flipped(new decode_exu)
+    val dec_alu = Flipped(new dec_alu)
+    val dec_div = Flipped(new dec_div)
+    val dctl_busbuff = Flipped(new dctl_busbuff())
     val dec_tlu_flush_extint          = Input(Bool())
     val dec_tlu_force_halt            = Input(Bool()) // invalidate nonblock load cam on a force halt event
-    val dec_extint_stall              = Output(Bool())
-    val ifu_i0_cinst                  = Input(UInt(16.W))          // 16b compressed instruction
+//    val dec_extint_stall              = Output(Bool())
+
     val dec_i0_inst_wb1               = Output(UInt(32.W))      // 32b instruction at wb+1 for trace encoder
     val dec_i0_pc_wb1                 = Output(UInt(31.W))      // 31b pc at wb+1 for trace encoder
-    val lsu_nonblock_load_valid_m     =   Input(Bool())                         // valid nonblock load at m
-    val lsu_nonblock_load_tag_m       =   Input(UInt(LSU_NUM_NBLOAD_WIDTH.W)) // -> corresponding tag
-    val lsu_nonblock_load_inv_r       =   Input(Bool())                         // invalidate request for nonblock load r
-    val lsu_nonblock_load_inv_tag_r   =   Input(UInt(LSU_NUM_NBLOAD_WIDTH.W)) // -> corresponding tag
-    val lsu_nonblock_load_data_valid  =   Input(Bool())                         // valid nonblock load data back
-    val lsu_nonblock_load_data_error  =   Input(Bool())                         // nonblock load bus error
-    val lsu_nonblock_load_data_tag    =   Input(UInt(LSU_NUM_NBLOAD_WIDTH.W)) // -> corresponding tag
-    val lsu_nonblock_load_data        =   Input(UInt(32.W))                     // nonblock load data
+//    val lsu_nonblock_load_valid_m     =   Input(Bool())                         // valid nonblock load at m
+//    val lsu_nonblock_load_tag_m       =   Input(UInt(LSU_NUM_NBLOAD_WIDTH.W)) // -> corresponding tag
+//    val lsu_nonblock_load_inv_r       =   Input(Bool())                         // invalidate request for nonblock load r
+//    val lsu_nonblock_load_inv_tag_r   =   Input(UInt(LSU_NUM_NBLOAD_WIDTH.W)) // -> corresponding tag
+//    val lsu_nonblock_load_data_valid  =   Input(Bool())                         // valid nonblock load data back
+//    val lsu_nonblock_load_data_error  =   Input(Bool())                         // nonblock load bus error
+//    val lsu_nonblock_load_data_tag    =   Input(UInt(LSU_NUM_NBLOAD_WIDTH.W)) // -> corresponding tag
+//    val lsu_nonblock_load_data        =   Input(UInt(32.W))                     // nonblock load data
     val dec_i0_trigger_match_d        = Input(UInt(4.W))         // i0 decode trigger matches
     val dec_tlu_wr_pause_r         =   Input(Bool())           // pause instruction at r
     val dec_tlu_pipelining_disable =   Input(Bool())           // pipeline disable - presync, i0 decode only
@@ -55,43 +62,43 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     val dec_i0_pc4_d               =   Input(Bool())           // inst is 4B inst else 2B
     val dec_csr_rddata_d           =   Input(UInt(32.W)) // csr read data at wb
     val dec_csr_legal_d            =   Input(Bool())           // csr indicates legal operation
-    val exu_csr_rs1_x              =   Input(UInt(32.W))    // rs1 for csr instr
+//    val exu_csr_rs1_x              =   Input(UInt(32.W))    // rs1 for csr instr
     val lsu_result_m               =   Input(UInt(32.W))    // load result
     val lsu_result_corr_r          =   Input(UInt(32.W))   // load result - corrected data for writing gpr's, not for bypassing
-    val exu_flush_final            =   Input(Bool())           // lower flush or i0 flush at X or D
-    val exu_i0_pc_x                =   Input(UInt(31.W))    // pcs at e1
+//    val exu_flush_final            =   Input(Bool())           // lower flush or i0 flush at X or D
+//    val exu_i0_pc_x                =   Input(UInt(31.W))    // pcs at e1
     val dec_i0_instr_d             =   Input(UInt(32.W))    // inst at decode
     val dec_ib0_valid_d            =   Input(Bool())          // inst valid at decode
-    val exu_i0_result_x            =   Input(UInt(32.W))    // from primary alu's
+//    val exu_i0_result_x            =   Input(UInt(32.W))    // from primary alu's
     val free_clk                   =   Input(Clock())
     val active_clk                 =   Input(Clock())              // clk except for halt / pause
     val clk_override               =   Input(Bool())              // test stuff
 
-    val dec_i0_rs1_en_d            =   Output(Bool())     // rs1 enable at decode
-    val dec_i0_rs2_en_d            =   Output(Bool())
+//    val dec_i0_rs1_en_d            =   Output(Bool())     // rs1 enable at decode
+//    val dec_i0_rs2_en_d            =   Output(Bool())
     val dec_i0_rs1_d               =   Output(UInt(5.W))    // rs1 logical source
     val dec_i0_rs2_d               =   Output(UInt(5.W))
-    val dec_i0_immed_d             =   Output(UInt(32.W))   // 32b immediate data decode
-    val dec_i0_br_immed_d          =   Output(UInt(12.W))    // 12b branch immediate
-    val i0_ap                      =   Output(new el2_alu_pkt_t)   // alu packets
-    val dec_i0_decode_d            =   Output(Bool())     // i0 decode
-    val dec_i0_alu_decode_d        =   Output(Bool())  // decode to D-stage alu
-    val dec_i0_rs1_bypass_data_d   =   Output(UInt(32.W)) // i0 rs1 bypass data
-    val dec_i0_rs2_bypass_data_d   =   Output(UInt(32.W)) // i0 rs2 bypass data
+//    val dec_i0_immed_d             =   Output(UInt(32.W))   // 32b immediate data decode
+//    val dec_i0_br_immed_d          =   Output(UInt(12.W))    // 12b branch immediate
+//    val i0_ap                      =   Output(new el2_alu_pkt_t)   // alu packets
+//    val dec_i0_decode_d            =   Output(Bool())     // i0 decode
+//    val dec_i0_alu_decode_d        =   Output(Bool())  // decode to D-stage alu
+//    val dec_i0_rs1_bypass_data_d   =   Output(UInt(32.W)) // i0 rs1 bypass data
+//    val dec_i0_rs2_bypass_data_d   =   Output(UInt(32.W)) // i0 rs2 bypass data
     val dec_i0_waddr_r             =   Output(UInt(5.W))   // i0 logical source to write to gpr's
     val dec_i0_wen_r               =   Output(Bool())   // i0 write enable
     val dec_i0_wdata_r             =   Output(UInt(32.W))   // i0 write data
-    val dec_i0_select_pc_d         =   Output(Bool()) // i0 select pc for rs1 - branches
-    val dec_i0_rs1_bypass_en_d     =   Output(UInt(2.W)) // i0 rs1 bypass enable
-    val dec_i0_rs2_bypass_en_d     =   Output(UInt(2.W)) // i0 rs2 bypass enable
+//    val dec_i0_select_pc_d         =   Output(Bool()) // i0 select pc for rs1 - branches
+//    val dec_i0_rs1_bypass_en_d     =   Output(UInt(2.W)) // i0 rs1 bypass enable
+//    val dec_i0_rs2_bypass_en_d     =   Output(UInt(2.W)) // i0 rs2 bypass enable
     val lsu_p                      =   Valid(new el2_lsu_pkt_t) // load/store packet
-    val mul_p                      =   Valid(new el2_mul_pkt_t) // multiply packet
-    val div_p                      =   Valid(new el2_div_pkt_t) // divide packet
+//    val mul_p                      =   Valid(new el2_mul_pkt_t) // multiply packet
+//    val div_p                      =   Valid(new el2_div_pkt_t) // divide packet
     val div_waddr_wb               =   Output(UInt(5.W)) // DIV write address to GPR
-    val dec_div_cancel             =   Output(Bool()) // cancel the divide operation
+//    val dec_div_cancel             =   Output(Bool()) // cancel the divide operation
     val dec_lsu_valid_raw_d        =   Output(Bool())
     val dec_lsu_offset_d           =   Output(UInt(12.W))
-    val dec_csr_ren_d              =   Output(Bool())   // valid csr decode
+//    val dec_csr_ren_d              =   Output(Bool())   // valid csr decode
     val dec_csr_wen_unq_d          =   Output(Bool())   // valid csr with write - for csr legal
     val dec_csr_any_unq_d          =   Output(Bool())   // valid csr - for csr legal
     val dec_csr_rdaddr_d           =   Output(UInt(12.W))   // read address for csr
@@ -103,13 +110,14 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     val dec_tlu_packet_r           =   Output(new el2_trap_pkt_t)   // trap packet
     val dec_tlu_i0_pc_r            =   Output(UInt(31.W))   // i0 trap pc
     val dec_illegal_inst           =   Output(UInt(32.W))   // illegal inst
-    val pred_correct_npc_x         =   Output(UInt(31.W))   // npc e2 if the prediction is correct
-    val dec_i0_predict_p_d         = Valid(new el2_predict_pkt_t)      // i0 predict packet decode
-    val i0_predict_fghr_d          = Output(UInt(BHT_GHR_SIZE.W))   // i0 predict fghr
-    val i0_predict_index_d         = Output(UInt(((BHT_ADDR_HI-BHT_ADDR_LO)+1).W))    // i0 predict index
-    val i0_predict_btag_d          = Output(UInt(BTB_BTAG_SIZE.W))  // i0_predict branch tag
-    val dec_data_en                =   Output(UInt(2.W))    // clock-gating logic
-    val dec_ctl_en                 =   Output(UInt(2.W))
+//    val pred_correct_npc_x         =   Output(UInt(31.W))   // npc e2 if the prediction is correct
+
+//    val dec_i0_predict_p_d         = Valid(new el2_predict_pkt_t)      // i0 predict packet decode
+//    val i0_predict_fghr_d          = Output(UInt(BHT_GHR_SIZE.W))   // i0 predict fghr
+//    val i0_predict_index_d         = Output(UInt(((BHT_ADDR_HI-BHT_ADDR_LO)+1).W))    // i0 predict index
+//    val i0_predict_btag_d          = Output(UInt(BTB_BTAG_SIZE.W))  // i0_predict branch tag
+//    val dec_data_en                =   Output(UInt(2.W))    // clock-gating logic
+//    val dec_ctl_en                 =   Output(UInt(2.W))
     val dec_pmu_instr_decoded      =   Output(Bool())    // number of instructions decode this cycle encoded
     val dec_pmu_decode_stall       =   Output(Bool())    // decode is stalled
     val dec_pmu_presync_stall      =   Output(Bool())    // decode has presync stall
@@ -120,10 +128,12 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     val dec_pause_state_cg         =   Output(Bool())    // pause state for clock-gating
     val dec_div_active             =   Output(Bool())    // non-block divide is active
     val scan_mode                  =   Input(Bool())
-  })
+
+    val dec_aln = Flipped(new aln_dec)
+})
   /////////////////////////////////////////////////////////////////////////////////////////
-  //  //packets zero initialization
-  io.mul_p := 0.U.asTypeOf(io.mul_p)
+//  //packets zero initialization
+  io.decode_exu.mul_p := 0.U.asTypeOf(io.decode_exu.mul_p)
   // Vals defined
   val leak1_i1_stall_in = WireInit(UInt(1.W), 0.U)
   val leak1_i0_stall_in = WireInit(UInt(1.W), 0.U)
@@ -207,15 +217,14 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val i0_result_r = WireInit(UInt(32.W), 0.U)
   //////////////////////////////////////////////////////////////////////
   // Start - Data gating {{
-
   val data_gate_en     = (io.dec_tlu_wr_pause_r   ^  tlu_wr_pause_r1  ) |   // replaces free_clk
     (tlu_wr_pause_r1           ^  tlu_wr_pause_r2    ) |   // replaces free_clk
-    (io.dec_tlu_flush_extint   ^  io.dec_extint_stall) |
+    (io.dec_tlu_flush_extint   ^  io.decode_exu.dec_extint_stall) |
     (leak1_i1_stall_in         ^  leak1_i1_stall     ) |   // replaces free_clk
     (leak1_i0_stall_in         ^  leak1_i0_stall     ) |   // replaces free_clk
     (pause_state_in            ^  pause_state        ) |   // replaces free_clk
     (ps_stall_in               ^  postsync_stall     ) |   // replaces free_clk
-    (io.exu_flush_final        ^  flush_final_r      ) |   // replaces free_clk
+    (io.dec_alu.exu_flush_final        ^  flush_final_r      ) |   // replaces free_clk
     (illegal_lockout_in        ^  illegal_lockout    )     // replaces active_clk
 
 
@@ -224,30 +233,30 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   // End  - Data gating }}
 
   val i0_brp_valid                   = io.dec_i0_brp.valid & !leak1_mode
-  io.dec_i0_predict_p_d.bits.misp         :=0.U
-  io.dec_i0_predict_p_d.bits.ataken       :=0.U
-  io.dec_i0_predict_p_d.bits.boffset      :=0.U
-  io.dec_i0_predict_p_d.bits.pcall        :=  i0_pcall  // don't mark as pcall if branch error
-  io.dec_i0_predict_p_d.bits.pja          :=  i0_pja
-  io.dec_i0_predict_p_d.bits.pret         :=  i0_pret
-  io.dec_i0_predict_p_d.bits.prett        :=  io.dec_i0_brp.bits.prett
-  io.dec_i0_predict_p_d.bits.pc4          :=  io.dec_i0_pc4_d
-  io.dec_i0_predict_p_d.bits.hist         :=  io.dec_i0_brp.bits.hist
-  io.dec_i0_predict_p_d.valid        :=  i0_brp_valid & i0_legal_decode_d
+  io.decode_exu.dec_i0_predict_p_d.bits.misp         :=0.U
+  io.decode_exu.dec_i0_predict_p_d.bits.ataken       :=0.U
+  io.decode_exu.dec_i0_predict_p_d.bits.boffset      :=0.U
+  io.decode_exu.dec_i0_predict_p_d.bits.pcall        :=  i0_pcall  // don't mark as pcall if branch error
+  io.decode_exu.dec_i0_predict_p_d.bits.pja          :=  i0_pja
+  io.decode_exu.dec_i0_predict_p_d.bits.pret         :=  i0_pret
+  io.decode_exu.dec_i0_predict_p_d.bits.prett        :=  io.dec_i0_brp.bits.prett
+  io.decode_exu.dec_i0_predict_p_d.bits.pc4          :=  io.dec_i0_pc4_d
+  io.decode_exu.dec_i0_predict_p_d.bits.hist         :=  io.dec_i0_brp.bits.hist
+  io.decode_exu.dec_i0_predict_p_d.valid        :=  i0_brp_valid & i0_legal_decode_d
   val i0_notbr_error                 =  i0_brp_valid & !(i0_dp_raw.condbr | i0_pcall_raw | i0_pja_raw | i0_pret_raw)
 
   // no toffset error for a pret
   val i0_br_toffset_error     =  i0_brp_valid & io.dec_i0_brp.bits.hist(1) & (io.dec_i0_brp.bits.toffset =/= i0_br_offset) & !i0_pret_raw
   val i0_ret_error            =  i0_brp_valid & io.dec_i0_brp.bits.ret & !i0_pret_raw;
   val i0_br_error             =  io.dec_i0_brp.bits.br_error | i0_notbr_error | i0_br_toffset_error | i0_ret_error
-  io.dec_i0_predict_p_d.bits.br_error                  :=  i0_br_error & i0_legal_decode_d & !leak1_mode
-  io.dec_i0_predict_p_d.bits.br_start_error            :=  io.dec_i0_brp.bits.br_start_error & i0_legal_decode_d & !leak1_mode
-  io.i0_predict_index_d        :=  io.dec_i0_bp_index
-  io.i0_predict_btag_d         :=  io.dec_i0_bp_btag
+  io.decode_exu.dec_i0_predict_p_d.bits.br_error                  :=  i0_br_error & i0_legal_decode_d & !leak1_mode
+  io.decode_exu.dec_i0_predict_p_d.bits.br_start_error            :=  io.dec_i0_brp.bits.br_start_error & i0_legal_decode_d & !leak1_mode
+  io.decode_exu.i0_predict_index_d        :=  io.dec_i0_bp_index
+  io.decode_exu.i0_predict_btag_d         :=  io.dec_i0_bp_btag
   val i0_br_error_all          = (i0_br_error | io.dec_i0_brp.bits.br_start_error) & !leak1_mode
-  io.dec_i0_predict_p_d.bits.toffset            :=  i0_br_offset
-  io.i0_predict_fghr_d         :=  io.dec_i0_bp_fghr
-  io.dec_i0_predict_p_d.bits.way                       :=  io.dec_i0_brp.bits.way
+  io.decode_exu.dec_i0_predict_p_d.bits.toffset            :=  i0_br_offset
+  io.decode_exu.i0_predict_fghr_d         :=  io.dec_i0_bp_fghr
+  io.decode_exu.dec_i0_predict_p_d.bits.way                       :=  io.dec_i0_brp.bits.way
   //   end
 
   // on br error turn anything into a nop
@@ -268,54 +277,54 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   }
 
   val i0 = io.dec_i0_instr_d
-  io.dec_i0_select_pc_d := i0_dp.pc;
+  io.decode_exu.dec_i0_select_pc_d := i0_dp.pc
 
   // branches that can be predicted
-  val i0_predict_br  =  i0_dp.condbr | i0_pcall | i0_pja | i0_pret;
+  val i0_predict_br    =  i0_dp.condbr | i0_pcall | i0_pja | i0_pret;
 
   val i0_predict_nt    = !(io.dec_i0_brp.bits.hist(1) & i0_brp_valid) & i0_predict_br
   val i0_predict_t     =  (io.dec_i0_brp.bits.hist(1) & i0_brp_valid) & i0_predict_br
   val i0_ap_pc2  = !io.dec_i0_pc4_d
   val i0_ap_pc4  =  io.dec_i0_pc4_d
-  io.i0_ap.predict_nt    := i0_predict_nt
-  io.i0_ap.predict_t     := i0_predict_t
+  io.decode_exu.i0_ap.predict_nt    := i0_predict_nt
+  io.decode_exu.i0_ap.predict_t     := i0_predict_t
 
-  io.i0_ap.add     :=  i0_dp.add
-  io.i0_ap.sub     :=  i0_dp.sub
-  io.i0_ap.land    :=  i0_dp.land
-  io.i0_ap.lor     :=  i0_dp.lor
-  io.i0_ap.lxor    :=  i0_dp.lxor
-  io.i0_ap.sll     :=  i0_dp.sll
-  io.i0_ap.srl     :=  i0_dp.srl
-  io.i0_ap.sra     :=  i0_dp.sra
-  io.i0_ap.slt     :=  i0_dp.slt
-  io.i0_ap.unsign  :=  i0_dp.unsign
-  io.i0_ap.beq     :=  i0_dp.beq
-  io.i0_ap.bne     :=  i0_dp.bne
-  io.i0_ap.blt     :=  i0_dp.blt
-  io.i0_ap.bge     :=  i0_dp.bge
-  io.i0_ap.csr_write :=  i0_csr_write_only_d
-  io.i0_ap.csr_imm   :=  i0_dp.csr_imm
-  io.i0_ap.jal       :=  i0_jal
-
+  io.decode_exu.i0_ap.add     :=  i0_dp.add
+  io.decode_exu.i0_ap.sub     :=  i0_dp.sub
+  io.decode_exu.i0_ap.land    :=  i0_dp.land
+  io.decode_exu.i0_ap.lor     :=  i0_dp.lor
+  io.decode_exu.i0_ap.lxor    :=  i0_dp.lxor
+  io.decode_exu.i0_ap.sll     :=  i0_dp.sll
+  io.decode_exu.i0_ap.srl     :=  i0_dp.srl
+  io.decode_exu.i0_ap.sra     :=  i0_dp.sra
+  io.decode_exu.i0_ap.slt     :=  i0_dp.slt
+  io.decode_exu.i0_ap.unsign  :=  i0_dp.unsign
+  io.decode_exu.i0_ap.beq     :=  i0_dp.beq
+  io.decode_exu.i0_ap.bne     :=  i0_dp.bne
+  io.decode_exu.i0_ap.blt     :=  i0_dp.blt
+  io.decode_exu.i0_ap.bge     :=  i0_dp.bge
+  io.decode_exu.i0_ap.csr_write :=  i0_csr_write_only_d
+  io.decode_exu.i0_ap.csr_imm   :=  i0_dp.csr_imm
+  io.decode_exu.i0_ap.jal       :=  i0_jal
+   
   // non block load cam logic
   // val found=Wire(UInt(1.W))
   cam_wen := Mux1H((0 until LSU_NUM_NBLOAD).map(i=>(0 to i).map(j=> if(i==j) !cam(j).valid else cam(j).valid).reduce(_.asBool&_.asBool).asBool -> (cam_write << i)))
 
-  cam_write             := io.lsu_nonblock_load_valid_m
-  val cam_write_tag      = io.lsu_nonblock_load_tag_m(LSU_NUM_NBLOAD_WIDTH-1,0)
+  cam_write             := io.dctl_busbuff.lsu_nonblock_load_valid_m
+  val cam_write_tag      = io.dctl_busbuff.lsu_nonblock_load_tag_m(LSU_NUM_NBLOAD_WIDTH-1,0)
 
-  val cam_inv_reset       = io.lsu_nonblock_load_inv_r
-  val cam_inv_reset_tag   = io.lsu_nonblock_load_inv_tag_r
+  val cam_inv_reset       = io.dctl_busbuff.lsu_nonblock_load_inv_r
+  val cam_inv_reset_tag   = io.dctl_busbuff.lsu_nonblock_load_inv_tag_r
 
-  val cam_data_reset        = io.lsu_nonblock_load_data_valid | io.lsu_nonblock_load_data_error
-  val cam_data_reset_tag    = io.lsu_nonblock_load_data_tag
+  val cam_data_reset        = io.dctl_busbuff.lsu_nonblock_load_data_valid | io.dctl_busbuff.lsu_nonblock_load_data_error
+  val cam_data_reset_tag    = io.dctl_busbuff.lsu_nonblock_load_data_tag
 
   val nonblock_load_rd   = Mux(x_d.bits.i0load.asBool, x_d.bits.i0rd, 0.U(5.W))  // rd data
-  val load_data_tag = io.lsu_nonblock_load_data_tag
+  val load_data_tag = io.dctl_busbuff.lsu_nonblock_load_data_tag
   // case of multiple loads to same dest ie. x1 ... you have to invalidate the older one
   // don't writeback a nonblock load
-  val nonblock_load_valid_m_delay=withClock(io.active_clk){RegEnable(io.lsu_nonblock_load_valid_m,0.U, i0_r_ctl_en.asBool)}
+  val nonblock_load_valid_m_delay=withClock(io.active_clk){RegEnable(io.dctl_busbuff.lsu_nonblock_load_valid_m,0.U, i0_r_ctl_en.asBool)}
   val i0_load_kill_wen_r = nonblock_load_valid_m_delay &  r_d.bits.i0load
   for(i <- 0 until  LSU_NUM_NBLOAD){
     cam_inv_reset_val(i) := cam_inv_reset   & (cam_inv_reset_tag === cam(i).bits.tag) & cam(i).valid
@@ -336,7 +345,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     }.otherwise{
       cam_in(i)      := cam(i)
     }
-    when(nonblock_load_valid_m_delay===1.U && (io.lsu_nonblock_load_inv_tag_r === cam(i).bits.tag) && cam(i).valid===1.U){
+    when(nonblock_load_valid_m_delay===1.U && (io.dctl_busbuff.lsu_nonblock_load_inv_tag_r === cam(i).bits.tag) && cam(i).valid===1.U){
       cam_in(i).bits.wb := 1.U
     }
     // force debug halt forces cam valids to 0; highest priority
@@ -351,12 +360,12 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   io.dec_nonblock_load_waddr:=0.U(5.W)
   // cancel if any younger inst (including another nonblock) committing this cycle
   val nonblock_load_cancel = ((r_d_in.bits.i0rd === io.dec_nonblock_load_waddr) & i0_wen_r)
-  io.dec_nonblock_load_wen := (io.lsu_nonblock_load_data_valid && nonblock_load_write.reduce(_|_).asBool && !nonblock_load_cancel)
-  val i0_nonblock_boundary_stall = ((nonblock_load_rd===i0r.rs1) & io.lsu_nonblock_load_valid_m & io.dec_i0_rs1_en_d)|((nonblock_load_rd===i0r.rs2) & io.lsu_nonblock_load_valid_m & io.dec_i0_rs2_en_d)
+  io.dec_nonblock_load_wen := (io.dctl_busbuff.lsu_nonblock_load_data_valid && nonblock_load_write.reduce(_|_).asBool && !nonblock_load_cancel)
+  val i0_nonblock_boundary_stall = ((nonblock_load_rd===i0r.rs1) & io.dctl_busbuff.lsu_nonblock_load_valid_m & io.decode_exu.dec_i0_rs1_en_d)|((nonblock_load_rd===i0r.rs2) & io.dctl_busbuff.lsu_nonblock_load_valid_m & io.decode_exu.dec_i0_rs2_en_d)
 
   i0_nonblock_load_stall := i0_nonblock_boundary_stall
 
-  val cal_temp= for(i <-0 until LSU_NUM_NBLOAD) yield ((Fill(5,nonblock_load_write(i)) & cam(i).bits.rd), io.dec_i0_rs1_en_d & cam(i).valid & (cam(i).bits.rd === i0r.rs1), io.dec_i0_rs2_en_d & cam(i).valid & (cam(i).bits.rd === i0r.rs2))
+  val cal_temp= for(i <-0 until LSU_NUM_NBLOAD) yield ((Fill(5,nonblock_load_write(i)) & cam(i).bits.rd), io.decode_exu.dec_i0_rs1_en_d & cam(i).valid & (cam(i).bits.rd === i0r.rs1), io.decode_exu.dec_i0_rs2_en_d & cam(i).valid & (cam(i).bits.rd === i0r.rs2))
   val (waddr, ld_stall_1, ld_stall_2) = (cal_temp.map(_._1).reduce(_|_) , cal_temp.map(_._2).reduce(_|_), cal_temp.map(_._3).reduce(_|_) )
   io.dec_nonblock_load_waddr:=waddr
   i0_nonblock_load_stall:=ld_stall_1 | ld_stall_2 | i0_nonblock_boundary_stall
@@ -399,7 +408,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   leak1_i1_stall_in := (io.dec_tlu_flush_leak_one_r | (leak1_i1_stall & !io.dec_tlu_flush_lower_r))
   leak1_i1_stall    := withClock(data_gate_clk){RegNext(leak1_i1_stall_in,0.U)}
   leak1_mode := leak1_i1_stall
-  leak1_i0_stall_in := ((io.dec_i0_decode_d & leak1_i1_stall) | (leak1_i0_stall & !io.dec_tlu_flush_lower_r))
+  leak1_i0_stall_in := ((io.dec_aln.dec_i0_decode_d & leak1_i1_stall) | (leak1_i0_stall & !io.dec_tlu_flush_lower_r))
   leak1_i0_stall    := withClock(data_gate_clk){RegNext(leak1_i0_stall_in,0.U)}
 
   // 12b jal's can be predicted - these are calls
@@ -420,19 +429,19 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   i0_jal      := i0_dp.jal     &  !i0_pcall_case & !i0_pja_case & !i0_pret_case
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  io.div_p.valid    :=  div_decode_d
-  io.div_p.bits.unsign   :=  i0_dp.unsign
-  io.div_p.bits.rem      :=  i0_dp.rem
+  io.dec_div.div_p.valid    :=  div_decode_d
+  io.dec_div.div_p.bits.unsign   :=  i0_dp.unsign
+  io.dec_div.div_p.bits.rem      :=  i0_dp.rem
 
-  io.mul_p.valid    :=  mul_decode_d
-  io.mul_p.bits.rs1_sign :=  i0_dp.rs1_sign
-  io.mul_p.bits.rs2_sign :=  i0_dp.rs2_sign
-  io.mul_p.bits.low      :=  i0_dp.low
+  io.decode_exu.mul_p.valid    :=  mul_decode_d
+  io.decode_exu.mul_p.bits.rs1_sign :=  i0_dp.rs1_sign
+  io.decode_exu.mul_p.bits.rs2_sign :=  i0_dp.rs2_sign
+  io.decode_exu.mul_p.bits.low      :=  i0_dp.low
 
-  io.dec_extint_stall := withClock(data_gate_clk){RegNext(io.dec_tlu_flush_extint,0.U)}
+  io.decode_exu.dec_extint_stall := withClock(data_gate_clk){RegNext(io.dec_tlu_flush_extint,0.U)}
 
   io.lsu_p := 0.U.asTypeOf(io.lsu_p)
-  when (io.dec_extint_stall){
+  when (io.decode_exu.dec_extint_stall){
     io.lsu_p.bits.load      := 1.U(1.W)
     io.lsu_p.bits.word      := 1.U(1.W)
     io.lsu_p.bits.fast_int  := 1.U(1.W)
@@ -451,7 +460,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   }
 
   //////////////////////////////////////
-  io.dec_csr_ren_d  := i0_dp.csr_read //H: assigning csr read enable signal decoded from decode_ctl going as input to EXU
+  io.dec_alu.dec_csr_ren_d  := i0_dp.csr_read //H: assigning csr read enable signal decoded from decode_ctl going as input to EXU
   csr_ren_qual_d := i0_dp.csr_read & i0_legal_decode_d.asBool //csr_ren_qual_d assigned as csr_read above
 
   val i0_csr_write   = i0_dp.csr_write & !io.dec_debug_fence_d
@@ -485,14 +494,14 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
 
   val csr_mask_x       = Mux1H(Seq(
     csr_imm_x.asBool  ->   Cat(repl(27,0.U),csrimm_x(4,0)),
-    !csr_imm_x.asBool ->   io.exu_csr_rs1_x))
+    !csr_imm_x.asBool ->   io.decode_exu.exu_csr_rs1_x))
 
   val write_csr_data_x = Mux1H(Seq(
     csr_clr_x   ->  (csr_rddata_x & (~csr_mask_x).asUInt),
     csr_set_x   ->  (csr_rddata_x |  csr_mask_x),
     csr_write_x ->  (                csr_mask_x)))
   // pause instruction
-  val clear_pause = (io.dec_tlu_flush_lower_r & !io.dec_tlu_flush_pause_r) | (pause_state & (write_csr_data === 0.U(31.W)))        // if 0 or 1 then exit pause state - 1 cycle pause
+  val clear_pause = (io.dec_tlu_flush_lower_r & !io.dec_tlu_flush_pause_r) | (pause_state & (write_csr_data ===  Cat(Fill(31,0.U),write_csr_data(0))))        // if 0 or 1 then exit pause state - 1 cycle pause
   pause_state_in := (io.dec_tlu_wr_pause_r | pause_state) & !clear_pause
   pause_state := withClock(data_gate_clk){RegNext(pause_state_in, 0.U)}
   io.dec_pause_state := pause_state
@@ -528,17 +537,17 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val any_csr_d = i0_dp.csr_read | i0_csr_write
   io.dec_csr_any_unq_d := any_csr_d
   val i0_legal       =  i0_dp.legal & (!any_csr_d | io.dec_csr_legal_d)
-  val i0_inst_d      = Mux(io.dec_i0_pc4_d,i0,Cat(repl(16,0.U), io.ifu_i0_cinst))
+  val i0_inst_d      = Mux(io.dec_i0_pc4_d,i0,Cat(repl(16,0.U), io.dec_aln.ifu_i0_cinst))
   // illegal inst handling
 
-  val shift_illegal      = io.dec_i0_decode_d & !i0_legal//lm: valid but not legal
+  val shift_illegal      = io.dec_aln.dec_i0_decode_d & !i0_legal//lm: valid but not legal
   val illegal_inst_en    = shift_illegal & !illegal_lockout
   io.dec_illegal_inst := rvdffe(i0_inst_d,illegal_inst_en,clock,io.scan_mode)
   illegal_lockout_in := (shift_illegal | illegal_lockout) & !flush_final_r
   illegal_lockout := withClock(data_gate_clk){RegNext(illegal_lockout_in, 0.U)}
   val i0_div_prior_div_stall = i0_dp.div & io.dec_div_active
   //stalls signals
-  val i0_block_raw_d = (i0_dp.csr_read & prior_csr_write) | io.dec_extint_stall | pause_stall |
+  val i0_block_raw_d = (i0_dp.csr_read & prior_csr_write) | io.decode_exu.dec_extint_stall | pause_stall |
     leak1_i0_stall | io.dec_tlu_debug_stall | postsync_stall | presync_stall  |
     ((i0_dp.fence | debug_fence) & !lsu_idle) | i0_nonblock_load_stall |
     i0_load_block_d | i0_nonblock_div_stall | i0_div_prior_div_stall
@@ -549,13 +558,13 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val i0_exublock_d = i0_block_raw_d
 
   //decode valid
-  io.dec_i0_decode_d := io.dec_ib0_valid_d & !i0_block_d    & !io.dec_tlu_flush_lower_r & !flush_final_r
+  io.dec_aln.dec_i0_decode_d := io.dec_ib0_valid_d & !i0_block_d    & !io.dec_tlu_flush_lower_r & !flush_final_r
   val i0_exudecode_d  = io.dec_ib0_valid_d & !i0_exublock_d & !io.dec_tlu_flush_lower_r & !flush_final_r
   val i0_exulegal_decode_d = i0_exudecode_d  & i0_legal
 
   // performance monitor signals
-  io.dec_pmu_instr_decoded := io.dec_i0_decode_d
-  io.dec_pmu_decode_stall := io.dec_ib0_valid_d & !io.dec_i0_decode_d
+  io.dec_pmu_instr_decoded := io.dec_aln.dec_i0_decode_d
+  io.dec_pmu_decode_stall := io.dec_ib0_valid_d & !io.dec_aln.dec_i0_decode_d
   io.dec_pmu_postsync_stall := postsync_stall.asBool
   io.dec_pmu_presync_stall  := presync_stall.asBool
 
@@ -567,9 +576,9 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   presync_stall      := (i0_presync & prior_inflight_eff)
   postsync_stall := withClock(data_gate_clk){RegNext(ps_stall_in, 0.U)}
   // illegals will postsync
-  ps_stall_in :=  (io.dec_i0_decode_d & (i0_postsync | !i0_legal) ) | ( postsync_stall & prior_inflight_x)
+  ps_stall_in :=  (io.dec_aln.dec_i0_decode_d & (i0_postsync | !i0_legal) ) | ( postsync_stall & prior_inflight_x)
 
-  io.dec_i0_alu_decode_d := i0_exulegal_decode_d & i0_dp.alu
+  io.dec_alu.dec_i0_alu_decode_d := i0_exulegal_decode_d & i0_dp.alu
 
   lsu_decode_d := i0_legal_decode_d    & i0_dp.lsu
   mul_decode_d := i0_exulegal_decode_d & i0_dp.mul
@@ -590,7 +599,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   d_t.pmu_divide         :=  0.U(1.W)
   d_t.pmu_lsu_misaligned :=  0.U(1.W)
 
-  d_t.i0trigger          :=  io.dec_i0_trigger_match_d & repl(4,io.dec_i0_decode_d)
+  d_t.i0trigger          :=  io.dec_i0_trigger_match_d & repl(4,io.dec_aln.dec_i0_decode_d)
 
 
   x_t := rvdffe(d_t,i0_x_ctl_en.asBool,clock,io.scan_mode)
@@ -613,16 +622,16 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   io.dec_tlu_packet_r.pmu_divide      :=  r_d.bits.i0div & r_d.valid
   // end tlu stuff
 
-  flush_final_r := withClock(data_gate_clk){RegNext(io.exu_flush_final, 0.U)}
+  flush_final_r := withClock(data_gate_clk){RegNext(io.dec_alu.exu_flush_final, 0.U)}
 
-  io.dec_i0_decode_d := io.dec_ib0_valid_d & !i0_block_d & !io.dec_tlu_flush_lower_r & !flush_final_r
+  io.dec_aln.dec_i0_decode_d := io.dec_ib0_valid_d & !i0_block_d & !io.dec_tlu_flush_lower_r & !flush_final_r
 
   i0r.rs1 := i0(19,15) //H: assigning reg packets the instructions bits
   i0r.rs2 := i0(24,20)
   i0r.rd  := i0(11,7)
 
-  io.dec_i0_rs1_en_d   :=  i0_dp.rs1 & (i0r.rs1 =/= 0.U(5.W))  // if rs1_en=0 then read will be all 0's
-  io.dec_i0_rs2_en_d   :=  i0_dp.rs2 & (i0r.rs2 =/= 0.U(5.W))
+  io.decode_exu.dec_i0_rs1_en_d   :=  i0_dp.rs1 & (i0r.rs1 =/= 0.U(5.W))  // if rs1_en=0 then read will be all 0's
+  io.decode_exu.dec_i0_rs2_en_d   :=  i0_dp.rs2 & (i0r.rs2 =/= 0.U(5.W))
   val i0_rd_en_d       =  i0_dp.rd  & (i0r.rd  =/= 0.U(5.W))
   io.dec_i0_rs1_d :=  i0r.rs1//H:assiging packets to output signals leading to gprfile
   io.dec_i0_rs2_d :=  i0r.rs2
@@ -630,7 +639,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val i0_jalimm20       =  i0_dp.jal & i0_dp.imm20   // H:jal (used at line 915)
   val i0_uiimm20        = !i0_dp.jal & i0_dp.imm20
 
-  io.dec_i0_immed_d := Mux1H(Seq(
+  io.decode_exu.dec_i0_immed_d := Mux1H(Seq(
     i0_dp.csr_read -> io.dec_csr_rddata_d,
     !i0_dp.csr_read -> i0_immed_d))
 
@@ -641,7 +650,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
     i0_uiimm20   ->    Cat(i0(31,12),repl(12,0.U)),
     (i0_csr_write_only_d & i0_dp.csr_imm).asBool -> Cat(repl(27,0.U),i0(19,15))))  // for csr's that only write
 
-  i0_legal_decode_d    := io.dec_i0_decode_d & i0_legal
+  i0_legal_decode_d    := io.dec_aln.dec_i0_decode_d & i0_legal
 
   i0_d_c.mul                :=  i0_dp.mul  & i0_legal_decode_d
   i0_d_c.load               :=  i0_dp.load & i0_legal_decode_d
@@ -649,7 +658,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
 
   val i0_x_c = withClock(io.active_clk){RegEnable(i0_d_c, i0_x_ctl_en.asBool)}
   val i0_r_c = withClock(io.active_clk){RegEnable(i0_x_c, i0_r_ctl_en.asBool)}
-  i0_pipe_en := Cat(io.dec_i0_decode_d,withClock(io.active_clk){RegNext(i0_pipe_en(3,1), init=0.U)})
+  i0_pipe_en := Cat(io.dec_aln.dec_i0_decode_d,withClock(io.active_clk){RegNext(i0_pipe_en(3,1), init=0.U)})
 
   i0_x_ctl_en               := (i0_pipe_en(3,2).orR | io.clk_override)
   i0_r_ctl_en               := (i0_pipe_en(2,1).orR | io.clk_override)
@@ -659,19 +668,19 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   i0_wb_data_en             := ( i0_pipe_en(1)   | io.clk_override)
   i0_wb1_data_en            := ( i0_pipe_en(0)   | io.clk_override)
 
-  io.dec_data_en          := Cat(i0_x_data_en, i0_r_data_en)
-  io.dec_ctl_en           := Cat(i0_x_ctl_en,  i0_r_ctl_en)
+  io.decode_exu.dec_data_en          := Cat(i0_x_data_en, i0_r_data_en)
+  io.decode_exu.dec_ctl_en           := Cat(i0_x_ctl_en,  i0_r_ctl_en)
 
   d_d.bits.i0rd                  :=  i0r.rd
   d_d.bits.i0v                   :=  i0_rd_en_d  & i0_legal_decode_d
-  d_d.valid               :=  io.dec_i0_decode_d  // has flush_final_r
+  d_d.valid               :=  io.dec_aln.dec_i0_decode_d  // has flush_final_r
 
   d_d.bits.i0load                :=  i0_dp.load  & i0_legal_decode_d
   d_d.bits.i0store               :=  i0_dp.store & i0_legal_decode_d
   d_d.bits.i0div                 :=  i0_dp.div   & i0_legal_decode_d
 
   d_d.bits.csrwen                :=  io.dec_csr_wen_unq_d   & i0_legal_decode_d
-  d_d.bits.csrwonly              :=  i0_csr_write_only_d & io.dec_i0_decode_d
+  d_d.bits.csrwonly              :=  i0_csr_write_only_d & io.dec_aln.dec_i0_decode_d
   d_d.bits.csrwaddr              :=  i0(31,20)
 
   x_d := rvdffe(d_d, i0_x_ctl_en.asBool,clock,io.scan_mode)
@@ -698,19 +707,19 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
 
   val i0_result_r_raw = rvdffe(i0_result_x,i0_r_data_en.asBool,clock,io.scan_mode)
   if ( LOAD_TO_USE_PLUS1 == 1 ) {
-    i0_result_x         := io.exu_i0_result_x
+    i0_result_x         := io.decode_exu.exu_i0_result_x
     i0_result_r         := Mux((r_d.bits.i0v & r_d.bits.i0load).asBool,io.lsu_result_m, i0_result_r_raw)
   }
   else {
-    i0_result_x          := Mux((x_d.bits.i0v & x_d.bits.i0load).asBool,io.lsu_result_m,io.exu_i0_result_x)
+    i0_result_x          := Mux((x_d.bits.i0v & x_d.bits.i0load).asBool,io.lsu_result_m,io.decode_exu.exu_i0_result_x)
     i0_result_r          := i0_result_r_raw
   }
 
   // correct lsu load data - don't use for bypass, do pass down the pipe
   i0_result_corr_r  := Mux((r_d.bits.i0v & r_d.bits.i0load).asBool,io.lsu_result_corr_r,i0_result_r_raw)
-  io.dec_i0_br_immed_d := Mux((io.i0_ap.predict_nt & !i0_dp.jal).asBool,i0_br_offset,Cat(repl(10,0.U),i0_ap_pc4,i0_ap_pc2))
+  io.dec_alu.dec_i0_br_immed_d := Mux((io.decode_exu.i0_ap.predict_nt & !i0_dp.jal).asBool,i0_br_offset,Cat(repl(10,0.U),i0_ap_pc4,i0_ap_pc2))
   val last_br_immed_d = WireInit(UInt(12.W),0.U)
-  last_br_immed_d := Mux((io.i0_ap.predict_nt).asBool,Cat(repl(10,0.U),i0_ap_pc4,i0_ap_pc2),i0_br_offset)
+  last_br_immed_d := Mux((io.decode_exu.i0_ap.predict_nt).asBool,Cat(repl(10,0.U),i0_ap_pc4,i0_ap_pc2),i0_br_offset)
   val last_br_immed_x  = WireInit(UInt(12.W),0.U)
   last_br_immed_x := rvdffe(last_br_immed_d,i0_x_data_en.asBool,clock,io.scan_mode)
 
@@ -727,7 +736,7 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val nonblock_div_cancel    = (io.dec_div_active &  div_flush) |
     (io.dec_div_active & !div_e1_to_r & (r_d.bits.i0rd === io.div_waddr_wb) & i0_wen_r)
 
-  io.dec_div_cancel         :=  nonblock_div_cancel.asBool
+  io.dec_div.dec_div_cancel         :=  nonblock_div_cancel.asBool
   val i0_div_decode_d            =  i0_legal_decode_d & i0_dp.div
 
   val div_active_in = i0_div_decode_d | (io.dec_div_active & !io.exu_div_wren & !nonblock_div_cancel)
@@ -735,8 +744,8 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   io.dec_div_active := withClock(io.free_clk){RegNext(div_active_in, 0.U)}
 
   // nonblocking div scheme
-  i0_nonblock_div_stall  := (io.dec_i0_rs1_en_d & io.dec_div_active & (io.div_waddr_wb === i0r.rs1)) |
-    (io.dec_i0_rs2_en_d & io.dec_div_active & (io.div_waddr_wb === i0r.rs2))
+  i0_nonblock_div_stall  := (io.decode_exu.dec_i0_rs1_en_d & io.dec_div_active & (io.div_waddr_wb === i0r.rs1)) |
+    (io.decode_exu.dec_i0_rs2_en_d & io.dec_div_active & (io.div_waddr_wb === i0r.rs2))
 
   io.div_waddr_wb := RegEnable(i0r.rd,0.U,i0_div_decode_d.asBool)
   ///div end
@@ -754,22 +763,22 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   val i0_pc_wb = rvdffe(io.dec_tlu_i0_pc_r,i0_wb_en.asBool,clock,io.scan_mode)
 
   io.dec_i0_pc_wb1 := rvdffe(i0_pc_wb,i0_wb1_en.asBool,clock,io.scan_mode)
-  val dec_i0_pc_r = rvdffe(io.exu_i0_pc_x,i0_r_data_en.asBool,clock,io.scan_mode)
+  val dec_i0_pc_r = rvdffe(io.dec_alu.exu_i0_pc_x,i0_r_data_en.asBool,clock,io.scan_mode)
 
   io.dec_tlu_i0_pc_r      := dec_i0_pc_r
 
   //end tracing
 
-  val temp_pred_correct_npc_x  = rvbradder(Cat(io.exu_i0_pc_x,0.U),Cat(last_br_immed_x,0.U))
-  io.pred_correct_npc_x := temp_pred_correct_npc_x(31,1)
+  val temp_pred_correct_npc_x  = rvbradder(Cat(io.dec_alu.exu_i0_pc_x,0.U),Cat(last_br_immed_x,0.U))
+  io.decode_exu.pred_correct_npc_x := temp_pred_correct_npc_x(31,1)
 
   // scheduling logic for primary alu's
 
-  val i0_rs1_depend_i0_x  = io.dec_i0_rs1_en_d & x_d.bits.i0v & (x_d.bits.i0rd === i0r.rs1)
-  val i0_rs1_depend_i0_r  = io.dec_i0_rs1_en_d & r_d.bits.i0v & (r_d.bits.i0rd === i0r.rs1)
+  val i0_rs1_depend_i0_x  = io.decode_exu.dec_i0_rs1_en_d & x_d.bits.i0v & (x_d.bits.i0rd === i0r.rs1)
+  val i0_rs1_depend_i0_r  = io.decode_exu.dec_i0_rs1_en_d & r_d.bits.i0v & (r_d.bits.i0rd === i0r.rs1)
 
-  val i0_rs2_depend_i0_x  = io.dec_i0_rs2_en_d & x_d.bits.i0v & (x_d.bits.i0rd === i0r.rs2)
-  val i0_rs2_depend_i0_r  = io.dec_i0_rs2_en_d & r_d.bits.i0v & (r_d.bits.i0rd === i0r.rs2)
+  val i0_rs2_depend_i0_x  = io.decode_exu.dec_i0_rs2_en_d & x_d.bits.i0v & (x_d.bits.i0rd === i0r.rs2)
+  val i0_rs2_depend_i0_r  = io.decode_exu.dec_i0_rs2_en_d & r_d.bits.i0v & (r_d.bits.i0rd === i0r.rs2)
   // order the producers as follows:  , i0_x, i0_r, i0_wb
   i0_rs1_class_d := Mux(i0_rs1_depend_i0_x.asBool,i0_x_c,Mux(i0_rs1_depend_i0_r.asBool, i0_r_c, 0.U.asTypeOf(i0_rs1_class_d)))
   i0_rs1_depth_d := Mux(i0_rs1_depend_i0_x.asBool,1.U(2.W),Mux(i0_rs1_depend_i0_r.asBool, 2.U(2.W), 0.U))
@@ -791,33 +800,33 @@ class el2_dec_decode_ctl extends Module with el2_lib with RequireAsyncReset{
   }
   // add nonblock load rs1/rs2 bypass cases
 
-  val i0_rs1_nonblock_load_bypass_en_d  = io.dec_i0_rs1_en_d & io.dec_nonblock_load_wen & (io.dec_nonblock_load_waddr === i0r.rs1)
+  val i0_rs1_nonblock_load_bypass_en_d  = io.decode_exu.dec_i0_rs1_en_d & io.dec_nonblock_load_wen & (io.dec_nonblock_load_waddr === i0r.rs1)
 
-  val i0_rs2_nonblock_load_bypass_en_d  = io.dec_i0_rs2_en_d & io.dec_nonblock_load_wen & (io.dec_nonblock_load_waddr === i0r.rs2)
+  val i0_rs2_nonblock_load_bypass_en_d  = io.decode_exu.dec_i0_rs2_en_d & io.dec_nonblock_load_wen & (io.dec_nonblock_load_waddr === i0r.rs2)
 
   // bit 2 is priority match, bit 0 lowest priority	, i0_x, i0_r
   i0_rs1bypass   :=  Cat((i0_rs1_depth_d(0) &(i0_rs1_class_d.alu | i0_rs1_class_d.mul)),(i0_rs1_depth_d(0) & (i0_rs1_class_d.load)), (i0_rs1_depth_d(1) & (i0_rs1_class_d.alu | i0_rs1_class_d.mul | i0_rs1_class_d.load)))
 
   i0_rs2bypass   :=  Cat((i0_rs2_depth_d(0) & (i0_rs2_class_d.alu | i0_rs2_class_d.mul)),(i0_rs2_depth_d(0) & (i0_rs2_class_d.load)),(i0_rs2_depth_d(1) & (i0_rs2_class_d.alu | i0_rs2_class_d.mul | i0_rs2_class_d.load)))
 
-  io.dec_i0_rs1_bypass_en_d      :=  Cat(i0_rs1bypass(2),(i0_rs1bypass(1) | i0_rs1bypass(0) | (!i0_rs1bypass(2) & i0_rs1_nonblock_load_bypass_en_d)))
-  io.dec_i0_rs2_bypass_en_d      :=  Cat(i0_rs2bypass(2),(i0_rs2bypass(1) | i0_rs2bypass(0) | (!i0_rs2bypass(2) & i0_rs2_nonblock_load_bypass_en_d)))
+  io.decode_exu.dec_i0_rs1_bypass_en_d      :=  Cat(i0_rs1bypass(2),(i0_rs1bypass(1) | i0_rs1bypass(0) | (!i0_rs1bypass(2) & i0_rs1_nonblock_load_bypass_en_d)))
+  io.decode_exu.dec_i0_rs2_bypass_en_d      :=  Cat(i0_rs2bypass(2),(i0_rs2bypass(1) | i0_rs2bypass(0) | (!i0_rs2bypass(2) & i0_rs2_nonblock_load_bypass_en_d)))
 
 
-  io.dec_i0_rs1_bypass_data_d := Mux1H(Seq(
+  io.decode_exu.dec_i0_rs1_bypass_data_d := Mux1H(Seq(
     i0_rs1bypass(1).asBool -> io.lsu_result_m,
     i0_rs1bypass(0).asBool -> i0_result_r,
-    (!i0_rs1bypass(1) & !i0_rs1bypass(0) & i0_rs1_nonblock_load_bypass_en_d).asBool -> io.lsu_nonblock_load_data,
+    (!i0_rs1bypass(1) & !i0_rs1bypass(0) & i0_rs1_nonblock_load_bypass_en_d).asBool -> io.dctl_busbuff.lsu_nonblock_load_data,
   ))
-  io.dec_i0_rs2_bypass_data_d := Mux1H(Seq(
+  io.decode_exu.dec_i0_rs2_bypass_data_d := Mux1H(Seq(
     i0_rs2bypass(1).asBool -> io.lsu_result_m,
     i0_rs2bypass(0).asBool -> i0_result_r,
-    (!i0_rs2bypass(1) & !i0_rs2bypass(0) & i0_rs2_nonblock_load_bypass_en_d).asBool -> io.lsu_nonblock_load_data,
+    (!i0_rs2bypass(1) & !i0_rs2bypass(0) & i0_rs2_nonblock_load_bypass_en_d).asBool -> io.dctl_busbuff.lsu_nonblock_load_data,
   ))
-  io.dec_lsu_valid_raw_d := ((io.dec_ib0_valid_d & (i0_dp_raw.load | i0_dp_raw.store) & !io.dma_dccm_stall_any & !i0_block_raw_d) | io.dec_extint_stall)
+  io.dec_lsu_valid_raw_d := ((io.dec_ib0_valid_d & (i0_dp_raw.load | i0_dp_raw.store) & !io.dma_dccm_stall_any & !i0_block_raw_d) | io.decode_exu.dec_extint_stall)
   io.dec_lsu_offset_d := Mux1H(Seq(
-    (!io.dec_extint_stall & i0_dp.lsu & i0_dp.load).asBool  ->     i0(31,20),
-    (!io.dec_extint_stall & i0_dp.lsu & i0_dp.store).asBool ->     Cat(i0(31,25),i0(11,7))))
+    (!io.decode_exu.dec_extint_stall & i0_dp.lsu & i0_dp.load).asBool  ->     i0(31,20),
+    (!io.decode_exu.dec_extint_stall & i0_dp.lsu & i0_dp.store).asBool ->     Cat(i0(31,25),i0(11,7))))
 }
 
 object dec_decode extends App{

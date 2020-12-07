@@ -2,6 +2,7 @@ import chisel3._
 import chisel3.util._
 import scala.collection._
 import lib._
+import lsu._
 
 class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
   val io = IO(new Bundle {
@@ -9,6 +10,7 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
     val dma_bus_clk_en        = Input(Bool())     // slave bus clock enable
     val clk_override          = Input(Bool())
     val scan_mode             = Input(Bool())
+    val lsu_dma = Flipped(new lsu_dma)
 
     // Debug signals
     val dbg_cmd_addr          = Input(UInt(32.W))
@@ -25,17 +27,17 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
     val dma_dbg_rddata        = Output(UInt(32.W))
 
     // Core side signals
-    val dma_dccm_req          = Output(Bool())    // DMA dccm request (only one of dccm/iccm will be set)
+ //   val dma_dccm_req          = Output(Bool())    // DMA dccm request (only one of dccm/iccm will be set)
     val dma_iccm_req          = Output(Bool())    // DMA iccm request
-    val dma_mem_tag           = Output(UInt(3.W)) // DMA Buffer entry number
-    val dma_mem_addr          = Output(UInt(32.W))// DMA request address
-    val dma_mem_sz            = Output(UInt(3.W)) // DMA request size
-    val dma_mem_write         = Output(Bool())    // DMA write to dccm/iccm
-    val dma_mem_wdata         = Output(UInt(64.W))// DMA write data
-    val dccm_dma_rvalid       = Input(Bool())     // dccm data valid for DMA read
-    val dccm_dma_ecc_error    = Input(Bool())     // ECC error on DMA read
-    val dccm_dma_rtag         = Input(UInt(3.W))  // Tag of the DMA req
-    val dccm_dma_rdata        = Input(UInt(64.W)) // dccm data for DMA read
+   // val dma_mem_tag           = Output(UInt(3.W)) // DMA Buffer entry number
+   // val dma_mem_addr          = Output(UInt(32.W))// DMA request address
+   // val dma_mem_sz            = Output(UInt(3.W)) // DMA request size
+   // val dma_mem_write         = Output(Bool())    // DMA write to dccm/iccm
+  //  val dma_mem_wdata         = Output(UInt(64.W))// DMA write data
+  //  val dccm_dma_rvalid       = Input(Bool())     // dccm data valid for DMA read
+  //  val dccm_dma_ecc_error    = Input(Bool())     // ECC error on DMA read
+  //  val dccm_dma_rtag         = Input(UInt(3.W))  // Tag of the DMA req
+   // val dccm_dma_rdata        = Input(UInt(64.W)) // dccm data for DMA read
     val iccm_dma_rvalid       = Input(Bool())     // iccm data valid for DMA read
     val iccm_dma_ecc_error    = Input(Bool())     // ECC error on DMA read
     val iccm_dma_rtag         = Input(UInt(3.W))  // Tag of the DMA req
@@ -43,7 +45,7 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
 
     val dma_dccm_stall_any    = Output(Bool())    // stall dccm pipe (bubble) so that DMA can proceed
     val dma_iccm_stall_any    = Output(Bool())    // stall iccm pipe (bubble) so that DMA can proceed
-    val dccm_ready            = Input(Bool())     // dccm ready to accept DMA request
+  //  val dccm_ready            = Input(Bool())     // dccm ready to accept DMA request
     val iccm_ready            = Input(Bool())     // iccm ready to accept DMA request
     val dec_tlu_dma_qos_prty  = Input(UInt(3.W))  // DMA QoS priority coming from MFDC [18:15]
 
@@ -261,23 +263,23 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
 
   fifo_cmd_en       := (0 until DMA_BUF_DEPTH).map(i => (((bus_cmd_sent.asBool & io.dma_bus_clk_en) | (io.dbg_cmd_valid & io.dbg_cmd_type(1).asBool)) & (i.U === WrPtr)).asUInt).reverse.reduce(Cat(_,_))
 
-  fifo_data_en      := (0 until DMA_BUF_DEPTH).map(i => (((bus_cmd_sent & fifo_write_in & io.dma_bus_clk_en) | (io.dbg_cmd_valid & io.dbg_cmd_type(1) & io.dbg_cmd_write)) & (i.U === WrPtr)) | ((dma_address_error | dma_alignment_error) & (i.U === RdPtr)) | (io.dccm_dma_rvalid & (i.U === io.dccm_dma_rtag)) | (io.iccm_dma_rvalid & (i.U === io.iccm_dma_rtag))).reverse.reduce(Cat(_,_))
+  fifo_data_en      := (0 until DMA_BUF_DEPTH).map(i => (((bus_cmd_sent & fifo_write_in & io.dma_bus_clk_en) | (io.dbg_cmd_valid & io.dbg_cmd_type(1) & io.dbg_cmd_write)) & (i.U === WrPtr)) | ((dma_address_error | dma_alignment_error) & (i.U === RdPtr)) | (io.lsu_dma.dma_dccm_ctl.dccm_dma_rvalid & (i.U === io.lsu_dma.dma_dccm_ctl.dccm_dma_rtag)) | (io.iccm_dma_rvalid & (i.U === io.iccm_dma_rtag))).reverse.reduce(Cat(_,_))
 
-  fifo_pend_en      := (0 until DMA_BUF_DEPTH).map(i => ((io.dma_dccm_req | io.dma_iccm_req) & !io.dma_mem_write & (i.U === RdPtr)).asUInt).reverse.reduce(Cat(_,_))
+  fifo_pend_en      := (0 until DMA_BUF_DEPTH).map(i => ((io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.dma_iccm_req) & !io.lsu_dma.dma_lsc_ctl.dma_mem_write & (i.U === RdPtr)).asUInt).reverse.reduce(Cat(_,_))
 
-  fifo_error_en     := (0 until DMA_BUF_DEPTH).map(i => (((dma_address_error.asBool | dma_alignment_error.asBool | dma_dbg_cmd_error) & (i.U === RdPtr)) | ((io.dccm_dma_rvalid & io.dccm_dma_ecc_error) & (i.U === io.dccm_dma_rtag)) | ((io.iccm_dma_rvalid & io.iccm_dma_ecc_error) & (i.U === io.iccm_dma_rtag))).asUInt).reverse.reduce(Cat(_,_))
+  fifo_error_en     := (0 until DMA_BUF_DEPTH).map(i => (((dma_address_error.asBool | dma_alignment_error.asBool | dma_dbg_cmd_error) & (i.U === RdPtr)) | ((io.lsu_dma.dma_dccm_ctl.dccm_dma_rvalid & io.lsu_dma.dma_dccm_ctl.dccm_dma_ecc_error) & (i.U === io.lsu_dma.dma_dccm_ctl.dccm_dma_rtag)) | ((io.iccm_dma_rvalid & io.iccm_dma_ecc_error) & (i.U === io.iccm_dma_rtag))).asUInt).reverse.reduce(Cat(_,_))
 
   fifo_error_bus_en := (0 until DMA_BUF_DEPTH).map(i => ((((fifo_error_in(i)(1,0).orR) & fifo_error_en(i)) | (fifo_error(i).orR)) & io.dma_bus_clk_en).asUInt).reverse.reduce(Cat(_,_))
 
-  fifo_done_en      := (0 until DMA_BUF_DEPTH).map(i => (((fifo_error(i).orR | fifo_error_en(i) | ((io.dma_dccm_req | io.dma_iccm_req) & io.dma_mem_write)) & (i.U === RdPtr)) | (io.dccm_dma_rvalid & (i.U === io.dccm_dma_rtag)) | (io.iccm_dma_rvalid & (i.U === io.iccm_dma_rtag))).asUInt).reverse.reduce(Cat(_,_))
+  fifo_done_en      := (0 until DMA_BUF_DEPTH).map(i => (((fifo_error(i).orR | fifo_error_en(i) | ((io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.dma_iccm_req) & io.lsu_dma.dma_lsc_ctl.dma_mem_write)) & (i.U === RdPtr)) | (io.lsu_dma.dma_dccm_ctl.dccm_dma_rvalid & (i.U === io.lsu_dma.dma_dccm_ctl.dccm_dma_rtag)) | (io.iccm_dma_rvalid & (i.U === io.iccm_dma_rtag))).asUInt).reverse.reduce(Cat(_,_))
 
   fifo_done_bus_en  := (0 until DMA_BUF_DEPTH).map(i => ((fifo_done_en(i) | fifo_done(i)) & io.dma_bus_clk_en).asUInt).reverse.reduce(Cat(_,_))
 
   fifo_reset        := (0 until DMA_BUF_DEPTH).map(i => ((((bus_rsp_sent | bus_posted_write_done) & io.dma_bus_clk_en) | io.dma_dbg_cmd_done) & (i.U === RspPtr))).reverse.reduce(Cat(_,_))
 
-  (0 until DMA_BUF_DEPTH).map(i => fifo_error_in(i) := (Mux(io.dccm_dma_rvalid & (i.U === io.dccm_dma_rtag), Cat(0.U, io.dccm_dma_ecc_error), Mux(io.iccm_dma_rvalid & (i.U === io.iccm_dma_rtag), (Cat(0.U, io.iccm_dma_ecc_error)), (Cat((dma_address_error | dma_alignment_error | dma_dbg_cmd_error), dma_alignment_error))))))
+  (0 until DMA_BUF_DEPTH).map(i => fifo_error_in(i) := (Mux(io.lsu_dma.dma_dccm_ctl.dccm_dma_rvalid & (i.U === io.lsu_dma.dma_dccm_ctl.dccm_dma_rtag), Cat(0.U, io.lsu_dma.dma_dccm_ctl.dccm_dma_ecc_error), Mux(io.iccm_dma_rvalid & (i.U === io.iccm_dma_rtag), (Cat(0.U, io.iccm_dma_ecc_error)), (Cat((dma_address_error | dma_alignment_error | dma_dbg_cmd_error), dma_alignment_error))))))
 
-  (0 until DMA_BUF_DEPTH).map(i => fifo_data_in(i) := (Mux(fifo_error_en(i) & (fifo_error_in(i).orR), Cat(Fill(32, 0.U), fifo_addr(i)), Mux(io.dccm_dma_rvalid & (i.U === io.dccm_dma_rtag), io.dccm_dma_rdata, Mux(io.iccm_dma_rvalid & (i.U === io.iccm_dma_rtag), io.iccm_dma_rdata, Mux(io.dbg_cmd_valid, Fill(2, io.dbg_cmd_wrdata), bus_cmd_wdata(63,0)))))))
+  (0 until DMA_BUF_DEPTH).map(i => fifo_data_in(i) := (Mux(fifo_error_en(i) & (fifo_error_in(i).orR), Cat(Fill(32, 0.U), fifo_addr(i)), Mux(io.lsu_dma.dma_dccm_ctl.dccm_dma_rvalid & (i.U === io.lsu_dma.dma_dccm_ctl.dccm_dma_rtag), io.lsu_dma.dma_dccm_ctl.dccm_dma_rdata, Mux(io.iccm_dma_rvalid & (i.U === io.iccm_dma_rtag), io.iccm_dma_rdata, Mux(io.dbg_cmd_valid, Fill(2, io.dbg_cmd_wrdata), bus_cmd_wdata(63,0)))))))
 
   fifo_valid := (0 until DMA_BUF_DEPTH).map(i => withClock(dma_free_clk) {RegNext(Mux(fifo_cmd_en(i), 1.U, fifo_valid(i)) & !fifo_reset(i), 0.U)}).reverse.reduce(Cat(_,_))
 
@@ -321,7 +323,7 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
 
   val WrPtrEn  = fifo_cmd_en.orR
 
-  val RdPtrEn  = (io.dma_dccm_req | io.dma_iccm_req | (dma_address_error.asBool | dma_alignment_error.asBool | dma_dbg_cmd_error))
+  val RdPtrEn  = (io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.dma_iccm_req | (dma_address_error.asBool | dma_alignment_error.asBool | dma_dbg_cmd_error))
 
   val RspPtrEn = (io.dma_dbg_cmd_done | (bus_rsp_sent | bus_posted_write_done) & io.dma_bus_clk_en)
 
@@ -362,12 +364,12 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
       ((dma_mem_sz_int(2,0) === 2.U) & (dma_mem_addr_int(1, 0).orR)) |                                                                      // W size but unaligned
       ((dma_mem_sz_int(2,0) === 3.U) & (dma_mem_addr_int(2, 0).orR)) |                                                                      // DW size but unaligned
       (dma_mem_addr_in_iccm & ~((dma_mem_sz_int(1, 0) === 2.U) | (dma_mem_sz_int(1, 0) === 3.U)).asUInt  ) |                                // ICCM access not word size
-      (dma_mem_addr_in_dccm & io.dma_mem_write & ~((dma_mem_sz_int(1, 0) === 2.U) | (dma_mem_sz_int(1, 0) === 3.U)).asUInt) |               // DCCM write not word size
-      (io.dma_mem_write & (dma_mem_sz_int(2, 0) === 2.U) & (Mux1H(Seq((dma_mem_addr_int(2,0) === 0.U) -> (dma_mem_byteen(3,0)),
+      (dma_mem_addr_in_dccm & io.lsu_dma.dma_lsc_ctl.dma_mem_write & ~((dma_mem_sz_int(1, 0) === 2.U) | (dma_mem_sz_int(1, 0) === 3.U)).asUInt) |               // DCCM write not word size
+      (io.lsu_dma.dma_lsc_ctl.dma_mem_write & (dma_mem_sz_int(2, 0) === 2.U) & (Mux1H(Seq((dma_mem_addr_int(2,0) === 0.U) -> (dma_mem_byteen(3,0)),
         (dma_mem_addr_int(2,0) === 1.U) -> (dma_mem_byteen(4,1)),
         (dma_mem_addr_int(2,0) === 2.U) -> (dma_mem_byteen(5,2)),
         (dma_mem_addr_int(2,0) === 3.U) -> (dma_mem_byteen(6,3)))) =/= 15.U)) | // Write byte enables not aligned for word store
-      (io.dma_mem_write & (dma_mem_sz_int(2, 0) === 3.U) & !((dma_mem_byteen(7,0) === "h0f".U) | (dma_mem_byteen(7,0) === "hf0".U) | (dma_mem_byteen(7,0) === "hff".U)))) // Write byte enables not aligned for dword store
+      (io.lsu_dma.dma_lsc_ctl.dma_mem_write & (dma_mem_sz_int(2, 0) === 3.U) & !((dma_mem_byteen(7,0) === "h0f".U) | (dma_mem_byteen(7,0) === "hf0".U) | (dma_mem_byteen(7,0) === "hff".U)))) // Write byte enables not aligned for dword store
 
   //Dbg outputs
 
@@ -390,7 +392,7 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
   // Nack counter, stall the lsu pipe if 7 nacks
 
   dma_nack_count_csr := io.dec_tlu_dma_qos_prty
-  val dma_nack_count_d = Mux(dma_nack_count >= dma_nack_count_csr, (Fill(3, !(io.dma_dccm_req | io.dma_iccm_req)) & dma_nack_count(2,0)), Mux((dma_mem_req.asBool & !(io.dma_dccm_req | io.dma_iccm_req)), dma_nack_count(2,0) + 1.U, 0.U))
+  val dma_nack_count_d = Mux(dma_nack_count >= dma_nack_count_csr, (Fill(3, !(io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.dma_iccm_req)) & dma_nack_count(2,0)), Mux((dma_mem_req.asBool & !(io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.dma_iccm_req)), dma_nack_count(2,0) + 1.U, 0.U))
 
   dma_nack_count     := withClock(dma_free_clk) {
     RegEnable(dma_nack_count_d(2,0), 0.U, dma_mem_req.asBool)
@@ -399,23 +401,23 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
   // Core outputs
 
   dma_mem_req      := fifo_valid(RdPtr) & !fifo_rpend(RdPtr) & !fifo_done(RdPtr) & !(dma_address_error | dma_alignment_error | dma_dbg_cmd_error)
-  io.dma_dccm_req  := dma_mem_req & (dma_mem_addr_in_dccm | dma_mem_addr_in_pic) & io.dccm_ready;
+  io.lsu_dma.dma_lsc_ctl.dma_dccm_req  := dma_mem_req & (dma_mem_addr_in_dccm | dma_mem_addr_in_pic) & io.lsu_dma.dccm_ready;
   io.dma_iccm_req  := dma_mem_req & dma_mem_addr_in_iccm & io.iccm_ready;
-  io.dma_mem_tag   := RdPtr
+  io.lsu_dma.dma_mem_tag   := RdPtr
   dma_mem_addr_int := fifo_addr(RdPtr)
   dma_mem_sz_int   := fifo_sz(RdPtr)
-  io.dma_mem_addr  := Mux(io.dma_mem_write & (dma_mem_byteen(7,0) === "hf0".U), Cat(dma_mem_addr_int(31, 3), 1.U, dma_mem_addr_int(1, 0)), dma_mem_addr_int(31,0))
-  io.dma_mem_sz    := Mux(io.dma_mem_write & ((dma_mem_byteen(7,0) === "h0f".U) | (dma_mem_byteen(7,0) === "hf0".U)), 2.U, dma_mem_sz_int(2,0))
+  io.lsu_dma.dma_lsc_ctl.dma_mem_addr  := Mux(io.lsu_dma.dma_lsc_ctl.dma_mem_write & (dma_mem_byteen(7,0) === "hf0".U), Cat(dma_mem_addr_int(31, 3), 1.U, dma_mem_addr_int(1, 0)), dma_mem_addr_int(31,0))
+  io.lsu_dma.dma_lsc_ctl.dma_mem_sz    := Mux(io.lsu_dma.dma_lsc_ctl.dma_mem_write & ((dma_mem_byteen(7,0) === "h0f".U) | (dma_mem_byteen(7,0) === "hf0".U)), 2.U, dma_mem_sz_int(2,0))
   dma_mem_byteen   := fifo_byteen(RdPtr)
-  io.dma_mem_write := fifo_write(RdPtr)
-  io.dma_mem_wdata := fifo_data(RdPtr)
+  io.lsu_dma.dma_lsc_ctl.dma_mem_write := fifo_write(RdPtr)
+  io.lsu_dma.dma_lsc_ctl.dma_mem_wdata := fifo_data(RdPtr)
 
   // PMU outputs
 
-  io.dma_pmu_dccm_read   := io.dma_dccm_req & !io.dma_mem_write;
-  io.dma_pmu_dccm_write  := io.dma_dccm_req & io.dma_mem_write;
-  io.dma_pmu_any_read    := (io.dma_dccm_req | io.dma_iccm_req) & !io.dma_mem_write;
-  io.dma_pmu_any_write   := (io.dma_dccm_req | io.dma_iccm_req) & io.dma_mem_write;
+  io.dma_pmu_dccm_read   := io.lsu_dma.dma_lsc_ctl.dma_dccm_req & !io.lsu_dma.dma_lsc_ctl.dma_mem_write
+  io.dma_pmu_dccm_write  := io.lsu_dma.dma_lsc_ctl.dma_dccm_req & io.lsu_dma.dma_lsc_ctl.dma_mem_write
+  io.dma_pmu_any_read    := (io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.dma_iccm_req) & !io.lsu_dma.dma_lsc_ctl.dma_mem_write
+  io.dma_pmu_any_write   := (io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.dma_iccm_req) & io.lsu_dma.dma_lsc_ctl.dma_mem_write
 
   // Inputs
 
@@ -550,6 +552,9 @@ class el2_dma_ctrl extends Module with el2_lib with RequireAsyncReset {
   bus_posted_write_done := 0.U
   bus_rsp_valid 		    := (io.dma_axi_bvalid | io.dma_axi_rvalid)
   bus_rsp_sent 			    := ((io.dma_axi_bvalid & io.dma_axi_bready) | (io.dma_axi_rvalid & io.dma_axi_rready))
+  io.lsu_dma.dma_dccm_ctl.dma_mem_addr := io.lsu_dma.dma_lsc_ctl.dma_mem_addr
+  io.lsu_dma.dma_dccm_ctl.dma_mem_wdata := io.lsu_dma.dma_lsc_ctl.dma_mem_wdata
+
 }
 object dma extends App{
   println(chisel3.Driver.emitVerilog(new el2_dma_ctrl))
