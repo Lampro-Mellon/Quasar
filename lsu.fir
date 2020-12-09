@@ -14384,7 +14384,7 @@ circuit lsu :
     node _T_4867 = neq(io.lsu_axi.b.bits.resp, UInt<1>("h00")) @[lsu_bus_buffer.scala 564:66]
     node _T_4868 = and(bus_rsp_write, _T_4867) @[lsu_bus_buffer.scala 564:40]
     bus_rsp_write_error <= _T_4868 @[lsu_bus_buffer.scala 564:23]
-    node _T_4869 = neq(io.lsu_axi.b.bits.resp, UInt<1>("h00")) @[lsu_bus_buffer.scala 565:64]
+    node _T_4869 = neq(io.lsu_axi.r.bits.resp, UInt<1>("h00")) @[lsu_bus_buffer.scala 565:64]
     node _T_4870 = and(bus_rsp_read, _T_4869) @[lsu_bus_buffer.scala 565:38]
     bus_rsp_read_error <= _T_4870 @[lsu_bus_buffer.scala 565:22]
     bus_rsp_rdata <= io.lsu_axi.r.bits.data @[lsu_bus_buffer.scala 566:17]

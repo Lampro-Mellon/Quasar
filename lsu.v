@@ -5207,6 +5207,7 @@ module lsu_bus_buffer(
   input         io_lsu_axi_r_valid,
   input  [2:0]  io_lsu_axi_r_bits_id,
   input  [63:0] io_lsu_axi_r_bits_data,
+  input  [1:0]  io_lsu_axi_r_bits_resp,
   input         io_lsu_bus_clk_en,
   input         io_lsu_bus_clk_en_q,
   output        io_lsu_busreq_r,
@@ -7250,14 +7251,15 @@ module lsu_bus_buffer(
   wire  _T_3575 = _T_3573 & _T_1333; // @[lsu_bus_buffer.scala 459:74]
   wire  _T_3578 = _T_3568 & obuf_nosend; // @[lsu_bus_buffer.scala 461:67]
   wire  _T_3579 = _T_3578 & bus_rsp_read; // @[lsu_bus_buffer.scala 461:81]
-  wire  _T_4869 = io_lsu_axi_b_bits_resp != 2'h0; // @[lsu_bus_buffer.scala 565:64]
+  wire  _T_4869 = io_lsu_axi_r_bits_resp != 2'h0; // @[lsu_bus_buffer.scala 565:64]
   wire  bus_rsp_read_error = bus_rsp_read & _T_4869; // @[lsu_bus_buffer.scala 565:38]
   wire  _T_3582 = _T_3578 & bus_rsp_read_error; // @[lsu_bus_buffer.scala 462:82]
   wire  _T_3657 = bus_rsp_read_error & _T_3636; // @[lsu_bus_buffer.scala 476:91]
   wire  _T_3659 = bus_rsp_read_error & buf_ldfwd[0]; // @[lsu_bus_buffer.scala 477:31]
   wire  _T_3661 = _T_3659 & _T_3638; // @[lsu_bus_buffer.scala 477:46]
   wire  _T_3662 = _T_3657 | _T_3661; // @[lsu_bus_buffer.scala 476:143]
-  wire  bus_rsp_write_error = bus_rsp_write & _T_4869; // @[lsu_bus_buffer.scala 564:40]
+  wire  _T_4867 = io_lsu_axi_b_bits_resp != 2'h0; // @[lsu_bus_buffer.scala 564:66]
+  wire  bus_rsp_write_error = bus_rsp_write & _T_4867; // @[lsu_bus_buffer.scala 564:40]
   wire  _T_3665 = bus_rsp_write_error & _T_3634; // @[lsu_bus_buffer.scala 478:53]
   wire  _T_3666 = _T_3662 | _T_3665; // @[lsu_bus_buffer.scala 477:88]
   wire  _T_3667 = _T_3568 & _T_3666; // @[lsu_bus_buffer.scala 476:68]
@@ -9732,6 +9734,7 @@ module lsu_bus_intf(
   input         io_axi_r_valid,
   input  [2:0]  io_axi_r_bits_id,
   input  [63:0] io_axi_r_bits_data,
+  input  [1:0]  io_axi_r_bits_resp,
   input         io_dec_lsu_valid_raw_d,
   input         io_lsu_busreq_m,
   input         io_lsu_pkt_m_valid,
@@ -9860,6 +9863,7 @@ module lsu_bus_intf(
   wire  bus_buffer_io_lsu_axi_r_valid; // @[lsu_bus_intf.scala 102:39]
   wire [2:0] bus_buffer_io_lsu_axi_r_bits_id; // @[lsu_bus_intf.scala 102:39]
   wire [63:0] bus_buffer_io_lsu_axi_r_bits_data; // @[lsu_bus_intf.scala 102:39]
+  wire [1:0] bus_buffer_io_lsu_axi_r_bits_resp; // @[lsu_bus_intf.scala 102:39]
   wire  bus_buffer_io_lsu_bus_clk_en; // @[lsu_bus_intf.scala 102:39]
   wire  bus_buffer_io_lsu_bus_clk_en_q; // @[lsu_bus_intf.scala 102:39]
   wire  bus_buffer_io_lsu_busreq_r; // @[lsu_bus_intf.scala 102:39]
@@ -10132,6 +10136,7 @@ module lsu_bus_intf(
     .io_lsu_axi_r_valid(bus_buffer_io_lsu_axi_r_valid),
     .io_lsu_axi_r_bits_id(bus_buffer_io_lsu_axi_r_bits_id),
     .io_lsu_axi_r_bits_data(bus_buffer_io_lsu_axi_r_bits_data),
+    .io_lsu_axi_r_bits_resp(bus_buffer_io_lsu_axi_r_bits_resp),
     .io_lsu_bus_clk_en(bus_buffer_io_lsu_bus_clk_en),
     .io_lsu_bus_clk_en_q(bus_buffer_io_lsu_bus_clk_en_q),
     .io_lsu_busreq_r(bus_buffer_io_lsu_busreq_r),
@@ -10226,6 +10231,7 @@ module lsu_bus_intf(
   assign bus_buffer_io_lsu_axi_r_valid = io_axi_r_valid; // @[lsu_bus_intf.scala 131:43]
   assign bus_buffer_io_lsu_axi_r_bits_id = io_axi_r_bits_id; // @[lsu_bus_intf.scala 131:43]
   assign bus_buffer_io_lsu_axi_r_bits_data = io_axi_r_bits_data; // @[lsu_bus_intf.scala 131:43]
+  assign bus_buffer_io_lsu_axi_r_bits_resp = io_axi_r_bits_resp; // @[lsu_bus_intf.scala 131:43]
   assign bus_buffer_io_lsu_bus_clk_en = io_lsu_bus_clk_en; // @[lsu_bus_intf.scala 132:51]
   assign bus_buffer_io_lsu_bus_clk_en_q = lsu_bus_clk_en_q; // @[lsu_bus_intf.scala 152:51]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
@@ -10898,6 +10904,7 @@ module lsu(
   wire  bus_intf_io_axi_r_valid; // @[lsu.scala 68:30]
   wire [2:0] bus_intf_io_axi_r_bits_id; // @[lsu.scala 68:30]
   wire [63:0] bus_intf_io_axi_r_bits_data; // @[lsu.scala 68:30]
+  wire [1:0] bus_intf_io_axi_r_bits_resp; // @[lsu.scala 68:30]
   wire  bus_intf_io_dec_lsu_valid_raw_d; // @[lsu.scala 68:30]
   wire  bus_intf_io_lsu_busreq_m; // @[lsu.scala 68:30]
   wire  bus_intf_io_lsu_pkt_m_valid; // @[lsu.scala 68:30]
@@ -11385,6 +11392,7 @@ module lsu(
     .io_axi_r_valid(bus_intf_io_axi_r_valid),
     .io_axi_r_bits_id(bus_intf_io_axi_r_bits_id),
     .io_axi_r_bits_data(bus_intf_io_axi_r_bits_data),
+    .io_axi_r_bits_resp(bus_intf_io_axi_r_bits_resp),
     .io_dec_lsu_valid_raw_d(bus_intf_io_dec_lsu_valid_raw_d),
     .io_lsu_busreq_m(bus_intf_io_lsu_busreq_m),
     .io_lsu_pkt_m_valid(bus_intf_io_lsu_pkt_m_valid),
@@ -11747,6 +11755,7 @@ module lsu(
   assign bus_intf_io_axi_r_valid = io_axi_r_valid; // @[lsu.scala 314:49]
   assign bus_intf_io_axi_r_bits_id = io_axi_r_bits_id; // @[lsu.scala 314:49]
   assign bus_intf_io_axi_r_bits_data = io_axi_r_bits_data; // @[lsu.scala 314:49]
+  assign bus_intf_io_axi_r_bits_resp = io_axi_r_bits_resp; // @[lsu.scala 314:49]
   assign bus_intf_io_dec_lsu_valid_raw_d = io_dec_lsu_valid_raw_d; // @[lsu.scala 296:49]
   assign bus_intf_io_lsu_busreq_m = _T_39 & _T_40; // @[lsu.scala 297:49]
   assign bus_intf_io_lsu_pkt_m_valid = lsu_lsc_ctl_io_lsu_pkt_m_valid; // @[lsu.scala 305:49]
