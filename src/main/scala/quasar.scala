@@ -314,7 +314,7 @@ class quasar extends Module with RequireAsyncReset with lib {
 
 
 
-  if(BUILD_AHB_LITE) {
+  when(BUILD_AHB_LITE.B) {
     val lsu_axi4_to_ahb = Module(new axi4_to_ahb())
     lsu_axi4_to_ahb.io.axi_awvalid := io.lsu_axi.aw.valid
     lsu_axi4_to_ahb.io.scan_mode := io.scan_mode
@@ -437,43 +437,47 @@ class quasar extends Module with RequireAsyncReset with lib {
     lsu.io.axi.r.bits.resp := Mux(BUILD_AHB_LITE.B, lsu_axi4_to_ahb.io.axi_rresp, io.lsu_axi.r.bits.resp)
     lsu.io.axi.r.bits.last := Mux(BUILD_AHB_LITE.B, lsu_axi4_to_ahb.io.axi_rlast, io.lsu_axi.r.bits.last)
 
+    ifu.io.ifu.aw.ready := Mux(BUILD_AHB_LITE.B, ifu_axi4_to_ahb.io.axi_awready, io.ifu_axi.aw.ready)
+    ifu.io.ifu.w.ready := Mux(BUILD_AHB_LITE.B, ifu_axi4_to_ahb.io.axi_wready, io.ifu_axi.w.ready)
     ifu.io.ifu.ar.ready := Mux(BUILD_AHB_LITE.B, ifu_axi4_to_ahb.io.axi_arready, io.ifu_axi.ar.ready)
     ifu.io.ifu.r.valid := Mux(BUILD_AHB_LITE.B, ifu_axi4_to_ahb.io.axi_rvalid, io.ifu_axi.r.valid)
     ifu.io.ifu.r.bits.id := Mux(BUILD_AHB_LITE.B, ifu_axi4_to_ahb.io.axi_rid, io.ifu_axi.r.bits.id)
     ifu.io.ifu.r.bits.data := Mux(BUILD_AHB_LITE.B, ifu_axi4_to_ahb.io.axi_rdata, io.ifu_axi.r.bits.data)
     ifu.io.ifu.r.bits.resp := Mux(BUILD_AHB_LITE.B, ifu_axi4_to_ahb.io.axi_rresp, io.ifu_axi.r.bits.resp)
+    ifu.io.ifu.r.bits.last := Mux(BUILD_AHB_LITE.B, ifu_axi4_to_ahb.io.axi_rlast, io.ifu_axi.r.bits.last)
 
     dbg.io.sb_axi.aw.ready := Mux(BUILD_AHB_LITE.B, sb_axi4_to_ahb.io.axi_awready, io.sb_axi.aw.ready)
     dbg.io.sb_axi.w.ready := Mux(BUILD_AHB_LITE.B, sb_axi4_to_ahb.io.axi_wready, io.sb_axi.w.ready)
-    dbg.io.sb_axi.b.valid := Mux(BUILD_AHB_LITE.B, sb_axi4_to_ahb.io.axi_bready, io.sb_axi.b.ready)
+    dbg.io.sb_axi.b.valid := Mux(BUILD_AHB_LITE.B, sb_axi4_to_ahb.io.axi_bvalid, io.sb_axi.b.valid)
     dbg.io.sb_axi.b.bits.resp := Mux(BUILD_AHB_LITE.B, sb_axi4_to_ahb.io.axi_bresp, io.sb_axi.b.bits.resp)
-    dbg.io.sb_axi.ar.ready := Mux(BUILD_AHB_LITE.B, sb_axi4_to_ahb.io.axi_rready, io.sb_axi.r.ready)
+    dbg.io.sb_axi.ar.ready := Mux(BUILD_AHB_LITE.B, sb_axi4_to_ahb.io.axi_arready, io.sb_axi.ar.ready)
     dbg.io.sb_axi.r.valid := Mux(BUILD_AHB_LITE.B, sb_axi4_to_ahb.io.axi_rvalid, io.sb_axi.r.valid)
+    dbg.io.sb_axi.r.bits.id := Mux(BUILD_AHB_LITE.B, sb_axi4_to_ahb.io.axi_rid, io.sb_axi.r.bits.id)
     dbg.io.sb_axi.r.bits.data := Mux(BUILD_AHB_LITE.B, sb_axi4_to_ahb.io.axi_rdata, io.sb_axi.r.bits.data)
     dbg.io.sb_axi.r.bits.resp := Mux(BUILD_AHB_LITE.B, sb_axi4_to_ahb.io.axi_rresp, io.sb_axi.r.bits.resp)
 
     dma_ctrl.io.dma_axi.aw.valid := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_awvalid, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.aw.bits.id := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_awid, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.aw.bits.addr := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_awaddr, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.aw.bits.size := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_awsize, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.w.valid := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_wvalid, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.w.bits.data := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_wdata, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.w.bits.strb := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_wstrb, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.b.ready := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_bready, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.ar.valid := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_arvalid, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.ar.bits.id := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_arid, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.ar.bits.addr := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_araddr, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.ar.bits.size := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_arsize, io.dma_axi.aw.valid)
-    dma_ctrl.io.dma_axi.r.ready := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_arready, io.dma_axi.aw.valid)
-
+    dma_ctrl.io.dma_axi.aw.bits.id := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_awid, io.dma_axi.aw.bits.id)
+    dma_ctrl.io.dma_axi.aw.bits.addr := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_awaddr, io.dma_axi.aw.bits.addr)
+    dma_ctrl.io.dma_axi.aw.bits.size := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_awsize, io.dma_axi.aw.bits.size)
+    dma_ctrl.io.dma_axi.w.valid := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_wvalid, io.dma_axi.w.valid)
+    dma_ctrl.io.dma_axi.w.bits.data := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_wdata, io.dma_axi.w.bits.data)
+    dma_ctrl.io.dma_axi.w.bits.strb := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_wstrb, io.dma_axi.w.bits.strb)
+    dma_ctrl.io.dma_axi.b.ready := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_bready, io.dma_axi.b.ready)
+    dma_ctrl.io.dma_axi.ar.valid := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_arvalid, io.dma_axi.ar.valid)
+    dma_ctrl.io.dma_axi.ar.bits.id := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_arid, io.dma_axi.ar.bits.id)
+    dma_ctrl.io.dma_axi.ar.bits.addr := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_araddr, io.dma_axi.aw.bits.addr)
+    dma_ctrl.io.dma_axi.ar.bits.size := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_arsize, io.dma_axi.aw.bits.size)
+    dma_ctrl.io.dma_axi.r.ready := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_rready, io.dma_axi.r.ready)
     // AHB Signals
+    io.haddr := ifu_axi4_to_ahb.io.ahb_haddr
     io.hburst := ifu_axi4_to_ahb.io.ahb_hburst
     io.hmastlock := ifu_axi4_to_ahb.io.ahb_hmastlock
     io.hprot := ifu_axi4_to_ahb.io.ahb_hprot
     io.hsize := ifu_axi4_to_ahb.io.ahb_hsize
     io.htrans := ifu_axi4_to_ahb.io.ahb_htrans
     io.hwrite := ifu_axi4_to_ahb.io.ahb_hwrite
-    io.haddr := ifu_axi4_to_ahb.io.ahb_haddr
+
 
     io.lsu_haddr := lsu_axi4_to_ahb.io.ahb_haddr
     io.lsu_hburst := lsu_axi4_to_ahb.io.ahb_hburst
@@ -496,9 +500,43 @@ class quasar extends Module with RequireAsyncReset with lib {
     io.dma_hrdata := dma_ahb_to_axi4.io.ahb_hrdata
     io.dma_hreadyout := dma_ahb_to_axi4.io.ahb_hreadyout
     io.dma_hresp := dma_ahb_to_axi4.io.ahb_hresp
-    io.dma_hresp := 0.U//dma_ahb_to_axi4.io.ahb_hrdata
-    io.dmi_reg_rdata := 0.U//dma_ahb_to_axi4.io.ahb_rdata
+//    io.dma_hresp := 0.U//dma_ahb_to_axi4.io.ahb_hrdata
+//    io.dmi_reg_rdata := 0.U//dma_ahb_to_axi4.io.ahb_rdata
   }
+      .otherwise{
+        // AHB Signals
+        io.haddr := 0.U
+        io.hburst := 0.U
+        io.hmastlock := 0.U
+        io.hprot := 0.U
+        io.hsize := 0.U
+        io.htrans := 0.U
+        io.hwrite := 0.U
+
+
+        io.lsu_haddr := 0.U
+        io.lsu_hburst := 0.U
+        io.lsu_hmastlock := 0.U
+        io.lsu_hprot := 0.U
+        io.lsu_hsize := 0.U
+        io.lsu_htrans := 0.U
+        io.lsu_hwrite := 0.U
+        io.lsu_hwdata := 0.U
+
+        io.sb_haddr := 0.U
+        io.sb_hburst := 0.U
+        io.sb_hmastlock := 0.U
+        io.sb_hprot := 0.U
+        io.sb_hsize := 0.U
+        io.sb_htrans := 0.U
+        io.sb_hwrite := 0.U
+        io.sb_hwdata := 0.U
+
+        io.dma_hrdata := 0.U
+        io.dma_hreadyout := 0.U
+        io.dma_hresp := 0.U
+        }
+  io.dmi_reg_rdata := 0.U
 }
 
 

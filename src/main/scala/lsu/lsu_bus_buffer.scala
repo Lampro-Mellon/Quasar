@@ -562,7 +562,7 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   bus_rsp_read_tag := io.lsu_axi.r.bits.id
   bus_rsp_write_tag := io.lsu_axi.b.bits.id
   bus_rsp_write_error := bus_rsp_write & (io.lsu_axi.b.bits.resp =/= 0.U)
-  bus_rsp_read_error := bus_rsp_read & (io.lsu_axi.b.bits.resp =/= 0.U)
+  bus_rsp_read_error := bus_rsp_read & (io.lsu_axi.r.bits.resp =/= 0.U)
   bus_rsp_rdata := io.lsu_axi.r.bits.data
 
   // AXI Command signals
