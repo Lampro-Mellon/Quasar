@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SVCompilerDirectivesDefines">
+    <option name="defines">
+      <map>
+        <entry key="$PROJECT_DIR$/el2_dec.v">
+          <value>
+            <map>
+              <entry key="RANDOM">
+                <value>
+                  <list>
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+              <entry key="RANDOMIZE">
+                <value>
+                  <list>
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+            </map>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/el2_dec_decode_ctl.v">
+          <value>
+            <map>
+              <entry key="RANDOM">
+                <value>
+                  <list>
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+              <entry key="RANDOMIZE">
+                <value>
+                  <list>
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+            </map>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/el2_dec_gpr_ctl.v">
+          <value>
+            <map>
+              <entry key="RANDOM">
+                <value>
+                  <list>
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+              <entry key="RANDOMIZE">
+                <value>
+                  <list>
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+            </map>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/el2_dec_tlu_ctl.v">
+          <value>
+            <map>
+              <entry key="RANDOM">
+                <value>
+                  <list>
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+              <entry key="RANDOMIZE">
+                <value>
+                  <list>
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+            </map>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/el2_exu_alu_ctl.v">
+          <value>
+            <map>
+              <entry key="RANDOM">
+                <value>
+                  <list>
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+              <entry key="RANDOMIZE">
+                <value>
+                  <list>
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+            </map>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/el2_pic_ctrl.v">
+          <value>
+            <map>
+              <entry key="RANDOM">
+                <value>
+                  <list>
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+              <entry key="RANDOMIZE">
+                <value>
+                  <list>
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+            </map>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/top.v">
+          <value>
+            <map>
+              <entry key="RANDOM">
+                <value>
+                  <list>
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+              <entry key="RANDOMIZE">
+                <value>
+                  <list>
+                    <Body />
+                    <Body />
+                    <Body />
+                    <Body />
+                  </list>
+                </value>
+              </entry>
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="dependencies">
+      <map>
+        <entry key="FIRRTL_AFTER_INITIAL">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="FIRRTL_BEFORE_INITIAL">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="INIT_RANDOM">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="RANDOM">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="RANDOMIZE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="RANDOMIZE_DELAY">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="RANDOMIZE_GARBAGE_ASSIGN">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="RANDOMIZE_INVALID_ASSIGN">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="RANDOMIZE_MEM_INIT">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="RANDOMIZE_REG_INIT">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="SYNTHESIS">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="VERILATOR">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/el2_dec.v" />
+              <option value="$PROJECT_DIR$/el2_dec_decode_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_gpr_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_dec_tlu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_exu_alu_ctl.v" />
+              <option value="$PROJECT_DIR$/el2_pic_ctrl.v" />
+              <option value="$PROJECT_DIR$/src/main/resources/vsrc/el2_ifu_iccm_mem.sv" />
+              <option value="$PROJECT_DIR$/src/main/resources/vsrc/el2_lsu_dccm_mem.sv" />
+              <option value="$PROJECT_DIR$/top.v" />
+            </set>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="status" value="NORMAL" />
+    <option name="version" value="640" />
+  </component>
+</project>

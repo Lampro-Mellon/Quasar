@@ -1,1 +1,1 @@
-["ifu.ifu_ic"]
+["dec.dec_dec_ctl","dec.dec_decode","dec.dec_main","dec.dec_trig","dec.gpr_gen","dec.ib_gen","dec.test","dec.tlu_gen","exu.alu","pic_main"]

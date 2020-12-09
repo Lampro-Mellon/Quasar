@@ -1,1 +1,1 @@
-/home/waleedbinehsan/Desktop/SweRV-Chislified-master/TEC_RV_ICG.v
+/home/waleedbinehsan/Desktop/SweRV-Chislified-master/gated_latch.v

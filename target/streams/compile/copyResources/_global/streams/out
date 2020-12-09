@@ -1,2 +1,9 @@
 [0m[[0m[0mdebug[0m] [0m[0mCopy resource mappings: [0m
-[0m[[0m[0mdebug[0m] [0m[0m	[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/gated_latch.v,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/gated_latch.v)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/dmi_jtag_to_core_sync.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/dmi_jtag_to_core_sync.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/el2_mem.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/el2_mem.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/el2_ifu_ic_mem.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/el2_ifu_ic_mem.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/el2_ifu_iccm_mem.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/el2_ifu_iccm_mem.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/dmi_wrapper.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/dmi_wrapper.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/el2_lsu_dccm_mem.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/el2_lsu_dccm_mem.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/rvtaj_tap.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/rvtaj_tap.sv)[0m

@@ -2,12 +2,15 @@
   <library name="sbt: org.json4s:json4s-ast_2.12:3.6.8:jar">
     <CLASSES>
       <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.12/3.6.8/json4s-ast_2.12-3.6.8.jar!/" />
+      <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.12/3.6.8/json4s-ast_2.12-3.6.8.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.12/3.6.8/json4s-ast_2.12-3.6.8-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.12/3.6.8/json4s-ast_2.12-3.6.8-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.12/3.6.8/json4s-ast_2.12-3.6.8-sources.jar!/" />
+      <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.12/3.6.8/json4s-ast_2.12-3.6.8-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
