@@ -45,7 +45,4 @@ class dmi_wrapper_module extends Module{
   val dwrap = Module(new dmi_wrapper)
   dwrap.io <> io
 }
-object dmiwrapper_main extends App{
-  println("Generate Verilog")
-  println((new chisel3.stage.ChiselStage).emitVerilog(new dmi_wrapper_module()))
-}
+

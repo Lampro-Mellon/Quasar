@@ -18,7 +18,7 @@ else
 {io.dout := flop}
 }
 
-class rvdffsc extends Module with el2_lib {
+class rvdffsc extends Module with lib {
   val io = IO(new Bundle{
     val din = Input(UInt(32.W))
     val en = Input(Bool())
@@ -28,7 +28,7 @@ class rvdffsc extends Module with el2_lib {
   io.out := RegEnable(io.din & Fill(io.din.getWidth, ~io.clear), 0.U, io.en)
 }
 
-class rvdffs extends Module with el2_lib {
+class rvdffs extends Module with lib {
   val io = IO(new Bundle{
     val din = Input(UInt(32.W))
     val en = Input(Bool())

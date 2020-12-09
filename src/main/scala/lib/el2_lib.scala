@@ -1,7 +1,7 @@
 package lib
 import chisel3._
 import chisel3.util._
-import el2_mem.quasar.{DCCM_ENABLE, ICACHE_ECC, ICACHE_WAYPACK, ICCM_ENABLE, bool2int}
+import mem.quasar.{DCCM_ENABLE, ICACHE_ECC, ICACHE_WAYPACK, ICCM_ENABLE, bool2int}
 trait param {
   val BHT_ADDR_HI            = 9
   val BHT_ADDR_LO            = 2
@@ -158,7 +158,7 @@ trait param {
   val TIMER_LEGAL_EN         = 0x1   //.U(1.W)
 }
 
-trait el2_lib extends param{
+trait lib extends param{
   def repl(b:Int, a:UInt) = VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
 
   def MEM_CAL : (Int, Int, Int, Int)=
@@ -178,20 +178,20 @@ trait el2_lib extends param{
   }
 
   ///////////////////////////////////////////////////////////////////
-  def el2_btb_tag_hash(pc : UInt) =
+  def btb_tag_hash(pc : UInt) =
     VecInit.tabulate(3)(i => pc(BTB_ADDR_HI-1+((i+1)*(BTB_BTAG_SIZE)),BTB_ADDR_HI+(i*BTB_BTAG_SIZE))).reduce(_^_)
 
   ///////////////////////////////////////////////////////////////////
-  def el2_btb_tag_hash_fold(pc : UInt) =
+  def btb_tag_hash_fold(pc : UInt) =
     pc(BTB_ADDR_HI+(2*BTB_BTAG_SIZE),BTB_ADDR_HI+BTB_BTAG_SIZE+1)^pc(BTB_ADDR_HI+BTB_BTAG_SIZE,BTB_ADDR_HI+1)
 
   ///////////////////////////////////////////////////////////////////
-  def el2_btb_addr_hash(pc : UInt) =
+  def btb_addr_hash(pc : UInt) =
     if(BTB_FOLD2_INDEX_HASH) pc(BTB_INDEX1_HI-1,BTB_INDEX1_LO-1) ^ pc(BTB_INDEX3_HI-1,BTB_INDEX3_LO-1)
     else (pc(BTB_INDEX1_HI-1,BTB_INDEX1_LO-1) ^ pc(BTB_INDEX2_HI-1,BTB_INDEX2_LO-1) ^ pc(BTB_INDEX3_HI-1,BTB_INDEX3_LO-1))
 
   ///////////////////////////////////////////////////////////////////
-  def el2_btb_ghr_hash(hashin : UInt, ghr :UInt) =
+  def btb_ghr_hash(hashin : UInt, ghr :UInt) =
     if(BHT_GHR_HASH_1) Cat(ghr(BHT_GHR_SIZE-1,BTB_INDEX1_HI-1), hashin(BTB_INDEX1_HI,2) ^ ghr(BTB_INDEX1_HI-2,0))
     else hashin(BHT_GHR_SIZE+1,2) ^ ghr(BHT_GHR_SIZE-1,0)
 
@@ -246,7 +246,7 @@ trait el2_lib extends param{
   }
 
   ///////////////////////////////////////////////////////////////////
-  def el2_configurable_gw(clk : Clock, rst:AsyncReset, extintsrc_req_sync : Bool, meigwctrl_polarity: Bool, meigwctrl_type: Bool, meigwclr: Bool)  = {
+  def configurable_gw(clk : Clock, rst:AsyncReset, extintsrc_req_sync : Bool, meigwctrl_polarity: Bool, meigwctrl_type: Bool, meigwclr: Bool)  = {
     val din = WireInit(Bool(), 0.U)
     val dout = withClockAndReset(clk, rst){RegNext(din, false.B)}
     din := (extintsrc_req_sync ^ meigwctrl_polarity) | (dout & !meigwclr)
