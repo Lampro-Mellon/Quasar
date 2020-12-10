@@ -5,7 +5,6 @@ import lib._
 import include._
 import chisel3.experimental.{ChiselEnum, chiselName}
 import chisel3.util.ImplicitConversions.intToUInt
-import ifu._
 
 @chiselName
 class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
@@ -296,6 +295,7 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   val obuf_merge_en = WireInit(Bool(), false.B)
   val obuf_merge_in = obuf_merge_en
   val obuf_tag0_in = Mux(ibuf_buf_byp, WrPtr0_r, CmdPtr0)
+  //val Cmdptr1 = WireInit(UInt(DEPTH_LOG2.W), 0.U)
 
   val obuf_tag1_in = Mux(ibuf_buf_byp, WrPtr1_r, CmdPtr1)
   val obuf_cmd_done = WireInit(Bool(), false.B)
@@ -552,7 +552,7 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   bus_addr_match_pending := Mux1H((0 until DEPTH).map(i=>(buf_state(i)===resp_C)->
     (BUILD_AXI_NATIVE.B & obuf_valid & (obuf_addr(31,3)===buf_addr(i)(31,3)) & !((obuf_tag0===i.U) | (obuf_merge & (obuf_tag1===i.U))))))
 
-  bus_cmd_ready := Mux(obuf_write, Mux(obuf_cmd_done | obuf_data_done, Mux(obuf_cmd_done, io.lsu_axi.w.ready, io.lsu_axi.aw.ready), io.lsu_axi.aw.ready & io.lsu_axi.aw.ready), io.lsu_axi.ar.ready)
+  bus_cmd_ready := Mux(obuf_write, Mux(obuf_cmd_done | obuf_data_done, Mux(obuf_cmd_done, io.lsu_axi.w.ready, io.lsu_axi.aw.ready), io.lsu_axi.aw.ready & io.lsu_axi.w.ready), io.lsu_axi.ar.ready)
   bus_wcmd_sent := io.lsu_axi.aw.valid & io.lsu_axi.aw.ready
   bus_wdata_sent := io.lsu_axi.w.valid & io.lsu_axi.w.ready
   bus_cmd_sent := ((obuf_cmd_done | bus_wcmd_sent) & (obuf_data_done | bus_wdata_sent)) | (io.lsu_axi.ar.valid & io.lsu_axi.ar.ready)
@@ -615,4 +615,7 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   WrPtr1_r := withClock(io.lsu_c2_r_clk){RegNext(WrPtr1_m, 0.U)}
   io.lsu_busreq_r := withClock(io.lsu_c2_r_clk){RegNext(io.lsu_busreq_m & !io.flush_r & !io.ld_full_hit_m, false.B)}
   lsu_nonblock_load_valid_r := withClock(io.lsu_c2_r_clk){RegNext(io.dctl_busbuff.lsu_nonblock_load_valid_m, false.B)}
+}
+object bus_buffer extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new lsu_bus_buffer()))
 }

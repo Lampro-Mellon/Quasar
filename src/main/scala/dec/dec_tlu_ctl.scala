@@ -2119,7 +2119,7 @@ miccme_ce_req := (("hffffffff".U(32.W) << miccmect(31,27)) & Cat(0.U(5.W), miccm
 
  val dicad0h = rvdffe(dicad0h_ns,(wr_dicad0h_r | io.ifu_ic_debug_rd_data_valid).asBool,clock,io.scan_mode)
 
- if (ICACHE_ECC == true) {
+ if (ICACHE_ECC) {
  // ----------------------------------------------------------------------
  // DICAD1 (R/W) (Only accessible in debug mode)
  // [6:0]     : ECC
@@ -2152,7 +2152,7 @@ miccme_ce_req := (("hffffffff".U(32.W) << miccmect(31,27)) & Cat(0.U(5.W), miccm
  // DICAGO (R/W) (Only accessible in debug mode)
  // [0]     : Go
 
- if (ICACHE_ECC == true)  io.dec_tlu_ic_diag_pkt.icache_wrdata := Cat(dicad1(6,0), dicad0h(31,0), dicad0(31,0))
+ if (ICACHE_ECC)  io.dec_tlu_ic_diag_pkt.icache_wrdata := Cat(dicad1(6,0), dicad0h(31,0), dicad0(31,0))
  else    io.dec_tlu_ic_diag_pkt.icache_wrdata := Cat(0.U(2.W),dicad1(3,0), dicad0h(31,0), dicad0(31,0))
 
  io.dec_tlu_ic_diag_pkt.icache_dicawics := dicawics

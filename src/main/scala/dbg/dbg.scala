@@ -103,23 +103,23 @@ class dbg extends Module with lib with RequireAsyncReset {
     ((io.dmi_reg_addr === "h39".U) | (io.dmi_reg_addr === "h3c".U) | (io.dmi_reg_addr === "h3d".U)))
 
   val sbcs_sbbusyerror_din = (~(sbcs_wren & io.dmi_reg_wdata(22))).asUInt()
-  val temp_sbcs_22 = withClockAndReset(sb_free_clk, !dbg_dm_rst_l) {
+  val temp_sbcs_22 = withClockAndReset(sb_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(sbcs_sbbusyerror_din, 0.U, sbcs_sbbusyerror_wren)
   } // sbcs_sbbusyerror_reg
 
-  val temp_sbcs_21 = withClockAndReset(sb_free_clk, !dbg_dm_rst_l) {
+  val temp_sbcs_21 = withClockAndReset(sb_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(sbcs_sbbusy_din, 0.U, sbcs_sbbusy_wren)
   } // sbcs_sbbusy_reg
 
-  val temp_sbcs_20 = withClockAndReset(sb_free_clk, !dbg_dm_rst_l) {
+  val temp_sbcs_20 = withClockAndReset(sb_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(io.dmi_reg_wdata(20), 0.U, sbcs_wren)
   } // sbcs_sbreadonaddr_reg
 
-  val temp_sbcs_19_15 = withClockAndReset(sb_free_clk, !dbg_dm_rst_l) {
+  val temp_sbcs_19_15 = withClockAndReset(sb_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(io.dmi_reg_wdata(19, 15), 0.U, sbcs_wren)
   } // sbcs_misc_reg
 
-  val temp_sbcs_14_12 = withClockAndReset(sb_free_clk, !dbg_dm_rst_l) {
+  val temp_sbcs_14_12 = withClockAndReset(sb_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(sbcs_sberror_din(2, 0), 0.U, sbcs_sberror_wren)
   } // sbcs_error_reg
   sbcs_reg := Cat(1.U(3.W), 0.U(6.W), temp_sbcs_22, temp_sbcs_21, temp_sbcs_20, temp_sbcs_19_15, temp_sbcs_14_12, "h20".U(7.W), "b01111".U(5.W))
@@ -144,11 +144,11 @@ class dbg extends Module with lib with RequireAsyncReset {
   val sbdata1_din = Fill(32, sbdata1_reg_wren0) & io.dmi_reg_wdata |
     Fill(32, sbdata1_reg_wren1) & sb_bus_rdata(63, 32)
 
-  val sbdata0_reg = withReset(!dbg_dm_rst_l) {
+  val sbdata0_reg = withReset((!dbg_dm_rst_l).asAsyncReset()) {
     rvdffe(sbdata0_din, sbdata0_reg_wren, clock, io.scan_mode)
   } // dbg_sbdata0_reg
 
-  val sbdata1_reg = withReset(!dbg_dm_rst_l) {
+  val sbdata1_reg = withReset((!dbg_dm_rst_l).asAsyncReset()) {
     rvdffe(sbdata1_din, sbdata1_reg_wren, clock, io.scan_mode)
   } // dbg_sbdata1_reg
 
@@ -156,7 +156,7 @@ class dbg extends Module with lib with RequireAsyncReset {
   val sbaddress0_reg_wren = sbaddress0_reg_wren0 | sbaddress0_reg_wren1
   val sbaddress0_reg_din = Fill(32, sbaddress0_reg_wren0) & io.dmi_reg_wdata |
     Fill(32, sbaddress0_reg_wren1) & (sbaddress0_reg + Cat(0.U(28.W), sbaddress0_incr))
-  sbaddress0_reg := withReset(!dbg_dm_rst_l) {
+  sbaddress0_reg := withReset((!dbg_dm_rst_l).asAsyncReset()) {
     rvdffe(sbaddress0_reg_din, sbaddress0_reg_wren, clock, io.scan_mode)
   } // dbg_sbaddress0_reg
 
@@ -164,20 +164,20 @@ class dbg extends Module with lib with RequireAsyncReset {
   val sbreadondata_access = io.dmi_reg_en & !io.dmi_reg_wr_en & (io.dmi_reg_addr === "h3c".U) & sbcs_reg(15)
   val sbdata0wr_access = io.dmi_reg_en & io.dmi_reg_wr_en & (io.dmi_reg_addr === "h3c".U)
   val dmcontrol_wren = (io.dmi_reg_addr === "h10".U) & io.dmi_reg_en & io.dmi_reg_wr_en
-  val dm_temp = withClockAndReset(dbg_free_clk, !dbg_dm_rst_l) {
+  val dm_temp = withClockAndReset(dbg_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(
       Cat(io.dmi_reg_wdata(31, 30), io.dmi_reg_wdata(28), io.dmi_reg_wdata(1)),
       0.U, dmcontrol_wren)
   } // dmcontrolff
 
-  val dm_temp_0 = withClockAndReset(dbg_free_clk, io.dbg_rst_l) {
+  val dm_temp_0 = withClockAndReset(dbg_free_clk, io.dbg_rst_l.asAsyncReset()) {
     RegEnable(io.dmi_reg_wdata(0), 0.U, dmcontrol_wren)
   } // dmcontrol_dmactive_ff
 
   val temp = Cat(dm_temp(3, 2), 0.U, dm_temp(1), 0.U(26.W), dm_temp(0), dm_temp_0)
   dmcontrol_reg := temp
 
-  val dmcontrol_wren_Q = withClockAndReset(dbg_free_clk, !dbg_dm_rst_l) {
+  val dmcontrol_wren_Q = withClockAndReset(dbg_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegNext(dmcontrol_wren, 0.U)
   } // dmcontrol_wrenff
 
@@ -190,15 +190,15 @@ class dbg extends Module with lib with RequireAsyncReset {
   val temp_rst = reset.asBool()
   dmstatus_unavail := (dmcontrol_reg(1) | !(temp_rst)).asBool()
   dmstatus_running := ~(dmstatus_unavail | dmstatus_halted)
-  dmstatus_resumeack := withClockAndReset(dbg_free_clk, !dbg_dm_rst_l) {
+  dmstatus_resumeack := withClockAndReset(dbg_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(dmstatus_resumeack_din, 0.U, dmstatus_resumeack_wren)
   } // dmstatus_resumeack_reg
 
-  dmstatus_halted := withClockAndReset(dbg_free_clk, !dbg_dm_rst_l) {
+  dmstatus_halted := withClockAndReset(dbg_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegNext(io.dec_tlu_dbg_halted & !io.dec_tlu_mpc_halted_only, 0.U)
   } // dmstatus_halted_reg
 
-  dmstatus_havereset := withClockAndReset(dbg_free_clk, !dbg_dm_rst_l) {
+  dmstatus_havereset := withClockAndReset(dbg_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(~dmstatus_havereset_rst, 0.U, dmstatus_havereset_wren)
   } // dmstatus_havereset_reg
 
@@ -222,11 +222,11 @@ class dbg extends Module with lib with RequireAsyncReset {
     (Fill(3, abstractcs_error_sel5) & (~io.dmi_reg_wdata(10, 8)).asUInt() & abstractcs_reg(10, 8)) |
     (Fill(3, (~abstractcs_error_selor).asUInt()) & abstractcs_reg(10, 8))
 
-  val abs_temp_12 = withClockAndReset(dbg_free_clk, !dbg_dm_rst_l) {
+  val abs_temp_12 = withClockAndReset(dbg_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(abstractcs_busy_din, 0.U, abstractcs_busy_wren)
   } // dmabstractcs_busy_reg
 
-  val abs_temp_10_8 = withClockAndReset(dbg_free_clk, !dbg_dm_rst_l) {
+  val abs_temp_10_8 = withClockAndReset(dbg_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegNext(abstractcs_error_din(2, 0), 0.U)
   } // dmabstractcs_error_reg
 
@@ -234,7 +234,7 @@ class dbg extends Module with lib with RequireAsyncReset {
 
   val command_wren = (io.dmi_reg_addr === "h17".U) & io.dmi_reg_en & io.dmi_reg_wr_en & (dbg_state === state_t.halted)
   val command_din = Cat(io.dmi_reg_wdata(31, 24), 0.U(1.W), io.dmi_reg_wdata(22, 20), 0.U(3.W), io.dmi_reg_wdata(16, 0))
-  val command_reg = withReset(!dbg_dm_rst_l) {
+  val command_reg = withReset((!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(command_din, 0.U, command_wren)
   } // dmcommand_reg
 
@@ -243,13 +243,13 @@ class dbg extends Module with lib with RequireAsyncReset {
 
   val data0_reg_wren = data0_reg_wren0 | data0_reg_wren1
   val data0_din = Fill(32, data0_reg_wren0) & io.dmi_reg_wdata | Fill(32, data0_reg_wren1) & io.core_dbg_rddata
-  val data0_reg = withReset(!dbg_dm_rst_l) {
+  val data0_reg = withReset((!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(data0_din, 0.U, data0_reg_wren)
   } // dbg_data0_reg
 
   val data1_reg_wren = (io.dmi_reg_en & io.dmi_reg_wr_en & (io.dmi_reg_addr === "h5".U) & (dbg_state === state_t.halted))
   val data1_din = Fill(32, data1_reg_wren) & io.dmi_reg_wdata
-  data1_reg := withReset(!dbg_dm_rst_l) {
+  data1_reg := withReset((!dbg_dm_rst_l).asAsyncReset()) {
     rvdffe(data1_din, data1_reg_wren, clock, io.scan_mode)
   } // dbg_data1_reg
 
@@ -311,13 +311,13 @@ class dbg extends Module with lib with RequireAsyncReset {
     Fill(32, io.dmi_reg_addr === "h40".U) & haltsum0_reg | Fill(32, io.dmi_reg_addr === "h38".U) & sbcs_reg |
     Fill(32, io.dmi_reg_addr === "h39".U) & sbaddress0_reg | Fill(32, io.dmi_reg_addr === "h3c".U) & sbdata0_reg |
     Fill(32, io.dmi_reg_addr === "h3d".U) & sbdata1_reg
-
-  dbg_state := withClockAndReset(dbg_free_clk, !dbg_dm_rst_l & temp_rst) {
+0
+  dbg_state := withClockAndReset(dbg_free_clk, (!dbg_dm_rst_l & temp_rst).asAsyncReset()) {
     RegEnable(dbg_nxtstate, 0.U, dbg_state_en)
   } // dbg_state_reg
 
 
-  io.dmi_reg_rdata := withClockAndReset(dbg_free_clk, !dbg_dm_rst_l) {
+  io.dmi_reg_rdata := withClockAndReset(dbg_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(dmi_reg_rdata_din, 0.U, io.dmi_reg_en)
   } // dmi_rddata_reg
 
@@ -394,7 +394,7 @@ class dbg extends Module with lib with RequireAsyncReset {
       sbaddress0_reg_wren1 := sbcs_reg(16)
     }}
 
-  sb_state := withClockAndReset(sb_free_clk, !dbg_dm_rst_l) {
+  sb_state := withClockAndReset(sb_free_clk, (!dbg_dm_rst_l).asAsyncReset()) {
     RegEnable(sb_nxtstate, 0.U, sb_state_en)
   } // sb_state_reg
 
@@ -449,4 +449,7 @@ class dbg extends Module with lib with RequireAsyncReset {
   io.dbg_dma.dbg_ib.dbg_cmd_valid     := io.dbg_dec.dbg_ib.dbg_cmd_valid
   io.dbg_dma.dbg_ib.dbg_cmd_write     := io.dbg_dec.dbg_ib.dbg_cmd_write
   io.dbg_dma.dbg_ib.dbg_cmd_type      := io.dbg_dec.dbg_ib.dbg_cmd_type
+}
+object dbg_top extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new dbg()))
 }

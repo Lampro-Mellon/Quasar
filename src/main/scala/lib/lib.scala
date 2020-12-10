@@ -86,7 +86,7 @@ trait lib extends param{
     matchvec(0)  :=  masken_or_fullmask | (mask(0) === data(0)).asUInt
     for(i <- 1 to data.getWidth-1)
     matchvec(i) := Mux(mask(i-1,0).andR & masken_or_fullmask,"b1".U,(mask(i) === data(i)).asUInt)
-    matchvec.asUInt.andR()
+    matchvec.asUInt
   }
 
   ///////////////////////////////////////////////////////////////////
