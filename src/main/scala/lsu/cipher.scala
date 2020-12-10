@@ -6,25 +6,31 @@
 //
 //
 //@chiselName
-//class aes extends Module{
-//  val io = IO (new Bundle {
+//class aes extends Module {
+//  val io = IO(new Bundle {
 //    val byteIn = Input(UInt(8.W))
 //    val byteOut = Output(UInt(8.W))
 //  })
-//  def ROTL(x:Int,shift:Int) ={
-//    val y = (x << shift) | (x >> (8 - shift))
-//  y
+//
+//  def ROTL(x: UInt, shift: UInt):UInt = {
+//    val y = (x << shift) | (x >> (8.U - shift))
+//    y
 //  }
-//  io.byteOut := ROTL(io.byteIn,3)
-//  object aes extends App {
+//
+//  def xformed(q:Int) = {
+//     q ^ ROTL(q, 1) ^ ROTL(q, 2) ^ ROTL(q, 3) ^ ROTL(q, 4)
+//
+//    }
+//
+//    sbox[p] := (0 until 255).map( i => )
+//
+//}
+//object aes extends App {
 //    println((new chisel3.stage.ChiselStage).emitVerilog(new aes()))
 //  }
-//// def aes_sbox () ={
-////
-////}
-///*#define ROTL8(x,shift) ((uint8_t) ((x) << (shift)) | ((x) >> (8 - (shift))))
 //
-//void initialize_aes_sbox(uint8_t sbox[256]) {
+//
+///*void initialize_aes_sbox(uint8_t sbox[256]) {
 //  uint8_t p = 1, q = 1;
 //
 //  /* loop invariant: p * q == 1 in the Galois field */
@@ -46,4 +52,3 @@
 //
 //  /* 0 is a special case since it has no inverse */
 //  sbox[0] = 0x63;*/
-//}
