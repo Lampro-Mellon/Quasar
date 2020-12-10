@@ -15490,7 +15490,7 @@ circuit lsu :
     io.lsu_pic.picm_rden <= dccm_ctl.io.lsu_pic.picm_rden @[lsu.scala 196:14]
     io.lsu_pic.picm_wren <= dccm_ctl.io.lsu_pic.picm_wren @[lsu.scala 196:14]
     stbuf.io.lsu_c1_m_clk <= clkdomain.io.lsu_c1_m_clk @[lsu.scala 199:49]
-    stbuf.io.lsu_c1_r_clk <= clkdomain.io.lsu_c1_m_clk @[lsu.scala 200:48]
+    stbuf.io.lsu_c1_r_clk <= clkdomain.io.lsu_c1_r_clk @[lsu.scala 200:48]
     stbuf.io.lsu_stbuf_c1_clk <= clkdomain.io.lsu_stbuf_c1_clk @[lsu.scala 201:54]
     stbuf.io.lsu_free_c2_clk <= clkdomain.io.lsu_free_c2_clk @[lsu.scala 202:54]
     stbuf.io.lsu_pkt_m.bits.store_data_bypass_m <= lsu_lsc_ctl.io.lsu_pkt_m.bits.store_data_bypass_m @[lsu.scala 203:48]

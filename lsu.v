@@ -11634,7 +11634,7 @@ module lsu(
   assign stbuf_clock = clock;
   assign stbuf_reset = reset;
   assign stbuf_io_lsu_c1_m_clk = clkdomain_io_lsu_c1_m_clk; // @[lsu.scala 199:49]
-  assign stbuf_io_lsu_c1_r_clk = clkdomain_io_lsu_c1_m_clk; // @[lsu.scala 200:48]
+  assign stbuf_io_lsu_c1_r_clk = clkdomain_io_lsu_c1_r_clk; // @[lsu.scala 200:48]
   assign stbuf_io_lsu_stbuf_c1_clk = clkdomain_io_lsu_stbuf_c1_clk; // @[lsu.scala 201:54]
   assign stbuf_io_lsu_free_c2_clk = clkdomain_io_lsu_free_c2_clk; // @[lsu.scala 202:54]
   assign stbuf_io_lsu_pkt_m_valid = lsu_lsc_ctl_io_lsu_pkt_m_valid; // @[lsu.scala 203:48]
