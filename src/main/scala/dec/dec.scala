@@ -32,10 +32,7 @@ class dec_IO extends Bundle with lib {
   val mpc_debug_run_ack     = Output(Bool())  // Run ack
   val debug_brkpt_status    = Output(Bool())  // debug breakpoint
   val lsu_pmu_misaligned_m          = Input(Bool())      // D side load or store misaligned
-  val dma_pmu_dccm_read             = Input(Bool())      // DMA DCCM read
-  val dma_pmu_dccm_write            = Input(Bool())      // DMA DCCM write
-  val dma_pmu_any_read              = Input(Bool())      // DMA read
-  val dma_pmu_any_write             = Input(Bool())      // DMA write
+
 
   val lsu_fir_addr                  = Input(UInt(31.W)) //[31:1] Fast int address
   val lsu_fir_error                 = Input(UInt(2.W))  //[1:0]  Fast int lookup error
@@ -51,22 +48,15 @@ class dec_IO extends Bundle with lib {
 
   val lsu_load_stall_any            = Input(Bool())            // This is for blocking loads
   val lsu_store_stall_any           = Input(Bool())            // This is for blocking stores
-  val dma_dccm_stall_any            = Input(Bool())            // stall any load/store at decode, pmu event
-  val dma_iccm_stall_any            = Input(Bool())            // iccm stalled, pmu event
+
 
   val iccm_dma_sb_error             = Input(Bool())            // ICCM DMA single bit error
 
   val exu_flush_final               = Input(Bool())             // slot0 flush
-  val mexintpend                = Input(Bool())        // External interrupt pending
   val timer_int                 = Input(Bool())        // Timer interrupt pending (from pin)
   val soft_int                  = Input(Bool())        // Software interrupt pending (from pin)
 
-  val pic_claimid               = Input(UInt(8.W))      // PIC claimid
-  val pic_pl                    = Input(UInt(4.W))      // PIC priv level
-  val mhwakeup                  = Input(Bool())      // High priority wakeup
 
-  val dec_tlu_meicurpl          = Output(UInt(4.W))     // to PIC, Current priv level
-  val dec_tlu_meipt             = Output(UInt(4.W))     // to PIC
 
   // Debug start
   val dbg_halt_req              = Input(Bool())        // DM requests a halt
@@ -90,8 +80,7 @@ class dec_IO extends Bundle with lib {
   val dec_tlu_perfcnt2          = Output(Bool())      // toggles when slot0 perf counter 2 has an event inc
   val dec_tlu_perfcnt3          = Output(Bool())      // toggles when slot0 perf counter 3 has an event inc
   val dec_lsu_valid_raw_d       = Output(Bool())
-  val rv_trace_pkt              = Output(new trace_pkt_t)        // trace packet
-  val dec_tlu_dma_qos_prty      = Output(UInt(3.W))       // DMA QoS priority coming from MFDC [18:16]
+  val rv_trace_pkt              = (new trace_pkt_t)        // trace packet
 
   // clock gating overrides from mcgc
   val dec_tlu_misc_clk_override = Output(Bool())       // override misc clock domain gating
@@ -108,6 +97,8 @@ class dec_IO extends Bundle with lib {
   val lsu_dec = Flipped (new lsu_dec)
   val lsu_tlu = Flipped (new lsu_tlu)
   val dec_dbg = new dec_dbg
+  val dec_dma = new dec_dma
+  val dec_pic = new dec_pic
 }
 class dec extends Module with param with RequireAsyncReset{
   val io = IO(new dec_IO)
@@ -140,9 +131,11 @@ class dec extends Module with param with RequireAsyncReset{
   val dec_i0_trigger_match_d = dec_trigger.io.dec_i0_trigger_match_d
   dontTouch(dec_i0_trigger_match_d)
   decode.io.dec_aln <> io.ifu_dec.dec_aln.aln_dec
+
   decode.io.decode_exu<> io.dec_exu.decode_exu
   decode.io.dec_alu<> io.dec_exu.dec_alu
   decode.io.dec_div<> io.dec_exu.dec_div
+  decode.io.dctl_dma <> io.dec_dma.dctl_dma
   decode.io.dec_tlu_flush_extint               :=  tlu.io.dec_tlu_flush_extint
   decode.io.dec_tlu_force_halt                 :=  tlu.io.tlu_mem.dec_tlu_force_halt
   decode.io.dctl_busbuff <> io.lsu_dec.dctl_busbuff
@@ -167,10 +160,9 @@ class dec extends Module with param with RequireAsyncReset{
   decode.io.lsu_idle_any                       :=  io.lsu_idle_any
   decode.io.lsu_load_stall_any                 :=  io.lsu_load_stall_any
   decode.io.lsu_store_stall_any                :=  io.lsu_store_stall_any
-  decode.io.dma_dccm_stall_any                 :=  io.dma_dccm_stall_any
   decode.io.exu_div_wren                       :=  io.exu_div_wren
   decode.io.dec_tlu_i0_kill_writeb_wb          :=  tlu.io.dec_tlu_i0_kill_writeb_wb
-  decode.io.dec_tlu_flush_lower_wb             :=  tlu.io.tlu_bp.dec_tlu_flush_lower_wb
+  decode.io.dec_tlu_flush_lower_wb             :=  tlu.io.dec_tlu_flush_lower_wb
   decode.io.dec_tlu_i0_kill_writeb_r           :=  tlu.io.dec_tlu_i0_kill_writeb_r
   decode.io.dec_tlu_flush_lower_r              :=  tlu.io.tlu_exu.dec_tlu_flush_lower_r
   decode.io.dec_tlu_flush_pause_r              :=  tlu.io.dec_tlu_flush_pause_r
@@ -211,6 +203,7 @@ class dec extends Module with param with RequireAsyncReset{
   tlu.io.tlu_ifc <> io.ifu_dec.dec_ifc
   tlu.io.tlu_bp  <> io.ifu_dec.dec_bp
   tlu.io.tlu_exu <> io.dec_exu.tlu_exu
+  tlu.io.tlu_dma <> io.dec_dma.tlu_dma
   tlu.io.active_clk                         :=  io.active_clk
   tlu.io.free_clk                           :=  io.free_clk
   tlu.io.scan_mode                          :=  io.scan_mode
@@ -226,14 +219,9 @@ class dec extends Module with param with RequireAsyncReset{
   tlu.io.dec_pmu_presync_stall              :=  decode.io.dec_pmu_presync_stall
   tlu.io.dec_pmu_postsync_stall             :=  decode.io.dec_pmu_postsync_stall
   tlu.io.lsu_store_stall_any                :=  io.lsu_store_stall_any
-  tlu.io.dma_dccm_stall_any                 :=  io.dma_dccm_stall_any
-  tlu.io.dma_iccm_stall_any                 :=  io.dma_iccm_stall_any
   io.lsu_dec.tlu_busbuff <> tlu.io.tlu_busbuff
   io.lsu_tlu <> tlu.io.lsu_tlu
-  tlu.io.dma_pmu_dccm_read                  :=  io.dma_pmu_dccm_read
-  tlu.io.dma_pmu_dccm_write                 :=  io.dma_pmu_dccm_write
-  tlu.io.dma_pmu_any_read                   :=  io.dma_pmu_any_read
-  tlu.io.dma_pmu_any_write                  :=  io.dma_pmu_any_write
+  io.dec_pic <> tlu.io.dec_pic
   tlu.io.lsu_fir_addr                       :=  io.lsu_fir_addr
   tlu.io.lsu_fir_error                      :=  io.lsu_fir_error
   tlu.io.iccm_dma_sb_error                  :=  io.iccm_dma_sb_error
@@ -257,10 +245,10 @@ class dec extends Module with param with RequireAsyncReset{
   tlu.io.dbg_resume_req                     :=  io.dbg_resume_req
   tlu.io.lsu_idle_any                       :=  io.lsu_idle_any
   tlu.io.dec_div_active                     :=  decode.io.dec_div_active
-  tlu.io.pic_claimid                        :=  io.pic_claimid
-  tlu.io.pic_pl                             :=  io.pic_pl
-  tlu.io.mhwakeup                           :=  io.mhwakeup
-  tlu.io.mexintpend                         :=  io.mexintpend
+//  tlu.io.pic_claimid                        :=  io.dec_pic.pic_claimid
+//  tlu.io.pic_pl                             :=  io.dec_pic.pic_pl
+//  tlu.io.mhwakeup                           :=  io.dec_pic.mhwakeup
+//  tlu.io.mexintpend                         :=  io.mexintpend
   tlu.io.timer_int                          :=  io.timer_int
   tlu.io.soft_int                           :=  io.soft_int
   tlu.io.core_id                            :=  io.core_id
@@ -281,8 +269,8 @@ class dec extends Module with param with RequireAsyncReset{
   io.mpc_debug_halt_ack     := tlu.io.mpc_debug_halt_ack
   io.mpc_debug_run_ack      := tlu.io.mpc_debug_run_ack
   io.debug_brkpt_status     := tlu.io.debug_brkpt_status
-  io.dec_tlu_meicurpl       := tlu.io.dec_tlu_meicurpl
-  io.dec_tlu_meipt          := tlu.io.dec_tlu_meipt
+//  io.dec_pic.dec_tlu_meicurpl       := tlu.io.dec_tlu_meicurpl
+//  io.dec_pic.dec_tlu_meipt          := tlu.io.dec_tlu_meipt
   io.dec_tlu_i0_kill_writeb_r    := tlu.io.dec_tlu_i0_kill_writeb_r
   io.dec_tlu_perfcnt0       := tlu.io.dec_tlu_perfcnt0
   io.dec_tlu_perfcnt1       := tlu.io.dec_tlu_perfcnt1
@@ -293,7 +281,6 @@ class dec extends Module with param with RequireAsyncReset{
   dec_tlu_int_valid_wb1        := tlu.io.dec_tlu_int_valid_wb1
   dec_tlu_exc_cause_wb1        := tlu.io.dec_tlu_exc_cause_wb1
   dec_tlu_mtval_wb1            := tlu.io.dec_tlu_mtval_wb1
-  io.dec_tlu_dma_qos_prty         := tlu.io.dec_tlu_dma_qos_prty
   io.dec_tlu_misc_clk_override    := tlu.io.dec_tlu_misc_clk_override
   io.dec_tlu_ifu_clk_override      := tlu.io.dec_tlu_ifu_clk_override
   io.dec_tlu_lsu_clk_override      := tlu.io.dec_tlu_lsu_clk_override
@@ -315,4 +302,8 @@ class dec extends Module with param with RequireAsyncReset{
 
   // debug command read data
   io.dec_dbg_rddata := decode.io.dec_i0_wdata_r
+}
+
+object dec_main extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new dec()))
 }

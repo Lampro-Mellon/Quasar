@@ -30,8 +30,7 @@ class ifu extends Module with lib with RequireAsyncReset {
     val iccm_ready = Output(Bool())
     // Performance counter
     val iccm_dma_sb_error = Output(Bool())
-//    val iccm_buf_correct_ecc = Output(Bool())
-  //  val iccm_correction_state = Output(Bool())
+    val dec_tlu_flush_lower_wb = Input(Bool())
     val scan_mode = Input(Bool())
   })
   val mem_ctl = Module(new ifu_mem_ctl)
@@ -87,7 +86,7 @@ class ifu extends Module with lib with RequireAsyncReset {
   bp_ctl.io.dec_bp <> io.ifu_dec.dec_bp
   bp_ctl.io.exu_bp <> io.exu_ifu.exu_bp
   bp_ctl.io.exu_flush_final := io.exu_flush_final
-
+  bp_ctl.io.dec_tlu_flush_lower_wb := io.dec_tlu_flush_lower_wb
   // mem-ctl wiring
   mem_ctl.io.free_clk := io.free_clk
   mem_ctl.io.active_clk := io.active_clk
@@ -108,6 +107,7 @@ class ifu extends Module with lib with RequireAsyncReset {
   mem_ctl.io.ic <> io.ic
   mem_ctl.io.iccm <> io.iccm
   mem_ctl.io.ifu_fetch_val := mem_ctl.io.ic_fetch_val_f
+  mem_ctl.io.dec_tlu_flush_lower_wb := io.dec_tlu_flush_lower_wb
   mem_ctl.io.scan_mode := io.scan_mode
 
   io.iccm_dma_ecc_error := mem_ctl.io.iccm_dma_ecc_error

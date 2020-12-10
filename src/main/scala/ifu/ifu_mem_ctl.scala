@@ -39,7 +39,7 @@ class mem_ctl_io extends Bundle with lib{
   val iccm_dma_rtag = Output(UInt(3.W))
   val iccm_ready = Output(Bool())
 
-
+  val dec_tlu_flush_lower_wb = Input(Bool())
   val iccm_rd_ecc_double_err = Output(Bool())
   val iccm_dma_sb_error = Output(Bool())
 
@@ -420,12 +420,12 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
     }
     is(ic_wff_C){
       perr_nxtstate := err_idle_C
-      perr_state_en := io.dec_mem_ctrl.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_force_halt
-      perr_sel_invalidate := io.dec_mem_ctrl.dec_tlu_flush_lower_wb & io.dec_mem_ctrl.dec_tlu_flush_err_wb
+      perr_state_en := io.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_force_halt
+      perr_sel_invalidate := io.dec_tlu_flush_lower_wb & io.dec_mem_ctrl.dec_tlu_flush_err_wb
     }
     is(ecc_wff_C){
-      perr_nxtstate := Mux(((!io.dec_mem_ctrl.dec_tlu_flush_err_wb & io.dec_mem_ctrl.dec_tlu_flush_lower_wb ) | io.dec_mem_ctrl.dec_tlu_force_halt).asBool(), err_idle_C, ecc_cor_C)
-      perr_state_en := io.dec_mem_ctrl.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_force_halt
+      perr_nxtstate := Mux(((!io.dec_mem_ctrl.dec_tlu_flush_err_wb & io.dec_tlu_flush_lower_wb ) | io.dec_mem_ctrl.dec_tlu_force_halt).asBool(), err_idle_C, ecc_cor_C)
+      perr_state_en := io.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_force_halt
     }
     is(dma_sb_err_C){
       perr_nxtstate := Mux(io.dec_mem_ctrl.dec_tlu_force_halt, err_idle_C, ecc_cor_C)
@@ -447,24 +447,24 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
       err_stop_state_en := io.dec_mem_ctrl.dec_tlu_flush_err_wb & (perr_state === ecc_wff_C) & !io.dec_mem_ctrl.dec_tlu_force_halt
     }
     is(err_fetch1_C){
-      err_stop_nxtstate := Mux((io.dec_mem_ctrl.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.dec_mem_ctrl.dec_tlu_force_halt).asBool(), err_stop_idle_C,
+      err_stop_nxtstate := Mux((io.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.dec_mem_ctrl.dec_tlu_force_halt).asBool(), err_stop_idle_C,
         Mux(((io.ifu_fetch_val===3.U)|(io.ifu_fetch_val(0)&two_byte_instr)).asBool(), err_stop_fetch_C,
           Mux(io.ifu_fetch_val(0).asBool(), err_fetch2_C, err_fetch1_C)))
-      err_stop_state_en := io.dec_mem_ctrl.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.ifu_fetch_val(0) | ifu_bp_hit_taken_q_f | io.dec_mem_ctrl.dec_tlu_force_halt
+      err_stop_state_en := io.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.ifu_fetch_val(0) | ifu_bp_hit_taken_q_f | io.dec_mem_ctrl.dec_tlu_force_halt
       err_stop_fetch := ((io.ifu_fetch_val(1,0)===3.U) | (io.ifu_fetch_val(0) & two_byte_instr))  & !(io.exu_flush_final | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt)
       io.iccm.correction_state := true.B
     }
     is(err_fetch2_C){
-      err_stop_nxtstate := Mux((io.dec_mem_ctrl.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.dec_mem_ctrl.dec_tlu_force_halt).asBool,
+      err_stop_nxtstate := Mux((io.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.dec_mem_ctrl.dec_tlu_force_halt).asBool,
         err_stop_idle_C, Mux(io.ifu_fetch_val(0).asBool, err_stop_fetch_C, err_fetch2_C))
-      err_stop_state_en := io.dec_mem_ctrl.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.ifu_fetch_val(0) | io.dec_mem_ctrl.dec_tlu_force_halt
+      err_stop_state_en := io.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.ifu_fetch_val(0) | io.dec_mem_ctrl.dec_tlu_force_halt
       err_stop_fetch := io.ifu_fetch_val(0) & !io.exu_flush_final & !io.dec_mem_ctrl.dec_tlu_i0_commit_cmt
       io.iccm.correction_state := true.B
     }
     is(err_stop_fetch_C){
-      err_stop_nxtstate := Mux(((io.dec_mem_ctrl.dec_tlu_flush_lower_wb & !io.dec_mem_ctrl.dec_tlu_flush_err_wb) | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.dec_mem_ctrl.dec_tlu_force_halt).asBool,
+      err_stop_nxtstate := Mux(((io.dec_tlu_flush_lower_wb & !io.dec_mem_ctrl.dec_tlu_flush_err_wb) | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.dec_mem_ctrl.dec_tlu_force_halt).asBool,
         err_stop_idle_C, Mux(io.dec_mem_ctrl.dec_tlu_flush_err_wb.asBool(), err_fetch1_C, err_stop_fetch_C))
-      err_stop_state_en := io.dec_mem_ctrl.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.dec_mem_ctrl.dec_tlu_force_halt
+      err_stop_state_en := io.dec_tlu_flush_lower_wb | io.dec_mem_ctrl.dec_tlu_i0_commit_cmt | io.dec_mem_ctrl.dec_tlu_force_halt
       err_stop_fetch := true.B
       io.iccm.correction_state := true.B
     }

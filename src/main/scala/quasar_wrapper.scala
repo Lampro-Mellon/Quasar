@@ -12,14 +12,6 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     val nmi_vec = Input(UInt(31.W))
     val jtag_id = Input(UInt(31.W))
 
-    val trace_rv_i_insn_ip = Output(UInt(32.W))
-    val trace_rv_i_address_ip = Output(UInt(32.W))
-    val trace_rv_i_valid_ip = Output(UInt(2.W))
-    val trace_rv_i_exception_ip = Output(UInt(2.W))
-    val trace_rv_i_ecause_ip = Output(UInt(5.W))
-    val trace_rv_i_interrupt_ip = Output(UInt(2.W))
-    val trace_rv_i_tval_ip = Output(UInt(32.W))
-
     // AXI Signals
     val lsu_axi = new axi_channels(LSU_BUS_TAG)
     val ifu_axi = new axi_channels(IFU_BUS_TAG)
@@ -79,6 +71,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     val o_cpu_run_ack = Output(Bool())
     val mbist_mode = Input(Bool())
 
+    val rv_trace_pkt = new trace_pkt_t()
     val scan_mode = Input(Bool())
 
 })
@@ -193,13 +186,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
 
   // Outputs
   val core_rst_l = swerv.io.core_rst_l
-  io.trace_rv_i_insn_ip := swerv.io.trace_rv_i_insn_ip
-  io.trace_rv_i_address_ip := swerv.io.trace_rv_i_address_ip
-  io.trace_rv_i_valid_ip := swerv.io.trace_rv_i_valid_ip
-  io.trace_rv_i_exception_ip := swerv.io.trace_rv_i_exception_ip
-  io.trace_rv_i_ecause_ip := swerv.io.trace_rv_i_ecause_ip
-  io.trace_rv_i_interrupt_ip := swerv.io.trace_rv_i_interrupt_ip
-  io.trace_rv_i_tval_ip := swerv.io.trace_rv_i_tval_ip
+  io.rv_trace_pkt := swerv.io.rv_trace_pkt
 
   // external halt/run interface
   io.o_cpu_halt_ack := swerv.io.o_cpu_halt_ack

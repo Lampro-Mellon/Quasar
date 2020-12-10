@@ -19,13 +19,7 @@ class quasar_bundle extends Bundle with  lib{
   val nmi_int = Input(Bool())
   val nmi_vec = Input(UInt(31.W))
   val core_rst_l = Output(AsyncReset())
-  val trace_rv_i_insn_ip = Output(UInt(32.W))
-  val trace_rv_i_address_ip = Output(UInt(32.W))
-  val trace_rv_i_valid_ip = Output(UInt(2.W))
-  val trace_rv_i_exception_ip = Output(UInt(2.W))
-  val trace_rv_i_ecause_ip = Output(UInt(5.W))
-  val trace_rv_i_interrupt_ip = Output(UInt(2.W))
-  val trace_rv_i_tval_ip = Output(UInt(32.W))
+  val rv_trace_pkt = new trace_pkt_t()
   val dccm_clk_override = Output(Bool())
   val icm_clk_override = Output(Bool())
   val dec_tlu_core_ecc_disable = Output(Bool())
@@ -153,7 +147,7 @@ class quasar extends Module with RequireAsyncReset with lib {
   ifu.io.exu_ifu.exu_bp <> exu.io.exu_bp
   ifu.io.exu_ifu.exu_bp.exu_i0_br_fghr_r := exu.io.exu_bp.exu_i0_br_fghr_r
   ifu.io.exu_ifu.exu_bp.exu_i0_br_index_r := exu.io.dec_exu.tlu_exu.exu_i0_br_index_r
-  ifu.io.ifu_dec.dec_mem_ctrl.dec_tlu_flush_lower_wb := dec.io.dec_exu.tlu_exu.dec_tlu_flush_lower_r
+  ifu.io.dec_tlu_flush_lower_wb := dec.io.dec_exu.tlu_exu.dec_tlu_flush_lower_r
   ifu.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt := dec.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt
 
   // Lets start with Dec
@@ -173,10 +167,8 @@ class quasar extends Module with RequireAsyncReset with lib {
   dec.io.lsu_dec <> lsu.io.lsu_dec
   dec.io.lsu_tlu <> lsu.io.lsu_tlu
   dec.io.lsu_pmu_misaligned_m := lsu.io.lsu_pmu_misaligned_m
-  dec.io.dma_pmu_dccm_read := dma_ctrl.io.dma_pmu_dccm_read
-  dec.io.dma_pmu_dccm_write := dma_ctrl.io.dma_pmu_dccm_write
-  dec.io.dma_pmu_any_read := dma_ctrl.io.dma_pmu_any_read
-  dec.io.dma_pmu_any_write := dma_ctrl.io.dma_pmu_any_write
+  dec.io.dec_dma <> dma_ctrl.io.dec_dma
+
   dec.io.lsu_fir_addr := lsu.io.lsu_fir_addr
   dec.io.lsu_fir_error := lsu.io.lsu_fir_error
   dec.io.lsu_trigger_match_m := lsu.io.lsu_trigger_match_m
@@ -190,15 +182,10 @@ class quasar extends Module with RequireAsyncReset with lib {
   dec.io.lsu_result_corr_r := lsu.io.lsu_result_corr_r
   dec.io.lsu_load_stall_any := lsu.io.lsu_load_stall_any
   dec.io.lsu_store_stall_any := lsu.io.lsu_store_stall_any
-  dec.io.dma_dccm_stall_any := dma_ctrl.io.dma_dccm_stall_any
-  dec.io.dma_iccm_stall_any := dma_ctrl.io.ifu_dma.dma_ifc.dma_iccm_stall_any
   dec.io.iccm_dma_sb_error := ifu.io.iccm_dma_sb_error
   dec.io.exu_flush_final := exu.io.exu_flush_final
-  dec.io.mexintpend := pic_ctrl_inst.io.mexintpend
+
   dec.io.soft_int := io.soft_int
-  dec.io.pic_claimid := pic_ctrl_inst.io.claimid
-  dec.io.pic_pl := pic_ctrl_inst.io.pl
-  dec.io.mhwakeup := pic_ctrl_inst.io.mhwakeup
   dec.io.dbg_halt_req := dbg.io.dbg_halt_req
   dec.io.dbg_resume_req := dbg.io.dbg_resume_req
   dec.io.exu_i0_br_way_r := exu.io.exu_bp.exu_i0_br_way_r
@@ -263,7 +250,6 @@ class quasar extends Module with RequireAsyncReset with lib {
   dma_ctrl.io.iccm_dma_rtag := ifu.io.iccm_dma_rtag
   dma_ctrl.io.iccm_dma_rdata := ifu.io.iccm_dma_rdata
   dma_ctrl.io.iccm_ready := ifu.io.iccm_ready
-  dma_ctrl.io.dec_tlu_dma_qos_prty := dec.io.dec_tlu_dma_qos_prty
   dma_ctrl.io.iccm_dma_ecc_error := ifu.io.iccm_dma_ecc_error
 
   // PIC lets go
@@ -274,16 +260,9 @@ class quasar extends Module with RequireAsyncReset with lib {
   pic_ctrl_inst.io.clk_override := dec.io.dec_tlu_pic_clk_override
   pic_ctrl_inst.io.extintsrc_req := io.extintsrc_req
   pic_ctrl_inst.io.lsu_pic <> lsu.io.lsu_pic
-  pic_ctrl_inst.io.meicurpl := dec.io.dec_tlu_meicurpl
-  pic_ctrl_inst.io.meipt := dec.io.dec_tlu_meipt
+  pic_ctrl_inst.io.dec_pic <> dec.io.dec_pic
   // Trace Packet
-  io.trace_rv_i_insn_ip := dec.io.rv_trace_pkt.rv_i_insn_ip
-  io.trace_rv_i_address_ip := dec.io.rv_trace_pkt.rv_i_address_ip
-  io.trace_rv_i_valid_ip := dec.io.rv_trace_pkt.rv_i_valid_ip
-  io.trace_rv_i_exception_ip := dec.io.rv_trace_pkt.rv_i_exception_ip
-  io.trace_rv_i_ecause_ip := dec.io.rv_trace_pkt.rv_i_ecause_ip
-  io.trace_rv_i_interrupt_ip := dec.io.rv_trace_pkt.rv_i_interrupt_ip
-  io.trace_rv_i_tval_ip := dec.io.rv_trace_pkt.rv_i_tval_ip
+  io.rv_trace_pkt := dec.io.rv_trace_pkt
 
   // Outputs
   io.dccm_clk_override := dec.io.dec_tlu_dccm_clk_override

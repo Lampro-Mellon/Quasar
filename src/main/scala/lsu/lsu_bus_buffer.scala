@@ -296,7 +296,6 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   val obuf_merge_en = WireInit(Bool(), false.B)
   val obuf_merge_in = obuf_merge_en
   val obuf_tag0_in = Mux(ibuf_buf_byp, WrPtr0_r, CmdPtr0)
-  //val Cmdptr1 = WireInit(UInt(DEPTH_LOG2.W), 0.U)
 
   val obuf_tag1_in = Mux(ibuf_buf_byp, WrPtr1_r, CmdPtr1)
   val obuf_cmd_done = WireInit(Bool(), false.B)

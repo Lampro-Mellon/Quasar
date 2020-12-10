@@ -18,18 +18,12 @@ class dma_ctrl extends Module with lib with RequireAsyncReset {
     val dma_dbg_cmd_fail      = Output(Bool())
     val dbg_dma = new dec_dbg()
     val dbg_dma_io = new dbg_dma()
+    val dec_dma = Flipped(new dec_dma())
     val iccm_dma_rvalid       = Input(Bool())     // iccm data valid for DMA read
     val iccm_dma_ecc_error    = Input(Bool())     // ECC error on DMA read
     val iccm_dma_rtag         = Input(UInt(3.W))  // Tag of the DMA req
     val iccm_dma_rdata        = Input(UInt(64.W)) // iccm data for DMA read
-    val dma_dccm_stall_any    = Output(Bool())    // stall dccm pipe (bubble) so that DMA can proceed
     val iccm_ready            = Input(Bool())     // iccm ready to accept DMA request
-    val dec_tlu_dma_qos_prty  = Input(UInt(3.W))  // DMA QoS priority coming from MFDC [18:15]
-    // PMU signals
-    val dma_pmu_dccm_read     = Output(Bool())
-    val dma_pmu_dccm_write    = Output(Bool())
-    val dma_pmu_any_read      = Output(Bool())
-    val dma_pmu_any_write     = Output(Bool())
     // AXI Write Channels
     val dma_axi = Flipped(new axi_channels(DMA_BUS_TAG))
     val lsu_dma = Flipped(new lsu_dma)
@@ -331,16 +325,17 @@ class dma_ctrl extends Module with lib with RequireAsyncReset {
 
   // Block the decode if fifo full
 
-  io.dma_dccm_stall_any := dma_mem_req & (dma_mem_addr_in_dccm | dma_mem_addr_in_pic) & (dma_nack_count >= dma_nack_count_csr)
+  io.dec_dma.tlu_dma.dma_dccm_stall_any := dma_mem_req & (dma_mem_addr_in_dccm | dma_mem_addr_in_pic) & (dma_nack_count >= dma_nack_count_csr)
   io.ifu_dma.dma_ifc.dma_iccm_stall_any := dma_mem_req & dma_mem_addr_in_iccm & (dma_nack_count >= dma_nack_count_csr);
-
+  io.dec_dma.tlu_dma.dma_iccm_stall_any :=  io.ifu_dma.dma_ifc.dma_iccm_stall_any
+  io.dec_dma.dctl_dma.dma_dccm_stall_any :=  io.dec_dma.tlu_dma.dma_dccm_stall_any
   // Used to indicate ready to debug
 
   fifo_empty := ~(fifo_valid.orR)
 
   // Nack counter, stall the lsu pipe if 7 nacks
 
-  dma_nack_count_csr := io.dec_tlu_dma_qos_prty
+  dma_nack_count_csr := io.dec_dma.tlu_dma.dec_tlu_dma_qos_prty
   val dma_nack_count_d = Mux(dma_nack_count >= dma_nack_count_csr, (Fill(3, !(io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.ifu_dma.dma_mem_ctl.dma_iccm_req)) & dma_nack_count(2,0)), Mux((dma_mem_req.asBool & !(io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.ifu_dma.dma_mem_ctl.dma_iccm_req)), dma_nack_count(2,0) + 1.U, 0.U))
 
   dma_nack_count     := withClock(dma_free_clk) {
@@ -363,10 +358,10 @@ class dma_ctrl extends Module with lib with RequireAsyncReset {
 
   // PMU outputs
 
-  io.dma_pmu_dccm_read   := io.lsu_dma.dma_lsc_ctl.dma_dccm_req & !io.lsu_dma.dma_lsc_ctl.dma_mem_write
-  io.dma_pmu_dccm_write  := io.lsu_dma.dma_lsc_ctl.dma_dccm_req & io.lsu_dma.dma_lsc_ctl.dma_mem_write
-  io.dma_pmu_any_read    := (io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.ifu_dma.dma_mem_ctl.dma_iccm_req) & !io.lsu_dma.dma_lsc_ctl.dma_mem_write
-  io.dma_pmu_any_write   := (io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.ifu_dma.dma_mem_ctl.dma_iccm_req) & io.lsu_dma.dma_lsc_ctl.dma_mem_write
+  io.dec_dma.tlu_dma.dma_pmu_dccm_read   := io.lsu_dma.dma_lsc_ctl.dma_dccm_req & !io.lsu_dma.dma_lsc_ctl.dma_mem_write
+  io.dec_dma.tlu_dma.dma_pmu_dccm_write  := io.lsu_dma.dma_lsc_ctl.dma_dccm_req & io.lsu_dma.dma_lsc_ctl.dma_mem_write
+  io.dec_dma.tlu_dma.dma_pmu_any_read    := (io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.ifu_dma.dma_mem_ctl.dma_iccm_req) & !io.lsu_dma.dma_lsc_ctl.dma_mem_write
+  io.dec_dma.tlu_dma.dma_pmu_any_write   := (io.lsu_dma.dma_lsc_ctl.dma_dccm_req | io.ifu_dma.dma_mem_ctl.dma_iccm_req) & io.lsu_dma.dma_lsc_ctl.dma_mem_write
 
   // Inputs
 

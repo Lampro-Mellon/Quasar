@@ -14,6 +14,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
     val dec_alu = Flipped(new dec_alu)
     val dec_div = Flipped(new dec_div)
     val dctl_busbuff = Flipped(new dctl_busbuff())
+    val dctl_dma = new dctl_dma
     val dec_tlu_flush_extint          = Input(Bool())
     val dec_tlu_force_halt            = Input(Bool()) // invalidate nonblock load cam on a force halt event
     val dec_i0_inst_wb1               = Output(UInt(32.W))      // 32b instruction at wb+1 for trace encoder
@@ -38,7 +39,6 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
     val lsu_idle_any               =   Input(Bool())        // lsu idle: if fence instr & !!!!!!!!!!!!!!!!!!!!!!!!!lsu_idle then stall decode
     val lsu_load_stall_any         =   Input(Bool())              // stall any load at decode
     val lsu_store_stall_any        =   Input(Bool())              // stall any store at decode6
-    val dma_dccm_stall_any         =   Input(Bool())              // stall any load/store at decode
     val exu_div_wren               =   Input(Bool())           // nonblocking divide write enable to GPR.
     val dec_tlu_i0_kill_writeb_wb  =   Input(Bool())           // I0 is flushed, don't writeback any results to arch state
     val dec_tlu_flush_lower_wb     =   Input(Bool())           // trap lower flush
@@ -513,8 +513,8 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
     ((i0_dp.fence | debug_fence) & !lsu_idle) | i0_nonblock_load_stall |
     i0_load_block_d | i0_nonblock_div_stall | i0_div_prior_div_stall
 
-  val i0_store_stall_d =  i0_dp.store & (io.lsu_store_stall_any | io.dma_dccm_stall_any)
-  val i0_load_stall_d =   i0_dp.load & (io.lsu_load_stall_any | io.dma_dccm_stall_any)
+  val i0_store_stall_d =  i0_dp.store & (io.lsu_store_stall_any | io.dctl_dma.dma_dccm_stall_any)
+  val i0_load_stall_d =   i0_dp.load & (io.lsu_load_stall_any | io.dctl_dma.dma_dccm_stall_any)
   val i0_block_d    = i0_block_raw_d | i0_store_stall_d | i0_load_stall_d
   val i0_exublock_d = i0_block_raw_d
 
@@ -784,7 +784,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
     i0_rs2bypass(0).asBool -> i0_result_r,
     (!i0_rs2bypass(1) & !i0_rs2bypass(0) & i0_rs2_nonblock_load_bypass_en_d).asBool -> io.dctl_busbuff.lsu_nonblock_load_data,
   ))
-  io.dec_lsu_valid_raw_d := ((io.dec_ib0_valid_d & (i0_dp_raw.load | i0_dp_raw.store) & !io.dma_dccm_stall_any & !i0_block_raw_d) | io.decode_exu.dec_extint_stall)
+  io.dec_lsu_valid_raw_d := ((io.dec_ib0_valid_d & (i0_dp_raw.load | i0_dp_raw.store) & !io.dctl_dma.dma_dccm_stall_any & !i0_block_raw_d) | io.decode_exu.dec_extint_stall)
   io.dec_lsu_offset_d := Mux1H(Seq(
     (!io.decode_exu.dec_extint_stall & i0_dp.lsu & i0_dp.load).asBool  ->     i0(31,20),
     (!io.decode_exu.dec_extint_stall & i0_dp.lsu & i0_dp.store).asBool ->     Cat(i0(31,25),i0(11,7))))

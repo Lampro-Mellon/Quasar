@@ -13,13 +13,14 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
     val clk_override           = Input(Bool () )
     val extintsrc_req          = Input(UInt (PIC_TOTAL_INT_PLUS1.W))
     val lsu_pic = Flipped(new lsu_pic())
-    val meicurpl               = Input(UInt(4.W))
-    val meipt                  = Input(UInt(4.W))
-
-    val mexintpend             = Output(Bool())
-    val claimid                = Output(UInt(8.W))
-    val pl                     = Output(UInt(4.W))
-    val mhwakeup               = Output(Bool())
+    val dec_pic = Flipped(new dec_pic)
+//    val dec_tlu_meicurpl               = Input(UInt(4.W))
+//    val dec_tlu_meipt                  = Input(UInt(4.W))
+//
+//    val mexintpend             = Output(Bool())
+//    val pic_claimid                = Output(UInt(8.W))
+//    val pic_pl                     = Output(UInt(4.W))
+//    val mhwakeup               = Output(Bool())
   })
 
   def cmp_and_mux (a_id : UInt, a_priority : UInt, b_id : UInt, b_priority : UInt) =
@@ -33,8 +34,8 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
   }
 
   // io.mexintpend    := 0.U
-  // io.claimid       := 0.U
-  // io.pl            := 0.U
+  // io.pic_claimid       := 0.U
+  // io.pic_pl            := 0.U
   //io.picm_rd_data  := 0.U
   //io.mhwakeup      := 0.U
 
@@ -255,18 +256,18 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
 
   val pl_in                =      selected_int_priority
   ///////////////////////////////////////////////////////////
-  /// ClaimId  Reg and Corresponding PL
+  /// pic_claimid  Reg and Corresponding pic_pl
   ///////////////////////////////////////////////////////////
   val pl_in_q = Mux(intpriord.asBool,~pl_in,pl_in).asUInt
-  withClock(io.free_clk){io.claimid := RegNext(claimid_in,0.U)}
-  withClock(io.free_clk){io.pl := RegNext(pl_in_q,0.U)}
-  val meipt_inv = Mux(intpriord.asBool,~io.meipt,io.meipt)
-  val meicurpl_inv = Mux(intpriord.asBool,~io.meicurpl,io.meicurpl)
+  withClock(io.free_clk){io.dec_pic.pic_claimid := RegNext(claimid_in,0.U)}
+  withClock(io.free_clk){io.dec_pic.pic_pl := RegNext(pl_in_q,0.U)}
+  val meipt_inv = Mux(intpriord.asBool,~io.dec_pic.dec_tlu_meipt,io.dec_pic.dec_tlu_meipt)
+  val meicurpl_inv = Mux(intpriord.asBool,~io.dec_pic.dec_tlu_meicurpl,io.dec_pic.dec_tlu_meicurpl)
   val mexintpend_in = ( selected_int_priority > meipt_inv) & ( selected_int_priority > meicurpl_inv)
-  io.mexintpend := withClock(io.free_clk){RegNext(mexintpend_in,0.U)}
+  io.dec_pic.mexintpend := withClock(io.free_clk){RegNext(mexintpend_in,0.U)}
   val maxint = Mux(intpriord.asBool,0.U,15.U)
   val mhwakeup_in = pl_in_q === maxint
-  io.mhwakeup := withClock(io.free_clk){RegNext(mhwakeup_in,0.U)}
+  io.dec_pic.mhwakeup := withClock(io.free_clk){RegNext(mhwakeup_in,0.U)}
 
   //////////////////////////////////////////////////////////////////////////
   //  Reads of register.
