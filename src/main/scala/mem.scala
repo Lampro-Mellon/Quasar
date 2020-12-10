@@ -69,7 +69,3 @@ class blackbox_mem extends Module with lib {
   val it = Module(new quasar.mem)
   io <> it.io
 }
-
-object mem extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new blackbox_mem))
-}

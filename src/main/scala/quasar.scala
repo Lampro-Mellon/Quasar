@@ -479,8 +479,6 @@ class quasar extends Module with RequireAsyncReset with lib {
     io.dma_hrdata := dma_ahb_to_axi4.io.ahb_hrdata
     io.dma_hreadyout := dma_ahb_to_axi4.io.ahb_hreadyout
     io.dma_hresp := dma_ahb_to_axi4.io.ahb_hresp
-//    io.dma_hresp := 0.U//dma_ahb_to_axi4.io.ahb_hrdata
-//    io.dmi_reg_rdata := 0.U//dma_ahb_to_axi4.io.ahb_rdata
   }
       .otherwise{
         // AHB Signals

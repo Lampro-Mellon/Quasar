@@ -223,6 +223,3 @@ class ahb_to_axi4 extends Module with lib with RequireAsyncReset {
 
   bus_clk                 := rvclkhdr(clock, io.bus_clk_en, io.scan_mode)
 }
-object AHB_main extends App {
-  println("Generate Verilog")
-  println((new chisel3.stage.ChiselStage).emitVerilog(new ahb_to_axi4()))}

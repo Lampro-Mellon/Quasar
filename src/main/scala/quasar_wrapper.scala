@@ -77,140 +77,124 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
 })
   val mem = Module(new quasar.mem())
   val dmi_wrapper = Module(new dmi_wrapper())
-  val swerv = Module(new quasar())
+  val core = Module(new quasar())
   dmi_wrapper.io.trst_n := io.jtag_trst_n
   dmi_wrapper.io.tck := io.jtag_tck
   dmi_wrapper.io.tms := io.jtag_tms
   dmi_wrapper.io.tdi := io.jtag_tdi
   dmi_wrapper.io.core_clk := clock
   dmi_wrapper.io.jtag_id := io.jtag_id
-  dmi_wrapper.io.rd_data := swerv.io.dmi_reg_rdata
+  dmi_wrapper.io.rd_data := core.io.dmi_reg_rdata
 
 
   dmi_wrapper.io.core_rst_n := io.dbg_rst_l
-  swerv.io.dmi_reg_wdata := dmi_wrapper.io.reg_wr_data
-  swerv.io.dmi_reg_addr := dmi_wrapper.io.reg_wr_addr
-  swerv.io.dmi_reg_en := dmi_wrapper.io.reg_en
-  swerv.io.dmi_reg_wr_en := dmi_wrapper.io.reg_wr_en
-  swerv.io.dmi_hard_reset := dmi_wrapper.io.dmi_hard_reset
+  core.io.dmi_reg_wdata := dmi_wrapper.io.reg_wr_data
+  core.io.dmi_reg_addr := dmi_wrapper.io.reg_wr_addr
+  core.io.dmi_reg_en := dmi_wrapper.io.reg_en
+  core.io.dmi_reg_wr_en := dmi_wrapper.io.reg_wr_en
+  core.io.dmi_hard_reset := dmi_wrapper.io.dmi_hard_reset
   io.jtag_tdo := dmi_wrapper.io.tdo
 
   // Memory signals
-  mem.io.dccm_clk_override := swerv.io.dccm_clk_override
-  mem.io.icm_clk_override := swerv.io.icm_clk_override
-  mem.io.dec_tlu_core_ecc_disable := swerv.io.dec_tlu_core_ecc_disable
-  mem.io.dccm <> swerv.io.dccm
+  mem.io.dccm_clk_override := core.io.dccm_clk_override
+  mem.io.icm_clk_override := core.io.icm_clk_override
+  mem.io.dec_tlu_core_ecc_disable := core.io.dec_tlu_core_ecc_disable
+  mem.io.dccm <> core.io.dccm
   mem.io.rst_l := reset
   mem.io.clk := clock
   mem.io.scan_mode := io.scan_mode
   // Memory outputs
-  swerv.io.dbg_rst_l := io.dbg_rst_l
-  swerv.io.ic <> mem.io.ic
-  swerv.io.iccm <> mem.io.iccm
-  swerv.io.sb_hready := 0.U
-  swerv.io.hrdata := 0.U
-  swerv.io.sb_hresp := 0.U
-  swerv.io.lsu_hrdata := 0.U
-  swerv.io.lsu_hresp := 0.U
-  swerv.io.lsu_hready := 0.U
-  swerv.io.hready := 0.U
-  swerv.io.hresp := 0.U
-  swerv.io.sb_hrdata := 0.U
-  swerv.io.scan_mode := io.scan_mode
+  core.io.dbg_rst_l := io.dbg_rst_l
+  core.io.ic <> mem.io.ic
+  core.io.iccm <> mem.io.iccm
+  core.io.sb_hready := 0.U
+  core.io.hrdata := 0.U
+  core.io.sb_hresp := 0.U
+  core.io.lsu_hrdata := 0.U
+  core.io.lsu_hresp := 0.U
+  core.io.lsu_hready := 0.U
+  core.io.hready := 0.U
+  core.io.hresp := 0.U
+  core.io.sb_hrdata := 0.U
+  core.io.scan_mode := io.scan_mode
   // SweRV Inputs
-  swerv.io.dbg_rst_l := io.dbg_rst_l
-  swerv.io.rst_vec := io.rst_vec
-  swerv.io.nmi_int := io.nmi_int
-  swerv.io.nmi_vec := io.nmi_vec
+  core.io.dbg_rst_l := io.dbg_rst_l
+  core.io.rst_vec := io.rst_vec
+  core.io.nmi_int := io.nmi_int
+  core.io.nmi_vec := io.nmi_vec
 
   // external halt/run interface
-  swerv.io.i_cpu_halt_req := io.i_cpu_halt_req
-  swerv.io.i_cpu_run_req := io.i_cpu_run_req
-  swerv.io.core_id := io.core_id
+  core.io.i_cpu_halt_req := io.i_cpu_halt_req
+  core.io.i_cpu_run_req := io.i_cpu_run_req
+  core.io.core_id := io.core_id
 
   // external MPC halt/run interface
-  swerv.io.mpc_debug_halt_req := io.mpc_debug_halt_req
-  swerv.io.mpc_debug_run_req := io.mpc_debug_run_req
-  swerv.io.mpc_reset_run_req := io.mpc_reset_run_req
+  core.io.mpc_debug_halt_req := io.mpc_debug_halt_req
+  core.io.mpc_debug_run_req := io.mpc_debug_run_req
+  core.io.mpc_reset_run_req := io.mpc_reset_run_req
 
   //-------------------------- LSU AXI signals--------------------------
   // AXI Write Channels
-  swerv.io.lsu_axi <> io.lsu_axi
+  core.io.lsu_axi <> io.lsu_axi
   //-------------------------- IFU AXI signals--------------------------
   // AXI Write Channels
-  swerv.io.ifu_axi <> io.ifu_axi
+  core.io.ifu_axi <> io.ifu_axi
   //-------------------------- SB AXI signals--------------------------
   // AXI Write Channels
-  swerv.io.sb_axi <> io.sb_axi
+  core.io.sb_axi <> io.sb_axi
 
   //-------------------------- DMA AXI signals--------------------------
   // AXI Write Channels
-  swerv.io.dma_axi <> io.dma_axi
+  core.io.dma_axi <> io.dma_axi
 
   // DMA Slave
-  swerv.io.dma_hsel := io.dma_hsel
-  swerv.io.dma_haddr := io.dma_haddr
-  swerv.io.dma_hburst := io.dma_hburst
-  swerv.io.dma_hmastlock := io.dma_hmastlock
-  swerv.io.dma_hprot := io.dma_hprot
-  swerv.io.dma_hsize := io.dma_hsize
-  swerv.io.dma_htrans := io.dma_htrans
-  swerv.io.dma_hwrite := io.dma_hwrite
-  swerv.io.dma_hwdata := io.dma_hwdata
-  swerv.io.dma_hreadyin := io.dma_hreadyin
+  core.io.dma_hsel := io.dma_hsel
+  core.io.dma_haddr := io.dma_haddr
+  core.io.dma_hburst := io.dma_hburst
+  core.io.dma_hmastlock := io.dma_hmastlock
+  core.io.dma_hprot := io.dma_hprot
+  core.io.dma_hsize := io.dma_hsize
+  core.io.dma_htrans := io.dma_htrans
+  core.io.dma_hwrite := io.dma_hwrite
+  core.io.dma_hwdata := io.dma_hwdata
+  core.io.dma_hreadyin := io.dma_hreadyin
 
-  swerv.io.lsu_bus_clk_en
-  swerv.io.ifu_bus_clk_en
-  swerv.io.dbg_bus_clk_en
-  swerv.io.dma_bus_clk_en
+  core.io.lsu_bus_clk_en := io.lsu_bus_clk_en
+  core.io.ifu_bus_clk_en := io.ifu_bus_clk_en
+  core.io.dbg_bus_clk_en := io.dbg_bus_clk_en
+  core.io.dma_bus_clk_en := io.dma_bus_clk_en
 
-  swerv.io.dmi_reg_en
-  swerv.io.dmi_reg_addr
-  swerv.io.dmi_reg_wr_en
-  swerv.io.dmi_reg_wdata
-  swerv.io.dmi_hard_reset
-
-  swerv.io.extintsrc_req
-  swerv.io.timer_int
-  swerv.io.soft_int
-  swerv.io.scan_mode
-
-  swerv.io.lsu_bus_clk_en := io.lsu_bus_clk_en
-  swerv.io.ifu_bus_clk_en := io.ifu_bus_clk_en
-  swerv.io.dbg_bus_clk_en := io.dbg_bus_clk_en
-  swerv.io.dma_bus_clk_en := io.dma_bus_clk_en
-
-  swerv.io.timer_int := io.timer_int
-  swerv.io.soft_int := io.soft_int
-  swerv.io.extintsrc_req := io.extintsrc_req
+  core.io.timer_int := io.timer_int
+  core.io.soft_int := io.soft_int
+  core.io.extintsrc_req := io.extintsrc_req
 
   // Outputs
-  val core_rst_l = swerv.io.core_rst_l
-  io.rv_trace_pkt := swerv.io.rv_trace_pkt
+  val core_rst_l = core.io.core_rst_l
+  io.rv_trace_pkt := core.io.rv_trace_pkt
 
   // external halt/run interface
-  io.o_cpu_halt_ack := swerv.io.o_cpu_halt_ack
-  io.o_cpu_halt_status := swerv.io.o_cpu_halt_status
-  io.o_cpu_run_ack := swerv.io.o_cpu_run_ack
-  io.o_debug_mode_status := swerv.io.o_debug_mode_status
+  io.o_cpu_halt_ack := core.io.o_cpu_halt_ack
+  io.o_cpu_halt_status := core.io.o_cpu_halt_status
+  io.o_cpu_run_ack := core.io.o_cpu_run_ack
+  io.o_debug_mode_status := core.io.o_debug_mode_status
 
-  io.mpc_debug_halt_ack := swerv.io.mpc_debug_halt_ack
-  io.mpc_debug_run_ack := swerv.io.mpc_debug_run_ack
-  io.debug_brkpt_status := swerv.io.debug_brkpt_status
+  io.mpc_debug_halt_ack := core.io.mpc_debug_halt_ack
+  io.mpc_debug_run_ack := core.io.mpc_debug_run_ack
+  io.debug_brkpt_status := core.io.debug_brkpt_status
 
-  io.dec_tlu_perfcnt0 := swerv.io.dec_tlu_perfcnt0
-  io.dec_tlu_perfcnt1 := swerv.io.dec_tlu_perfcnt1
-  io.dec_tlu_perfcnt2 := swerv.io.dec_tlu_perfcnt2
-  io.dec_tlu_perfcnt3 := swerv.io.dec_tlu_perfcnt3
+  io.dec_tlu_perfcnt0 := core.io.dec_tlu_perfcnt0
+  io.dec_tlu_perfcnt1 := core.io.dec_tlu_perfcnt1
+  io.dec_tlu_perfcnt2 := core.io.dec_tlu_perfcnt2
+  io.dec_tlu_perfcnt3 := core.io.dec_tlu_perfcnt3
 
 
   //-------------------------- LSU AXI signals--------------------------
   // AXI Write Channels
 
   // DMA Slave
-  io.dma_hrdata := swerv.io.dma_hrdata
-  io.dma_hreadyout := swerv.io.dma_hreadyout
-  io.dma_hresp := swerv.io.dma_hresp
+  io.dma_hrdata := core.io.dma_hrdata
+  io.dma_hreadyout := core.io.dma_hreadyout
+  io.dma_hresp := core.io.dma_hresp
 
 }
 object QUASAR_Wrp extends App {

@@ -405,8 +405,3 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
   }
 
 }
-
-object pic_main extends App{
-  println("Generating Verilog...")
-  println((new chisel3.stage.ChiselStage).emitVerilog(new pic_ctrl()))
-}
