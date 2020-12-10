@@ -337,7 +337,7 @@ class quasar extends Module with RequireAsyncReset with lib {
 
 
 
-  /*when(BUILD_AHB_LITE.B) {
+  when(BUILD_AHB_LITE.B) {
     val lsu_axi4_to_ahb = Module(new axi4_to_ahb())
     lsu_axi4_to_ahb.io.axi_awvalid := io.lsu_axi.aw.valid
     lsu_axi4_to_ahb.io.scan_mode := io.scan_mode
@@ -514,7 +514,6 @@ class quasar extends Module with RequireAsyncReset with lib {
         io.dma_hreadyout := 0.U
         io.dma_hresp := 0.U
         }
-  io.dmi_reg_rdata := 0.U*/
 
   io.haddr := 0.U
   io.hburst := 0.U
