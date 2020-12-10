@@ -617,8 +617,8 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
   i0_d_c.load               :=  i0_dp.load & i0_legal_decode_d
   i0_d_c.alu                :=  i0_dp.alu  & i0_legal_decode_d
 
-  val i0_x_c = withClock(io.active_clk){RegEnable(i0_d_c, i0_x_ctl_en.asBool)}
-  val i0_r_c = withClock(io.active_clk){RegEnable(i0_x_c, i0_r_ctl_en.asBool)}
+  val i0_x_c = withClock(io.active_clk){RegEnable(i0_d_c,0.U.asTypeOf(i0_d_c), i0_x_ctl_en.asBool)}
+  val i0_r_c = withClock(io.active_clk){RegEnable(i0_x_c,0.U.asTypeOf(i0_x_c), i0_r_ctl_en.asBool)}
   i0_pipe_en := Cat(io.dec_aln.dec_i0_decode_d,withClock(io.active_clk){RegNext(i0_pipe_en(3,1), init=0.U)})
 
   i0_x_ctl_en               := (i0_pipe_en(3,2).orR | io.clk_override)
@@ -667,7 +667,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
   io.dec_i0_wdata_r      :=  i0_result_corr_r
 
   val i0_result_r_raw = rvdffe(i0_result_x,i0_r_data_en.asBool,clock,io.scan_mode)
-  if ( LOAD_TO_USE_PLUS1 == 1 ) {
+  if ( LOAD_TO_USE_PLUS1) {
     i0_result_x         := io.decode_exu.exu_i0_result_x
     i0_result_r         := Mux((r_d.bits.i0v & r_d.bits.i0load).asBool,io.lsu_result_m, i0_result_r_raw)
   }
@@ -747,7 +747,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
   i0_rs2_depth_d := Mux(i0_rs2_depend_i0_x.asBool,1.U(2.W),Mux(i0_rs2_depend_i0_r.asBool, 2.U(2.W), 0.U))
 
   // stores will bypass load data in the lsu pipe
-  if (LOAD_TO_USE_PLUS1 == 1) {
+  if (LOAD_TO_USE_PLUS1) {
     i0_load_block_d  := (i0_rs1_class_d.load & i0_rs1_depth_d) | (i0_rs2_class_d.load & i0_rs2_depth_d(0) & !i0_dp.store)
     load_ldst_bypass_d := (i0_dp.load | i0_dp.store) & i0_rs1_depth_d(1) & i0_rs1_class_d.load
     store_data_bypass_d := i0_dp.store & (i0_rs2_depth_d(1) & i0_rs2_class_d.load)
