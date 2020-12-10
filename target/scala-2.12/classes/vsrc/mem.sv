@@ -15,14 +15,14 @@ module mem #(
    parameter DCCM_NUM_BANKS,
    parameter ICACHE_BANK_HI,
    parameter ICACHE_BANK_LO,
-   parameter DCCM_ENABLE,
+   parameter DCCM_ENABLE= 'b1,
    parameter ICACHE_TAG_LO,
    parameter ICACHE_DATA_INDEX_LO,
    parameter ICCM_NUM_BANKS,
    parameter ICACHE_ECC,
-   parameter ICACHE_ENABLE,
+   parameter ICACHE_ENABLE= 'b1,
    parameter DCCM_BANK_BITS,
-   parameter ICCM_ENABLE,
+   parameter ICCM_ENABLE= 'b1,
    parameter ICCM_BANK_BITS,
    parameter ICACHE_TAG_DEPTH,
    parameter ICACHE_WAYPACK,
@@ -77,8 +77,9 @@ module mem #(
    input  logic [63:0] ic_premux_data,      // Premux data to be muxed with each way of the Icache.
    input  logic         ic_sel_premux_data, // Premux data sel
 
-   input  logic [ICACHE_BANKS_WAY-1:0][70:0]               ic_wr_data,         // Data to fill to the Icache. With ECC
-   input  logic [70:0]               ic_debug_wr_data,   // Debug wr cache.
+   input  logic [70:0]               ic_wr_data_0,         // Data to fill to the Icache. With ECC
+	input  logic [70:0]               ic_wr_data_1,
+	input  logic [70:0]               ic_debug_wr_data,   // Debug wr cache.
    output logic [70:0]               ic_debug_rd_data ,  // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
    input  logic [ICACHE_INDEX_HI:3]               ic_debug_addr,      // Read/Write addresss to the Icache.
    input  logic                      ic_debug_rd_en,     // Icache debug rd
@@ -100,6 +101,9 @@ module mem #(
 
 );
 
+	logic [ICACHE_BANKS_WAY-1:0][70:0]  ic_wr_data;
+assign ic_wr_data [0] = ic_wr_data_0;
+assign ic_wr_data [1] = ic_wr_data_1;
    // DCCM Instantiation
    if (DCCM_ENABLE == 1) begin: Gen_dccm_enable
       lsu_dccm_mem #(
@@ -142,7 +146,7 @@ else  begin
    assign   ic_rd_hit[ICACHE_NUM_WAYS-1:0] = '0;
    assign   ic_tag_perr    = '0 ;
    assign   ic_rd_data  = '0 ;
-   assign   ic_stag_debug_rd_data  = '0 ;
+   assign   ic_tag_debug_rd_data  = '0 ;
 end // else: !if( ICACHE_ENABLE )
 
 

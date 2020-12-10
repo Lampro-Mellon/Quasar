@@ -27,7 +27,7 @@
 // //********************************************************************************
 
 
-module el2_lsu_dccm_mem
+module lsu_dccm_mem
 #(
    parameter DCCM_BYTE_WIDTH,
    parameter DCCM_BITS,

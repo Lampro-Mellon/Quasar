@@ -23,7 +23,7 @@ module ifu_ic_mem
    parameter ICACHE_NUM_WAYS,
    parameter ICACHE_BANK_BITS,
    parameter ICACHE_BEAT_ADDR_HI,
-   parameter ICACHE_BANKS_WAY,
+   parameter ICACHE_BANKS_WAY=2,
    parameter ICACHE_INDEX_HI,
    parameter ICACHE_BANK_HI,
    parameter ICACHE_BANK_LO,
@@ -67,7 +67,7 @@ module ifu_ic_mem
       ) ;
 
 
-   IC_TAG #(
+   EL2_IC_TAG #(
    .ICACHE_BEAT_BITS(ICACHE_BEAT_BITS),
    .ICACHE_NUM_WAYS(ICACHE_NUM_WAYS),
    .ICACHE_BANK_BITS(ICACHE_BANK_BITS),
@@ -90,7 +90,7 @@ module ifu_ic_mem
            .ic_rw_addr   (ic_rw_addr[31:3])
            ) ;
 
-   IC_DATA #(
+   EL2_IC_DATA #(
    .ICACHE_BEAT_BITS(ICACHE_BEAT_BITS),
    .ICACHE_NUM_WAYS(ICACHE_NUM_WAYS),
    .ICACHE_BANK_BITS(ICACHE_BANK_BITS),
@@ -119,7 +119,7 @@ module ifu_ic_mem
 /////////////////////////////////////////////////
 ////// ICACHE DATA MODULE    ////////////////////
 /////////////////////////////////////////////////
-module IC_DATA
+module EL2_IC_DATA
 #(
    parameter ICACHE_BEAT_BITS,
    parameter ICACHE_NUM_WAYS,
@@ -990,7 +990,7 @@ endmodule // EL2_IC_DATA
 /////////////////////////////////////////////////
 ////// ICACHE TAG MODULE     ////////////////////
 /////////////////////////////////////////////////
-module IC_TAG
+module EL2_IC_TAG
  #(
    parameter ICACHE_BEAT_BITS,
    parameter ICACHE_NUM_WAYS,
