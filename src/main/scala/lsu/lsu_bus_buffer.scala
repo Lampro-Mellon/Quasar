@@ -548,7 +548,7 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
     (!lsu_nonblock_unsign & (lsu_nonblock_sz===0.U)) -> Cat(Fill(24,lsu_nonblock_data_unalgn(7)), lsu_nonblock_data_unalgn(7,0)),
     (!lsu_nonblock_unsign & (lsu_nonblock_sz===1.U)) -> Cat(Fill(16,lsu_nonblock_data_unalgn(15)), lsu_nonblock_data_unalgn(15,0)),
     (lsu_nonblock_sz===2.U)                          -> lsu_nonblock_data_unalgn))
-  bus_sideeffect_pend := (0 until DEPTH).map(i=>(buf_state(i)===resp_C) & buf_sideeffect(i) & io.tlu_busbuff.dec_tlu_sideeffect_posted_disable).reduce(_|_)
+  bus_sideeffect_pend := (0 until DEPTH).map(i=>(buf_state(i)===resp_C) & buf_sideeffect(i) & io.tlu_busbuff.dec_tlu_sideeffect_posted_disable).reduce(_|_) | (obuf_valid & obuf_sideeffect & io.tlu_busbuff.dec_tlu_sideeffect_posted_disable)
   bus_addr_match_pending := Mux1H((0 until DEPTH).map(i=>(buf_state(i)===resp_C)->
     (BUILD_AXI_NATIVE.B & obuf_valid & (obuf_addr(31,3)===buf_addr(i)(31,3)) & !((obuf_tag0===i.U) | (obuf_merge & (obuf_tag1===i.U))))))
 
@@ -616,4 +616,3 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   io.lsu_busreq_r := withClock(io.lsu_c2_r_clk){RegNext(io.lsu_busreq_m & !io.flush_r & !io.ld_full_hit_m, false.B)}
   lsu_nonblock_load_valid_r := withClock(io.lsu_c2_r_clk){RegNext(io.dctl_busbuff.lsu_nonblock_load_valid_m, false.B)}
 }
-
