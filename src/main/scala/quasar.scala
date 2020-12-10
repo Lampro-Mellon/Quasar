@@ -14,6 +14,11 @@ class quasar_bundle extends Bundle with  lib{
   val sb_axi  = new axi_channels(SB_BUS_TAG)
   val dma_axi = Flipped(new axi_channels(DMA_BUS_TAG))
 
+  val ahb = new ahb_channel
+  val lsu_ahb = new ahb_channel
+  val sb_ahb = new ahb_channel
+  val dma_ahb = Flipped(new ahb_channel)
+
   val dbg_rst_l = Input(AsyncReset())
   val rst_vec = Input(UInt(31.W))
   val nmi_int = Input(Bool())
@@ -44,58 +49,59 @@ class quasar_bundle extends Bundle with  lib{
   val ic = new ic_mem()
   val iccm = new iccm_mem()
 
-  // AHB Lite Bus
-  val haddr = Output(UInt(32.W))
-  val hburst = Output(UInt(3.W))
-  val hmastlock = Output(Bool())
-  val hprot = Output(UInt(4.W))
-  val hsize = Output(UInt(3.W))
-  val htrans = Output(UInt(2.W))
-  val hwrite = Output(Bool())
-  val hrdata = Input(UInt(64.W))
-  val hready = Input(Bool())
-  val hresp = Input(Bool())
-
-  // AHB Master
-  val lsu_haddr = Output(UInt(32.W))
-  val lsu_hburst = Output(UInt(3.W))
-  val lsu_hmastlock = Output(Bool())
-  val lsu_hprot = Output(UInt(4.W))
-  val lsu_hsize = Output(UInt(3.W))
-  val lsu_htrans = Output(UInt(2.W))
-  val lsu_hwrite = Output(Bool())
-  val lsu_hwdata = Output(UInt(64.W))
-  val lsu_hrdata = Input(UInt(64.W))
-  val lsu_hready = Input(Bool())
-  val lsu_hresp = Input(Bool())
-
-  // System Bus Debug Master
-  val sb_haddr = Output(UInt(32.W))
-  val sb_hburst = Output(UInt(3.W))
-  val sb_hmastlock = Output(Bool())
-  val sb_hprot = Output(UInt(4.W))
-  val sb_hsize = Output(UInt(3.W))
-  val sb_htrans = Output(UInt(2.W))
-  val sb_hwrite = Output(Bool())
-  val sb_hwdata = Output(UInt(64.W))
-  val sb_hrdata = Input(UInt(64.W))
-  val sb_hready = Input(Bool())
-  val sb_hresp = Input(Bool())
-
-  // DMA slave
+  //  // AHB Lite Bus
+  //  val haddr = Output(UInt(32.W))
+  //  val hburst = Output(UInt(3.W))
+  //  val hmastlock = Output(Bool())
+  //  val hprot = Output(UInt(4.W))
+  //  val hsize = Output(UInt(3.W))
+  //  val htrans = Output(UInt(2.W))
+  //  val hwrite = Output(Bool())
+  //  val hrdata = Input(UInt(64.W))
+  //  val hready = Input(Bool())
+  //  val hresp = Input(Bool())
+  //
+  //  // AHB Master
+  //  val lsu_haddr = Output(UInt(32.W))
+  //  val lsu_hburst = Output(UInt(3.W))
+  //  val lsu_hmastlock = Output(Bool())
+  //  val lsu_hprot = Output(UInt(4.W))
+  //  val lsu_hsize = Output(UInt(3.W))
+  //  val lsu_htrans = Output(UInt(2.W))
+  //  val lsu_hwrite = Output(Bool())
+  //  val lsu_hwdata = Output(UInt(64.W))
+  //  val lsu_hrdata = Input(UInt(64.W))
+  //  val lsu_hready = Input(Bool())
+  //  val lsu_hresp = Input(Bool())
+  //
+  //  // System Bus Debug Master
+  //  val sb_haddr = Output(UInt(32.W))
+  //  val sb_hburst = Output(UInt(3.W))
+  //  val sb_hmastlock = Output(Bool())
+  //  val sb_hprot = Output(UInt(4.W))
+  //  val sb_hsize = Output(UInt(3.W))
+  //  val sb_htrans = Output(UInt(2.W))
+  //  val sb_hwrite = Output(Bool())
+  //  val sb_hwdata = Output(UInt(64.W))
+  //  val sb_hrdata = Input(UInt(64.W))
+  //  val sb_hready = Input(Bool())
+  //  val sb_hresp = Input(Bool())
+  //
+  //  // DMA slave
   val dma_hsel = Input(Bool())
-  val dma_haddr = Input(UInt(32.W))
-  val dma_hburst = Input(UInt(3.W))
-  val dma_hmastlock = Input(Bool())
-  val dma_hprot = Input(UInt(4.W))
-  val dma_hsize = Input(UInt(3.W))
-  val dma_htrans = Input(UInt(2.W))
-  val dma_hwrite = Input(Bool())
-  val dma_hwdata = Input(UInt(64.W))
+  //  val dma_haddr = Input(UInt(32.W))
+  //  val dma_hburst = Input(UInt(3.W))
+  //  val dma_hmastlock = Input(Bool())
+  //  val dma_hprot = Input(UInt(4.W))
+  //  val dma_hsize = Input(UInt(3.W))
+  //  val dma_htrans = Input(UInt(2.W))
+  //  val dma_hwrite = Input(Bool())
+  //  val dma_hwdata = Input(UInt(64.W))
   val dma_hreadyin = Input(Bool())
-  val dma_hrdata = Output(UInt(64.W))
-  val dma_hreadyout = Output(Bool())
-  val dma_hresp = Output(Bool())
+  //  val dma_hrdata = Output(UInt(64.W))
+  //  val dma_hreadyout = Output(Bool())
+  //  val dma_hresp = Output(Bool())
+
   val lsu_bus_clk_en = Input(Bool())
   val ifu_bus_clk_en = Input(Bool())
   val dbg_bus_clk_en = Input(Bool())
@@ -317,9 +323,9 @@ class quasar extends Module with RequireAsyncReset with lib {
     lsu_axi4_to_ahb.io.axi_arprot := io.lsu_axi.ar.bits.prot
 
     lsu_axi4_to_ahb.io.axi_rready := io.lsu_axi.r.ready
-    lsu_axi4_to_ahb.io.ahb_hrdata := io.lsu_hrdata
-    lsu_axi4_to_ahb.io.ahb_hready := io.lsu_hready
-    lsu_axi4_to_ahb.io.ahb_hresp := io.lsu_hresp
+    //    lsu_axi4_to_ahb.io.ahb_hrdata := io.lsu_hrdata
+    //    lsu_axi4_to_ahb.io.ahb_hready := io.lsu_hready
+    //    lsu_axi4_to_ahb.io.ahb_hresp := io.lsu_hresp
 
     val ifu_axi4_to_ahb = Module(new axi4_to_ahb())
     ifu_axi4_to_ahb.io.axi_awvalid := io.ifu_axi.aw.valid
@@ -345,9 +351,9 @@ class quasar extends Module with RequireAsyncReset with lib {
 
     ifu_axi4_to_ahb.io.axi_rready := io.ifu_axi.r.ready
 
-    ifu_axi4_to_ahb.io.ahb_hrdata := io.hrdata
-    ifu_axi4_to_ahb.io.ahb_hready := io.hready
-    ifu_axi4_to_ahb.io.ahb_hresp := io.hresp
+    //    ifu_axi4_to_ahb.io.ahb_hrdata := io.hrdata
+    //    ifu_axi4_to_ahb.io.ahb_hready := io.hready
+    //    ifu_axi4_to_ahb.io.ahb_hresp := io.hresp
 
     val sb_axi4_to_ahb = Module(new axi4_to_ahb())
     sb_axi4_to_ahb.io.axi_awvalid := io.sb_axi.aw.valid
@@ -372,9 +378,9 @@ class quasar extends Module with RequireAsyncReset with lib {
     sb_axi4_to_ahb.io.axi_arprot := io.sb_axi.ar.bits.prot
 
     sb_axi4_to_ahb.io.axi_rready := io.sb_axi.r.ready
-    sb_axi4_to_ahb.io.ahb_hrdata := io.sb_hrdata
-    sb_axi4_to_ahb.io.ahb_hready := io.sb_hready
-    sb_axi4_to_ahb.io.ahb_hresp := io.sb_hresp
+    //    sb_axi4_to_ahb.io.ahb_hrdata := io.sb_hrdata
+    //    sb_axi4_to_ahb.io.ahb_hready := io.sb_hready
+    //    sb_axi4_to_ahb.io.ahb_hresp := io.sb_hresp
 
     val dma_ahb_to_axi4 = Module(new ahb_to_axi4())
     dma_ahb_to_axi4.io.scan_mode := io.scan_mode
@@ -394,18 +400,16 @@ class quasar extends Module with RequireAsyncReset with lib {
     dma_ahb_to_axi4.io.axi_rresp := io.dma_axi.r.bits.resp
 
     // AHB-Lite signals
-    dma_ahb_to_axi4.io.ahb_haddr := io.dma_haddr
-    dma_ahb_to_axi4.io.ahb_hburst := io.dma_hburst
-    dma_ahb_to_axi4.io.ahb_hmastlock := io.dma_hmastlock
-    dma_ahb_to_axi4.io.ahb_hprot := io.dma_hprot
-    dma_ahb_to_axi4.io.ahb_hsize := io.dma_hsize
-    dma_ahb_to_axi4.io.ahb_htrans := io.dma_htrans
-    dma_ahb_to_axi4.io.ahb_hwrite := io.dma_hwrite
-    dma_ahb_to_axi4.io.ahb_hwdata := io.dma_hwdata
+    //    dma_ahb_to_axi4.io.ahb_haddr := io.dma_haddr
+    //    dma_ahb_to_axi4.io.ahb_hburst := io.dma_hburst
+    //    dma_ahb_to_axi4.io.ahb_hmastlock := io.dma_hmastlock
+    //    dma_ahb_to_axi4.io.ahb_hprot := io.dma_hprot
+    //    dma_ahb_to_axi4.io.ahb_hsize := io.dma_hsize
+    //    dma_ahb_to_axi4.io.ahb_htrans := io.dma_htrans
+    //    dma_ahb_to_axi4.io.ahb_hwrite := io.dma_hwrite
+    //    dma_ahb_to_axi4.io.ahb_hwdata := io.dma_hwdata
     dma_ahb_to_axi4.io.ahb_hsel := io.dma_hsel
     dma_ahb_to_axi4.io.ahb_hreadyin := io.dma_hreadyin
-
-    // Mux for the axi-bridge
     lsu.io.axi.aw.ready := Mux(BUILD_AHB_LITE.B, lsu_axi4_to_ahb.io.axi_awready, io.lsu_axi.aw.ready)
     lsu.io.axi.w.ready := Mux(BUILD_AHB_LITE.B, lsu_axi4_to_ahb.io.axi_wready, io.lsu_axi.w.ready)
     lsu.io.axi.b.valid := Mux(BUILD_AHB_LITE.B, lsu_axi4_to_ahb.io.axi_bvalid, io.lsu_axi.b.valid)
@@ -450,77 +454,81 @@ class quasar extends Module with RequireAsyncReset with lib {
     dma_ctrl.io.dma_axi.ar.bits.addr := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_araddr, io.dma_axi.aw.bits.addr)
     dma_ctrl.io.dma_axi.ar.bits.size := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_arsize, io.dma_axi.aw.bits.size)
     dma_ctrl.io.dma_axi.r.ready := Mux(BUILD_AHB_LITE.B, dma_ahb_to_axi4.io.axi_rready, io.dma_axi.r.ready)
-
-
     // AHB Signals
-    io.haddr := ifu_axi4_to_ahb.io.ahb_haddr
-    io.hburst := ifu_axi4_to_ahb.io.ahb_hburst
-    io.hmastlock := ifu_axi4_to_ahb.io.ahb_hmastlock
-    io.hprot := ifu_axi4_to_ahb.io.ahb_hprot
-    io.hsize := ifu_axi4_to_ahb.io.ahb_hsize
-    io.htrans := ifu_axi4_to_ahb.io.ahb_htrans
-    io.hwrite := ifu_axi4_to_ahb.io.ahb_hwrite
+    io.ahb <> ifu_axi4_to_ahb.io.ahb
+    //    io.haddr := ifu_axi4_to_ahb.io.ahb_haddr
+    //    io.hburst := ifu_axi4_to_ahb.io.ahb_hburst
+    //    io.hmastlock := ifu_axi4_to_ahb.io.ahb_hmastlock
+    //    io.hprot := ifu_axi4_to_ahb.io.ahb_hprot
+    //    io.hsize := ifu_axi4_to_ahb.io.ahb_hsize
+    //    io.htrans := ifu_axi4_to_ahb.io.ahb_htrans
+    //    io.hwrite := ifu_axi4_to_ahb.io.ahb_hwrite
 
+    io.lsu_ahb <> lsu_axi4_to_ahb.io.ahb
+    //    io.lsu_haddr := lsu_axi4_to_ahb.io.ahb_haddr
+    //    io.lsu_hburst := lsu_axi4_to_ahb.io.ahb_hburst
+    //    io.lsu_hmastlock := lsu_axi4_to_ahb.io.ahb_hmastlock
+    //    io.lsu_hprot := lsu_axi4_to_ahb.io.ahb_hprot
+    //    io.lsu_hsize := lsu_axi4_to_ahb.io.ahb_hsize
+    //    io.lsu_htrans := lsu_axi4_to_ahb.io.ahb_htrans
+    //    io.lsu_hwrite := lsu_axi4_to_ahb.io.ahb_hwrite
+    //    io.lsu_hwdata := lsu_axi4_to_ahb.io.ahb_hwdata
 
-    io.lsu_haddr := lsu_axi4_to_ahb.io.ahb_haddr
-    io.lsu_hburst := lsu_axi4_to_ahb.io.ahb_hburst
-    io.lsu_hmastlock := lsu_axi4_to_ahb.io.ahb_hmastlock
-    io.lsu_hprot := lsu_axi4_to_ahb.io.ahb_hprot
-    io.lsu_hsize := lsu_axi4_to_ahb.io.ahb_hsize
-    io.lsu_htrans := lsu_axi4_to_ahb.io.ahb_htrans
-    io.lsu_hwrite := lsu_axi4_to_ahb.io.ahb_hwrite
-    io.lsu_hwdata := lsu_axi4_to_ahb.io.ahb_hwdata
+    io.sb_ahb <> sb_axi4_to_ahb.io.ahb
+    //    io.sb_haddr := sb_axi4_to_ahb.io.ahb_haddr
+    //    io.sb_hburst := sb_axi4_to_ahb.io.ahb_hburst
+    //    io.sb_hmastlock := sb_axi4_to_ahb.io.ahb_hmastlock
+    //    io.sb_hprot := sb_axi4_to_ahb.io.ahb_hprot
+    //    io.sb_hsize := sb_axi4_to_ahb.io.ahb_hsize
+    //    io.sb_htrans := sb_axi4_to_ahb.io.ahb_htrans
+    //    io.sb_hwrite := sb_axi4_to_ahb.io.ahb_hwrite
+    //    io.sb_hwdata := sb_axi4_to_ahb.io.ahb_hwdata
 
-    io.sb_haddr := sb_axi4_to_ahb.io.ahb_haddr
-    io.sb_hburst := sb_axi4_to_ahb.io.ahb_hburst
-    io.sb_hmastlock := sb_axi4_to_ahb.io.ahb_hmastlock
-    io.sb_hprot := sb_axi4_to_ahb.io.ahb_hprot
-    io.sb_hsize := sb_axi4_to_ahb.io.ahb_hsize
-    io.sb_htrans := sb_axi4_to_ahb.io.ahb_htrans
-    io.sb_hwrite := sb_axi4_to_ahb.io.ahb_hwrite
-    io.sb_hwdata := sb_axi4_to_ahb.io.ahb_hwdata
-
-    io.dma_hrdata := dma_ahb_to_axi4.io.ahb_hrdata
-    io.dma_hreadyout := dma_ahb_to_axi4.io.ahb_hreadyout
-    io.dma_hresp := dma_ahb_to_axi4.io.ahb_hresp
+    io.dma_ahb <> dma_ahb_to_axi4.io.ahb
+    //    io.dma_hrdata := dma_ahb_to_axi4.io.ahb_hrdata
+    //    io.dma_hreadyout := dma_ahb_to_axi4.io.ahb_hreadyout
+    //    io.dma_hresp := dma_ahb_to_axi4.io.ahb_hresp
+    //    io.dma_hresp := 0.U//dma_ahb_to_axi4.io.ahb_hrdata
+    //    io.dmi_reg_rdata := 0.U//dma_ahb_to_axi4.io.ahb_rdata
   }
-      .otherwise{
-        // AHB Signals
-        io.haddr := 0.U
-        io.hburst := 0.U
-        io.hmastlock := 0.U
-        io.hprot := 0.U
-        io.hsize := 0.U
-        io.htrans := 0.U
-        io.hwrite := 0.U
+    .otherwise{
+      // AHB Signals
+      io.ahb.out <> 0.U.asTypeOf(io.ahb.out)
+      //        io.haddr := 0.U
+      //        io.hburst := 0.U
+      //        io.hmastlock := 0.U
+      //        io.hprot := 0.U
+      //        io.hsize := 0.U
+      //        io.htrans := 0.U
+      //        io.hwrite := 0.U
 
+      io.lsu_ahb.out <> 0.U.asTypeOf(io.lsu_ahb.out)
+      //        io.lsu_haddr := 0.U
+      //        io.lsu_hburst := 0.U
+      //        io.lsu_hmastlock := 0.U
+      //        io.lsu_hprot := 0.U
+      //        io.lsu_hsize := 0.U
+      //        io.lsu_htrans := 0.U
+      //        io.lsu_hwrite := 0.U
+      //        io.lsu_hwdata := 0.U
 
-        io.lsu_haddr := 0.U
-        io.lsu_hburst := 0.U
-        io.lsu_hmastlock := 0.U
-        io.lsu_hprot := 0.U
-        io.lsu_hsize := 0.U
-        io.lsu_htrans := 0.U
-        io.lsu_hwrite := 0.U
-        io.lsu_hwdata := 0.U
+      io.sb_ahb.out <> 0.U.asTypeOf(io.sb_ahb.out)
+      //        io.sb_haddr := 0.U
+      //        io.sb_hburst := 0.U
+      //        io.sb_hmastlock := 0.U
+      //        io.sb_hprot := 0.U
+      //        io.sb_hsize := 0.U
+      //        io.sb_htrans := 0.U
+      //        io.sb_hwrite := 0.U
+      //        io.sb_hwdata := 0.U
 
-        io.sb_haddr := 0.U
-        io.sb_hburst := 0.U
-        io.sb_hmastlock := 0.U
-        io.sb_hprot := 0.U
-        io.sb_hsize := 0.U
-        io.sb_htrans := 0.U
-        io.sb_hwrite := 0.U
-        io.sb_hwdata := 0.U
-
-        io.dma_hrdata := 0.U
-        io.dma_hreadyout := 0.U
-        io.dma_hresp := 0.U
-        }
-
+      io.dma_ahb.in <> 0.U.asTypeOf(io.dma_ahb.in)
+      //        io.dma_hrdata := 0.U
+      //        io.dma_hreadyout := 0.U
+      //        io.dma_hresp := 0.U
+    }
   io.dmi_reg_rdata := 0.U
 }
-
 
 
 

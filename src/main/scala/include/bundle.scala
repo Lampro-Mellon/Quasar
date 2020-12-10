@@ -34,7 +34,7 @@ class tlu_dma extends Bundle{
 
 class dec_bp extends Bundle{
   val dec_tlu_br0_r_pkt = Flipped(Valid(new br_tlu_pkt_t))
-//  val dec_tlu_flush_lower_wb = Input(Bool())
+  //  val dec_tlu_flush_lower_wb = Input(Bool())
   val dec_tlu_flush_leak_one_wb = Input(Bool())
   val dec_tlu_bpred_disable = Input(Bool())
 }
@@ -43,6 +43,25 @@ class dec_ifc extends Bundle{
   val dec_tlu_flush_noredir_wb = Input(Bool())
   val dec_tlu_mrac_ff = Input(UInt(32.W))
   val ifu_pmu_fetch_stall = Output(Bool())
+}
+class ahb_in extends Bundle{
+  val hrdata        = Input(UInt(64.W)) // [63:0]    // ahb bus read data
+  val hready        = Input(Bool()) // slave ready to accept transaction
+  val hresp         = Input(Bool()) // slave response (high indicates erro)
+}
+class ahb_out extends Bundle{
+  val haddr         = Output(UInt(32.W)) // [31:0]  // ahb bus address
+  val hburst        = Output(UInt(3.W)) // [2:0]   // tied to 0
+  val hmastlock     = Output(Bool()) // tied to 0
+  val hprot         = Output(UInt(4.W)) // [3:0]   // tied to 4'b0011
+  val hsize         = Output(UInt(3.W)) // [2:0]   // size of bus transaction (possible values 0,1,2,3)
+  val htrans        = Output(UInt(2.W))
+  val hwrite        = Output(Bool()) // ahb bus write
+  val hwdata        = Output(UInt(64.W)) // [63:0]  // ahb bus write data
+}
+class ahb_channel extends Bundle{
+  val in = Input(new ahb_in)
+  val out = Output(new ahb_out)
 }
 class axi_channels(val BUS_TAG :Int=3) extends Bundle with lib{
   val aw = Decoupled(new write_addr(BUS_TAG))
@@ -92,7 +111,7 @@ class write_resp(val TAG : Int=3) extends Bundle with lib{ // write_response
 }
 
 class dec_mem_ctrl extends Bundle with lib{
-//  val dec_tlu_flush_lower_wb = Input(Bool())
+  //  val dec_tlu_flush_lower_wb = Input(Bool())
   val dec_tlu_flush_err_wb = Input(Bool())
   val dec_tlu_i0_commit_cmt = Input(Bool())
   val dec_tlu_force_halt = Input(Bool())
@@ -288,7 +307,7 @@ class dbg_ib extends Bundle{
 }
 
 class dbg_dctl extends Bundle{
-  val dbg_cmd_wrdata          = Input(UInt(2.W))    // command write data, for fence/fence_i
+  val dbg_cmd_wrdata          = Input(UInt(32.W))    // command write data, for fence/fence_i
 }
 
 
@@ -402,7 +421,7 @@ class rets_pkt_t extends Bundle {
 }
 
 class br_pkt_t extends Bundle {
- // val valid          = UInt(1.W)
+  // val valid          = UInt(1.W)
   val toffset        = UInt(12.W)
   val hist           = UInt(2.W)
   val br_error       = UInt(1.W)
@@ -415,7 +434,7 @@ class br_pkt_t extends Bundle {
 
 
 class br_tlu_pkt_t extends Bundle {
- // val valid           = UInt(1.W)
+  // val valid           = UInt(1.W)
   val hist            = UInt(2.W)
   val br_error        = UInt(1.W)
   val br_start_error  = UInt(1.W)
@@ -430,7 +449,7 @@ class predict_pkt_t extends Bundle {
   val pc4        = UInt(1.W)
   val hist       = UInt(2.W)
   val toffset    = UInt(12.W)
- // val valid      = UInt(1.W)
+  // val valid      = UInt(1.W)
   val br_error   = UInt(1.W)
   val br_start_error = UInt(1.W)
   val prett      = UInt(31.W)
@@ -460,7 +479,7 @@ class dest_pkt_t extends Bundle {
   val i0store   = UInt(1.W)
   val i0div     = UInt(1.W)
   val i0v       = UInt(1.W)
- // val i0valid   = UInt(1.W)
+  // val i0valid   = UInt(1.W)
   val csrwen    = UInt(1.W)
   val csrwonly  = UInt(1.W)
   val csrwaddr  = UInt(12.W)
@@ -514,11 +533,11 @@ class lsu_pkt_t extends Bundle {
   val store_data_bypass_d  = Bool()
   val load_ldst_bypass_d   = Bool()
   val store_data_bypass_m  = Bool()
-//  val valid      = Bool()
+  //  val valid      = Bool()
 }
 
 class lsu_error_pkt_t extends Bundle {
- // val exc_valid   = UInt(1.W)
+  // val exc_valid   = UInt(1.W)
   val single_ecc_error  = UInt(1.W)
   val inst_type    = UInt(1.W)    //0: Load, 1: Store
   val exc_type     = UInt(1.W)    //0: MisAligned, 1: Access Fault
@@ -580,7 +599,7 @@ class dec_pkt_t extends Bundle {
 }
 
 class mul_pkt_t extends Bundle {
- // val valid     = UInt(1.W)
+  // val valid     = UInt(1.W)
   val rs1_sign  = UInt(1.W)
   val rs2_sign  = UInt(1.W)
   val low       = UInt(1.W)
@@ -602,7 +621,7 @@ class mul_pkt_t extends Bundle {
 }
 
 class div_pkt_t extends Bundle {
- // val valid     = UInt(1.W)
+  // val valid     = UInt(1.W)
   val unsign    = UInt(1.W)
   val rem       = UInt(1.W)
 }

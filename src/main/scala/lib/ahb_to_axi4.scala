@@ -20,14 +20,14 @@ class ahb_to_axi4 extends Module with lib with RequireAsyncReset {
     val axi_rid         = Input(UInt(TAG.W))
     val axi_rdata       = Input(UInt(64.W))
     val axi_rresp       = Input(UInt(2.W))
-    val ahb_haddr       = Input(UInt(32.W)) // ahb bus address
-    val ahb_hburst      = Input(UInt(3.W)) // tied to 0
-    val ahb_hmastlock   = Input(Bool()) // tied to 0
-    val ahb_hprot       = Input(UInt(4.W)) // tied to 4'b0011
-    val ahb_hsize       = Input(UInt(3.W)) // size of bus transaction (possible values 0          =1          =2          =3)
-    val ahb_htrans      = Input(UInt(2.W)) // Transaction type (possible values 0          =2 only right now)
-    val ahb_hwrite      = Input(Bool()) // ahb bus write
-    val ahb_hwdata      = Input(UInt(64.W)) // ahb bus write data
+    //    val ahb_haddr       = Input(UInt(32.W)) // ahb bus address
+    //    val ahb_hburst      = Input(UInt(3.W)) // tied to 0
+    //    val ahb_hmastlock   = Input(Bool()) // tied to 0
+    //    val ahb_hprot       = Input(UInt(4.W)) // tied to 4'b0011
+    //    val ahb_hsize       = Input(UInt(3.W)) // size of bus transaction (possible values 0          =1          =2          =3)
+    //    val ahb_htrans      = Input(UInt(2.W)) // Transaction type (possible values 0          =2 only right now)
+    //    val ahb_hwrite      = Input(Bool()) // ahb bus write
+    //    val ahb_hwdata      = Input(UInt(64.W)) // ahb bus write data
     val ahb_hsel        = Input(Bool()) // this slave was selected
     val ahb_hreadyin    = Input(Bool()) // previous hready was accepted or not
     // outputs
@@ -51,9 +51,10 @@ class ahb_to_axi4 extends Module with lib with RequireAsyncReset {
     val axi_arlen       = Output(UInt(8.W))
     val axi_arburst     = Output(UInt(2.W))
     val axi_rready      = Output(Bool())
-    val ahb_hrdata      = Output(UInt(64.W)) // ahb bus read data
-    val ahb_hreadyout   = Output(Bool()) // slave ready to accept transaction
-    val ahb_hresp       = Output(Bool()) // slave response (high indicates erro)
+    val ahb             = Flipped(new ahb_channel())
+    //    val ahb_hrdata      = Output(UInt(64.W)) // ahb bus read data
+    //    val ahb_hreadyout   = Output(Bool()) // slave ready to accept transaction
+    //    val ahb_hresp       = Output(Bool()) // slave response (high indicates erro)
   })
   val idle:: wr :: rd :: pend :: Nil = Enum(4)
   val TAG= 1
@@ -114,18 +115,18 @@ class ahb_to_axi4 extends Module with lib with RequireAsyncReset {
   switch(buf_state) {
 
     is(idle) {
-      buf_nxtstate := Mux(io.ahb_hwrite, wr, rd)
-      buf_state_en := ahb_hready & io.ahb_htrans(1) & io.ahb_hsel // only transition on a valid hrtans
+      buf_nxtstate := Mux(io.ahb.out.hwrite, wr, rd)
+      buf_state_en := ahb_hready & io.ahb.out.htrans(1) & io.ahb_hsel // only transition on a valid hrtans
     }
     is(wr) { // Write command recieved last cycle
-      buf_nxtstate := Mux((io.ahb_hresp | (io.ahb_htrans(1, 0) === "b0".U) | !io.ahb_hsel).asBool, idle, Mux(io.ahb_hwrite, wr, rd))
-      buf_state_en := (!cmdbuf_full | io.ahb_hresp)
-      cmdbuf_wr_en := !cmdbuf_full & !(io.ahb_hresp | ((io.ahb_htrans(1, 0) === "b01".U(2.W)) & io.ahb_hsel)) // Dont send command to the buffer in case of an error or when the master is not ready with the data now.
+      buf_nxtstate := Mux((io.ahb.in.hresp | (io.ahb.out.htrans(1, 0) === "b0".U) | !io.ahb_hsel).asBool, idle, Mux(io.ahb.out.hwrite, wr, rd))
+      buf_state_en := (!cmdbuf_full | io.ahb.in.hresp)
+      cmdbuf_wr_en := !cmdbuf_full & !(io.ahb.in.hresp | ((io.ahb.out.htrans(1, 0) === "b01".U(2.W)) & io.ahb_hsel)) // Dont send command to the buffer in case of an error or when the master is not ready with the data now.
     }
     is(rd) { // Read command recieved last cycle.
-      buf_nxtstate := Mux(io.ahb_hresp, idle, pend) // If error go to idle, else wait for read data
-      buf_state_en := (!cmdbuf_full | io.ahb_hresp) // only when command can go, or if its an error
-      cmdbuf_wr_en := !io.ahb_hresp & !cmdbuf_full // send command only when no error
+      buf_nxtstate := Mux(io.ahb.in.hresp, idle, pend) // If error go to idle, else wait for read data
+      buf_state_en := (!cmdbuf_full | io.ahb.in.hresp) // only when command can go, or if its an error
+      cmdbuf_wr_en := !io.ahb.in.hresp & !cmdbuf_full // send command only when no error
     }
     is(pend) { // Read Command has been sent. Waiting on Data.
       buf_nxtstate := idle // go back for next command and present data next cycle
@@ -142,11 +143,11 @@ class ahb_to_axi4 extends Module with lib with RequireAsyncReset {
     (Fill(8,ahb_hsize_q(2,0) === 3.U)  &  255.U)
 
   // AHB signals
-  io.ahb_hreadyout            := Mux(io.ahb_hresp,(ahb_hresp_q & !ahb_hready_q), ((!cmdbuf_full | (buf_state === idle)) & !(buf_state === rd | buf_state === pend)  & !buf_read_error))
-  ahb_hready                  := io.ahb_hreadyout & io.ahb_hreadyin
-  ahb_htrans_in               := Fill(2,io.ahb_hsel) & io.ahb_htrans(1,0)
-  io.ahb_hrdata               := buf_rdata(63,0)
-  io.ahb_hresp                := ((ahb_htrans_q(1,0) =/= 0.U) & (buf_state =/= idle)  &
+  io.ahb.in.hready               := Mux(io.ahb.in.hresp,(ahb_hresp_q & !ahb_hready_q), ((!cmdbuf_full | (buf_state === idle)) & !(buf_state === rd | buf_state === pend)  & !buf_read_error))
+  ahb_hready                  := io.ahb.in.hready & io.ahb_hreadyin
+  ahb_htrans_in               := Fill(2,io.ahb_hsel) & io.ahb.out.htrans(1,0)
+  io.ahb.in.hrdata               := buf_rdata(63,0)
+  io.ahb.in.hresp                := ((ahb_htrans_q(1,0) =/= 0.U) & (buf_state =/= idle)  &
     ((!(ahb_addr_in_dccm | ahb_addr_in_iccm)) |                                                                                   // request not for ICCM or DCCM
       ((ahb_addr_in_iccm | (ahb_addr_in_dccm &  ahb_hwrite_q)) & !((ahb_hsize_q(1,0) === 2.U) | (ahb_hsize_q(1,0) === 3.U))) |    // ICCM Rd/Wr OR DCCM Wr not the right size
       ((ahb_hsize_q(2,0) === 1.U) & ahb_haddr_q(0))   |                                                                             // HW size but unaligned
@@ -160,22 +161,22 @@ class ahb_to_axi4 extends Module with lib with RequireAsyncReset {
   buf_read_error              := withClock(ahb_clk){RegNext(buf_read_error_in,0.U)}
 
   // All the Master signals are captured before presenting it to the command buffer. We check for Hresp before sending it to the cmd buffer.
-  ahb_hresp_q                 := withClock(ahb_clk){RegNext(io.ahb_hresp,0.U)}
+  ahb_hresp_q                 := withClock(ahb_clk){RegNext(io.ahb.in.hresp,0.U)}
   ahb_hready_q                := withClock(ahb_clk){RegNext(ahb_hready,0.U)}
   ahb_htrans_q                := withClock(ahb_clk){RegNext(ahb_htrans_in,0.U)}
-  ahb_hsize_q                 := withClock(ahb_addr_clk){RegNext(io.ahb_hsize,0.U)}
-  ahb_hwrite_q                := withClock(ahb_addr_clk){RegNext(io.ahb_hwrite,0.U)}
-  ahb_haddr_q                 := withClock(ahb_addr_clk){RegNext(io.ahb_haddr,0.U)}
+  ahb_hsize_q                 := withClock(ahb_addr_clk){RegNext(io.ahb.out.hsize,0.U)}
+  ahb_hwrite_q                := withClock(ahb_addr_clk){RegNext(io.ahb.out.hwrite,0.U)}
+  ahb_haddr_q                 := withClock(ahb_addr_clk){RegNext(io.ahb.out.haddr,0.U)}
 
   // Clock header logic
-  ahb_bus_addr_clk_en         := io.bus_clk_en & (ahb_hready & io.ahb_htrans(1))
+  ahb_bus_addr_clk_en         := io.bus_clk_en & (ahb_hready & io.ahb.out.htrans(1))
   buf_rdata_clk_en            := io.bus_clk_en & buf_rdata_en;
 
   ahb_clk                     := rvclkhdr(clock, io.bus_clk_en, io.scan_mode)
   ahb_addr_clk                := rvclkhdr(clock, ahb_bus_addr_clk_en, io.scan_mode)
   buf_rdata_clk               := rvclkhdr(clock, buf_rdata_clk_en, io.scan_mode)
 
-  cmdbuf_rst                  := (((io.axi_awvalid & io.axi_awready) | (io.axi_arvalid & io.axi_arready)) & !cmdbuf_wr_en) | (io.ahb_hresp & !cmdbuf_write)
+  cmdbuf_rst                  := (((io.axi_awvalid & io.axi_awready) | (io.axi_arvalid & io.axi_arready)) & !cmdbuf_wr_en) | (io.ahb.in.hresp & !cmdbuf_write)
   cmdbuf_full                 := (cmdbuf_vld & !((io.axi_awvalid & io.axi_awready) | (io.axi_arvalid & io.axi_arready)))
   //rvdffsc
   cmdbuf_vld                  := withClock(bus_clk) {RegNext((Mux(cmdbuf_wr_en.asBool(),"b1".U,cmdbuf_vld) & !cmdbuf_rst), 0.U)}
@@ -192,7 +193,7 @@ class ahb_to_axi4 extends Module with lib with RequireAsyncReset {
 
   //rvdffe
   cmdbuf_addr := rvdffe(ahb_haddr_q, cmdbuf_wr_en.asBool(),bus_clk,io.scan_mode)
-  cmdbuf_wdata := rvdffe(io.ahb_hwdata, cmdbuf_wr_en.asBool(),bus_clk,io.scan_mode)
+  cmdbuf_wdata := rvdffe(io.ahb.out.hwdata, cmdbuf_wr_en.asBool(),bus_clk,io.scan_mode)
 
   // AXI Write Command Channel
   io.axi_awvalid          := cmdbuf_vld & cmdbuf_write
@@ -223,3 +224,6 @@ class ahb_to_axi4 extends Module with lib with RequireAsyncReset {
 
   bus_clk                 := rvclkhdr(clock, io.bus_clk_en, io.scan_mode)
 }
+object AHB_main extends App {
+  println("Generate Verilog")
+  println((new chisel3.stage.ChiselStage).emitVerilog(new ahb_to_axi4()))}

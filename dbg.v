@@ -81,12 +81,12 @@ module dbg(
   output        io_dbg_dec_dbg_ib_dbg_cmd_write,
   output [1:0]  io_dbg_dec_dbg_ib_dbg_cmd_type,
   output [31:0] io_dbg_dec_dbg_ib_dbg_cmd_addr,
-  output [1:0]  io_dbg_dec_dbg_dctl_dbg_cmd_wrdata,
+  output [31:0] io_dbg_dec_dbg_dctl_dbg_cmd_wrdata,
   output        io_dbg_dma_dbg_ib_dbg_cmd_valid,
   output        io_dbg_dma_dbg_ib_dbg_cmd_write,
   output [1:0]  io_dbg_dma_dbg_ib_dbg_cmd_type,
   output [31:0] io_dbg_dma_dbg_ib_dbg_cmd_addr,
-  output [1:0]  io_dbg_dma_dbg_dctl_dbg_cmd_wrdata,
+  output [31:0] io_dbg_dma_dbg_dctl_dbg_cmd_wrdata,
   output        io_dbg_dma_io_dbg_dma_bubble,
   input         io_dbg_dma_io_dma_dbg_ready,
   input         io_dbg_bus_clk_en,
@@ -678,7 +678,7 @@ module dbg(
   assign io_dbg_dec_dbg_ib_dbg_cmd_write = command_reg[16]; // @[dbg.scala 327:35]
   assign io_dbg_dec_dbg_ib_dbg_cmd_type = _T_504 ? 2'h2 : _T_524; // @[dbg.scala 328:34]
   assign io_dbg_dec_dbg_ib_dbg_cmd_addr = _T_504 ? {{1'd0}, _T_506} : _T_508; // @[dbg.scala 324:34]
-  assign io_dbg_dec_dbg_dctl_dbg_cmd_wrdata = data0_reg[1:0]; // @[dbg.scala 325:38]
+  assign io_dbg_dec_dbg_dctl_dbg_cmd_wrdata = data0_reg; // @[dbg.scala 325:38]
   assign io_dbg_dma_dbg_ib_dbg_cmd_valid = io_dbg_dec_dbg_ib_dbg_cmd_valid; // @[dbg.scala 449:39]
   assign io_dbg_dma_dbg_ib_dbg_cmd_write = io_dbg_dec_dbg_ib_dbg_cmd_write; // @[dbg.scala 450:39]
   assign io_dbg_dma_dbg_ib_dbg_cmd_type = io_dbg_dec_dbg_ib_dbg_cmd_type; // @[dbg.scala 451:39]
