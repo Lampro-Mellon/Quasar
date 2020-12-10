@@ -197,3 +197,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   io.dma_hresp := core.io.dma_hresp
 
 }
+
+object QUASAR_Wrp extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new quasar_wrapper()))
+}

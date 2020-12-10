@@ -740,7 +740,7 @@ class dec_tlu_ctl extends Module with lib with RequireAsyncReset with CSR_VAL{
    val block_interrupts = ((internal_dbg_halt_mode & (~dcsr_single_step_running | io.dec_tlu_i0_valid_r)) | internal_pmu_fw_halt_mode | i_cpu_halt_req_d1 | take_nmi | ebreak_to_debug_mode_r |  synchronous_flush_r | exc_or_int_valid_r_d1 | mret_r | ext_int_freeze_d1)
 
 
-	if(FAST_INTERRUPT_REDIRECT==1) {
+	if(FAST_INTERRUPT_REDIRECT) {
 	take_ext_int_start_d1:=withClock(io.free_clk){RegNext(take_ext_int_start,0.U)}
 	take_ext_int_start_d2:=withClock(io.free_clk){RegNext(take_ext_int_start_d1,0.U)}
 	take_ext_int_start_d3:=withClock(io.free_clk){RegNext(take_ext_int_start_d2,0.U)}
@@ -1748,7 +1748,7 @@ val wr_mcycleh_r                = WireInit(UInt(1.W), 0.U)
  mfdc_int := rvdffe(mfdc_ns,wr_mfdc_r.asBool,clock,io.scan_mode)
 //  rvdffe #(15)  mfdc_ff (.*, .en(wr_mfdc_r), .din({mfdc_ns[14:0]}), .dout(mfdc_int[14:0]));
 
- if(BUILD_AXI4 == true){
+ if(BUILD_AXI4){
  // flip poweron value of bit 6 for AXI build
     mfdc_ns := Cat(~io.dec_csr_wrdata_r(18,16),io.dec_csr_wrdata_r(11,7), ~io.dec_csr_wrdata_r(6), io.dec_csr_wrdata_r(5,0))
     mfdc    := Cat(~mfdc_int(14,12),0.U(4.W), mfdc_int(11,7), ~mfdc_int(6), mfdc_int(5,0))
