@@ -319,3 +319,6 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   withClock(clkdomain.io.lsu_c2_r_clk){lsu_raw_fwd_lo_r := RegNext(lsu_raw_fwd_lo_m,0.U)}
 
 }
+object lsu extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new lsu()))
+}
