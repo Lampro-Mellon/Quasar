@@ -17,7 +17,10 @@ class quasar_bundle extends Bundle with  lib{
   val ahb = new ahb_channel
   val lsu_ahb = new ahb_channel
   val sb_ahb = new ahb_channel
-  val dma_ahb = Flipped(new ahb_channel)
+  val dma = new Bundle{
+    val ahb= Flipped(new ahb_channel())
+    val hsel = Input(Bool())
+    val hreadyin = Input(Bool())}
 
   val dbg_rst_l = Input(AsyncReset())
   val rst_vec = Input(UInt(31.W))
@@ -88,7 +91,7 @@ class quasar_bundle extends Bundle with  lib{
   //  val sb_hresp = Input(Bool())
   //
   //  // DMA slave
-  val dma_hsel = Input(Bool())
+//  dma_hsel = Input(Bool())
   //  val dma_haddr = Input(UInt(32.W))
   //  val dma_hburst = Input(UInt(3.W))
   //  val dma_hmastlock = Input(Bool())
@@ -97,7 +100,7 @@ class quasar_bundle extends Bundle with  lib{
   //  val dma_htrans = Input(UInt(2.W))
   //  val dma_hwrite = Input(Bool())
   //  val dma_hwdata = Input(UInt(64.W))
-  val dma_hreadyin = Input(Bool())
+//  val dma_hreadyin = Input(Bool())
   //  val dma_hrdata = Output(UInt(64.W))
   //  val dma_hreadyout = Output(Bool())
   //  val dma_hresp = Output(Bool())
@@ -408,8 +411,8 @@ class quasar extends Module with RequireAsyncReset with lib {
     //    dma_ahb_to_axi4.io.ahb_htrans := io.dma_htrans
     //    dma_ahb_to_axi4.io.ahb_hwrite := io.dma_hwrite
     //    dma_ahb_to_axi4.io.ahb_hwdata := io.dma_hwdata
-    dma_ahb_to_axi4.io.ahb_hsel := io.dma_hsel
-    dma_ahb_to_axi4.io.ahb_hreadyin := io.dma_hreadyin
+    dma_ahb_to_axi4.io.ahb.hsel := io.dma.hsel
+    dma_ahb_to_axi4.io.ahb.hreadyin := io.dma.hreadyin
     lsu.io.axi.aw.ready := Mux(BUILD_AHB_LITE.B, lsu_axi4_to_ahb.io.axi_awready, io.lsu_axi.aw.ready)
     lsu.io.axi.w.ready := Mux(BUILD_AHB_LITE.B, lsu_axi4_to_ahb.io.axi_wready, io.lsu_axi.w.ready)
     lsu.io.axi.b.valid := Mux(BUILD_AHB_LITE.B, lsu_axi4_to_ahb.io.axi_bvalid, io.lsu_axi.b.valid)
@@ -484,7 +487,7 @@ class quasar extends Module with RequireAsyncReset with lib {
     //    io.sb_hwrite := sb_axi4_to_ahb.io.ahb_hwrite
     //    io.sb_hwdata := sb_axi4_to_ahb.io.ahb_hwdata
 
-    io.dma_ahb <> dma_ahb_to_axi4.io.ahb
+    io.dma.ahb <> dma_ahb_to_axi4.io.ahb.sig
     //    io.dma_hrdata := dma_ahb_to_axi4.io.ahb_hrdata
     //    io.dma_hreadyout := dma_ahb_to_axi4.io.ahb_hreadyout
     //    io.dma_hresp := dma_ahb_to_axi4.io.ahb_hresp
@@ -522,7 +525,7 @@ class quasar extends Module with RequireAsyncReset with lib {
       //        io.sb_hwrite := 0.U
       //        io.sb_hwdata := 0.U
 
-      io.dma_ahb.in <> 0.U.asTypeOf(io.dma_ahb.in)
+      io.dma.ahb.in <> 0.U.asTypeOf(io.dma.ahb.in)
       //        io.dma_hrdata := 0.U
       //        io.dma_hreadyout := 0.U
       //        io.dma_hresp := 0.U

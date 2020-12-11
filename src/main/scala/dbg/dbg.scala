@@ -311,7 +311,7 @@ class dbg extends Module with lib with RequireAsyncReset {
     Fill(32, io.dmi_reg_addr === "h40".U) & haltsum0_reg | Fill(32, io.dmi_reg_addr === "h38".U) & sbcs_reg |
     Fill(32, io.dmi_reg_addr === "h39".U) & sbaddress0_reg | Fill(32, io.dmi_reg_addr === "h3c".U) & sbdata0_reg |
     Fill(32, io.dmi_reg_addr === "h3d".U) & sbdata1_reg
-0
+  0
   dbg_state := withClockAndReset(dbg_free_clk, (!dbg_dm_rst_l & temp_rst).asAsyncReset()) {
     RegEnable(dbg_nxtstate, 0.U, dbg_state_en)
   } // dbg_state_reg
@@ -449,4 +449,7 @@ class dbg extends Module with lib with RequireAsyncReset {
   io.dbg_dma.dbg_ib.dbg_cmd_valid     := io.dbg_dec.dbg_ib.dbg_cmd_valid
   io.dbg_dma.dbg_ib.dbg_cmd_write     := io.dbg_dec.dbg_ib.dbg_cmd_write
   io.dbg_dma.dbg_ib.dbg_cmd_type      := io.dbg_dec.dbg_ib.dbg_cmd_type
+}
+object dgb extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new dbg()))
 }

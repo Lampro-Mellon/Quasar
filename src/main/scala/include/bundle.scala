@@ -58,12 +58,10 @@ class ahb_out extends Bundle{
   val htrans        = Output(UInt(2.W))
   val hwrite        = Output(Bool()) // ahb bus write
   val hwdata        = Output(UInt(64.W)) // [63:0]  // ahb bus write data
-
-
 }
 class ahb_channel extends Bundle{
-  val in = Input(new ahb_in)
-  val out = Output(new ahb_out)
+  val in  = new ahb_in
+  val out = new ahb_out
 }
 class axi_channels(val BUS_TAG :Int=3) extends Bundle with lib{
   val aw = Decoupled(new write_addr(BUS_TAG))

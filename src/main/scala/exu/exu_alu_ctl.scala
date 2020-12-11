@@ -109,7 +109,6 @@ class exu_alu_ctl extends Module with lib with RequireAsyncReset{
   val target_mispredict   =  io.pp_in.bits.pret & (io.pp_in.bits.prett =/= aout(31,1)) //predicted return target != aout
 
   io.flush_upper_out     :=   (io.i0_ap.jal | cond_mispredict | target_mispredict) & io.dec_alu.dec_i0_alu_decode_d & !io.flush_upper_x   & !io.dec_tlu_flush_lower_r
-  //there was no entire pipe flush (& previous cycle flush ofc(why check?)) therfore signAL 1 to flush instruction before X stage
   io.flush_final_out     := ( (io.i0_ap.jal | cond_mispredict | target_mispredict) & io.dec_alu.dec_i0_alu_decode_d & !io.flush_upper_x ) |  io.dec_tlu_flush_lower_r
   //there was entire pipe flush or (there is mispred or a jal) therfore signAL 1 to flush entire pipe
 

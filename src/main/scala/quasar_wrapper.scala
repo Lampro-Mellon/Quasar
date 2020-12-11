@@ -19,8 +19,11 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     val dma_axi = Flipped(new axi_channels(DMA_BUS_TAG))
 
     // DMA slave
-    val dma_hsel = Input(Bool())
-    val dma_ahb = Flipped(new ahb_channel())
+
+    val dma = new Bundle{
+      val ahb= Flipped(new ahb_channel())
+      val hsel = Input(Bool())
+      val hreadyin = Input(Bool())}
     //    val dma_haddr = Input(UInt(32.W))
     //    val dma_hburst = Input(UInt(3.W))
     //    val dma_hmastlock = Input(Bool())
@@ -29,7 +32,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     //    val dma_htrans = Input(UInt(2.W))
     //    val dma_hwrite = Input(Bool())
     //    val dma_hwdata = Input(UInt(64.W))
-    val dma_hreadyin = Input(Bool())
+
     //    val dma_hrdata = Output(UInt(64.W))
     //    val dma_hreadyout = Output(Bool())
     //    val dma_hresp = Output(Bool())
@@ -112,7 +115,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   swerv.io.ahb.in      <> 0.U.asTypeOf(swerv.io.ahb.in)
   swerv.io.lsu_ahb.in  <> 0.U.asTypeOf(swerv.io.lsu_ahb.in)
   swerv.io.sb_ahb.in   <> 0.U.asTypeOf(swerv.io.sb_ahb.in)
-  io.dma_ahb.in   <> 0.U.asTypeOf(io.dma_ahb.in)
+  io.dma.ahb.in   <> 0.U.asTypeOf(io.dma.ahb.in)
   //  swerv.io.sb_hready := 0.U
   //  swerv.io.hrdata := 0.U
   //  swerv.io.sb_hresp := 0.U
@@ -154,8 +157,8 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   swerv.io.dma_axi <> io.dma_axi
 
   // DMA Slave
-  swerv.io.dma_hsel := io.dma_hsel
-  swerv.io.dma_ahb.out <> io.dma_ahb.out
+  swerv.io.dma.hsel := io.dma.hsel
+  swerv.io.dma.ahb.out <> io.dma.ahb.out
   //  swerv.io.dma_haddr := io.dma_haddr
   //  swerv.io.dma_hburst := io.dma_hburst
   //  swerv.io.dma_hmastlock := io.dma_hmastlock
@@ -164,7 +167,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   //  swerv.io.dma_htrans := io.dma_htrans
   //  swerv.io.dma_hwrite := io.dma_hwrite
   //  swerv.io.dma_hwdata := io.dma_hwdata
-  swerv.io.dma_hreadyin := io.dma_hreadyin
+  swerv.io.dma.hreadyin := io.dma.hreadyin
 
   swerv.io.lsu_bus_clk_en
   swerv.io.ifu_bus_clk_en
