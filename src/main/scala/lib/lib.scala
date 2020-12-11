@@ -1,8 +1,20 @@
 package lib
 import chisel3._
 import chisel3.util._
+import include._
 trait lib extends param{
+  implicit def int2boolean(b:Int) = if (b==1) true else false
+  implicit def uint2bool(b:UInt) = b.asBool()
+  implicit def aslong(b:Int) = 0xFFFFFFFFL & b
   def repl(b:Int, a:UInt) = VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
+
+  def bridge_gen(tag: Int, ahb_type: Boolean) = if(BUILD_AXI4) new axi_channels(tag) else ahb_bridge_gen(ahb_type)
+
+  def ahb_bridge_gen(ahb_type: Boolean) = if(ahb_type) new Bundle{
+    val ahb= Flipped(new ahb_channel())
+    val hsel = Input(Bool())
+    val hreadyin = Input(Bool())}
+  else new ahb_channel()
 
   def MEM_CAL : (Int, Int, Int, Int)=
     (ICACHE_WAYPACK, ICACHE_ECC) match{
@@ -14,9 +26,7 @@ trait lib extends param{
   val DATA_MEM_LINE = MEM_CAL
   val Tag_Word = MEM_CAL._4
 
-  implicit def int2boolean(b:Int) = if (b==1) true else false
-  implicit def uint2bool(b:UInt) = b.asBool()
-  implicit def aslong(b:Int) = 0xFFFFFFFFL & b
+
   object rvsyncss {
     def apply(din:UInt,clk:Clock) =withClock(clk){RegNext(withClock(clk){RegNext(din,0.U)},0.U)}
   }

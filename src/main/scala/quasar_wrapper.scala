@@ -13,29 +13,10 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     val jtag_id = Input(UInt(31.W))
 
     // AXI Signals
-    val lsu_axi = new axi_channels(LSU_BUS_TAG)
-    val ifu_axi = new axi_channels(IFU_BUS_TAG)
-    val sb_axi = new axi_channels(SB_BUS_TAG)
-    val dma_axi = Flipped(new axi_channels(DMA_BUS_TAG))
-
-    // DMA slave
-
-    val dma = new Bundle{
-      val ahb= Flipped(new ahb_channel())
-      val hsel = Input(Bool())
-      val hreadyin = Input(Bool())}
-    //    val dma_haddr = Input(UInt(32.W))
-    //    val dma_hburst = Input(UInt(3.W))
-    //    val dma_hmastlock = Input(Bool())
-    //    val dma_hprot = Input(UInt(4.W))
-    //    val dma_hsize = Input(UInt(3.W))
-    //    val dma_htrans = Input(UInt(2.W))
-    //    val dma_hwrite = Input(Bool())
-    //    val dma_hwdata = Input(UInt(64.W))
-
-    //    val dma_hrdata = Output(UInt(64.W))
-    //    val dma_hreadyout = Output(Bool())
-    //    val dma_hresp = Output(Bool())
+    val lsu_brg = bridge_gen(LSU_BUS_TAG, false)
+    val ifu_brg = bridge_gen(IFU_BUS_TAG, false)
+    val sb_brg = bridge_gen(SB_BUS_TAG, false)
+    val dma_brg = Flipped(bridge_gen(DMA_BUS_TAG, true))
 
     val lsu_bus_clk_en = Input(Bool())
     val ifu_bus_clk_en = Input(Bool())
@@ -82,6 +63,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   val mem = Module(new quasar.mem())
   val dmi_wrapper = Module(new dmi_wrapper())
   val swerv = Module(new quasar())
+  swerv.io.scan_mode := io.scan_mode
   dmi_wrapper.io.trst_n := io.jtag_trst_n
   dmi_wrapper.io.tck := io.jtag_tck
   dmi_wrapper.io.tms := io.jtag_tms
@@ -112,20 +94,29 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   swerv.io.ic <> mem.io.ic
   swerv.io.iccm <> mem.io.iccm
 
-  swerv.io.ahb.in      <> 0.U.asTypeOf(swerv.io.ahb.in)
-  swerv.io.lsu_ahb.in  <> 0.U.asTypeOf(swerv.io.lsu_ahb.in)
-  swerv.io.sb_ahb.in   <> 0.U.asTypeOf(swerv.io.sb_ahb.in)
-  io.dma.ahb.in   <> 0.U.asTypeOf(io.dma.ahb.in)
-  //  swerv.io.sb_hready := 0.U
-  //  swerv.io.hrdata := 0.U
-  //  swerv.io.sb_hresp := 0.U
-  //  swerv.io.lsu_hrdata := 0.U
-  //  swerv.io.lsu_hresp := 0.U
-  //  swerv.io.lsu_hready := 0.U
-  //  swerv.io.hready := 0.U
-  //  swerv.io.hresp := 0.U
-  //  swerv.io.sb_hrdata := 0.U
-  swerv.io.scan_mode := io.scan_mode
+
+  if(BUILD_AXI4) {
+    swerv.io.ahb <> 0.U.asTypeOf(swerv.io.ahb.in)
+    swerv.io.lsu_ahb <> 0.U.asTypeOf(swerv.io.lsu_ahb.in)
+    swerv.io.sb_ahb <> 0.U.asTypeOf(swerv.io.sb_ahb.in)
+    swerv.io.dma <> 0.U.asTypeOf(swerv.io.dma)
+
+    swerv.io.lsu_axi <> io.lsu_brg
+    swerv.io.ifu_axi <> io.ifu_brg
+    swerv.io.sb_axi <> io.sb_brg
+    swerv.io.dma_axi <> io.dma_brg
+  }
+  else {
+    swerv.io.ahb <> io.ifu_brg
+    swerv.io.lsu_ahb <> io.lsu_brg
+    swerv.io.sb_ahb <> io.sb_brg
+    swerv.io.dma <> io.dma_brg
+
+    swerv.io.lsu_axi <> 0.U.asTypeOf(swerv.io.lsu_axi)
+    swerv.io.ifu_axi <> 0.U.asTypeOf(swerv.io.ifu_axi)
+    swerv.io.sb_axi <> 0.U.asTypeOf(swerv.io.sb_axi)
+    swerv.io.dma_axi <> 0.U.asTypeOf(swerv.io.lsu_axi)
+  }
   // SweRV Inputs
   swerv.io.dbg_rst_l := io.dbg_rst_l
   swerv.io.rst_vec := io.rst_vec
@@ -142,23 +133,14 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   swerv.io.mpc_debug_run_req := io.mpc_debug_run_req
   swerv.io.mpc_reset_run_req := io.mpc_reset_run_req
 
-  //-------------------------- LSU AXI signals--------------------------
-  // AXI Write Channels
-  swerv.io.lsu_axi <> io.lsu_axi
-  //-------------------------- IFU AXI signals--------------------------
-  // AXI Write Channels
-  swerv.io.ifu_axi <> io.ifu_axi
-  //-------------------------- SB AXI signals--------------------------
-  // AXI Write Channels
-  swerv.io.sb_axi <> io.sb_axi
 
   //-------------------------- DMA AXI signals--------------------------
   // AXI Write Channels
-  swerv.io.dma_axi <> io.dma_axi
+  swerv.io.dma_axi <> io.dma_brg
 
   // DMA Slave
-  swerv.io.dma.hsel := io.dma.hsel
-  swerv.io.dma.ahb.out <> io.dma.ahb.out
+  //swerv.io.dma.hsel := io.dma.hsel
+  //swerv.io.dma.ahb.out <> io.dma.ahb.out
   //  swerv.io.dma_haddr := io.dma_haddr
   //  swerv.io.dma_hburst := io.dma_hburst
   //  swerv.io.dma_hmastlock := io.dma_hmastlock
@@ -167,23 +149,8 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   //  swerv.io.dma_htrans := io.dma_htrans
   //  swerv.io.dma_hwrite := io.dma_hwrite
   //  swerv.io.dma_hwdata := io.dma_hwdata
-  swerv.io.dma.hreadyin := io.dma.hreadyin
+  //swerv.io.dma.hreadyin := io.dma.hreadyin
 
-  swerv.io.lsu_bus_clk_en
-  swerv.io.ifu_bus_clk_en
-  swerv.io.dbg_bus_clk_en
-  swerv.io.dma_bus_clk_en
-
-  swerv.io.dmi_reg_en
-  swerv.io.dmi_reg_addr
-  swerv.io.dmi_reg_wr_en
-  swerv.io.dmi_reg_wdata
-  swerv.io.dmi_hard_reset
-
-  swerv.io.extintsrc_req
-  swerv.io.timer_int
-  swerv.io.soft_int
-  swerv.io.scan_mode
 
   swerv.io.lsu_bus_clk_en := io.lsu_bus_clk_en
   swerv.io.ifu_bus_clk_en := io.ifu_bus_clk_en

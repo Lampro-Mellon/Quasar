@@ -49,6 +49,17 @@ class ahb_in extends Bundle{
   val hready        = Input(Bool()) // slave ready to accept transaction
   val hresp         = Input(Bool()) // slave response (high indicates erro)
 }
+class ahb_out_dma extends Bundle{
+  val haddr         = Output(UInt(32.W)) // [31:0]  // ahb bus address
+  val hburst        = Output(UInt(3.W)) // [2:0]   // tied to 0
+  val hmastlock     = Output(Bool()) // tied to 0
+  val hprot         = Output(UInt(4.W)) // [3:0]   // tied to 4'b0011
+  val hsize         = Output(UInt(3.W)) // [2:0]   // size of bus transaction (possible values 0,1,2,3)
+  val htrans        = Output(UInt(2.W))
+  val hwrite        = Output(Bool()) // ahb bus write
+  val hwdata        = Output(UInt(64.W)) // [63:0]  // ahb bus write data
+}
+
 class ahb_out extends Bundle{
   val haddr         = Output(UInt(32.W)) // [31:0]  // ahb bus address
   val hburst        = Output(UInt(3.W)) // [2:0]   // tied to 0
