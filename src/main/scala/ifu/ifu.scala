@@ -13,16 +13,14 @@ class ifu extends Module with lib with RequireAsyncReset {
     val exu_flush_path_final = Input(UInt(31.W))
     val free_clk = Input(Clock())
     val active_clk = Input(Clock())
-    val ifu_dec = new ifu_dec()
-    val exu_ifu = new exu_ifu()
-    val iccm = new iccm_mem()
-    val ic = new ic_mem()
-    // AXI Write Channel
-    val ifu = new axi_channels(IFU_BUS_TAG)
+    val ifu_dec = new ifu_dec() // IFU and DEC interconnects
+    val exu_ifu = new exu_ifu() // IFU and EXU interconnects
+    val iccm = new iccm_mem() // ICCM memory signals
+    val ic = new ic_mem() // I$ memory signals
+    val ifu = new axi_channels(IFU_BUS_TAG) // AXI Write Channel
     val ifu_bus_clk_en = Input(Bool())
-    // DMA signals
-    val ifu_dma = new ifu_dma()
-    // ICCM
+    val ifu_dma = new ifu_dma() // DMA signals
+    // ICCM DMA signals
     val iccm_dma_ecc_error = Output(Bool())
     val iccm_dma_rvalid = Output(Bool())
     val iccm_dma_rdata = Output(UInt(64.W))
@@ -87,7 +85,8 @@ class ifu extends Module with lib with RequireAsyncReset {
   bp_ctl.io.exu_bp <> io.exu_ifu.exu_bp
   bp_ctl.io.exu_flush_final := io.exu_flush_final
   bp_ctl.io.dec_tlu_flush_lower_wb := io.dec_tlu_flush_lower_wb
-  // mem-ctl wiring
+
+  // mem-ctl Inputs
   mem_ctl.io.free_clk := io.free_clk
   mem_ctl.io.active_clk := io.active_clk
   mem_ctl.io.exu_flush_final := io.exu_flush_final
@@ -110,6 +109,7 @@ class ifu extends Module with lib with RequireAsyncReset {
   mem_ctl.io.dec_tlu_flush_lower_wb := io.dec_tlu_flush_lower_wb
   mem_ctl.io.scan_mode := io.scan_mode
 
+  // DMA to the ICCM
   io.iccm_dma_ecc_error := mem_ctl.io.iccm_dma_ecc_error
   io.iccm_dma_rvalid := mem_ctl.io.iccm_dma_rvalid
   io.iccm_dma_rdata := mem_ctl.io.iccm_dma_rdata

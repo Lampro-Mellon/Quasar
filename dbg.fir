@@ -144,6 +144,54 @@ circuit dbg :
     clkhdr.EN <= io.en @[lib.scala 321:18]
     clkhdr.SE <= io.scan_mode @[lib.scala 322:18]
     
+  extmodule gated_latch_6 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = gated_latch
+    
+    
+  module rvclkhdr_6 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of gated_latch_6 @[lib.scala 318:26]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[lib.scala 319:14]
+    clkhdr.CK <= io.clk @[lib.scala 320:18]
+    clkhdr.EN <= io.en @[lib.scala 321:18]
+    clkhdr.SE <= io.scan_mode @[lib.scala 322:18]
+    
+  extmodule gated_latch_7 : 
+    output Q : Clock
+    input CK : Clock
+    input EN : UInt<1>
+    input SE : UInt<1>
+    
+    defname = gated_latch
+    
+    
+  module rvclkhdr_7 : 
+    input clock : Clock
+    input reset : Reset
+    output io : {l1clk : Clock, flip clk : Clock, flip en : UInt<1>, flip scan_mode : UInt<1>}
+    
+    inst clkhdr of gated_latch_7 @[lib.scala 318:26]
+    clkhdr.SE is invalid
+    clkhdr.EN is invalid
+    clkhdr.CK is invalid
+    clkhdr.Q is invalid
+    io.l1clk <= clkhdr.Q @[lib.scala 319:14]
+    clkhdr.CK <= io.clk @[lib.scala 320:18]
+    clkhdr.EN <= io.en @[lib.scala 321:18]
+    clkhdr.SE <= io.scan_mode @[lib.scala 322:18]
+    
   module dbg : 
     input clock : Clock
     input reset : AsyncReset
@@ -640,10 +688,14 @@ circuit dbg :
     node command_din = cat(_T_300, _T_298) @[Cat.scala 29:58]
     node _T_301 = eq(dbg_dm_rst_l, UInt<1>("h00")) @[dbg.scala 237:32]
     node _T_302 = asAsyncReset(_T_301) @[dbg.scala 237:59]
-    reg command_reg : UInt, clock with : (reset => (_T_302, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when command_wren : @[Reg.scala 28:19]
-      command_reg <= command_din @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    inst rvclkhdr_5 of rvclkhdr_5 @[lib.scala 352:23]
+    rvclkhdr_5.clock <= clock
+    rvclkhdr_5.reset <= _T_302
+    rvclkhdr_5.io.clk <= clock @[lib.scala 354:18]
+    rvclkhdr_5.io.en <= command_wren @[lib.scala 355:17]
+    rvclkhdr_5.io.scan_mode <= io.scan_mode @[lib.scala 356:24]
+    reg command_reg : UInt, rvclkhdr_5.io.l1clk with : (reset => (_T_302, UInt<1>("h00"))) @[lib.scala 358:16]
+    command_reg <= command_din @[lib.scala 358:16]
     node _T_303 = and(io.dmi_reg_en, io.dmi_reg_wr_en) @[dbg.scala 241:39]
     node _T_304 = eq(io.dmi_reg_addr, UInt<3>("h04")) @[dbg.scala 241:77]
     node _T_305 = and(_T_303, _T_304) @[dbg.scala 241:58]
@@ -664,10 +716,14 @@ circuit dbg :
     node data0_din = or(_T_313, _T_316) @[dbg.scala 245:64]
     node _T_317 = eq(dbg_dm_rst_l, UInt<1>("h00")) @[dbg.scala 246:30]
     node _T_318 = asAsyncReset(_T_317) @[dbg.scala 246:57]
-    reg data0_reg : UInt, clock with : (reset => (_T_318, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when data0_reg_wren : @[Reg.scala 28:19]
-      data0_reg <= data0_din @[Reg.scala 28:23]
-      skip @[Reg.scala 28:19]
+    inst rvclkhdr_6 of rvclkhdr_6 @[lib.scala 352:23]
+    rvclkhdr_6.clock <= clock
+    rvclkhdr_6.reset <= _T_318
+    rvclkhdr_6.io.clk <= clock @[lib.scala 354:18]
+    rvclkhdr_6.io.en <= data0_reg_wren @[lib.scala 355:17]
+    rvclkhdr_6.io.scan_mode <= io.scan_mode @[lib.scala 356:24]
+    reg data0_reg : UInt, rvclkhdr_6.io.l1clk with : (reset => (_T_318, UInt<1>("h00"))) @[lib.scala 358:16]
+    data0_reg <= data0_din @[lib.scala 358:16]
     node _T_319 = and(io.dmi_reg_en, io.dmi_reg_wr_en) @[dbg.scala 250:39]
     node _T_320 = eq(io.dmi_reg_addr, UInt<3>("h05")) @[dbg.scala 250:77]
     node _T_321 = and(_T_319, _T_320) @[dbg.scala 250:58]
@@ -678,13 +734,13 @@ circuit dbg :
     node data1_din = and(_T_324, io.dmi_reg_wdata) @[dbg.scala 251:44]
     node _T_325 = eq(dbg_dm_rst_l, UInt<1>("h00")) @[dbg.scala 252:27]
     node _T_326 = asAsyncReset(_T_325) @[dbg.scala 252:54]
-    inst rvclkhdr_5 of rvclkhdr_5 @[lib.scala 352:23]
-    rvclkhdr_5.clock <= clock
-    rvclkhdr_5.reset <= _T_326
-    rvclkhdr_5.io.clk <= clock @[lib.scala 354:18]
-    rvclkhdr_5.io.en <= data1_reg_wren @[lib.scala 355:17]
-    rvclkhdr_5.io.scan_mode <= io.scan_mode @[lib.scala 356:24]
-    reg _T_327 : UInt, rvclkhdr_5.io.l1clk with : (reset => (_T_326, UInt<1>("h00"))) @[lib.scala 358:16]
+    inst rvclkhdr_7 of rvclkhdr_7 @[lib.scala 352:23]
+    rvclkhdr_7.clock <= clock
+    rvclkhdr_7.reset <= _T_326
+    rvclkhdr_7.io.clk <= clock @[lib.scala 354:18]
+    rvclkhdr_7.io.en <= data1_reg_wren @[lib.scala 355:17]
+    rvclkhdr_7.io.scan_mode <= io.scan_mode @[lib.scala 356:24]
+    reg _T_327 : UInt, rvclkhdr_7.io.l1clk with : (reset => (_T_326, UInt<1>("h00"))) @[lib.scala 358:16]
     _T_327 <= data1_din @[lib.scala 358:16]
     data1_reg <= _T_327 @[dbg.scala 252:13]
     wire dbg_nxtstate : UInt<3>

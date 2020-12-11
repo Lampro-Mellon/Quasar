@@ -235,7 +235,7 @@ class dbg extends Module with lib with RequireAsyncReset {
   val command_wren = (io.dmi_reg_addr === "h17".U) & io.dmi_reg_en & io.dmi_reg_wr_en & (dbg_state === state_t.halted)
   val command_din = Cat(io.dmi_reg_wdata(31, 24), 0.U(1.W), io.dmi_reg_wdata(22, 20), 0.U(3.W), io.dmi_reg_wdata(16, 0))
   val command_reg = withReset((!dbg_dm_rst_l).asAsyncReset()) {
-    RegEnable(command_din, 0.U, command_wren)
+    rvdffe(command_din, command_wren,clock,io.scan_mode)
   } // dmcommand_reg
 
   val data0_reg_wren0 = io.dmi_reg_en & io.dmi_reg_wr_en & (io.dmi_reg_addr === "h4".U) & (dbg_state === state_t.halted)
@@ -244,7 +244,7 @@ class dbg extends Module with lib with RequireAsyncReset {
   val data0_reg_wren = data0_reg_wren0 | data0_reg_wren1
   val data0_din = Fill(32, data0_reg_wren0) & io.dmi_reg_wdata | Fill(32, data0_reg_wren1) & io.core_dbg_rddata
   val data0_reg = withReset((!dbg_dm_rst_l).asAsyncReset()) {
-    RegEnable(data0_din, 0.U, data0_reg_wren)
+    rvdffe(data0_din,data0_reg_wren,clock,io.scan_mode)
   } // dbg_data0_reg
 
   val data1_reg_wren = (io.dmi_reg_en & io.dmi_reg_wr_en & (io.dmi_reg_addr === "h5".U) & (dbg_state === state_t.halted))
@@ -449,7 +449,4 @@ class dbg extends Module with lib with RequireAsyncReset {
   io.dbg_dma.dbg_ib.dbg_cmd_valid     := io.dbg_dec.dbg_ib.dbg_cmd_valid
   io.dbg_dma.dbg_ib.dbg_cmd_write     := io.dbg_dec.dbg_ib.dbg_cmd_write
   io.dbg_dma.dbg_ib.dbg_cmd_type      := io.dbg_dec.dbg_ib.dbg_cmd_type
-}
-object dbg extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new dbg()))
 }

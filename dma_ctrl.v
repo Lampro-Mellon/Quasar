@@ -231,18 +231,18 @@ module dma_ctrl(
   wire  rvclkhdr_9_io_clk; // @[lib.scala 352:23]
   wire  rvclkhdr_9_io_en; // @[lib.scala 352:23]
   wire  rvclkhdr_9_io_scan_mode; // @[lib.scala 352:23]
-  wire  dma_buffer_c1cgc_io_l1clk; // @[dma_ctrl.scala 385:32]
-  wire  dma_buffer_c1cgc_io_clk; // @[dma_ctrl.scala 385:32]
-  wire  dma_buffer_c1cgc_io_en; // @[dma_ctrl.scala 385:32]
-  wire  dma_buffer_c1cgc_io_scan_mode; // @[dma_ctrl.scala 385:32]
-  wire  dma_free_cgc_io_l1clk; // @[dma_ctrl.scala 391:28]
-  wire  dma_free_cgc_io_clk; // @[dma_ctrl.scala 391:28]
-  wire  dma_free_cgc_io_en; // @[dma_ctrl.scala 391:28]
-  wire  dma_free_cgc_io_scan_mode; // @[dma_ctrl.scala 391:28]
-  wire  dma_bus_cgc_io_l1clk; // @[dma_ctrl.scala 397:27]
-  wire  dma_bus_cgc_io_clk; // @[dma_ctrl.scala 397:27]
-  wire  dma_bus_cgc_io_en; // @[dma_ctrl.scala 397:27]
-  wire  dma_bus_cgc_io_scan_mode; // @[dma_ctrl.scala 397:27]
+  wire  dma_buffer_c1cgc_io_l1clk; // @[dma_ctrl.scala 389:32]
+  wire  dma_buffer_c1cgc_io_clk; // @[dma_ctrl.scala 389:32]
+  wire  dma_buffer_c1cgc_io_en; // @[dma_ctrl.scala 389:32]
+  wire  dma_buffer_c1cgc_io_scan_mode; // @[dma_ctrl.scala 389:32]
+  wire  dma_free_cgc_io_l1clk; // @[dma_ctrl.scala 395:28]
+  wire  dma_free_cgc_io_clk; // @[dma_ctrl.scala 395:28]
+  wire  dma_free_cgc_io_en; // @[dma_ctrl.scala 395:28]
+  wire  dma_free_cgc_io_scan_mode; // @[dma_ctrl.scala 395:28]
+  wire  dma_bus_cgc_io_l1clk; // @[dma_ctrl.scala 401:27]
+  wire  dma_bus_cgc_io_clk; // @[dma_ctrl.scala 401:27]
+  wire  dma_bus_cgc_io_en; // @[dma_ctrl.scala 401:27]
+  wire  dma_bus_cgc_io_scan_mode; // @[dma_ctrl.scala 401:27]
   wire  rvclkhdr_10_io_l1clk; // @[lib.scala 352:23]
   wire  rvclkhdr_10_io_clk; // @[lib.scala 352:23]
   wire  rvclkhdr_10_io_en; // @[lib.scala 352:23]
@@ -255,31 +255,31 @@ module dma_ctrl(
   wire  rvclkhdr_12_io_clk; // @[lib.scala 352:23]
   wire  rvclkhdr_12_io_en; // @[lib.scala 352:23]
   wire  rvclkhdr_12_io_scan_mode; // @[lib.scala 352:23]
-  wire  dma_free_clk = dma_free_cgc_io_l1clk; // @[dma_ctrl.scala 168:26 dma_ctrl.scala 395:29]
+  wire  dma_free_clk = dma_free_cgc_io_l1clk; // @[dma_ctrl.scala 168:26 dma_ctrl.scala 399:29]
   reg [2:0] RdPtr; // @[Reg.scala 27:20]
   reg [31:0] fifo_addr_4; // @[lib.scala 358:16]
   reg [31:0] fifo_addr_3; // @[lib.scala 358:16]
   reg [31:0] fifo_addr_2; // @[lib.scala 358:16]
   reg [31:0] fifo_addr_1; // @[lib.scala 358:16]
   reg [31:0] fifo_addr_0; // @[lib.scala 358:16]
-  wire [31:0] _GEN_60 = 3'h1 == RdPtr ? fifo_addr_1 : fifo_addr_0; // @[dma_ctrl.scala 351:20]
-  wire [31:0] _GEN_61 = 3'h2 == RdPtr ? fifo_addr_2 : _GEN_60; // @[dma_ctrl.scala 351:20]
-  wire [31:0] _GEN_62 = 3'h3 == RdPtr ? fifo_addr_3 : _GEN_61; // @[dma_ctrl.scala 351:20]
-  wire [31:0] dma_mem_addr_int = 3'h4 == RdPtr ? fifo_addr_4 : _GEN_62; // @[dma_ctrl.scala 351:20]
+  wire [31:0] _GEN_60 = 3'h1 == RdPtr ? fifo_addr_1 : fifo_addr_0; // @[dma_ctrl.scala 355:20]
+  wire [31:0] _GEN_61 = 3'h2 == RdPtr ? fifo_addr_2 : _GEN_60; // @[dma_ctrl.scala 355:20]
+  wire [31:0] _GEN_62 = 3'h3 == RdPtr ? fifo_addr_3 : _GEN_61; // @[dma_ctrl.scala 355:20]
+  wire [31:0] dma_mem_addr_int = 3'h4 == RdPtr ? fifo_addr_4 : _GEN_62; // @[dma_ctrl.scala 355:20]
   wire  dma_mem_addr_in_dccm = dma_mem_addr_int[31:16] == 16'hf004; // @[lib.scala 345:39]
   wire  dma_mem_addr_in_pic = dma_mem_addr_int[31:15] == 17'h1e018; // @[lib.scala 345:39]
   wire  dma_mem_addr_in_iccm = dma_mem_addr_int[31:16] == 16'hee00; // @[lib.scala 345:39]
-  wire  dma_bus_clk = dma_bus_cgc_io_l1clk; // @[dma_ctrl.scala 170:25 dma_ctrl.scala 401:28]
-  reg  wrbuf_vld; // @[dma_ctrl.scala 411:59]
-  reg  wrbuf_data_vld; // @[dma_ctrl.scala 413:59]
-  wire  _T_1240 = wrbuf_vld & wrbuf_data_vld; // @[dma_ctrl.scala 469:43]
-  reg  rdbuf_vld; // @[dma_ctrl.scala 437:47]
-  wire  _T_1241 = _T_1240 & rdbuf_vld; // @[dma_ctrl.scala 469:60]
+  wire  dma_bus_clk = dma_bus_cgc_io_l1clk; // @[dma_ctrl.scala 170:25 dma_ctrl.scala 405:28]
+  reg  wrbuf_vld; // @[dma_ctrl.scala 415:59]
+  reg  wrbuf_data_vld; // @[dma_ctrl.scala 417:59]
+  wire  _T_1260 = wrbuf_vld & wrbuf_data_vld; // @[dma_ctrl.scala 473:43]
+  reg  rdbuf_vld; // @[dma_ctrl.scala 441:47]
+  wire  _T_1261 = _T_1260 & rdbuf_vld; // @[dma_ctrl.scala 473:60]
   reg  axi_mstr_priority; // @[Reg.scala 27:20]
-  wire  axi_mstr_sel = _T_1241 ? axi_mstr_priority : _T_1240; // @[dma_ctrl.scala 469:31]
+  wire  axi_mstr_sel = _T_1261 ? axi_mstr_priority : _T_1260; // @[dma_ctrl.scala 473:31]
   reg [31:0] wrbuf_addr; // @[lib.scala 358:16]
   reg [31:0] rdbuf_addr; // @[lib.scala 358:16]
-  wire [31:0] bus_cmd_addr = axi_mstr_sel ? wrbuf_addr : rdbuf_addr; // @[dma_ctrl.scala 459:43]
+  wire [31:0] bus_cmd_addr = axi_mstr_sel ? wrbuf_addr : rdbuf_addr; // @[dma_ctrl.scala 463:43]
   wire [2:0] _GEN_90 = {{2'd0}, io_dbg_dma_dbg_ib_dbg_cmd_addr[2]}; // @[dma_ctrl.scala 195:91]
   wire [3:0] _T_17 = 3'h4 * _GEN_90; // @[dma_ctrl.scala 195:91]
   wire [18:0] _T_18 = 19'hf << _T_17; // @[dma_ctrl.scala 195:83]
@@ -288,15 +288,15 @@ module dma_ctrl(
   wire [2:0] _T_23 = {1'h0,io_dbg_cmd_size}; // @[Cat.scala 29:58]
   reg [2:0] wrbuf_sz; // @[Reg.scala 27:20]
   reg [2:0] rdbuf_sz; // @[Reg.scala 27:20]
-  wire [2:0] bus_cmd_sz = axi_mstr_sel ? wrbuf_sz : rdbuf_sz; // @[dma_ctrl.scala 460:45]
+  wire [2:0] bus_cmd_sz = axi_mstr_sel ? wrbuf_sz : rdbuf_sz; // @[dma_ctrl.scala 464:45]
   wire [2:0] fifo_sz_in = io_dbg_dma_dbg_ib_dbg_cmd_valid ? _T_23 : bus_cmd_sz; // @[dma_ctrl.scala 197:33]
   wire  fifo_write_in = io_dbg_dma_dbg_ib_dbg_cmd_valid ? io_dbg_dma_dbg_ib_dbg_cmd_write : axi_mstr_sel; // @[dma_ctrl.scala 199:33]
-  wire  bus_cmd_valid = _T_1240 | rdbuf_vld; // @[dma_ctrl.scala 455:69]
-  reg  fifo_full; // @[dma_ctrl.scala 369:12]
-  reg  dbg_dma_bubble_bus; // @[dma_ctrl.scala 373:12]
+  wire  bus_cmd_valid = _T_1260 | rdbuf_vld; // @[dma_ctrl.scala 459:69]
+  reg  fifo_full; // @[dma_ctrl.scala 373:12]
+  reg  dbg_dma_bubble_bus; // @[dma_ctrl.scala 377:12]
   wire  _T_989 = fifo_full | dbg_dma_bubble_bus; // @[dma_ctrl.scala 299:39]
   wire  dma_fifo_ready = ~_T_989; // @[dma_ctrl.scala 299:27]
-  wire  axi_mstr_prty_en = bus_cmd_valid & dma_fifo_ready; // @[dma_ctrl.scala 456:54]
+  wire  axi_mstr_prty_en = bus_cmd_valid & dma_fifo_ready; // @[dma_ctrl.scala 460:54]
   wire  _T_28 = axi_mstr_prty_en & io_dma_bus_clk_en; // @[dma_ctrl.scala 206:80]
   wire  _T_31 = io_dbg_dma_dbg_ib_dbg_cmd_valid & io_dbg_dma_dbg_ib_dbg_cmd_type[1]; // @[dma_ctrl.scala 206:136]
   wire  _T_32 = _T_28 | _T_31; // @[dma_ctrl.scala 206:101]
@@ -333,7 +333,7 @@ module dma_ctrl(
   wire [4:0] _T_992 = fifo_done >> RdPtr; // @[dma_ctrl.scala 303:58]
   wire  _T_994 = ~_T_992[0]; // @[dma_ctrl.scala 303:48]
   wire  _T_995 = _T_990[0] & _T_994; // @[dma_ctrl.scala 303:46]
-  wire  dma_buffer_c1_clk = dma_buffer_c1cgc_io_l1clk; // @[dma_ctrl.scala 172:31 dma_ctrl.scala 389:33]
+  wire  dma_buffer_c1_clk = dma_buffer_c1cgc_io_l1clk; // @[dma_ctrl.scala 172:31 dma_ctrl.scala 393:33]
   reg  _T_886; // @[Reg.scala 27:20]
   reg  _T_884; // @[Reg.scala 27:20]
   reg  _T_882; // @[Reg.scala 27:20]
@@ -353,10 +353,10 @@ module dma_ctrl(
   reg [2:0] fifo_sz_2; // @[Reg.scala 27:20]
   reg [2:0] fifo_sz_1; // @[Reg.scala 27:20]
   reg [2:0] fifo_sz_0; // @[Reg.scala 27:20]
-  wire [2:0] _GEN_65 = 3'h1 == RdPtr ? fifo_sz_1 : fifo_sz_0; // @[dma_ctrl.scala 352:20]
-  wire [2:0] _GEN_66 = 3'h2 == RdPtr ? fifo_sz_2 : _GEN_65; // @[dma_ctrl.scala 352:20]
-  wire [2:0] _GEN_67 = 3'h3 == RdPtr ? fifo_sz_3 : _GEN_66; // @[dma_ctrl.scala 352:20]
-  wire [2:0] dma_mem_sz_int = 3'h4 == RdPtr ? fifo_sz_4 : _GEN_67; // @[dma_ctrl.scala 352:20]
+  wire [2:0] _GEN_65 = 3'h1 == RdPtr ? fifo_sz_1 : fifo_sz_0; // @[dma_ctrl.scala 356:20]
+  wire [2:0] _GEN_66 = 3'h2 == RdPtr ? fifo_sz_2 : _GEN_65; // @[dma_ctrl.scala 356:20]
+  wire [2:0] _GEN_67 = 3'h3 == RdPtr ? fifo_sz_3 : _GEN_66; // @[dma_ctrl.scala 356:20]
+  wire [2:0] dma_mem_sz_int = 3'h4 == RdPtr ? fifo_sz_4 : _GEN_67; // @[dma_ctrl.scala 356:20]
   wire  _T_1012 = dma_mem_sz_int == 3'h1; // @[dma_ctrl.scala 305:28]
   wire  _T_1014 = _T_1012 & dma_mem_addr_int[0]; // @[dma_ctrl.scala 305:37]
   wire  _T_1016 = dma_mem_sz_int == 3'h2; // @[dma_ctrl.scala 306:29]
@@ -383,33 +383,48 @@ module dma_ctrl(
   reg [7:0] fifo_byteen_2; // @[Reg.scala 27:20]
   reg [7:0] fifo_byteen_1; // @[Reg.scala 27:20]
   reg [7:0] fifo_byteen_0; // @[Reg.scala 27:20]
-  wire [7:0] _GEN_70 = 3'h1 == RdPtr ? fifo_byteen_1 : fifo_byteen_0; // @[dma_ctrl.scala 355:20]
-  wire [7:0] _GEN_71 = 3'h2 == RdPtr ? fifo_byteen_2 : _GEN_70; // @[dma_ctrl.scala 355:20]
-  wire [7:0] _GEN_72 = 3'h3 == RdPtr ? fifo_byteen_3 : _GEN_71; // @[dma_ctrl.scala 355:20]
-  wire [7:0] dma_mem_byteen = 3'h4 == RdPtr ? fifo_byteen_4 : _GEN_72; // @[dma_ctrl.scala 355:20]
-  wire [3:0] _T_1059 = _T_1048 ? dma_mem_byteen[3:0] : 4'h0; // @[Mux.scala 27:72]
+  wire [7:0] _GEN_70 = 3'h1 == RdPtr ? fifo_byteen_1 : fifo_byteen_0; // @[dma_ctrl.scala 359:20]
+  wire [7:0] _GEN_71 = 3'h2 == RdPtr ? fifo_byteen_2 : _GEN_70; // @[dma_ctrl.scala 359:20]
+  wire [7:0] _GEN_72 = 3'h3 == RdPtr ? fifo_byteen_3 : _GEN_71; // @[dma_ctrl.scala 359:20]
+  wire [7:0] dma_mem_byteen = 3'h4 == RdPtr ? fifo_byteen_4 : _GEN_72; // @[dma_ctrl.scala 359:20]
+  wire [3:0] _T_1071 = _T_1048 ? dma_mem_byteen[3:0] : 4'h0; // @[Mux.scala 27:72]
   wire  _T_1051 = dma_mem_addr_int[2:0] == 3'h1; // @[dma_ctrl.scala 311:32]
-  wire [3:0] _T_1060 = _T_1051 ? dma_mem_byteen[4:1] : 4'h0; // @[Mux.scala 27:72]
-  wire [3:0] _T_1063 = _T_1059 | _T_1060; // @[Mux.scala 27:72]
+  wire [3:0] _T_1072 = _T_1051 ? dma_mem_byteen[4:1] : 4'h0; // @[Mux.scala 27:72]
+  wire [3:0] _T_1079 = _T_1071 | _T_1072; // @[Mux.scala 27:72]
   wire  _T_1054 = dma_mem_addr_int[2:0] == 3'h2; // @[dma_ctrl.scala 312:32]
-  wire [3:0] _T_1061 = _T_1054 ? dma_mem_byteen[5:2] : 4'h0; // @[Mux.scala 27:72]
-  wire [3:0] _T_1064 = _T_1063 | _T_1061; // @[Mux.scala 27:72]
+  wire [3:0] _T_1073 = _T_1054 ? dma_mem_byteen[5:2] : 4'h0; // @[Mux.scala 27:72]
+  wire [3:0] _T_1080 = _T_1079 | _T_1073; // @[Mux.scala 27:72]
   wire  _T_1057 = dma_mem_addr_int[2:0] == 3'h3; // @[dma_ctrl.scala 313:32]
-  wire [3:0] _T_1062 = _T_1057 ? dma_mem_byteen[6:3] : 4'h0; // @[Mux.scala 27:72]
-  wire [3:0] _T_1065 = _T_1064 | _T_1062; // @[Mux.scala 27:72]
-  wire  _T_1067 = _T_1065 != 4'hf; // @[dma_ctrl.scala 313:68]
-  wire  _T_1068 = _T_1046 & _T_1067; // @[dma_ctrl.scala 310:78]
-  wire  _T_1069 = _T_1043 | _T_1068; // @[dma_ctrl.scala 309:145]
-  wire  _T_1072 = io_lsu_dma_dma_lsc_ctl_dma_mem_write & _T_1022; // @[dma_ctrl.scala 314:45]
-  wire  _T_1074 = dma_mem_byteen == 8'hf; // @[dma_ctrl.scala 314:103]
-  wire  _T_1076 = dma_mem_byteen == 8'hf0; // @[dma_ctrl.scala 314:139]
-  wire  _T_1077 = _T_1074 | _T_1076; // @[dma_ctrl.scala 314:116]
-  wire  _T_1079 = dma_mem_byteen == 8'hff; // @[dma_ctrl.scala 314:175]
-  wire  _T_1080 = _T_1077 | _T_1079; // @[dma_ctrl.scala 314:152]
-  wire  _T_1081 = ~_T_1080; // @[dma_ctrl.scala 314:80]
-  wire  _T_1082 = _T_1072 & _T_1081; // @[dma_ctrl.scala 314:78]
-  wire  _T_1083 = _T_1069 | _T_1082; // @[dma_ctrl.scala 313:79]
-  wire  dma_alignment_error = _T_1010 & _T_1083; // @[dma_ctrl.scala 304:87]
+  wire [3:0] _T_1074 = _T_1057 ? dma_mem_byteen[6:3] : 4'h0; // @[Mux.scala 27:72]
+  wire [3:0] _T_1081 = _T_1080 | _T_1074; // @[Mux.scala 27:72]
+  wire  _T_1060 = dma_mem_addr_int[2:0] == 3'h4; // @[dma_ctrl.scala 314:32]
+  wire [3:0] _T_1075 = _T_1060 ? dma_mem_byteen[7:4] : 4'h0; // @[Mux.scala 27:72]
+  wire [3:0] _T_1082 = _T_1081 | _T_1075; // @[Mux.scala 27:72]
+  wire  _T_1063 = dma_mem_addr_int[2:0] == 3'h5; // @[dma_ctrl.scala 315:32]
+  wire [2:0] _T_1076 = _T_1063 ? dma_mem_byteen[7:5] : 3'h0; // @[Mux.scala 27:72]
+  wire [3:0] _GEN_91 = {{1'd0}, _T_1076}; // @[Mux.scala 27:72]
+  wire [3:0] _T_1083 = _T_1082 | _GEN_91; // @[Mux.scala 27:72]
+  wire  _T_1066 = dma_mem_addr_int[2:0] == 3'h6; // @[dma_ctrl.scala 316:32]
+  wire [1:0] _T_1077 = _T_1066 ? dma_mem_byteen[7:6] : 2'h0; // @[Mux.scala 27:72]
+  wire [3:0] _GEN_92 = {{2'd0}, _T_1077}; // @[Mux.scala 27:72]
+  wire [3:0] _T_1084 = _T_1083 | _GEN_92; // @[Mux.scala 27:72]
+  wire  _T_1069 = dma_mem_addr_int[2:0] == 3'h7; // @[dma_ctrl.scala 317:32]
+  wire  _T_1078 = _T_1069 & dma_mem_byteen[7]; // @[Mux.scala 27:72]
+  wire [3:0] _GEN_93 = {{3'd0}, _T_1078}; // @[Mux.scala 27:72]
+  wire [3:0] _T_1085 = _T_1084 | _GEN_93; // @[Mux.scala 27:72]
+  wire  _T_1087 = _T_1085 != 4'hf; // @[dma_ctrl.scala 317:66]
+  wire  _T_1088 = _T_1046 & _T_1087; // @[dma_ctrl.scala 310:78]
+  wire  _T_1089 = _T_1043 | _T_1088; // @[dma_ctrl.scala 309:145]
+  wire  _T_1092 = io_lsu_dma_dma_lsc_ctl_dma_mem_write & _T_1022; // @[dma_ctrl.scala 318:45]
+  wire  _T_1094 = dma_mem_byteen == 8'hf; // @[dma_ctrl.scala 318:103]
+  wire  _T_1096 = dma_mem_byteen == 8'hf0; // @[dma_ctrl.scala 318:139]
+  wire  _T_1097 = _T_1094 | _T_1096; // @[dma_ctrl.scala 318:116]
+  wire  _T_1099 = dma_mem_byteen == 8'hff; // @[dma_ctrl.scala 318:175]
+  wire  _T_1100 = _T_1097 | _T_1099; // @[dma_ctrl.scala 318:152]
+  wire  _T_1101 = ~_T_1100; // @[dma_ctrl.scala 318:80]
+  wire  _T_1102 = _T_1092 & _T_1101; // @[dma_ctrl.scala 318:78]
+  wire  _T_1103 = _T_1089 | _T_1102; // @[dma_ctrl.scala 317:79]
+  wire  dma_alignment_error = _T_1010 & _T_1103; // @[dma_ctrl.scala 304:87]
   wire  _T_79 = dma_address_error | dma_alignment_error; // @[dma_ctrl.scala 208:258]
   wire  _T_80 = 3'h0 == RdPtr; // @[dma_ctrl.scala 208:288]
   wire  _T_81 = _T_79 & _T_80; // @[dma_ctrl.scala 208:281]
@@ -470,12 +485,12 @@ module dma_ctrl(
   wire  _T_184 = _T_167 & _T_134; // @[dma_ctrl.scala 210:174]
   wire  _T_189 = _T_167 & _T_152; // @[dma_ctrl.scala 210:174]
   wire [4:0] fifo_pend_en = {_T_189,_T_184,_T_179,_T_174,_T_169}; // @[Cat.scala 29:58]
-  wire  _T_1107 = _T_995 & _T_996[0]; // @[dma_ctrl.scala 324:66]
-  wire  _T_1109 = _T_1000 | dma_mem_addr_in_pic; // @[dma_ctrl.scala 324:134]
-  wire  _T_1110 = ~_T_1109; // @[dma_ctrl.scala 324:88]
-  wire  _T_1113 = dma_mem_sz_int[1:0] != 2'h2; // @[dma_ctrl.scala 324:191]
-  wire  _T_1114 = _T_1110 | _T_1113; // @[dma_ctrl.scala 324:167]
-  wire  dma_dbg_cmd_error = _T_1107 & _T_1114; // @[dma_ctrl.scala 324:84]
+  wire  _T_1127 = _T_995 & _T_996[0]; // @[dma_ctrl.scala 328:66]
+  wire  _T_1129 = _T_1000 | dma_mem_addr_in_pic; // @[dma_ctrl.scala 328:134]
+  wire  _T_1130 = ~_T_1129; // @[dma_ctrl.scala 328:88]
+  wire  _T_1133 = dma_mem_sz_int[1:0] != 2'h2; // @[dma_ctrl.scala 328:191]
+  wire  _T_1134 = _T_1130 | _T_1133; // @[dma_ctrl.scala 328:167]
+  wire  dma_dbg_cmd_error = _T_1127 & _T_1134; // @[dma_ctrl.scala 328:84]
   wire  _T_197 = _T_79 | dma_dbg_cmd_error; // @[dma_ctrl.scala 212:114]
   wire  _T_199 = _T_197 & _T_80; // @[dma_ctrl.scala 212:135]
   wire  _T_200 = io_lsu_dma_dma_dccm_ctl_dccm_dma_rvalid & io_lsu_dma_dma_dccm_ctl_dccm_dma_ecc_error; // @[dma_ctrl.scala 212:198]
@@ -571,9 +586,9 @@ module dma_ctrl(
   wire  _T_399 = fifo_done_en[4] | fifo_done[4]; // @[dma_ctrl.scala 218:75]
   wire  _T_400 = _T_399 & io_dma_bus_clk_en; // @[dma_ctrl.scala 218:91]
   wire [4:0] fifo_done_bus_en = {_T_400,_T_396,_T_392,_T_388,_T_384}; // @[Cat.scala 29:58]
-  wire  _T_1265 = io_dma_axi_b_valid & io_dma_axi_b_ready; // @[dma_ctrl.scala 498:61]
-  wire  _T_1266 = io_dma_axi_r_valid & io_dma_axi_r_ready; // @[dma_ctrl.scala 498:105]
-  wire  bus_rsp_sent = _T_1265 | _T_1266; // @[dma_ctrl.scala 498:83]
+  wire  _T_1285 = io_dma_axi_b_valid & io_dma_axi_b_ready; // @[dma_ctrl.scala 502:61]
+  wire  _T_1286 = io_dma_axi_r_valid & io_dma_axi_r_ready; // @[dma_ctrl.scala 502:105]
+  wire  bus_rsp_sent = _T_1285 | _T_1286; // @[dma_ctrl.scala 502:83]
   wire  _T_406 = bus_rsp_sent & io_dma_bus_clk_en; // @[dma_ctrl.scala 220:99]
   wire  _T_407 = _T_406 | io_dma_dbg_cmd_done; // @[dma_ctrl.scala 220:120]
   reg [2:0] RspPtr; // @[Reg.scala 27:20]
@@ -658,7 +673,7 @@ module dma_ctrl(
   reg  fifo_tag_0; // @[Reg.scala 27:20]
   reg  wrbuf_tag; // @[Reg.scala 27:20]
   reg  rdbuf_tag; // @[Reg.scala 27:20]
-  wire  bus_cmd_tag = axi_mstr_sel ? wrbuf_tag : rdbuf_tag; // @[dma_ctrl.scala 463:43]
+  wire  bus_cmd_tag = axi_mstr_sel ? wrbuf_tag : rdbuf_tag; // @[dma_ctrl.scala 467:43]
   reg  fifo_tag_1; // @[Reg.scala 27:20]
   reg  fifo_tag_2; // @[Reg.scala 27:20]
   reg  fifo_tag_3; // @[Reg.scala 27:20]
@@ -672,6 +687,9 @@ module dma_ctrl(
   wire  WrPtrEn = |fifo_cmd_en; // @[dma_ctrl.scala 266:30]
   wire  RdPtrEn = _T_165 | _T_197; // @[dma_ctrl.scala 268:93]
   wire  RspPtrEn = io_dma_dbg_cmd_done | _T_406; // @[dma_ctrl.scala 270:39]
+  wire [3:0] _T_959 = {3'h0,axi_mstr_prty_en}; // @[Cat.scala 29:58]
+  wire [3:0] _T_961 = {3'h0,bus_rsp_sent}; // @[Cat.scala 29:58]
+  wire [3:0] num_fifo_vld_tmp = _T_959 - _T_961; // @[dma_ctrl.scala 291:62]
   wire [3:0] _T_966 = {3'h0,fifo_valid[0]}; // @[Cat.scala 29:58]
   wire [3:0] _T_969 = {3'h0,fifo_valid[1]}; // @[Cat.scala 29:58]
   wire [3:0] _T_972 = {3'h0,fifo_valid[2]}; // @[Cat.scala 29:58]
@@ -681,91 +699,92 @@ module dma_ctrl(
   wire [3:0] _T_982 = _T_980 + _T_972; // @[dma_ctrl.scala 293:102]
   wire [3:0] _T_984 = _T_982 + _T_975; // @[dma_ctrl.scala 293:102]
   wire [3:0] num_fifo_vld_tmp2 = _T_984 + _T_978; // @[dma_ctrl.scala 293:102]
-  wire  _T_1123 = |fifo_valid; // @[dma_ctrl.scala 334:30]
-  wire  fifo_empty = ~_T_1123; // @[dma_ctrl.scala 334:17]
-  wire [4:0] _T_1086 = fifo_valid >> RspPtr; // @[dma_ctrl.scala 320:39]
-  wire [4:0] _T_1088 = fifo_dbg >> RspPtr; // @[dma_ctrl.scala 320:58]
-  wire  _T_1090 = _T_1086[0] & _T_1088[0]; // @[dma_ctrl.scala 320:48]
-  wire [4:0] _T_1091 = fifo_done >> RspPtr; // @[dma_ctrl.scala 320:78]
-  wire [31:0] _GEN_44 = 3'h1 == RspPtr ? fifo_addr_1 : fifo_addr_0; // @[dma_ctrl.scala 321:49]
-  wire [31:0] _GEN_45 = 3'h2 == RspPtr ? fifo_addr_2 : _GEN_44; // @[dma_ctrl.scala 321:49]
-  wire [31:0] _GEN_46 = 3'h3 == RspPtr ? fifo_addr_3 : _GEN_45; // @[dma_ctrl.scala 321:49]
-  wire [31:0] _GEN_47 = 3'h4 == RspPtr ? fifo_addr_4 : _GEN_46; // @[dma_ctrl.scala 321:49]
-  wire [63:0] _GEN_49 = 3'h1 == RspPtr ? fifo_data_1 : fifo_data_0; // @[dma_ctrl.scala 321:71]
-  wire [63:0] _GEN_50 = 3'h2 == RspPtr ? fifo_data_2 : _GEN_49; // @[dma_ctrl.scala 321:71]
-  wire [63:0] _GEN_51 = 3'h3 == RspPtr ? fifo_data_3 : _GEN_50; // @[dma_ctrl.scala 321:71]
-  wire [63:0] _GEN_52 = 3'h4 == RspPtr ? fifo_data_4 : _GEN_51; // @[dma_ctrl.scala 321:71]
-  wire [1:0] _GEN_54 = 3'h1 == RspPtr ? fifo_error_1 : fifo_error_0; // @[dma_ctrl.scala 322:47]
-  wire [1:0] _GEN_55 = 3'h2 == RspPtr ? fifo_error_2 : _GEN_54; // @[dma_ctrl.scala 322:47]
-  wire [1:0] _GEN_56 = 3'h3 == RspPtr ? fifo_error_3 : _GEN_55; // @[dma_ctrl.scala 322:47]
-  wire [1:0] _GEN_57 = 3'h4 == RspPtr ? fifo_error_4 : _GEN_56; // @[dma_ctrl.scala 322:47]
-  wire  _T_1116 = dma_mem_addr_in_dccm | dma_mem_addr_in_pic; // @[dma_ctrl.scala 328:80]
-  wire [4:0] _T_1145 = fifo_rpend >> RdPtr; // @[dma_ctrl.scala 347:54]
-  wire  _T_1147 = ~_T_1145[0]; // @[dma_ctrl.scala 347:43]
-  wire  _T_1148 = _T_990[0] & _T_1147; // @[dma_ctrl.scala 347:41]
-  wire  _T_1152 = _T_1148 & _T_994; // @[dma_ctrl.scala 347:62]
-  wire  _T_1155 = ~_T_197; // @[dma_ctrl.scala 347:84]
-  wire  dma_mem_req = _T_1152 & _T_1155; // @[dma_ctrl.scala 347:82]
-  wire  _T_1117 = dma_mem_req & _T_1116; // @[dma_ctrl.scala 328:56]
+  wire [3:0] num_fifo_vld = num_fifo_vld_tmp + num_fifo_vld_tmp2; // @[dma_ctrl.scala 295:45]
+  wire  _T_1143 = |fifo_valid; // @[dma_ctrl.scala 338:30]
+  wire  fifo_empty = ~_T_1143; // @[dma_ctrl.scala 338:17]
+  wire [4:0] _T_1106 = fifo_valid >> RspPtr; // @[dma_ctrl.scala 324:39]
+  wire [4:0] _T_1108 = fifo_dbg >> RspPtr; // @[dma_ctrl.scala 324:58]
+  wire  _T_1110 = _T_1106[0] & _T_1108[0]; // @[dma_ctrl.scala 324:48]
+  wire [4:0] _T_1111 = fifo_done >> RspPtr; // @[dma_ctrl.scala 324:78]
+  wire [31:0] _GEN_44 = 3'h1 == RspPtr ? fifo_addr_1 : fifo_addr_0; // @[dma_ctrl.scala 325:49]
+  wire [31:0] _GEN_45 = 3'h2 == RspPtr ? fifo_addr_2 : _GEN_44; // @[dma_ctrl.scala 325:49]
+  wire [31:0] _GEN_46 = 3'h3 == RspPtr ? fifo_addr_3 : _GEN_45; // @[dma_ctrl.scala 325:49]
+  wire [31:0] _GEN_47 = 3'h4 == RspPtr ? fifo_addr_4 : _GEN_46; // @[dma_ctrl.scala 325:49]
+  wire [63:0] _GEN_49 = 3'h1 == RspPtr ? fifo_data_1 : fifo_data_0; // @[dma_ctrl.scala 325:71]
+  wire [63:0] _GEN_50 = 3'h2 == RspPtr ? fifo_data_2 : _GEN_49; // @[dma_ctrl.scala 325:71]
+  wire [63:0] _GEN_51 = 3'h3 == RspPtr ? fifo_data_3 : _GEN_50; // @[dma_ctrl.scala 325:71]
+  wire [63:0] _GEN_52 = 3'h4 == RspPtr ? fifo_data_4 : _GEN_51; // @[dma_ctrl.scala 325:71]
+  wire [1:0] _GEN_54 = 3'h1 == RspPtr ? fifo_error_1 : fifo_error_0; // @[dma_ctrl.scala 326:47]
+  wire [1:0] _GEN_55 = 3'h2 == RspPtr ? fifo_error_2 : _GEN_54; // @[dma_ctrl.scala 326:47]
+  wire [1:0] _GEN_56 = 3'h3 == RspPtr ? fifo_error_3 : _GEN_55; // @[dma_ctrl.scala 326:47]
+  wire [1:0] _GEN_57 = 3'h4 == RspPtr ? fifo_error_4 : _GEN_56; // @[dma_ctrl.scala 326:47]
+  wire  _T_1136 = dma_mem_addr_in_dccm | dma_mem_addr_in_pic; // @[dma_ctrl.scala 332:80]
+  wire [4:0] _T_1165 = fifo_rpend >> RdPtr; // @[dma_ctrl.scala 351:54]
+  wire  _T_1167 = ~_T_1165[0]; // @[dma_ctrl.scala 351:43]
+  wire  _T_1168 = _T_990[0] & _T_1167; // @[dma_ctrl.scala 351:41]
+  wire  _T_1172 = _T_1168 & _T_994; // @[dma_ctrl.scala 351:62]
+  wire  _T_1175 = ~_T_197; // @[dma_ctrl.scala 351:84]
+  wire  dma_mem_req = _T_1172 & _T_1175; // @[dma_ctrl.scala 351:82]
+  wire  _T_1137 = dma_mem_req & _T_1136; // @[dma_ctrl.scala 332:56]
   reg [2:0] dma_nack_count; // @[Reg.scala 27:20]
-  wire  _T_1118 = dma_nack_count >= io_dec_dma_tlu_dma_dec_tlu_dma_qos_prty; // @[dma_ctrl.scala 328:121]
-  wire  _T_1120 = dma_mem_req & dma_mem_addr_in_iccm; // @[dma_ctrl.scala 329:56]
-  wire  _T_1127 = ~_T_165; // @[dma_ctrl.scala 339:77]
-  wire [2:0] _T_1129 = _T_1127 ? 3'h7 : 3'h0; // @[Bitwise.scala 72:12]
-  wire [2:0] _T_1131 = _T_1129 & dma_nack_count; // @[dma_ctrl.scala 339:155]
-  wire  _T_1135 = dma_mem_req & _T_1127; // @[dma_ctrl.scala 339:203]
-  wire [2:0] _T_1138 = dma_nack_count + 3'h1; // @[dma_ctrl.scala 339:304]
-  wire  _T_1164 = io_lsu_dma_dma_lsc_ctl_dma_mem_write & _T_1076; // @[dma_ctrl.scala 353:84]
-  wire [31:0] _T_1168 = {dma_mem_addr_int[31:3],1'h1,dma_mem_addr_int[1:0]}; // @[Cat.scala 29:58]
-  wire  _T_1176 = io_lsu_dma_dma_lsc_ctl_dma_mem_write & _T_1077; // @[dma_ctrl.scala 354:84]
-  wire [4:0] _T_1179 = fifo_write >> RdPtr; // @[dma_ctrl.scala 356:53]
-  wire [63:0] _GEN_75 = 3'h1 == RdPtr ? fifo_data_1 : fifo_data_0; // @[dma_ctrl.scala 357:40]
-  wire [63:0] _GEN_76 = 3'h2 == RdPtr ? fifo_data_2 : _GEN_75; // @[dma_ctrl.scala 357:40]
-  wire [63:0] _GEN_77 = 3'h3 == RdPtr ? fifo_data_3 : _GEN_76; // @[dma_ctrl.scala 357:40]
-  reg  dma_dbg_cmd_done_q; // @[dma_ctrl.scala 377:12]
-  wire  _T_1192 = bus_cmd_valid & io_dma_bus_clk_en; // @[dma_ctrl.scala 382:44]
-  wire  _T_1193 = _T_1192 | io_dbg_dma_dbg_ib_dbg_cmd_valid; // @[dma_ctrl.scala 382:65]
-  wire  bus_rsp_valid = io_dma_axi_b_valid | io_dma_axi_r_valid; // @[dma_ctrl.scala 497:60]
-  wire  _T_1194 = bus_cmd_valid | bus_rsp_valid; // @[dma_ctrl.scala 383:44]
-  wire  _T_1195 = _T_1194 | io_dbg_dma_dbg_ib_dbg_cmd_valid; // @[dma_ctrl.scala 383:60]
-  wire  _T_1196 = _T_1195 | io_dma_dbg_cmd_done; // @[dma_ctrl.scala 383:94]
-  wire  _T_1197 = _T_1196 | dma_dbg_cmd_done_q; // @[dma_ctrl.scala 383:116]
-  wire  _T_1199 = _T_1197 | _T_1123; // @[dma_ctrl.scala 383:137]
-  wire  wrbuf_en = io_dma_axi_aw_valid & io_dma_axi_aw_ready; // @[dma_ctrl.scala 405:47]
-  wire  wrbuf_data_en = io_dma_axi_w_valid & io_dma_axi_w_ready; // @[dma_ctrl.scala 406:46]
-  wire  wrbuf_cmd_sent = axi_mstr_prty_en & axi_mstr_sel; // @[dma_ctrl.scala 407:40]
-  wire  _T_1201 = ~wrbuf_en; // @[dma_ctrl.scala 408:51]
-  wire  wrbuf_rst = wrbuf_cmd_sent & _T_1201; // @[dma_ctrl.scala 408:49]
-  wire  _T_1203 = ~wrbuf_data_en; // @[dma_ctrl.scala 409:51]
-  wire  wrbuf_data_rst = wrbuf_cmd_sent & _T_1203; // @[dma_ctrl.scala 409:49]
-  wire  _T_1204 = wrbuf_en | wrbuf_vld; // @[dma_ctrl.scala 411:63]
-  wire  _T_1205 = ~wrbuf_rst; // @[dma_ctrl.scala 411:92]
-  wire  _T_1208 = wrbuf_data_en | wrbuf_data_vld; // @[dma_ctrl.scala 413:63]
-  wire  _T_1209 = ~wrbuf_data_rst; // @[dma_ctrl.scala 413:102]
-  wire  rdbuf_en = io_dma_axi_ar_valid & io_dma_axi_ar_ready; // @[dma_ctrl.scala 433:59]
-  wire  _T_1214 = ~axi_mstr_sel; // @[dma_ctrl.scala 434:44]
-  wire  rdbuf_cmd_sent = axi_mstr_prty_en & _T_1214; // @[dma_ctrl.scala 434:42]
-  wire  _T_1216 = ~rdbuf_en; // @[dma_ctrl.scala 435:63]
-  wire  rdbuf_rst = rdbuf_cmd_sent & _T_1216; // @[dma_ctrl.scala 435:61]
-  wire  _T_1217 = rdbuf_en | rdbuf_vld; // @[dma_ctrl.scala 437:51]
-  wire  _T_1218 = ~rdbuf_rst; // @[dma_ctrl.scala 437:80]
-  wire  _T_1222 = ~wrbuf_cmd_sent; // @[dma_ctrl.scala 449:44]
-  wire  _T_1223 = wrbuf_vld & _T_1222; // @[dma_ctrl.scala 449:42]
-  wire  _T_1226 = wrbuf_data_vld & _T_1222; // @[dma_ctrl.scala 450:47]
-  wire  _T_1228 = ~rdbuf_cmd_sent; // @[dma_ctrl.scala 451:44]
-  wire  _T_1229 = rdbuf_vld & _T_1228; // @[dma_ctrl.scala 451:42]
-  wire  axi_mstr_prty_in = ~axi_mstr_priority; // @[dma_ctrl.scala 470:27]
-  wire  _T_1251 = ~_T_1088[0]; // @[dma_ctrl.scala 477:50]
-  wire  _T_1252 = _T_1086[0] & _T_1251; // @[dma_ctrl.scala 477:48]
-  wire [4:0] _T_1253 = fifo_done_bus >> RspPtr; // @[dma_ctrl.scala 477:83]
-  wire  axi_rsp_valid = _T_1252 & _T_1253[0]; // @[dma_ctrl.scala 477:68]
-  wire [4:0] _T_1255 = fifo_write >> RspPtr; // @[dma_ctrl.scala 479:39]
-  wire  axi_rsp_write = _T_1255[0]; // @[dma_ctrl.scala 479:39]
-  wire [1:0] _T_1258 = _GEN_57[1] ? 2'h3 : 2'h0; // @[dma_ctrl.scala 480:64]
-  wire  _GEN_86 = 3'h1 == RspPtr ? fifo_tag_1 : fifo_tag_0; // @[dma_ctrl.scala 488:33]
-  wire  _GEN_87 = 3'h2 == RspPtr ? fifo_tag_2 : _GEN_86; // @[dma_ctrl.scala 488:33]
-  wire  _GEN_88 = 3'h3 == RspPtr ? fifo_tag_3 : _GEN_87; // @[dma_ctrl.scala 488:33]
-  wire  _T_1261 = ~axi_rsp_write; // @[dma_ctrl.scala 490:46]
+  wire  _T_1138 = dma_nack_count >= io_dec_dma_tlu_dma_dec_tlu_dma_qos_prty; // @[dma_ctrl.scala 332:121]
+  wire  _T_1140 = dma_mem_req & dma_mem_addr_in_iccm; // @[dma_ctrl.scala 333:56]
+  wire  _T_1147 = ~_T_165; // @[dma_ctrl.scala 343:77]
+  wire [2:0] _T_1149 = _T_1147 ? 3'h7 : 3'h0; // @[Bitwise.scala 72:12]
+  wire [2:0] _T_1151 = _T_1149 & dma_nack_count; // @[dma_ctrl.scala 343:155]
+  wire  _T_1155 = dma_mem_req & _T_1147; // @[dma_ctrl.scala 343:203]
+  wire [2:0] _T_1158 = dma_nack_count + 3'h1; // @[dma_ctrl.scala 343:304]
+  wire  _T_1184 = io_lsu_dma_dma_lsc_ctl_dma_mem_write & _T_1096; // @[dma_ctrl.scala 357:84]
+  wire [31:0] _T_1188 = {dma_mem_addr_int[31:3],1'h1,dma_mem_addr_int[1:0]}; // @[Cat.scala 29:58]
+  wire  _T_1196 = io_lsu_dma_dma_lsc_ctl_dma_mem_write & _T_1097; // @[dma_ctrl.scala 358:84]
+  wire [4:0] _T_1199 = fifo_write >> RdPtr; // @[dma_ctrl.scala 360:53]
+  wire [63:0] _GEN_75 = 3'h1 == RdPtr ? fifo_data_1 : fifo_data_0; // @[dma_ctrl.scala 361:40]
+  wire [63:0] _GEN_76 = 3'h2 == RdPtr ? fifo_data_2 : _GEN_75; // @[dma_ctrl.scala 361:40]
+  wire [63:0] _GEN_77 = 3'h3 == RdPtr ? fifo_data_3 : _GEN_76; // @[dma_ctrl.scala 361:40]
+  reg  dma_dbg_cmd_done_q; // @[dma_ctrl.scala 381:12]
+  wire  _T_1212 = bus_cmd_valid & io_dma_bus_clk_en; // @[dma_ctrl.scala 386:44]
+  wire  _T_1213 = _T_1212 | io_dbg_dma_dbg_ib_dbg_cmd_valid; // @[dma_ctrl.scala 386:65]
+  wire  bus_rsp_valid = io_dma_axi_b_valid | io_dma_axi_r_valid; // @[dma_ctrl.scala 501:60]
+  wire  _T_1214 = bus_cmd_valid | bus_rsp_valid; // @[dma_ctrl.scala 387:44]
+  wire  _T_1215 = _T_1214 | io_dbg_dma_dbg_ib_dbg_cmd_valid; // @[dma_ctrl.scala 387:60]
+  wire  _T_1216 = _T_1215 | io_dma_dbg_cmd_done; // @[dma_ctrl.scala 387:94]
+  wire  _T_1217 = _T_1216 | dma_dbg_cmd_done_q; // @[dma_ctrl.scala 387:116]
+  wire  _T_1219 = _T_1217 | _T_1143; // @[dma_ctrl.scala 387:137]
+  wire  wrbuf_en = io_dma_axi_aw_valid & io_dma_axi_aw_ready; // @[dma_ctrl.scala 409:47]
+  wire  wrbuf_data_en = io_dma_axi_w_valid & io_dma_axi_w_ready; // @[dma_ctrl.scala 410:46]
+  wire  wrbuf_cmd_sent = axi_mstr_prty_en & axi_mstr_sel; // @[dma_ctrl.scala 411:40]
+  wire  _T_1221 = ~wrbuf_en; // @[dma_ctrl.scala 412:51]
+  wire  wrbuf_rst = wrbuf_cmd_sent & _T_1221; // @[dma_ctrl.scala 412:49]
+  wire  _T_1223 = ~wrbuf_data_en; // @[dma_ctrl.scala 413:51]
+  wire  wrbuf_data_rst = wrbuf_cmd_sent & _T_1223; // @[dma_ctrl.scala 413:49]
+  wire  _T_1224 = wrbuf_en | wrbuf_vld; // @[dma_ctrl.scala 415:63]
+  wire  _T_1225 = ~wrbuf_rst; // @[dma_ctrl.scala 415:92]
+  wire  _T_1228 = wrbuf_data_en | wrbuf_data_vld; // @[dma_ctrl.scala 417:63]
+  wire  _T_1229 = ~wrbuf_data_rst; // @[dma_ctrl.scala 417:102]
+  wire  rdbuf_en = io_dma_axi_ar_valid & io_dma_axi_ar_ready; // @[dma_ctrl.scala 437:59]
+  wire  _T_1234 = ~axi_mstr_sel; // @[dma_ctrl.scala 438:44]
+  wire  rdbuf_cmd_sent = axi_mstr_prty_en & _T_1234; // @[dma_ctrl.scala 438:42]
+  wire  _T_1236 = ~rdbuf_en; // @[dma_ctrl.scala 439:63]
+  wire  rdbuf_rst = rdbuf_cmd_sent & _T_1236; // @[dma_ctrl.scala 439:61]
+  wire  _T_1237 = rdbuf_en | rdbuf_vld; // @[dma_ctrl.scala 441:51]
+  wire  _T_1238 = ~rdbuf_rst; // @[dma_ctrl.scala 441:80]
+  wire  _T_1242 = ~wrbuf_cmd_sent; // @[dma_ctrl.scala 453:44]
+  wire  _T_1243 = wrbuf_vld & _T_1242; // @[dma_ctrl.scala 453:42]
+  wire  _T_1246 = wrbuf_data_vld & _T_1242; // @[dma_ctrl.scala 454:47]
+  wire  _T_1248 = ~rdbuf_cmd_sent; // @[dma_ctrl.scala 455:44]
+  wire  _T_1249 = rdbuf_vld & _T_1248; // @[dma_ctrl.scala 455:42]
+  wire  axi_mstr_prty_in = ~axi_mstr_priority; // @[dma_ctrl.scala 474:27]
+  wire  _T_1271 = ~_T_1108[0]; // @[dma_ctrl.scala 481:50]
+  wire  _T_1272 = _T_1106[0] & _T_1271; // @[dma_ctrl.scala 481:48]
+  wire [4:0] _T_1273 = fifo_done_bus >> RspPtr; // @[dma_ctrl.scala 481:83]
+  wire  axi_rsp_valid = _T_1272 & _T_1273[0]; // @[dma_ctrl.scala 481:68]
+  wire [4:0] _T_1275 = fifo_write >> RspPtr; // @[dma_ctrl.scala 483:39]
+  wire  axi_rsp_write = _T_1275[0]; // @[dma_ctrl.scala 483:39]
+  wire [1:0] _T_1278 = _GEN_57[1] ? 2'h3 : 2'h0; // @[dma_ctrl.scala 484:64]
+  wire  _GEN_86 = 3'h1 == RspPtr ? fifo_tag_1 : fifo_tag_0; // @[dma_ctrl.scala 492:33]
+  wire  _GEN_87 = 3'h2 == RspPtr ? fifo_tag_2 : _GEN_86; // @[dma_ctrl.scala 492:33]
+  wire  _GEN_88 = 3'h3 == RspPtr ? fifo_tag_3 : _GEN_87; // @[dma_ctrl.scala 492:33]
+  wire  _T_1281 = ~axi_rsp_write; // @[dma_ctrl.scala 494:46]
   rvclkhdr rvclkhdr ( // @[lib.scala 352:23]
     .io_l1clk(rvclkhdr_io_l1clk),
     .io_clk(rvclkhdr_io_clk),
@@ -826,19 +845,19 @@ module dma_ctrl(
     .io_en(rvclkhdr_9_io_en),
     .io_scan_mode(rvclkhdr_9_io_scan_mode)
   );
-  rvclkhdr dma_buffer_c1cgc ( // @[dma_ctrl.scala 385:32]
+  rvclkhdr dma_buffer_c1cgc ( // @[dma_ctrl.scala 389:32]
     .io_l1clk(dma_buffer_c1cgc_io_l1clk),
     .io_clk(dma_buffer_c1cgc_io_clk),
     .io_en(dma_buffer_c1cgc_io_en),
     .io_scan_mode(dma_buffer_c1cgc_io_scan_mode)
   );
-  rvclkhdr dma_free_cgc ( // @[dma_ctrl.scala 391:28]
+  rvclkhdr dma_free_cgc ( // @[dma_ctrl.scala 395:28]
     .io_l1clk(dma_free_cgc_io_l1clk),
     .io_clk(dma_free_cgc_io_clk),
     .io_en(dma_free_cgc_io_en),
     .io_scan_mode(dma_free_cgc_io_scan_mode)
   );
-  rvclkhdr dma_bus_cgc ( // @[dma_ctrl.scala 397:27]
+  rvclkhdr dma_bus_cgc ( // @[dma_ctrl.scala 401:27]
     .io_l1clk(dma_bus_cgc_io_l1clk),
     .io_clk(dma_bus_cgc_io_clk),
     .io_en(dma_bus_cgc_io_en),
@@ -862,43 +881,43 @@ module dma_ctrl(
     .io_en(rvclkhdr_12_io_en),
     .io_scan_mode(rvclkhdr_12_io_scan_mode)
   );
-  assign io_dma_dbg_rddata = _GEN_47[2] ? _GEN_52[63:32] : _GEN_52[31:0]; // @[dma_ctrl.scala 321:25]
-  assign io_dma_dbg_cmd_done = _T_1090 & _T_1091[0]; // @[dma_ctrl.scala 320:25]
-  assign io_dma_dbg_cmd_fail = |_GEN_57; // @[dma_ctrl.scala 322:25]
-  assign io_dbg_dma_io_dma_dbg_ready = fifo_empty & dbg_dma_bubble_bus; // @[dma_ctrl.scala 319:36]
-  assign io_dec_dma_dctl_dma_dma_dccm_stall_any = io_dec_dma_tlu_dma_dma_dccm_stall_any; // @[dma_ctrl.scala 331:42]
-  assign io_dec_dma_tlu_dma_dma_pmu_dccm_read = io_lsu_dma_dma_lsc_ctl_dma_dccm_req & _T_166; // @[dma_ctrl.scala 361:42]
-  assign io_dec_dma_tlu_dma_dma_pmu_dccm_write = io_lsu_dma_dma_lsc_ctl_dma_dccm_req & io_lsu_dma_dma_lsc_ctl_dma_mem_write; // @[dma_ctrl.scala 362:42]
-  assign io_dec_dma_tlu_dma_dma_pmu_any_read = _T_165 & _T_166; // @[dma_ctrl.scala 363:42]
-  assign io_dec_dma_tlu_dma_dma_pmu_any_write = _T_165 & io_lsu_dma_dma_lsc_ctl_dma_mem_write; // @[dma_ctrl.scala 364:42]
-  assign io_dec_dma_tlu_dma_dma_dccm_stall_any = _T_1117 & _T_1118; // @[dma_ctrl.scala 328:41]
-  assign io_dec_dma_tlu_dma_dma_iccm_stall_any = io_ifu_dma_dma_ifc_dma_iccm_stall_any; // @[dma_ctrl.scala 330:41]
-  assign io_dma_axi_aw_ready = ~_T_1223; // @[dma_ctrl.scala 449:27]
-  assign io_dma_axi_w_ready = ~_T_1226; // @[dma_ctrl.scala 450:27]
-  assign io_dma_axi_b_valid = axi_rsp_valid & axi_rsp_write; // @[dma_ctrl.scala 486:27]
-  assign io_dma_axi_b_bits_resp = _GEN_57[0] ? 2'h2 : _T_1258; // @[dma_ctrl.scala 487:41]
-  assign io_dma_axi_b_bits_id = 3'h4 == RspPtr ? fifo_tag_4 : _GEN_88; // @[dma_ctrl.scala 488:33]
-  assign io_dma_axi_ar_ready = ~_T_1229; // @[dma_ctrl.scala 451:27]
-  assign io_dma_axi_r_valid = axi_rsp_valid & _T_1261; // @[dma_ctrl.scala 490:27]
-  assign io_dma_axi_r_bits_id = 3'h4 == RspPtr ? fifo_tag_4 : _GEN_88; // @[dma_ctrl.scala 494:37]
-  assign io_dma_axi_r_bits_data = 3'h4 == RspPtr ? fifo_data_4 : _GEN_51; // @[dma_ctrl.scala 492:43]
-  assign io_dma_axi_r_bits_resp = _GEN_57[0] ? 2'h2 : _T_1258; // @[dma_ctrl.scala 491:41]
-  assign io_dma_axi_r_bits_last = 1'h1; // @[dma_ctrl.scala 493:41]
-  assign io_lsu_dma_dma_lsc_ctl_dma_dccm_req = _T_1117 & io_lsu_dma_dccm_ready; // @[dma_ctrl.scala 348:40]
-  assign io_lsu_dma_dma_lsc_ctl_dma_mem_addr = _T_1164 ? _T_1168 : dma_mem_addr_int; // @[dma_ctrl.scala 353:40]
-  assign io_lsu_dma_dma_lsc_ctl_dma_mem_sz = _T_1176 ? 3'h2 : dma_mem_sz_int; // @[dma_ctrl.scala 354:40]
-  assign io_lsu_dma_dma_lsc_ctl_dma_mem_write = _T_1179[0]; // @[dma_ctrl.scala 356:40]
-  assign io_lsu_dma_dma_lsc_ctl_dma_mem_wdata = 3'h4 == RdPtr ? fifo_data_4 : _GEN_77; // @[dma_ctrl.scala 357:40]
-  assign io_lsu_dma_dma_dccm_ctl_dma_mem_addr = io_lsu_dma_dma_lsc_ctl_dma_mem_addr; // @[dma_ctrl.scala 499:40]
-  assign io_lsu_dma_dma_dccm_ctl_dma_mem_wdata = io_lsu_dma_dma_lsc_ctl_dma_mem_wdata; // @[dma_ctrl.scala 500:41]
-  assign io_lsu_dma_dma_mem_tag = RdPtr; // @[dma_ctrl.scala 350:28]
-  assign io_ifu_dma_dma_ifc_dma_iccm_stall_any = _T_1120 & _T_1118; // @[dma_ctrl.scala 329:41]
-  assign io_ifu_dma_dma_mem_ctl_dma_iccm_req = _T_1120 & io_iccm_ready; // @[dma_ctrl.scala 349:40]
-  assign io_ifu_dma_dma_mem_ctl_dma_mem_addr = io_lsu_dma_dma_lsc_ctl_dma_mem_addr; // @[dma_ctrl.scala 502:39]
-  assign io_ifu_dma_dma_mem_ctl_dma_mem_sz = io_lsu_dma_dma_lsc_ctl_dma_mem_sz; // @[dma_ctrl.scala 501:37]
-  assign io_ifu_dma_dma_mem_ctl_dma_mem_write = io_lsu_dma_dma_lsc_ctl_dma_mem_write; // @[dma_ctrl.scala 504:40]
-  assign io_ifu_dma_dma_mem_ctl_dma_mem_wdata = io_lsu_dma_dma_lsc_ctl_dma_mem_wdata; // @[dma_ctrl.scala 503:40]
-  assign io_ifu_dma_dma_mem_ctl_dma_mem_tag = io_lsu_dma_dma_mem_tag; // @[dma_ctrl.scala 505:38]
+  assign io_dma_dbg_rddata = _GEN_47[2] ? _GEN_52[63:32] : _GEN_52[31:0]; // @[dma_ctrl.scala 325:25]
+  assign io_dma_dbg_cmd_done = _T_1110 & _T_1111[0]; // @[dma_ctrl.scala 324:25]
+  assign io_dma_dbg_cmd_fail = |_GEN_57; // @[dma_ctrl.scala 326:25]
+  assign io_dbg_dma_io_dma_dbg_ready = fifo_empty & dbg_dma_bubble_bus; // @[dma_ctrl.scala 323:36]
+  assign io_dec_dma_dctl_dma_dma_dccm_stall_any = io_dec_dma_tlu_dma_dma_dccm_stall_any; // @[dma_ctrl.scala 335:42]
+  assign io_dec_dma_tlu_dma_dma_pmu_dccm_read = io_lsu_dma_dma_lsc_ctl_dma_dccm_req & _T_166; // @[dma_ctrl.scala 365:42]
+  assign io_dec_dma_tlu_dma_dma_pmu_dccm_write = io_lsu_dma_dma_lsc_ctl_dma_dccm_req & io_lsu_dma_dma_lsc_ctl_dma_mem_write; // @[dma_ctrl.scala 366:42]
+  assign io_dec_dma_tlu_dma_dma_pmu_any_read = _T_165 & _T_166; // @[dma_ctrl.scala 367:42]
+  assign io_dec_dma_tlu_dma_dma_pmu_any_write = _T_165 & io_lsu_dma_dma_lsc_ctl_dma_mem_write; // @[dma_ctrl.scala 368:42]
+  assign io_dec_dma_tlu_dma_dma_dccm_stall_any = _T_1137 & _T_1138; // @[dma_ctrl.scala 332:41]
+  assign io_dec_dma_tlu_dma_dma_iccm_stall_any = io_ifu_dma_dma_ifc_dma_iccm_stall_any; // @[dma_ctrl.scala 334:41]
+  assign io_dma_axi_aw_ready = ~_T_1243; // @[dma_ctrl.scala 453:27]
+  assign io_dma_axi_w_ready = ~_T_1246; // @[dma_ctrl.scala 454:27]
+  assign io_dma_axi_b_valid = axi_rsp_valid & axi_rsp_write; // @[dma_ctrl.scala 490:27]
+  assign io_dma_axi_b_bits_resp = _GEN_57[0] ? 2'h2 : _T_1278; // @[dma_ctrl.scala 491:41]
+  assign io_dma_axi_b_bits_id = 3'h4 == RspPtr ? fifo_tag_4 : _GEN_88; // @[dma_ctrl.scala 492:33]
+  assign io_dma_axi_ar_ready = ~_T_1249; // @[dma_ctrl.scala 455:27]
+  assign io_dma_axi_r_valid = axi_rsp_valid & _T_1281; // @[dma_ctrl.scala 494:27]
+  assign io_dma_axi_r_bits_id = 3'h4 == RspPtr ? fifo_tag_4 : _GEN_88; // @[dma_ctrl.scala 498:37]
+  assign io_dma_axi_r_bits_data = 3'h4 == RspPtr ? fifo_data_4 : _GEN_51; // @[dma_ctrl.scala 496:43]
+  assign io_dma_axi_r_bits_resp = _GEN_57[0] ? 2'h2 : _T_1278; // @[dma_ctrl.scala 495:41]
+  assign io_dma_axi_r_bits_last = 1'h1; // @[dma_ctrl.scala 497:41]
+  assign io_lsu_dma_dma_lsc_ctl_dma_dccm_req = _T_1137 & io_lsu_dma_dccm_ready; // @[dma_ctrl.scala 352:40]
+  assign io_lsu_dma_dma_lsc_ctl_dma_mem_addr = _T_1184 ? _T_1188 : dma_mem_addr_int; // @[dma_ctrl.scala 357:40]
+  assign io_lsu_dma_dma_lsc_ctl_dma_mem_sz = _T_1196 ? 3'h2 : dma_mem_sz_int; // @[dma_ctrl.scala 358:40]
+  assign io_lsu_dma_dma_lsc_ctl_dma_mem_write = _T_1199[0]; // @[dma_ctrl.scala 360:40]
+  assign io_lsu_dma_dma_lsc_ctl_dma_mem_wdata = 3'h4 == RdPtr ? fifo_data_4 : _GEN_77; // @[dma_ctrl.scala 361:40]
+  assign io_lsu_dma_dma_dccm_ctl_dma_mem_addr = io_lsu_dma_dma_lsc_ctl_dma_mem_addr; // @[dma_ctrl.scala 503:40]
+  assign io_lsu_dma_dma_dccm_ctl_dma_mem_wdata = io_lsu_dma_dma_lsc_ctl_dma_mem_wdata; // @[dma_ctrl.scala 504:41]
+  assign io_lsu_dma_dma_mem_tag = RdPtr; // @[dma_ctrl.scala 354:28]
+  assign io_ifu_dma_dma_ifc_dma_iccm_stall_any = _T_1140 & _T_1138; // @[dma_ctrl.scala 333:41]
+  assign io_ifu_dma_dma_mem_ctl_dma_iccm_req = _T_1140 & io_iccm_ready; // @[dma_ctrl.scala 353:40]
+  assign io_ifu_dma_dma_mem_ctl_dma_mem_addr = io_lsu_dma_dma_lsc_ctl_dma_mem_addr; // @[dma_ctrl.scala 506:39]
+  assign io_ifu_dma_dma_mem_ctl_dma_mem_sz = io_lsu_dma_dma_lsc_ctl_dma_mem_sz; // @[dma_ctrl.scala 505:37]
+  assign io_ifu_dma_dma_mem_ctl_dma_mem_write = io_lsu_dma_dma_lsc_ctl_dma_mem_write; // @[dma_ctrl.scala 508:40]
+  assign io_ifu_dma_dma_mem_ctl_dma_mem_wdata = io_lsu_dma_dma_lsc_ctl_dma_mem_wdata; // @[dma_ctrl.scala 507:40]
+  assign io_ifu_dma_dma_mem_ctl_dma_mem_tag = io_lsu_dma_dma_mem_tag; // @[dma_ctrl.scala 509:38]
   assign rvclkhdr_io_clk = clock; // @[lib.scala 354:18]
   assign rvclkhdr_io_en = fifo_cmd_en[0]; // @[lib.scala 355:17]
   assign rvclkhdr_io_scan_mode = io_scan_mode; // @[lib.scala 356:24]
@@ -929,15 +948,15 @@ module dma_ctrl(
   assign rvclkhdr_9_io_clk = clock; // @[lib.scala 354:18]
   assign rvclkhdr_9_io_en = fifo_data_en[4]; // @[lib.scala 355:17]
   assign rvclkhdr_9_io_scan_mode = io_scan_mode; // @[lib.scala 356:24]
-  assign dma_buffer_c1cgc_io_clk = clock; // @[dma_ctrl.scala 388:33]
-  assign dma_buffer_c1cgc_io_en = _T_1193 | io_clk_override; // @[dma_ctrl.scala 386:33]
-  assign dma_buffer_c1cgc_io_scan_mode = io_scan_mode; // @[dma_ctrl.scala 387:33]
-  assign dma_free_cgc_io_clk = clock; // @[dma_ctrl.scala 394:29]
-  assign dma_free_cgc_io_en = _T_1199 | io_clk_override; // @[dma_ctrl.scala 392:29]
-  assign dma_free_cgc_io_scan_mode = io_scan_mode; // @[dma_ctrl.scala 393:29]
-  assign dma_bus_cgc_io_clk = clock; // @[dma_ctrl.scala 400:28]
-  assign dma_bus_cgc_io_en = io_dma_bus_clk_en; // @[dma_ctrl.scala 398:28]
-  assign dma_bus_cgc_io_scan_mode = io_scan_mode; // @[dma_ctrl.scala 399:28]
+  assign dma_buffer_c1cgc_io_clk = clock; // @[dma_ctrl.scala 392:33]
+  assign dma_buffer_c1cgc_io_en = _T_1213 | io_clk_override; // @[dma_ctrl.scala 390:33]
+  assign dma_buffer_c1cgc_io_scan_mode = io_scan_mode; // @[dma_ctrl.scala 391:33]
+  assign dma_free_cgc_io_clk = clock; // @[dma_ctrl.scala 398:29]
+  assign dma_free_cgc_io_en = _T_1219 | io_clk_override; // @[dma_ctrl.scala 396:29]
+  assign dma_free_cgc_io_scan_mode = io_scan_mode; // @[dma_ctrl.scala 397:29]
+  assign dma_bus_cgc_io_clk = clock; // @[dma_ctrl.scala 404:28]
+  assign dma_bus_cgc_io_en = io_dma_bus_clk_en; // @[dma_ctrl.scala 402:28]
+  assign dma_bus_cgc_io_scan_mode = io_scan_mode; // @[dma_ctrl.scala 403:28]
   assign rvclkhdr_10_io_clk = clock; // @[lib.scala 354:18]
   assign rvclkhdr_10_io_en = wrbuf_en & io_dma_bus_clk_en; // @[lib.scala 355:17]
   assign rvclkhdr_10_io_scan_mode = io_scan_mode; // @[lib.scala 356:24]
@@ -1452,21 +1471,21 @@ end // initial
     if (reset) begin
       wrbuf_vld <= 1'h0;
     end else begin
-      wrbuf_vld <= _T_1204 & _T_1205;
+      wrbuf_vld <= _T_1224 & _T_1225;
     end
   end
   always @(posedge dma_bus_clk or posedge reset) begin
     if (reset) begin
       wrbuf_data_vld <= 1'h0;
     end else begin
-      wrbuf_data_vld <= _T_1208 & _T_1209;
+      wrbuf_data_vld <= _T_1228 & _T_1229;
     end
   end
   always @(posedge dma_bus_clk or posedge reset) begin
     if (reset) begin
       rdbuf_vld <= 1'h0;
     end else begin
-      rdbuf_vld <= _T_1217 & _T_1218;
+      rdbuf_vld <= _T_1237 & _T_1238;
     end
   end
   always @(posedge dma_bus_clk or posedge reset) begin
@@ -1515,7 +1534,7 @@ end // initial
     if (reset) begin
       fifo_full <= 1'h0;
     end else begin
-      fifo_full <= num_fifo_vld_tmp2 >= 4'h5;
+      fifo_full <= num_fifo_vld >= 4'h5;
     end
   end
   always @(posedge dma_bus_clk or posedge reset) begin
@@ -1864,10 +1883,10 @@ end // initial
     end else if (fifo_cmd_en[0]) begin
       if (io_dbg_dma_dbg_ib_dbg_cmd_valid) begin
         _T_850 <= io_dbg_dma_dbg_ib_dbg_cmd_write;
-      end else if (_T_1241) begin
+      end else if (_T_1261) begin
         _T_850 <= axi_mstr_priority;
       end else begin
-        _T_850 <= _T_1240;
+        _T_850 <= _T_1260;
       end
     end
   end
@@ -1877,10 +1896,10 @@ end // initial
     end else if (fifo_cmd_en[1]) begin
       if (io_dbg_dma_dbg_ib_dbg_cmd_valid) begin
         _T_852 <= io_dbg_dma_dbg_ib_dbg_cmd_write;
-      end else if (_T_1241) begin
+      end else if (_T_1261) begin
         _T_852 <= axi_mstr_priority;
       end else begin
-        _T_852 <= _T_1240;
+        _T_852 <= _T_1260;
       end
     end
   end
@@ -1890,10 +1909,10 @@ end // initial
     end else if (fifo_cmd_en[2]) begin
       if (io_dbg_dma_dbg_ib_dbg_cmd_valid) begin
         _T_854 <= io_dbg_dma_dbg_ib_dbg_cmd_write;
-      end else if (_T_1241) begin
+      end else if (_T_1261) begin
         _T_854 <= axi_mstr_priority;
       end else begin
-        _T_854 <= _T_1240;
+        _T_854 <= _T_1260;
       end
     end
   end
@@ -1903,10 +1922,10 @@ end // initial
     end else if (fifo_cmd_en[3]) begin
       if (io_dbg_dma_dbg_ib_dbg_cmd_valid) begin
         _T_856 <= io_dbg_dma_dbg_ib_dbg_cmd_write;
-      end else if (_T_1241) begin
+      end else if (_T_1261) begin
         _T_856 <= axi_mstr_priority;
       end else begin
-        _T_856 <= _T_1240;
+        _T_856 <= _T_1260;
       end
     end
   end
@@ -2059,10 +2078,10 @@ end // initial
     if (reset) begin
       dma_nack_count <= 3'h0;
     end else if (dma_mem_req) begin
-      if (_T_1118) begin
-        dma_nack_count <= _T_1131;
-      end else if (_T_1135) begin
-        dma_nack_count <= _T_1138;
+      if (_T_1138) begin
+        dma_nack_count <= _T_1151;
+      end else if (_T_1155) begin
+        dma_nack_count <= _T_1158;
       end else begin
         dma_nack_count <= 3'h0;
       end

@@ -54,26 +54,7 @@ class mem_ctl_io extends Bundle with lib{
 
 class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   val io = IO(new mem_ctl_io)
-  io.ifu_axi.w.valid := 0.U
-  io.ifu_axi.w.bits.data := 0.U
-  io.ifu_axi.aw.bits.qos := 0.U
-  io.ifu_axi.aw.bits.addr := 0.U
-  io.ifu_axi.aw.bits.prot := 0.U
-  io.ifu_axi.aw.bits.len := 0.U
-  io.ifu_axi.ar.bits.lock := 0.U
-  io.ifu_axi.aw.bits.region := 0.U
-  io.ifu_axi.aw.bits.id := 0.U
-  io.ifu_axi.aw.valid := 0.U
-  io.ifu_axi.w.bits.strb := 0.U
-  io.ifu_axi.aw.bits.cache := 0.U
-  io.ifu_axi.ar.bits.qos := 0.U
-  io.ifu_axi.aw.bits.lock := 0.U
-  io.ifu_axi.b.ready := 0.U
-  io.ifu_axi.ar.bits.len := 0.U
-  io.ifu_axi.aw.bits.size := 0.U
-  io.ifu_axi.ar.bits.prot := 0.U
-  io.ifu_axi.aw.bits.burst := 0.U
-  io.ifu_axi.w.bits.last := 0.U
+
   val idle_C :: crit_byp_ok_C :: hit_u_miss_C :: miss_wait_C :: crit_wrd_rdy_C :: scnd_miss_C :: stream_C :: stall_scnd_miss_C :: Nil = Enum(8)
   val err_stop_idle_C :: err_fetch1_C :: err_fetch2_C :: err_stop_fetch_C :: Nil = Enum(4)
   val err_idle_C :: ic_wff_C :: ecc_wff_C :: ecc_cor_C :: dma_sb_err_C :: Nil = Enum(5)
@@ -104,6 +85,7 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   val ic_miss_under_miss_f = WireInit(Bool(), false.B)
   val ic_ignore_2nd_miss_f = WireInit(Bool(), false.B)
   val ic_debug_rd_en_ff = WireInit(Bool(), false.B)
+
   val debug_data_clk = rvclkhdr(clock, ic_debug_rd_en_ff, io.scan_mode)
   val flush_final_f = withClock(io.free_clk){RegNext(io.exu_flush_final, 0.U)}
   val fetch_bf_f_c1_clken = io.ifc_fetch_req_bf_raw | ifc_fetch_req_f | miss_pending | io.exu_flush_final | scnd_miss_req
@@ -120,11 +102,11 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   val ifu_bp_hit_taken_q_f = io.ifu_bp_hit_taken_f & io.ic_hit_f
   ///////////////////////////////// MISS FSM /////////////////////////////////
   switch(miss_state){
-    is (idle_C){
+    is (idle_C){ // Idle meaning there is not pending miss
       miss_nxtstate := Mux((ic_act_miss_f & !io.exu_flush_final).asBool, crit_byp_ok_C, hit_u_miss_C)
       miss_state_en := ic_act_miss_f & !io.dec_mem_ctrl.dec_tlu_force_halt}
 
-    is (crit_byp_ok_C){
+    is (crit_byp_ok_C){ // Miss started meaning each beat is checked if, it is the critical word
       miss_nxtstate := Mux((io.dec_mem_ctrl.dec_tlu_force_halt | (ic_byp_hit_f &  (last_data_recieved_ff | (bus_ifu_wr_en_ff & last_beat)) &  uncacheable_miss_ff)).asBool, idle_C,
         Mux((ic_byp_hit_f &  !last_data_recieved_ff &  uncacheable_miss_ff).asBool, miss_wait_C,
           Mux((!ic_byp_hit_f & !io.exu_flush_final & (bus_ifu_wr_en_ff & last_beat) &  uncacheable_miss_ff).asBool, crit_wrd_rdy_C,
@@ -135,35 +117,36 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
                   Mux(((io.exu_flush_final | ifu_bp_hit_taken_q_f) & !(bus_ifu_wr_en_ff & last_beat)).asBool, hit_u_miss_C, idle_C))))))))
       miss_state_en := io.dec_mem_ctrl.dec_tlu_force_halt | io.exu_flush_final | ic_byp_hit_f | ifu_bp_hit_taken_q_f | (bus_ifu_wr_en_ff & last_beat) | (bus_ifu_wr_en_ff & !uncacheable_miss_ff)
     }
-    is (crit_wrd_rdy_C){
+    is (crit_wrd_rdy_C){ // Critical word hit but not complete, its going to be available in next cycle
       miss_nxtstate := idle_C
       miss_state_en := io.exu_flush_final | flush_final_f | ic_byp_hit_f | io.dec_mem_ctrl.dec_tlu_force_halt
     }
-    is (stream_C){
+    is (stream_C){ // The miss was a miss of uncacheable range
       miss_nxtstate := Mux(((io.exu_flush_final | ifu_bp_hit_taken_q_f | stream_eol_f)&(!(bus_ifu_wr_en_ff & last_beat)) & !io.dec_mem_ctrl.dec_tlu_force_halt).asBool, hit_u_miss_C, idle_C)
       miss_state_en := io.exu_flush_final | ifu_bp_hit_taken_q_f  | stream_eol_f   |  (bus_ifu_wr_en_ff & last_beat) | io.dec_mem_ctrl.dec_tlu_force_halt
     }
-    is (miss_wait_C){
+    is (miss_wait_C){ // Critial word hit but the miss is not complete
       miss_nxtstate := Mux((io.exu_flush_final & !(bus_ifu_wr_en_ff & last_beat) & !io.dec_mem_ctrl.dec_tlu_force_halt).asBool, hit_u_miss_C, idle_C)
       miss_state_en := io.exu_flush_final | (bus_ifu_wr_en_ff & last_beat) | io.dec_mem_ctrl.dec_tlu_force_halt
     }
-    is (hit_u_miss_C){
+    is (hit_u_miss_C){ // The critical word was a hit taken, or miss due to a miss predicted pc occured
       miss_nxtstate := Mux((ic_miss_under_miss_f & !(bus_ifu_wr_en_ff & last_beat) & !io.dec_mem_ctrl.dec_tlu_force_halt).asBool, scnd_miss_C,
         Mux((ic_ignore_2nd_miss_f & !(bus_ifu_wr_en_ff & last_beat) & !io.dec_mem_ctrl.dec_tlu_force_halt).asBool, stall_scnd_miss_C, idle_C))
       miss_state_en := (bus_ifu_wr_en_ff & last_beat) | ic_miss_under_miss_f | ic_ignore_2nd_miss_f | io.dec_mem_ctrl.dec_tlu_force_halt
     }
-    is (scnd_miss_C){
+    is (scnd_miss_C){ // Miss of the different pc occured
       miss_nxtstate := Mux(io.dec_mem_ctrl.dec_tlu_force_halt, idle_C, Mux(io.exu_flush_final,
         Mux((bus_ifu_wr_en_ff & last_beat).asBool, idle_C, hit_u_miss_C), crit_byp_ok_C))
       miss_state_en := (bus_ifu_wr_en_ff & last_beat) | io.exu_flush_final | io.dec_mem_ctrl.dec_tlu_force_halt
     }
-    is (stall_scnd_miss_C){
+    is (stall_scnd_miss_C){ // Miss from the same pc occured
       miss_nxtstate := Mux(io.dec_mem_ctrl.dec_tlu_force_halt, idle_C, Mux(io.exu_flush_final,
         Mux((bus_ifu_wr_en_ff & last_beat).asBool, idle_C, hit_u_miss_C), idle_C))
       miss_state_en := (bus_ifu_wr_en_ff & last_beat) | io.exu_flush_final | io.dec_mem_ctrl.dec_tlu_force_halt
     }
   }
   miss_state := withClock(io.free_clk){RegEnable(miss_nxtstate, 0.U, miss_state_en.asBool)}
+  // Calculation all the relevant signals for the miss FSM
   val crit_byp_hit_f = WireInit(Bool(), 0.U)
   val way_status_mb_scnd_ff = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
   val way_status = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
@@ -262,6 +245,8 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   sel_mb_addr_ff := withClock(io.free_clk){RegNext(sel_mb_addr, 0.U)}
   val ifu_bus_rdata_ff = WireInit(UInt(64.W), 0.U)
   val ic_miss_buff_half = WireInit(UInt(64.W), 0.U)
+
+  // Ecc of the read data from the AXI
   val ic_wr_ecc = rvecc_encode_64(ifu_bus_rdata_ff)
   val ic_miss_buff_ecc = rvecc_encode_64(ic_miss_buff_half)
   val ic_wr_16bytes_data = WireInit(UInt((ICACHE_BANKS_WAY * (if(ICACHE_ECC) 71 else 68)).W), 0.U)
@@ -271,6 +256,7 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   io.dec_mem_ctrl.ifu_ic_error_start := ((if(ICACHE_ECC)io.ic.eccerr.orR()else io.ic.parerr.orR()) & ic_act_hit_f) | ic_rd_parity_final_err
   val ic_debug_tag_val_rd_out = WireInit(Bool(), 0.U)
   val ic_debug_ict_array_sel_ff = WireInit(Bool(), 0.U)
+
   val ifu_ic_debug_rd_data_in = Mux(ic_debug_ict_array_sel_ff.asBool, if(ICACHE_ECC) Cat(0.U(2.W),io.ic.tag_debug_rd_data(25,21),0.U(32.W),io.ic.tag_debug_rd_data(20,0), 0.U((7-ICACHE_STATUS_BITS).W), way_status, 0.U(3.W),ic_debug_tag_val_rd_out)
   else Cat(0.U(6.W),io.ic.tag_debug_rd_data(21),0.U(32.W),io.ic.tag_debug_rd_data(20,0),0.U(7-ICACHE_STATUS_BITS),way_status ,0.U(3.W) ,ic_debug_tag_val_rd_out) ,
     io.ic.debug_rd_data)
@@ -395,6 +381,7 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   ic_miss_buff_half := Cat(Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(Cat(other_tag,1.U)===i.U).asBool->ic_miss_buff_data(i))),
     Mux1H((0 until 2*ICACHE_NUM_BEATS).map(i=>(Cat(other_tag,0.U)===i.U).asBool->ic_miss_buff_data(i))))
 
+  // Parity check for the I$ logic
   ic_rd_parity_final_err := io.ic.tag_perr & sel_ic_data & !(ifc_region_acc_fault_final_f | ifc_bus_acc_fault_f)
   val ifu_ic_rw_int_addr_ff = WireInit(UInt((ICACHE_INDEX_HI-ICACHE_TAG_INDEX_LO+1).W), 0.U)
 
@@ -408,7 +395,7 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   io.iccm.buf_correct_ecc := iccm_correct_ecc & !dma_sb_err_state_ff
   dma_sb_err_state_ff := withClock(io.active_clk){RegNext(dma_sb_err_state, false.B)}
 
-  ///////////////////////////////// ERROR FSM /////////////////////////////////
+  ///////////////////////////////// PARITY ERROR FSM /////////////////////////////////
   val perr_nxtstate = WireInit(UInt(3.W), 0.U)
   val perr_state_en = WireInit(Bool(), false.B)
   val iccm_error_start = WireInit(Bool(), false.B)
@@ -487,6 +474,26 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   val bus_cmd_req_in = (ic_act_miss_f | bus_cmd_req_hold) & !bus_cmd_sent & !io.dec_mem_ctrl.dec_tlu_force_halt
   bus_cmd_req_hold := withClock(io.free_clk){RegNext(bus_cmd_req_in, false.B)}
   // AXI Read-Channel
+  io.ifu_axi.w.valid := 0.U
+  io.ifu_axi.w.bits.data := 0.U
+  io.ifu_axi.aw.bits.qos := 0.U
+  io.ifu_axi.aw.bits.addr := 0.U
+  io.ifu_axi.aw.bits.prot := 0.U
+  io.ifu_axi.aw.bits.len := 0.U
+  io.ifu_axi.ar.bits.lock := 0.U
+  io.ifu_axi.aw.bits.region := 0.U
+  io.ifu_axi.aw.bits.id := 0.U
+  io.ifu_axi.aw.valid := 0.U
+  io.ifu_axi.w.bits.strb := 0.U
+  io.ifu_axi.aw.bits.cache := 0.U
+  io.ifu_axi.ar.bits.qos := 0.U
+  io.ifu_axi.aw.bits.lock := 0.U
+  io.ifu_axi.b.ready := 0.U
+  io.ifu_axi.ar.bits.len := 0.U
+  io.ifu_axi.aw.bits.size := 0.U
+  io.ifu_axi.ar.bits.prot := 0.U
+  io.ifu_axi.aw.bits.burst := 0.U
+  io.ifu_axi.w.bits.last := 0.U
   io.ifu_axi.ar.valid := ifu_bus_cmd_valid
   io.ifu_axi.ar.bits.id := bus_rd_addr_count & Fill(IFU_BUS_TAG, ifu_bus_cmd_valid)
   io.ifu_axi.ar.bits.addr := Cat(ifu_ic_req_addr_f, 0.U(3.W)) & Fill(32, ifu_bus_cmd_valid)
@@ -516,6 +523,7 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   val ifu_bus_arready = ifu_bus_arready_unq & bus_ifu_bus_clk_en
   val ifu_bus_arready_ff = ifu_bus_arready_unq_ff & bus_ifu_bus_clk_en_ff
   val ifu_bus_rvalid_ff = ifu_bus_rvalid_unq_ff & bus_ifu_bus_clk_en_ff
+  // Write signals to write to the bus
   bus_cmd_sent := ifu_bus_arvalid & ifu_bus_arready & miss_pending & !io.dec_mem_ctrl.dec_tlu_force_halt
   val bus_last_data_beat = WireInit(Bool(), false.B)
   val bus_inc_data_beat_cnt = bus_ifu_wr_en_ff & !bus_last_data_beat & !io.dec_mem_ctrl.dec_tlu_force_halt
@@ -594,7 +602,7 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   val ic_fetch_val_int_f = Cat(0.U(2.W), io.ic_fetch_val_f)
   val ic_fetch_val_shift_right = ic_fetch_val_int_f << ifu_fetch_addr_int_f(0)
   val iccm_rdmux_data = io.iccm.rd_data_ecc
-
+  // ICCM ECC Check logic
   val iccm_ecc_word_enable = (0 until 2).map(i=>((ic_fetch_val_shift_right((2*i+1),(2*i)).orR & !io.exu_flush_final & sel_iccm_data) | iccm_dma_rvalid_in) & !io.dec_mem_ctrl.dec_tlu_core_ecc_disable).reverse.reduce(Cat(_,_))
   val ecc_decoded = (0 until 2).map(i=>rvecc_decode(iccm_ecc_word_enable(i), iccm_rdmux_data((39*i+31),(39*i)), iccm_rdmux_data((39*i+38),(39*i+32)), 0.U))
   val iccm_corrected_ecc = Wire(Vec(2, UInt(7.W)))
@@ -628,7 +636,7 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   io.ic.wr_en := bus_ic_wr_en & Fill(ICACHE_NUM_WAYS, write_ic_16_bytes)
   io.ic_write_stall := write_ic_16_bytes & !((((miss_state===crit_byp_ok_C) | ((miss_state===stream_C) & !(io.exu_flush_final | ifu_bp_hit_taken_q_f  | stream_eol_f ))) & !(bus_ifu_wr_en_ff & last_beat & !uncacheable_miss_ff)))
   reset_all_tags := withClock(io.active_clk){RegNext(io.dec_mem_ctrl.dec_tlu_fence_i_wb, false.B)}
-
+    // I$ status and P-LRU
     val ic_valid = !ifu_wr_cumulative_err_data & !(reset_ic_in | reset_ic_ff) & !reset_tag_valid_for_miss
     val ifu_status_wr_addr_w_debug = Mux((io.ic.debug_rd_en | io.ic.debug_wr_en) & io.ic.debug_tag_array, io.ic.debug_addr(ICACHE_INDEX_HI - 3, ICACHE_TAG_INDEX_LO - 3),
       ifu_status_wr_addr(ICACHE_INDEX_HI - 1, ICACHE_TAG_INDEX_LO - 1))
@@ -688,8 +696,7 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
     val ic_tag_valid_unq = (0 until ICACHE_NUM_WAYS).map(k => (0 until ICACHE_TAG_DEPTH).map(j =>
       Mux(ifu_ic_rw_int_addr_ff === j.U, ic_tag_valid_out(k)(j), false.B).asUInt).reduce(_|_)).reverse.reduce(Cat(_,_))
 
-    // Making a sudo LRU
-    // val replace_way_mb_any = Wire(Vec(ICACHE_NUM_WAYS, Bool()))
+    // Making sudo LRU
     val way_status_hit_new = WireInit(UInt(ICACHE_STATUS_BITS.W), 0.U)
     if (ICACHE_NUM_WAYS == 4) {
       replace_way_mb_any(3) := (way_status_mb_ff(2) & way_status_mb_ff(0) & tagv_mb_ff(3, 0).andR) |
@@ -762,6 +769,7 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   ic_debug_ict_array_sel_ff := withClock(debug_c1_clk){RegNext(ic_debug_ict_array_sel_in, 0.U)}
   ic_debug_rd_en_ff := withClock(io.free_clk){RegNext(io.ic.debug_rd_en, false.B)}
   io.dec_mem_ctrl.ifu_ic_debug_rd_data_valid := withClock(io.free_clk){RegNext(ic_debug_rd_en_ff, 0.U)}
+  // Memory protection each access enable with its Mask
   val ifc_region_acc_okay = !(Cat(INST_ACCESS_ENABLE0.U,INST_ACCESS_ENABLE1.U,INST_ACCESS_ENABLE2.U,INST_ACCESS_ENABLE3.U,INST_ACCESS_ENABLE4.U,INST_ACCESS_ENABLE5.U,INST_ACCESS_ENABLE6.U,INST_ACCESS_ENABLE7.U).orR()) |
       (INST_ACCESS_ENABLE0.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK0).U) === (aslong(INST_ACCESS_ADDR0).U | aslong(INST_ACCESS_MASK0).U))) |
       (INST_ACCESS_ENABLE1.U & ((Cat(io.ifc_fetch_addr_bf, 0.U) | aslong(INST_ACCESS_MASK1).U) === (aslong(INST_ACCESS_ADDR1).U | aslong(INST_ACCESS_MASK1).U))) |

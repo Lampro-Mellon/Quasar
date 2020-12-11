@@ -294,7 +294,7 @@ class dma_ctrl extends Module with lib with RequireAsyncReset {
 
   num_fifo_vld          := num_fifo_vld_tmp + num_fifo_vld_tmp2
 
-  val fifo_full_spec    = (num_fifo_vld_tmp2 >= DMA_BUF_DEPTH.asUInt())
+  val fifo_full_spec    = (num_fifo_vld >= DMA_BUF_DEPTH.asUInt())
 
   val dma_fifo_ready    = ~(fifo_full | dbg_dma_bubble_bus)
 
@@ -310,7 +310,11 @@ class dma_ctrl extends Module with lib with RequireAsyncReset {
       (io.lsu_dma.dma_lsc_ctl.dma_mem_write & (dma_mem_sz_int(2, 0) === 2.U) & (Mux1H(Seq((dma_mem_addr_int(2,0) === 0.U) -> (dma_mem_byteen(3,0)),
         (dma_mem_addr_int(2,0) === 1.U) -> (dma_mem_byteen(4,1)),
         (dma_mem_addr_int(2,0) === 2.U) -> (dma_mem_byteen(5,2)),
-        (dma_mem_addr_int(2,0) === 3.U) -> (dma_mem_byteen(6,3)))) =/= 15.U)) | // Write byte enables not aligned for word store
+        (dma_mem_addr_int(2,0) === 3.U) -> (dma_mem_byteen(6,3)),
+        (dma_mem_addr_int(2,0) === 4.U) -> (dma_mem_byteen(7,4)),
+        (dma_mem_addr_int(2,0) === 5.U) -> (dma_mem_byteen(7,5)),
+        (dma_mem_addr_int(2,0) === 6.U) -> (dma_mem_byteen(7,6)),
+        (dma_mem_addr_int(2,0) === 7.U) -> (dma_mem_byteen(7)))) =/= "hf".U)) | // Write byte enables not aligned for word store
       (io.lsu_dma.dma_lsc_ctl.dma_mem_write & (dma_mem_sz_int(2, 0) === 3.U) & !((dma_mem_byteen(7,0) === "h0f".U) | (dma_mem_byteen(7,0) === "hf0".U) | (dma_mem_byteen(7,0) === "hff".U)))) // Write byte enables not aligned for dword store
 
 

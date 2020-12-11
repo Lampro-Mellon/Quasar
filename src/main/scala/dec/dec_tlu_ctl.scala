@@ -2127,7 +2127,7 @@ miccme_ce_req := (("hffffffff".U(32.W) << miccmect(31,27)) & Cat(0.U(5.W), miccm
  val dicad1_raw = WireInit(UInt(7.W),0.U)
  val wr_dicad1_r = io.allow_dbg_halt_csr_write & io.dec_csr_wen_r_mod & (io.dec_csr_wraddr_r(11,0) === DICAD1)
 
- val dicad1_ns = Mux(wr_dicad1_r.asBool, io.dec_csr_wrdata_r, io.ifu_ic_debug_rd_data(70,64))
+ val dicad1_ns = Mux(wr_dicad1_r.asBool, io.dec_csr_wrdata_r(6,0), io.ifu_ic_debug_rd_data(70,64))
 
  dicad1_raw := withClock(io.active_clk){RegEnable(dicad1_ns,0.U,(wr_dicad1_r | io.ifu_ic_debug_rd_data_valid).asBool)}
  dicad1 := Cat(0.U(25.W), dicad1_raw)
