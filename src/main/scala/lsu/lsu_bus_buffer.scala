@@ -616,6 +616,3 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   io.lsu_busreq_r := withClock(io.lsu_c2_r_clk){RegNext(io.lsu_busreq_m & !io.flush_r & !io.ld_full_hit_m, false.B)}
   lsu_nonblock_load_valid_r := withClock(io.lsu_c2_r_clk){RegNext(io.dctl_busbuff.lsu_nonblock_load_valid_m, false.B)}
 }
-object bus_buffer extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new lsu_bus_buffer()))
-}

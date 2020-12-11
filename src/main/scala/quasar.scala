@@ -532,8 +532,5 @@ class quasar extends Module with RequireAsyncReset with lib {
     }
   io.dmi_reg_rdata := 0.U
 }
-object QUASAR extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new quasar()))
-}
 
 

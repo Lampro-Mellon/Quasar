@@ -96,11 +96,12 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
 
 
   if(BUILD_AXI4) {
-    swerv.io.ahb <> 0.U.asTypeOf(swerv.io.ahb.in)
-    swerv.io.lsu_ahb <> 0.U.asTypeOf(swerv.io.lsu_ahb.in)
-    swerv.io.sb_ahb <> 0.U.asTypeOf(swerv.io.sb_ahb.in)
-    swerv.io.dma <> 0.U.asTypeOf(swerv.io.dma)
-
+    swerv.io.ahb.in <> 0.U.asTypeOf(swerv.io.ahb.in)
+    swerv.io.lsu_ahb.in <> 0.U.asTypeOf(swerv.io.lsu_ahb.in)
+    swerv.io.sb_ahb.in <> 0.U.asTypeOf(swerv.io.sb_ahb.in)
+    swerv.io.dma.ahb.out <> 0.U.asTypeOf(swerv.io.dma.ahb.out)
+    swerv.io.dma.hsel := 0.U
+    swerv.io.dma.hreadyin := 0.U
     swerv.io.lsu_axi <> io.lsu_brg
     swerv.io.ifu_axi <> io.ifu_brg
     swerv.io.sb_axi <> io.sb_brg
@@ -133,25 +134,6 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   swerv.io.mpc_debug_run_req := io.mpc_debug_run_req
   swerv.io.mpc_reset_run_req := io.mpc_reset_run_req
 
-
-  //-------------------------- DMA AXI signals--------------------------
-  // AXI Write Channels
-  swerv.io.dma_axi <> io.dma_brg
-
-  // DMA Slave
-  //swerv.io.dma.hsel := io.dma.hsel
-  //swerv.io.dma.ahb.out <> io.dma.ahb.out
-  //  swerv.io.dma_haddr := io.dma_haddr
-  //  swerv.io.dma_hburst := io.dma_hburst
-  //  swerv.io.dma_hmastlock := io.dma_hmastlock
-  //  swerv.io.dma_hprot := io.dma_hprot
-  //  swerv.io.dma_hsize := io.dma_hsize
-  //  swerv.io.dma_htrans := io.dma_htrans
-  //  swerv.io.dma_hwrite := io.dma_hwrite
-  //  swerv.io.dma_hwdata := io.dma_hwdata
-  //swerv.io.dma.hreadyin := io.dma.hreadyin
-
-
   swerv.io.lsu_bus_clk_en := io.lsu_bus_clk_en
   swerv.io.ifu_bus_clk_en := io.ifu_bus_clk_en
   swerv.io.dbg_bus_clk_en := io.dbg_bus_clk_en
@@ -179,15 +161,6 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   io.dec_tlu_perfcnt1 := swerv.io.dec_tlu_perfcnt1
   io.dec_tlu_perfcnt2 := swerv.io.dec_tlu_perfcnt2
   io.dec_tlu_perfcnt3 := swerv.io.dec_tlu_perfcnt3
-
-
-  //-------------------------- LSU AXI signals--------------------------
-  // AXI Write Channels
-
-  // DMA Slave
-  //  io.dma_hrdata := swerv.io.dma_hrdata
-  //  io.dma_hreadyout := swerv.io.dma_hreadyout
-  //  io.dma_hresp := swerv.io.dma_hresp
 
 }
 object QUASAR_Wrp extends App {
