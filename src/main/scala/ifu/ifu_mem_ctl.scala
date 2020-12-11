@@ -506,7 +506,6 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
   val ifu_bus_arready_unq = io.ifu_axi.ar.ready
   val ifu_bus_rvalid_unq = io.ifu_axi.r.valid
   val ifu_bus_arvalid = io.ifu_axi.ar.valid
-  bus_ifu_bus_clk_en
   val ifu_bus_arready_unq_ff = withClock(busclk){RegNext(ifu_bus_arready_unq, false.B)}
   val ifu_bus_rvalid_unq_ff = withClock(busclk){RegNext(ifu_bus_rvalid_unq, false.B)}
   val ifu_bus_arvalid_ff = withClock(busclk){RegNext(ifu_bus_arvalid, false.B)}
