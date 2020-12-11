@@ -13,10 +13,10 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     val jtag_id = Input(UInt(31.W))
 
     // AXI Signals
-    val lsu_brg = bridge_gen(LSU_BUS_TAG, false)
-    val ifu_brg = bridge_gen(IFU_BUS_TAG, false)
-    val sb_brg = bridge_gen(SB_BUS_TAG, false)
-    val dma_brg = bridge_gen(DMA_BUS_TAG, true)
+    val lsu_brg = new axi_channels(LSU_BUS_TAG)
+    val ifu_brg = new axi_channels(IFU_BUS_TAG)//bridge_gen(IFU_BUS_TAG, false)
+    val sb_brg = new axi_channels(SB_BUS_TAG)//bridge_gen(SB_BUS_TAG, false)
+    val dma_brg = Flipped(new axi_channels(DMA_BUS_TAG))//bridge_gen(DMA_BUS_TAG, true)
 
     val lsu_bus_clk_en = Input(Bool())
     val ifu_bus_clk_en = Input(Bool())
@@ -94,18 +94,19 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   core.io.ic <> mem.io.ic
   core.io.iccm <> mem.io.iccm
 
-
+  core.io.ahb <> 0.U.asTypeOf(core.io.ahb)
+  core.io.lsu_ahb <> 0.U.asTypeOf(core.io.lsu_ahb)
+  core.io.sb_ahb <> 0.U.asTypeOf(core.io.sb_ahb)
+  core.io.dma.ahb <> 0.U.asTypeOf(core.io.dma.ahb)
+  core.io.dma.hsel := 0.U
+  core.io.dma.hreadyin := 0.U
+  core.io.lsu_axi <> io.lsu_brg
+  core.io.ifu_axi <> io.ifu_brg
+  core.io.sb_axi <> io.sb_brg
+  core.io.dma_axi <> io.dma_brg
+/*
   if(BUILD_AXI4) {
-    core.io.ahb <> 0.U.asTypeOf(core.io.ahb)
-    core.io.lsu_ahb <> 0.U.asTypeOf(core.io.lsu_ahb)
-    core.io.sb_ahb <> 0.U.asTypeOf(core.io.sb_ahb)
-    core.io.dma.ahb <> 0.U.asTypeOf(core.io.dma.ahb)
-    core.io.dma.hsel := 0.U
-    core.io.dma.hreadyin := 0.U
-    core.io.lsu_axi <> io.lsu_brg
-    core.io.ifu_axi <> io.ifu_brg
-    core.io.sb_axi <> io.sb_brg
-    core.io.dma_axi <> io.dma_brg
+
   }
   else {
     core.io.ahb <> io.ifu_brg
@@ -117,7 +118,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     core.io.ifu_axi <> 0.U.asTypeOf(core.io.ifu_axi)
     core.io.sb_axi <> 0.U.asTypeOf(core.io.sb_axi)
     core.io.dma_axi <> 0.U.asTypeOf(core.io.lsu_axi)
-  }
+  }*/
   // core Inputs
   core.io.dbg_rst_l := io.dbg_rst_l
   core.io.rst_vec := io.rst_vec
@@ -164,5 +165,5 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
 
 }
 object QUASAR_Wrp extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new quasar_wrapper()))
+  (new chisel3.stage.ChiselStage).emitVerilog(new quasar_wrapper())
 }
