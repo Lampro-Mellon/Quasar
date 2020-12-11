@@ -4,11 +4,16 @@ import chisel3.util._
 import include._
 trait lib extends param{
   implicit def int2boolean(b:Int) = if (b==1) true else false
+
   implicit def uint2bool(b:UInt) = b.asBool()
+
   implicit def aslong(b:Int) = 0xFFFFFFFFL & b
+
   def repl(b:Int, a:UInt) = VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
 
-  def bridge_gen(tag: Int, ahb_type: Boolean) = if(BUILD_AXI4) new axi_channels(tag) else ahb_bridge_gen(ahb_type)
+  def bridge_gen(tag: Int, ahb_type: Boolean) = if(BUILD_AXI4) flip(tag, ahb_type) else ahb_bridge_gen(ahb_type)
+
+  def flip(tag: Int , ahb_type: Boolean) = if(ahb_type) Flipped(new axi_channels(tag)) else new axi_channels(tag)
 
   def ahb_bridge_gen(ahb_type: Boolean) = if(ahb_type) new Bundle{
     val ahb= Flipped(new ahb_channel())
@@ -23,6 +28,7 @@ trait lib extends param{
       case(1,0)  => (68*ICACHE_NUM_WAYS, 22*ICACHE_NUM_WAYS, 68, 22)
       case(1,1)   => (71*ICACHE_NUM_WAYS, 26*ICACHE_NUM_WAYS, 71, 26)
     }
+
   val DATA_MEM_LINE = MEM_CAL
   val Tag_Word = MEM_CAL._4
 

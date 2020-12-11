@@ -16,7 +16,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     val lsu_brg = bridge_gen(LSU_BUS_TAG, false)
     val ifu_brg = bridge_gen(IFU_BUS_TAG, false)
     val sb_brg = bridge_gen(SB_BUS_TAG, false)
-    val dma_brg = Flipped(bridge_gen(DMA_BUS_TAG, true))
+    val dma_brg = bridge_gen(DMA_BUS_TAG, true)
 
     val lsu_bus_clk_en = Input(Bool())
     val ifu_bus_clk_en = Input(Bool())
@@ -96,10 +96,10 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
 
 
   if(BUILD_AXI4) {
-    swerv.io.ahb.in <> 0.U.asTypeOf(swerv.io.ahb.in)
-    swerv.io.lsu_ahb.in <> 0.U.asTypeOf(swerv.io.lsu_ahb.in)
-    swerv.io.sb_ahb.in <> 0.U.asTypeOf(swerv.io.sb_ahb.in)
-    swerv.io.dma.ahb.out <> 0.U.asTypeOf(swerv.io.dma.ahb.out)
+    swerv.io.ahb <> 0.U.asTypeOf(swerv.io.ahb)
+    swerv.io.lsu_ahb <> 0.U.asTypeOf(swerv.io.lsu_ahb)
+    swerv.io.sb_ahb <> 0.U.asTypeOf(swerv.io.sb_ahb)
+    swerv.io.dma.ahb <> 0.U.asTypeOf(swerv.io.dma.ahb)
     swerv.io.dma.hsel := 0.U
     swerv.io.dma.hreadyin := 0.U
     swerv.io.lsu_axi <> io.lsu_brg
