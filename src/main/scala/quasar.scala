@@ -238,7 +238,7 @@ class quasar extends Module with RequireAsyncReset with lib {
   io.dccm <> lsu.io.dccm
 
 
-  when(BUILD_AHB_LITE.B) {
+  if(BUILD_AHB_LITE) {
     val sb_axi4_to_ahb = Module(new axi4_to_ahb())
     val ifu_axi4_to_ahb = Module(new axi4_to_ahb())
     val lsu_axi4_to_ahb = Module(new axi4_to_ahb())
@@ -269,12 +269,12 @@ class quasar extends Module with RequireAsyncReset with lib {
     dma_ahb_to_axi4.io.axi <> dma_ctrl.io.dma_axi
     dma_ahb_to_axi4.io.ahb <> io.dma_ahb
 
-    io.dma_axi <> 0.U.asTypeOf(io.dma_axi)
-    io.sb_axi       <> 0.U.asTypeOf(io.dma_axi)
-    io.ifu_axi          <> 0.U.asTypeOf(io.dma_axi)
-    io.lsu_axi          <> 0.U.asTypeOf(io.dma_axi)
+    io.dma_axi      <> 0.U.asTypeOf(io.dma_axi)
+    io.sb_axi       <> 0.U.asTypeOf(io.sb_axi)
+    io.ifu_axi      <> 0.U.asTypeOf(io.ifu_axi)
+    io.lsu_axi      <> 0.U.asTypeOf(io.lsu_axi)
   }
-    .otherwise{
+    else{
       io.lsu_ahb <> 0.U.asTypeOf(io.lsu_ahb)
       io.ifu_ahb <> 0.U.asTypeOf(io.ifu_ahb)
       io.sb_ahb <> 0.U.asTypeOf(io.sb_ahb)
@@ -286,5 +286,6 @@ class quasar extends Module with RequireAsyncReset with lib {
     }
   io.dmi_reg_rdata := 0.U
 }
-
-
+object QUASAR extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new quasar()))
+}
