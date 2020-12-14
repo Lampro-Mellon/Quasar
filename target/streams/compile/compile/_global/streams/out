@@ -1,18 +1,6 @@
-[0m[[0m[33mwarn[0m] [0m[0m/home/waleedbinehsan/Desktop/Quasar/src/main/scala/ifu/ifu_mem_ctl.scala:502:3: a pure expression does nothing in statement position; multiline expressions may require enclosing parentheses[0m
-[0m[[0m[33mwarn[0m] [0m[0m  bus_ifu_bus_clk_en[0m
-[0m[[0m[33mwarn[0m] [0m[0m  ^[0m
-[0m[[0m[33mwarn[0m] [0m[0m/home/waleedbinehsan/Desktop/Quasar/src/main/scala/lib/lib.scala:8:5: match may not be exhaustive.[0m
+[0m[[0m[33mwarn[0m] [0m[0m/home/waleedbinehsan/Desktop/Quasar/src/main/scala/lib/lib.scala:25:5: match may not be exhaustive.[0m
 [0m[[0m[33mwarn[0m] [0m[0mIt would fail on the following inputs: (0, _), (1, _), (??, _), (_, 0), (_, 1), (_, ??), (_, _)[0m
 [0m[[0m[33mwarn[0m] [0m[0m    (ICACHE_WAYPACK, ICACHE_ECC) match{[0m
 [0m[[0m[33mwarn[0m] [0m[0m    ^[0m
-[0m[[0m[33mwarn[0m] [0m[0m/home/waleedbinehsan/Desktop/Quasar/src/main/scala/dec/dec_tlu_ctl.scala:1751:16: comparing values of types Int and Boolean using `==' will always yield false[0m
-[0m[[0m[33mwarn[0m] [0m[0m if(BUILD_AXI4 == true){[0m
-[0m[[0m[33mwarn[0m] [0m[0m               ^[0m
-[0m[[0m[33mwarn[0m] [0m[0m/home/waleedbinehsan/Desktop/Quasar/src/main/scala/dec/dec_tlu_ctl.scala:2122:17: comparing values of types Int and Boolean using `==' will always yield false[0m
-[0m[[0m[33mwarn[0m] [0m[0m if (ICACHE_ECC == true) {[0m
-[0m[[0m[33mwarn[0m] [0m[0m                ^[0m
-[0m[[0m[33mwarn[0m] [0m[0m/home/waleedbinehsan/Desktop/Quasar/src/main/scala/dec/dec_tlu_ctl.scala:2155:17: comparing values of types Int and Boolean using `==' will always yield false[0m
-[0m[[0m[33mwarn[0m] [0m[0m if (ICACHE_ECC == true)  io.dec_tlu_ic_diag_pkt.icache_wrdata := Cat(dicad1(6,0), dicad0h(31,0), dicad0(31,0))[0m
-[0m[[0m[33mwarn[0m] [0m[0m                ^[0m
-[0m[[0m[33mwarn[0m] [0m[0mthere were 3738 feature warnings; re-run with -feature for details[0m
-[0m[[0m[33mwarn[0m] [0m[0m6 warnings found[0m
+[0m[[0m[33mwarn[0m] [0m[0mthere were 3745 feature warnings; re-run with -feature for details[0m
+[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m
