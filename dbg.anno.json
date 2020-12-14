@@ -67,6 +67,18 @@
     "resourceId":"/vsrc/gated_latch.v"
   },
   {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~dbg|dbg>rst_not"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~dbg|dbg>rst_temp"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~dbg|dbg>dbg_dm_rst_l"
+  },
+  {
     "class":"firrtl.options.TargetDirAnnotation",
     "directory":"."
   },
