@@ -457,6 +457,3 @@ class dbg extends Module with lib with RequireAsyncReset {
   io.dbg_dma.dbg_ib.dbg_cmd_write     := io.dbg_dec.dbg_ib.dbg_cmd_write
   io.dbg_dma.dbg_ib.dbg_cmd_type      := io.dbg_dec.dbg_ib.dbg_cmd_type
 }
-object db_obj extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new dbg()))
-}

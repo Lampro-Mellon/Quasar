@@ -970,6 +970,18 @@
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~quasar_wrapper|dbg>rst_not"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~quasar_wrapper|dbg>rst_temp"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~quasar_wrapper|dbg>dbg_dm_rst_l"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
     "target":"~quasar_wrapper|dec_trigger>io_dec_i0_trigger_match_d"
   },
   {
