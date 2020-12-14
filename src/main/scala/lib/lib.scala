@@ -16,7 +16,7 @@ trait lib extends param{
   def flip(tag: Int , ahb_type: Boolean) = if(ahb_type) Flipped(new axi_channels(tag)) else new axi_channels(tag)
 
   def ahb_bridge_gen(ahb_type: Boolean) = if(ahb_type) new Bundle{
-    val ahb= Flipped(new ahb_channel())
+    val sig = Flipped(new ahb_channel())
     val hsel = Input(Bool())
     val hreadyin = Input(Bool())}
   else new ahb_channel()
