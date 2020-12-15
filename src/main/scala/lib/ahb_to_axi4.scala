@@ -5,13 +5,13 @@ import chisel3.experimental.chiselName
 import include._
 
 @chiselName
-class ahb_to_axi4 extends Module with lib with RequireAsyncReset {
+class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
   val io = IO(new Bundle {
     val scan_mode       = Input(Bool())
     val bus_clk_en      = Input(Bool())
     val clk_override    = Input(Bool())
 
-    val axi = new axi_channels(1)
+    val axi = new axi_channels(TAG)
     val ahb = new Bundle{
       val sig = Flipped(new ahb_channel())
       val hsel = Input(Bool())
@@ -19,7 +19,6 @@ class ahb_to_axi4 extends Module with lib with RequireAsyncReset {
     })
   io.axi <> 0.U.asTypeOf(io.axi)
   val idle:: wr :: rd :: pend :: Nil = Enum(4)
-  val TAG= 1
   val master_wstrb        = WireInit(0.U(8.W))
   val buf_state_en        = WireInit(false.B)
 

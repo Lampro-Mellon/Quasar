@@ -4,26 +4,19 @@ import chisel3._
 import chisel3.util._
 import include._
 
-trait Config {
-  val TAG = 1
-}
-
-class axi4_to_ahb_IO extends Bundle with Config {
+class axi4_to_ahb_IO(val TAG : Int) extends Bundle {
 
   val scan_mode = Input(Bool())
   val bus_clk_en = Input(Bool())
   val clk_override = Input(Bool())
   // AXI-4 signals
-  val axi = Flipped(new axi_channels(1))
+  val axi = Flipped(new axi_channels(TAG))
   // AHB-Lite signals
   val ahb = new ahb_channel()
 }
 
-
-
-
-class axi4_to_ahb extends Module with lib with RequireAsyncReset with Config {
-  val io = IO(new axi4_to_ahb_IO)
+class axi4_to_ahb(val TAG : Int = 3) extends Module with lib with RequireAsyncReset {
+  val io = IO(new axi4_to_ahb_IO(TAG))
   val buf_rst = WireInit(0.U(1.W))
   buf_rst :=0.U
   io.ahb.out.htrans := 0.U
@@ -340,4 +333,8 @@ class axi4_to_ahb extends Module with lib with RequireAsyncReset with Config {
   ahbm_clk := rvclkhdr(clock, io.bus_clk_en, io.scan_mode)
   ahbm_addr_clk := rvclkhdr(clock, ahbm_addr_clken, io.scan_mode)
   ahbm_data_clk := rvclkhdr(clock, ahbm_data_clken, io.scan_mode)
+}
+
+object axi4 extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new axi4_to_ahb(3)))
 }

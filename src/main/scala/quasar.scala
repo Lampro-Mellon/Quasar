@@ -67,8 +67,10 @@ class quasar_bundle extends Bundle with  lib{
   val soft_int = Input(Bool())
   val scan_mode = Input(Bool())
 }
+
 class quasar extends Module with RequireAsyncReset with lib {
   val io = IO (new quasar_bundle)
+
   val ifu = Module(new ifu)
   val dec = Module(new dec)
   val dbg = Module(new dbg)
@@ -234,15 +236,16 @@ class quasar extends Module with RequireAsyncReset with lib {
   io.dec_tlu_perfcnt1 := dec.io.dec_tlu_perfcnt1
   io.dec_tlu_perfcnt2 := dec.io.dec_tlu_perfcnt2
   io.dec_tlu_perfcnt3 := dec.io.dec_tlu_perfcnt3
+  io.dmi_reg_rdata := dbg.io.dmi_reg_rdata
+
   // LSU Outputs
   io.dccm <> lsu.io.dccm
 
-
   if(BUILD_AHB_LITE) {
-    val sb_axi4_to_ahb = Module(new axi4_to_ahb())
-    val ifu_axi4_to_ahb = Module(new axi4_to_ahb())
-    val lsu_axi4_to_ahb = Module(new axi4_to_ahb())
-    val dma_ahb_to_axi4 = Module(new ahb_to_axi4())
+    val sb_axi4_to_ahb = Module(new axi4_to_ahb(SB_BUS_TAG))
+    val ifu_axi4_to_ahb = Module(new axi4_to_ahb(IFU_BUS_TAG))
+    val lsu_axi4_to_ahb = Module(new axi4_to_ahb(LSU_BUS_TAG))
+    val dma_ahb_to_axi4 = Module(new ahb_to_axi4(DMA_BUS_TAG))
 
     lsu_axi4_to_ahb.io.scan_mode := io.scan_mode
     lsu_axi4_to_ahb.io.bus_clk_en := io.lsu_bus_clk_en
@@ -250,12 +253,12 @@ class quasar extends Module with RequireAsyncReset with lib {
     lsu_axi4_to_ahb.io.axi <> lsu.io.axi
     lsu_axi4_to_ahb.io.ahb <> io.lsu_ahb
 
-
     ifu_axi4_to_ahb.io.scan_mode := io.scan_mode
     ifu_axi4_to_ahb.io.bus_clk_en := io.ifu_bus_clk_en
     ifu_axi4_to_ahb.io.clk_override := dec.io.dec_tlu_bus_clk_override
     ifu_axi4_to_ahb.io.axi <> ifu.io.ifu
     ifu_axi4_to_ahb.io.ahb <> io.ifu_ahb
+    ifu_axi4_to_ahb.io.axi.b.ready := true.B
 
     sb_axi4_to_ahb.io.scan_mode := io.scan_mode
     sb_axi4_to_ahb.io.bus_clk_en := io.dbg_bus_clk_en
@@ -284,7 +287,7 @@ class quasar extends Module with RequireAsyncReset with lib {
       ifu.io.ifu          <> io.ifu_axi
       lsu.io.axi          <> io.lsu_axi
     }
-  io.dmi_reg_rdata := 0.U
+
 }
 object QUASAR extends App {
   println((new chisel3.stage.ChiselStage).emitVerilog(new quasar()))
