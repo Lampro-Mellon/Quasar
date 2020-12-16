@@ -552,7 +552,7 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   bus_addr_match_pending := Mux1H((0 until DEPTH).map(i=>(buf_state(i)===resp_C)->
     (BUILD_AXI_NATIVE.B & obuf_valid & (obuf_addr(31,3)===buf_addr(i)(31,3)) & !((obuf_tag0===i.U) | (obuf_merge & (obuf_tag1===i.U))))))
 
-  bus_cmd_ready := Mux(obuf_write, Mux(obuf_cmd_done | obuf_data_done, Mux(obuf_cmd_done, io.lsu_axi.w.ready, io.lsu_axi.aw.ready), io.lsu_axi.aw.ready & io.lsu_axi.aw.ready), io.lsu_axi.ar.ready)
+  bus_cmd_ready := Mux(obuf_write, Mux(obuf_cmd_done | obuf_data_done, Mux(obuf_cmd_done, io.lsu_axi.w.ready, io.lsu_axi.aw.ready), io.lsu_axi.aw.ready & io.lsu_axi.w.ready), io.lsu_axi.ar.ready)
   bus_wcmd_sent := io.lsu_axi.aw.valid & io.lsu_axi.aw.ready
   bus_wdata_sent := io.lsu_axi.w.valid & io.lsu_axi.w.ready
   bus_cmd_sent := ((obuf_cmd_done | bus_wcmd_sent) & (obuf_data_done | bus_wdata_sent)) | (io.lsu_axi.ar.valid & io.lsu_axi.ar.ready)

@@ -197,7 +197,7 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   //Store Buffer
   //Inputs
   stbuf.io.lsu_c1_m_clk                         := clkdomain.io.lsu_c1_m_clk
-  stbuf.io.lsu_c1_r_clk        	               := clkdomain.io.lsu_c1_m_clk
+  stbuf.io.lsu_c1_r_clk        	               := clkdomain.io.lsu_c1_r_clk
   stbuf.io.lsu_stbuf_c1_clk       	             := clkdomain.io.lsu_stbuf_c1_clk
   stbuf.io.lsu_free_c2_clk        	             := clkdomain.io.lsu_free_c2_clk
   stbuf.io.lsu_pkt_m           	               <> lsu_lsc_ctl.io.lsu_pkt_m

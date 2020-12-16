@@ -6334,7 +6334,8 @@ module lsu_bus_buffer(
   reg  obuf_data_done; // @[lsu_bus_buffer.scala 348:55]
   wire  _T_4856 = obuf_cmd_done | obuf_data_done; // @[lsu_bus_buffer.scala 555:54]
   wire  _T_4857 = obuf_cmd_done ? io_lsu_axi_w_ready : io_lsu_axi_aw_ready; // @[lsu_bus_buffer.scala 555:75]
-  wire  _T_4859 = _T_4856 ? _T_4857 : io_lsu_axi_aw_ready; // @[lsu_bus_buffer.scala 555:39]
+  wire  _T_4858 = io_lsu_axi_aw_ready & io_lsu_axi_w_ready; // @[lsu_bus_buffer.scala 555:153]
+  wire  _T_4859 = _T_4856 ? _T_4857 : _T_4858; // @[lsu_bus_buffer.scala 555:39]
   wire  bus_cmd_ready = obuf_write ? _T_4859 : io_lsu_axi_ar_ready; // @[lsu_bus_buffer.scala 555:23]
   wire  _T_1231 = ~obuf_valid; // @[lsu_bus_buffer.scala 287:48]
   wire  _T_1232 = bus_cmd_ready | _T_1231; // @[lsu_bus_buffer.scala 287:46]
@@ -11633,7 +11634,7 @@ module lsu(
   assign stbuf_clock = clock;
   assign stbuf_reset = reset;
   assign stbuf_io_lsu_c1_m_clk = clkdomain_io_lsu_c1_m_clk; // @[lsu.scala 199:49]
-  assign stbuf_io_lsu_c1_r_clk = clkdomain_io_lsu_c1_m_clk; // @[lsu.scala 200:48]
+  assign stbuf_io_lsu_c1_r_clk = clkdomain_io_lsu_c1_r_clk; // @[lsu.scala 200:48]
   assign stbuf_io_lsu_stbuf_c1_clk = clkdomain_io_lsu_stbuf_c1_clk; // @[lsu.scala 201:54]
   assign stbuf_io_lsu_free_c2_clk = clkdomain_io_lsu_free_c2_clk; // @[lsu.scala 202:54]
   assign stbuf_io_lsu_pkt_m_valid = lsu_lsc_ctl_io_lsu_pkt_m_valid; // @[lsu.scala 203:48]
