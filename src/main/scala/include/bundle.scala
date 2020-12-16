@@ -34,6 +34,7 @@ class tlu_dma extends Bundle{
 
 class dec_bp extends Bundle{
   val dec_tlu_br0_r_pkt = Flipped(Valid(new br_tlu_pkt_t))
+  //  val dec_tlu_flush_lower_wb = Input(Bool())
   val dec_tlu_flush_leak_one_wb = Input(Bool())
   val dec_tlu_bpred_disable = Input(Bool())
 }
@@ -339,7 +340,7 @@ class tlu_exu extends Bundle with lib{
   val		exu_i0_br_hist_r		  =Output(UInt(2.W))                          // to DEC  I0 branch history
   val		exu_i0_br_error_r		  =Output(UInt(1.W))                          // to DEC  I0 branch error
   val		exu_i0_br_start_error_r	=Output(UInt(1.W))                       	// to DEC  I0 branch start error
-//  val		exu_i0_br_index_r		  =Output(UInt(((BTB_ADDR_HI-BTB_ADDR_LO)+1).W))  // to DEC  I0 branch index
+  val		exu_i0_br_index_r		  =Output(UInt(((BTB_ADDR_HI-BTB_ADDR_LO)+1).W))  // to DEC  I0 branch index
   val		exu_i0_br_valid_r		  =Output(UInt(1.W))                          // to DEC  I0 branch valid
   val		exu_i0_br_mp_r			  =Output(UInt(1.W))                          // to DEC  I0 branch mispredict
   val		exu_i0_br_middle_r		=Output(UInt(1.W))                          // to DEC  I0 branch middle
