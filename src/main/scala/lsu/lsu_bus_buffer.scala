@@ -5,6 +5,7 @@ import lib._
 import include._
 import chisel3.experimental.{ChiselEnum, chiselName}
 import chisel3.util.ImplicitConversions.intToUInt
+import ifu._
 
 @chiselName
 class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
@@ -182,6 +183,7 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
     (io.lsu_addr_r(1,0)===1.U)->Cat(0.U(3.W), ldst_byteen_r(3)),
     (io.lsu_addr_r(1,0)===2.U)->Cat(0.U(2.W), ldst_byteen_r(3,2)),
     (io.lsu_addr_r(1,0)===3.U)->Cat(0.U(1.W), ldst_byteen_r(3,1))))
+
   val ldst_byteen_lo_r = Mux1H(Seq((io.lsu_addr_r(1,0)===0.U)->ldst_byteen_r,
     (io.lsu_addr_r(1,0)===1.U)->Cat(ldst_byteen_r(2,0), 0.U),
     (io.lsu_addr_r(1,0)===2.U)->Cat(ldst_byteen_r(1,0), 0.U(2.W)),
@@ -295,7 +297,6 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   val obuf_merge_en = WireInit(Bool(), false.B)
   val obuf_merge_in = obuf_merge_en
   val obuf_tag0_in = Mux(ibuf_buf_byp, WrPtr0_r, CmdPtr0)
-  //val Cmdptr1 = WireInit(UInt(DEPTH_LOG2.W), 0.U)
 
   val obuf_tag1_in = Mux(ibuf_buf_byp, WrPtr1_r, CmdPtr1)
   val obuf_cmd_done = WireInit(Bool(), false.B)
@@ -615,4 +616,8 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   WrPtr1_r := withClock(io.lsu_c2_r_clk){RegNext(WrPtr1_m, 0.U)}
   io.lsu_busreq_r := withClock(io.lsu_c2_r_clk){RegNext(io.lsu_busreq_m & !io.flush_r & !io.ld_full_hit_m, false.B)}
   lsu_nonblock_load_valid_r := withClock(io.lsu_c2_r_clk){RegNext(io.dctl_busbuff.lsu_nonblock_load_valid_m, false.B)}
+}
+
+object bus_buffer extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new lsu_bus_buffer()))
 }

@@ -74,14 +74,14 @@ class ahb_channel extends Bundle{
   val in  = new ahb_in
   val out = new ahb_out
 }
-class axi_channels(val BUS_TAG :Int=1) extends Bundle with lib{
+class axi_channels(val BUS_TAG :Int=3) extends Bundle with lib{
   val aw = Decoupled(new write_addr(BUS_TAG))
   val w = Decoupled(new write_data())
   val b = Flipped(Decoupled(new write_resp(BUS_TAG)))
   val ar = Decoupled(new read_addr(BUS_TAG))
   val r = Flipped(Decoupled(new read_data(BUS_TAG)))
 }
-class read_addr(val TAG : Int) extends Bundle with lib { // read_address
+class read_addr(val TAG : Int=3) extends Bundle with lib { // read_address
   val id = UInt(TAG.W)
   val addr = UInt(32.W)
   val region = UInt(4.W)
@@ -93,13 +93,13 @@ class read_addr(val TAG : Int) extends Bundle with lib { // read_address
   val prot = UInt(3.W)
   val qos = UInt(4.W)
 }
-class read_data(val TAG : Int) extends Bundle with lib {   // read_data
+class read_data(val TAG : Int=3) extends Bundle with lib {   // read_data
   val id = UInt(TAG.W)
   val data = UInt(64.W)
   val resp = UInt(2.W)
   val last = Bool()
 }
-class write_addr(val TAG : Int) extends Bundle with lib { // write_address
+class write_addr(val TAG : Int=3) extends Bundle with lib { // write_address
   val id = UInt(TAG.W)
   val addr = UInt(32.W)
   val region = UInt(4.W)

@@ -101,8 +101,6 @@ class dbg extends Module with lib with RequireAsyncReset {
   dontTouch(dbg_dm_rst_l)
   val rst_temp = (dbg_dm_rst_l.asBool() & reset.asBool()).asAsyncReset()
   dontTouch(rst_temp)
-  val rst_not = (!dbg_dm_rst_l.asBool).asAsyncReset()
-  dontTouch(rst_not)
 
   io.dbg_core_rst_l := (!dmcontrol_reg(1)).asBool()
   val sbcs_wren = (io.dmi_reg_addr === "h38".U) & io.dmi_reg_en & io.dmi_reg_wr_en & (sb_state === sb_state_t.sbidle)
@@ -126,7 +124,7 @@ class dbg extends Module with lib with RequireAsyncReset {
     RegEnable(io.dmi_reg_wdata(19, 15), 0.U, sbcs_wren)
   } // sbcs_misc_reg
 
-  val temp_sbcs_14_12 = withClockAndReset(sb_free_clk, rst_not) {
+  val temp_sbcs_14_12 = withClockAndReset(sb_free_clk, dbg_dm_rst_l) {
     RegEnable(sbcs_sberror_din(2, 0), 0.U, sbcs_sberror_wren)
   } // sbcs_error_reg
   sbcs_reg := Cat(1.U(3.W), 0.U(6.W), temp_sbcs_22, temp_sbcs_21, temp_sbcs_20, temp_sbcs_19_15, temp_sbcs_14_12, "h20".U(7.W), "b01111".U(5.W))
@@ -456,4 +454,8 @@ class dbg extends Module with lib with RequireAsyncReset {
   io.dbg_dma.dbg_ib.dbg_cmd_valid     := io.dbg_dec.dbg_ib.dbg_cmd_valid
   io.dbg_dma.dbg_ib.dbg_cmd_write     := io.dbg_dec.dbg_ib.dbg_cmd_write
   io.dbg_dma.dbg_ib.dbg_cmd_type      := io.dbg_dec.dbg_ib.dbg_cmd_type
+}
+
+object dbg_main extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new dbg()))
 }

@@ -227,16 +227,16 @@ class dec_tlu_ctl extends Module with lib with RequireAsyncReset with CSR_VAL{
 	val trigger_hit_dmode_r_d1			=WireInit(UInt(1.W),0.U)
 	val dcsr_single_step_done_f			=WireInit(UInt(1.W),0.U)
 	val debug_halt_req_d1				=WireInit(UInt(1.W),0.U)
-    val request_debug_mode_r_d1			=WireInit(UInt(1.W),0.U)
-    val request_debug_mode_done_f		=WireInit(UInt(1.W),0.U)
-    val dcsr_single_step_running_f		=WireInit(UInt(1.W),0.U)
-    val dec_tlu_flush_pause_r_d1		=WireInit(UInt(1.W),0.U)
-    val dbg_halt_req_held				=WireInit(UInt(1.W),0.U)
-   	val debug_halt_req_ns 				=WireInit(UInt(1.W),0.U)
-   	val internal_dbg_halt_mode			=WireInit(UInt(1.W),0.U)
-   	val core_empty						=WireInit(UInt(1.W),0.U)
-   	val dbg_halt_req_final 				=WireInit(UInt(1.W),0.U)
-   	val debug_brkpt_status_ns 			=WireInit(UInt(1.W),0.U)
+	val request_debug_mode_r_d1			=WireInit(UInt(1.W),0.U)
+	val request_debug_mode_done_f		=WireInit(UInt(1.W),0.U)
+	val dcsr_single_step_running_f		=WireInit(UInt(1.W),0.U)
+	val dec_tlu_flush_pause_r_d1		=WireInit(UInt(1.W),0.U)
+	val dbg_halt_req_held				=WireInit(UInt(1.W),0.U)
+	val debug_halt_req_ns 				=WireInit(UInt(1.W),0.U)
+	val internal_dbg_halt_mode			=WireInit(UInt(1.W),0.U)
+	val core_empty						=WireInit(UInt(1.W),0.U)
+	val dbg_halt_req_final 				=WireInit(UInt(1.W),0.U)
+	val debug_brkpt_status_ns 			=WireInit(UInt(1.W),0.U)
 	val mpc_debug_halt_ack_ns 			=WireInit(UInt(1.W),0.U)
 	val mpc_debug_run_ack_ns 			=WireInit(UInt(1.W),0.U)
 	val mpc_halt_state_ns 				=WireInit(UInt(1.W),0.U)
@@ -329,9 +329,7 @@ class dec_tlu_ctl extends Module with lib with RequireAsyncReset with CSR_VAL{
 	io.dec_tlu_i0_kill_writeb_wb	:=withClock(io.free_clk){RegNext(tlu_i0_kill_writeb_r,0.U)}
 	val internal_dbg_halt_mode_f2	=withClock(io.free_clk){RegNext(internal_dbg_halt_mode_f,0.U)}
 	io.tlu_mem.dec_tlu_force_halt			:=withClock(io.free_clk){RegNext(force_halt,0.U)}
-	
-	
-	
+
 	io.dec_tlu_i0_kill_writeb_r 	:=tlu_i0_kill_writeb_r
 	val reset_detect				=withClock(io.free_clk){RegNext(1.U(1.W),0.U)}
 	val reset_detected				=withClock(io.free_clk){RegNext(reset_detect,0.U)}

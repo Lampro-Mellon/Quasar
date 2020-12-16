@@ -83,9 +83,6 @@ class quasar extends Module with RequireAsyncReset with lib {
   val active_state = (!dec.io.dec_pause_state_cg | dec.io.dec_exu.tlu_exu.dec_tlu_flush_lower_r) | dec.io.dec_tlu_misc_clk_override
   val free_clk = rvclkhdr(clock, true.B, io.scan_mode)
   val active_clk = rvclkhdr(clock, active_state.asBool, io.scan_mode)
-  val core_dbg_cmd_done = dma_ctrl.io.dma_dbg_cmd_done | dec.io.dec_dbg_cmd_done
-  val core_dbg_cmd_fail = dma_ctrl.io.dma_dbg_cmd_fail | dec.io.dec_dbg_cmd_fail
-  val core_dbg_rddata = Mux(dma_ctrl.io.dma_dbg_cmd_done, dma_ctrl.io.dma_dbg_rddata, dec.io.dec_dbg_rddata)
 
   // Lets start with IFU
   ifu.io.ifu_dec <> dec.io.ifu_dec
@@ -106,7 +103,7 @@ class quasar extends Module with RequireAsyncReset with lib {
   ifu.io.exu_ifu.exu_bp.exu_i0_br_fghr_r := exu.io.exu_bp.exu_i0_br_fghr_r
   ifu.io.exu_ifu.exu_bp.exu_i0_br_index_r := exu.io.dec_exu.tlu_exu.exu_i0_br_index_r
   ifu.io.dec_tlu_flush_lower_wb := dec.io.dec_exu.tlu_exu.dec_tlu_flush_lower_r
-  ifu.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt := dec.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt
+  ifu.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt <> dec.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt
 
   // Lets start with Dec
   dec.reset := io.core_rst_l
@@ -278,10 +275,10 @@ class quasar extends Module with RequireAsyncReset with lib {
     io.lsu_axi      <> 0.U.asTypeOf(io.lsu_axi)
   }
     else{
-      io.lsu_ahb <> 0.U.asTypeOf(io.lsu_ahb)
-      io.ifu_ahb <> 0.U.asTypeOf(io.ifu_ahb)
-      io.sb_ahb <> 0.U.asTypeOf(io.sb_ahb)
-      io.dma_ahb <> 0.U.asTypeOf(io.dma_ahb)
+      io.lsu_ahb          <> 0.U.asTypeOf(io.lsu_ahb)
+      io.ifu_ahb          <> 0.U.asTypeOf(io.ifu_ahb)
+      io.sb_ahb           <> 0.U.asTypeOf(io.sb_ahb)
+      io.dma_ahb          <> 0.U.asTypeOf(io.dma_ahb)
       dma_ctrl.io.dma_axi <> io.dma_axi
       dbg.io.sb_axi       <> io.sb_axi
       ifu.io.ifu          <> io.ifu_axi

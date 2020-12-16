@@ -303,3 +303,7 @@ class dec extends Module with param with RequireAsyncReset{
   // debug command read data
   io.dec_dbg_rddata := decode.io.dec_i0_wdata_r
 }
+
+object dec_main extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new dec()))
+}
