@@ -179,3 +179,7 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
   io.axi.r.ready           := true.B
   bus_clk                 := rvclkhdr(clock, io.bus_clk_en, io.scan_mode)
 }
+
+object ahb_to_axi4 extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new ahb_to_axi4(3)))
+}
