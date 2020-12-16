@@ -8,27 +8,27 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
   val io = IO(new Bundle{
     val scan_mode = Input(Bool())
     val active_clk              = Input(Clock())
-    val ifu_async_error_start   = Input(Bool())
-    val iccm_rd_ecc_double_err  = Input(Bool())
-    val ic_access_fault_f       = Input(Bool())
-    val ic_access_fault_type_f  = Input(UInt(2.W))
-    val ifu_bp_fghr_f           = Input(UInt(BHT_GHR_SIZE.W))
-    val ifu_bp_btb_target_f     = Input(UInt(31.W))
-    val ifu_bp_poffset_f        = Input(UInt(12.W))
-    val ifu_bp_hist0_f          = Input(UInt(2.W))
-    val ifu_bp_hist1_f          = Input(UInt(2.W))
-    val ifu_bp_pc4_f            = Input(UInt(2.W))
-    val ifu_bp_way_f            = Input(UInt(2.W))
-    val ifu_bp_valid_f          = Input(UInt(2.W))
-    val ifu_bp_ret_f            = Input(UInt(2.W))
-    val exu_flush_final         = Input(Bool())
-    val dec_aln                 = new dec_aln()
-    val ifu_fetch_data_f        = Input(UInt(32.W))
-    val ifu_fetch_val           = Input(UInt(2.W))
-    val ifu_fetch_pc            = Input(UInt(31.W))
+    val ifu_async_error_start   = Input(Bool()) // Error coming from mem-ctl
+    val iccm_rd_ecc_double_err  = Input(Bool()) // ICCM double error coming from mem-ctl
+    val ic_access_fault_f       = Input(Bool()) // Access fault in I$
+    val ic_access_fault_type_f  = Input(UInt(2.W)) // Type of access fault occured
+    val ifu_bp_fghr_f           = Input(UInt(BHT_GHR_SIZE.W)) // Data coming from the branch predictor to put in the FP
+    val ifu_bp_btb_target_f     = Input(UInt(31.W)) // Target for the instruction enqueue in the FP
+    val ifu_bp_poffset_f        = Input(UInt(12.W)) // Offset to the current PC for branch
+    val ifu_bp_hist0_f          = Input(UInt(2.W)) // History to EXU
+    val ifu_bp_hist1_f          = Input(UInt(2.W)) // History to EXU
+    val ifu_bp_pc4_f            = Input(UInt(2.W)) // PC4
+    val ifu_bp_way_f            = Input(UInt(2.W)) // Way to help in miss prediction
+    val ifu_bp_valid_f          = Input(UInt(2.W)) // Valid Branch prediction
+    val ifu_bp_ret_f            = Input(UInt(2.W)) // BP ret
+    val exu_flush_final         = Input(Bool()) // Miss prediction
+    val dec_aln                 = new dec_aln() // Data going to the dec from the ALN
+    val ifu_fetch_data_f        = Input(UInt(32.W)) // PC of the current instruction in the FP
+    val ifu_fetch_val           = Input(UInt(2.W)) // PC boundary i.e 'x' of 2 or 4
+    val ifu_fetch_pc            = Input(UInt(31.W)) // Current PC
    /////////////////////////////////////////////////
-    val ifu_fb_consume1         = Output(Bool())
-    val ifu_fb_consume2         = Output(Bool())
+    val ifu_fb_consume1         = Output(Bool()) // FP used 1
+    val ifu_fb_consume2         = Output(Bool()) // FP used 2
 
   })
   val MHI = 46+BHT_GHR_SIZE // 54
@@ -95,12 +95,16 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
   val shift_2B = WireInit(Bool(), 0.U)
   val f0_shift_2B = WireInit(Bool(), 0.U)
 
+  // Stall if there is an error in the instrucion
   error_stall_in := (error_stall | io.ifu_async_error_start) & !io.exu_flush_final
 
+  // Flop the stall until flush
   error_stall := withClock(io.active_clk) {RegNext(error_stall_in, init = 0.U)}
+  // Write Ptr of the FP
   val wrptr = withClock(io.active_clk) {RegNext(wrptr_in, init = 0.U)}
+  // Read Ptr of the FP
   val rdptr = withClock(io.active_clk) {RegNext(rdptr_in, init = 0.U)}
-
+  // Fetch Instruction boundary
   val f2val = withClock(io.active_clk) {RegNext(f2val_in, init = 0.U)}
   val f1val = withClock(io.active_clk) {RegNext(f1val_in, init = 0.U)}
   val f0val = withClock(io.active_clk) {RegNext(f0val_in, init = 0.U)}
@@ -108,30 +112,34 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
   val q2off = withClock(io.active_clk) {RegNext(q2off_in, init = 0.U)}
   val q1off = withClock(io.active_clk) {RegNext(q1off_in, init = 0.U)}
   val q0off = withClock(io.active_clk) {RegNext(q0off_in, init = 0.U)}
-
+  // Instrution PC to the FP
   val f2pc = rvdffe(io.ifu_fetch_pc, f2_wr_en.asBool, clock, io.scan_mode)
   val f1pc = rvdffe(f1pc_in, f1_shift_wr_en.asBool, clock, io.scan_mode)
   val f0pc = rvdffe(f0pc_in, f0_shift_wr_en.asBool, clock, io.scan_mode)
-
+  // Branch data to the FP
   brdata2 := rvdffe(brdata_in, qwen(2), clock, io.scan_mode)
   brdata1 := rvdffe(brdata_in, qwen(1), clock, io.scan_mode)
   brdata0 := rvdffe(brdata_in, qwen(0), clock, io.scan_mode)
-
+  // Miscalanious data to the FP including error's
   misc2 := rvdffe(misc_data_in, qwen(2), clock, io.scan_mode)
   misc1 := rvdffe(misc_data_in, qwen(1), clock, io.scan_mode)
   misc0 := rvdffe(misc_data_in, qwen(0), clock, io.scan_mode)
-
+  // Instruction in the FP
   q2 := rvdffe(io.ifu_fetch_data_f, qwen(2), clock, io.scan_mode)
   q1 := rvdffe(io.ifu_fetch_data_f, qwen(1), clock, io.scan_mode)
   q0 := rvdffe(io.ifu_fetch_data_f, qwen(0), clock, io.scan_mode)
 
+  // Shift FP logic
   f2_wr_en       := fetch_to_f2
   f1_shift_wr_en := fetch_to_f1 | shift_f2_f1 | f1_shift_2B
   f0_shift_wr_en := fetch_to_f0 | shift_f2_f0 | shift_f1_f0 | shift_2B | shift_4B
-
+  // FP read enable .. 3-bit for Implemenation of 1HMux
   val qren = Cat(rdptr === 2.U, rdptr === 1.U, rdptr === 0.U)
+  // FP write enable .. 3-bit for Implemenation of 1HMux
   qwen := Cat(wrptr === 2.U & ifvalid, wrptr === 1.U & ifvalid, wrptr === 0.U & ifvalid)
 
+  // Read Pointer calculation
+  // Next rdptr = # of consume + current ptr location (Rounding it from 2)
   rdptr_in := Mux1H(Seq((qren(0) & io.ifu_fb_consume1 & !io.exu_flush_final).asBool -> 1.U,
     (qren(1) & io.ifu_fb_consume1 & !io.exu_flush_final).asBool -> 2.U,
     (qren(2) & io.ifu_fb_consume1 & !io.exu_flush_final).asBool -> 0.U,
@@ -140,6 +148,7 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
     (qren(2) & io.ifu_fb_consume2 & !io.exu_flush_final).asBool -> 1.U,
     (!io.ifu_fb_consume1 & !io.ifu_fb_consume2 & !io.exu_flush_final).asBool -> rdptr))
 
+  // As there is only 1 enqueue so each time move by 1
   wrptr_in := Mux1H(Seq((qwen(0) & !io.exu_flush_final).asBool -> 1.U,
     (qwen(1) & !io.exu_flush_final).asBool -> 2.U,
     (qwen(2) & !io.exu_flush_final).asBool -> 0.U,
@@ -166,7 +175,7 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
   val q0sel = Cat(q0ptr, !q0ptr)
 
   val q1sel = Cat(q1ptr, !q1ptr)
-
+  // Misc data error, access-fault, type of fault, target, offset and ghr value
   misc_data_in := Cat(io.iccm_rd_ecc_double_err, io.ic_access_fault_f, io.ic_access_fault_type_f,
     io.ifu_bp_btb_target_f, io.ifu_bp_poffset_f, io.ifu_bp_fghr_f)
 
@@ -192,10 +201,11 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
   val f0poffset = misc0eff(BHT_GHR_SIZE+11, BHT_GHR_SIZE)
   val f0fghr = misc0eff(BHT_GHR_SIZE-1, 0)
 
+  // Branch information
   brdata_in := Cat(io.ifu_bp_hist1_f(1),io.ifu_bp_hist0_f(1),io.ifu_bp_pc4_f(1),io.ifu_bp_way_f(1),io.ifu_bp_valid_f(1),
     io.ifu_bp_ret_f(1), io.ifu_bp_hist1_f(0),io.ifu_bp_hist0_f(0),io.ifu_bp_pc4_f(0),io.ifu_bp_way_f(0),
     io.ifu_bp_valid_f(0),io.ifu_bp_ret_f(0))
-
+  // Effective branch information
   val brdataeff = Mux1H(Seq(qren(0).asBool->Cat(brdata1,brdata0),
     qren(1).asBool->Cat(brdata2,brdata1),
     qren(2).asBool->Cat(brdata0,brdata2)))
@@ -227,11 +237,13 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
   val consume_fb0 = !sf0val(0) & f0val(0)
   val consume_fb1 = !sf1val(0) & f1val(0)
 
+  // Depending on type of instruction and boundary determine how many FP to consume
   io.ifu_fb_consume1 := consume_fb0 & !consume_fb1 & !io.exu_flush_final
   io.ifu_fb_consume2 := consume_fb0 &  consume_fb1 & !io.exu_flush_final
 
   ifvalid := io.ifu_fetch_val(0)
 
+  // Shift logic for each dequeue
   shift_f1_f0 := !sf0_valid &  sf1_valid
   shift_f2_f0 := !sf0_valid & !sf1_valid &  f2_valid
   shift_f2_f1 := !sf0_valid &  sf1_valid &  f2_valid
@@ -285,6 +297,7 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
 
   q1final := Mux1H(Seq(q1sel(0).asBool->q1eff(15,0), q1sel(1).asBool->q1eff(31,16)))
 
+  // Alinging the data according to the boundary of PC
   val aligndata = Mux1H(Seq(f0val(1).asBool -> q0final, (~f0val(1) & f0val(0)).asBool -> Cat(q1final(15,0),q0final(15,0))))
 
   alignval := Mux1H(Seq(f0val(1).asBool->3.U, (!f0val(1) & f0val(0)) -> Cat(f1val(0),1.U)))
@@ -317,6 +330,7 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
 
   io.dec_aln.aln_dec.ifu_i0_cinst := aligndata(15,0)
 
+  // Instruction is compressed or not
   first4B := aligndata(1,0) === 3.U
 
   val first2B = ~first4B
@@ -334,11 +348,12 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
   io.dec_aln.aln_ib.ifu_i0_dbecc := Mux1H(Seq(first4B.asBool->aligndbecc.orR, first2B.asBool->aligndbecc(0)))
 
   val ifirst = aligndata
-
+  // Expander from 16-bit to 32-bit
   val decompressed = Module(new ifu_compress_ctl())
 
   io.dec_aln.aln_ib.ifu_i0_instr := Mux1H(Seq(first4B.asBool -> ifirst, first2B.asBool -> decompressed.io.dout))
 
+  // Hashing the PC
   val firstpc_hash =  btb_addr_hash(f0pc)
 
   val secondpc_hash = btb_addr_hash(secondpc)

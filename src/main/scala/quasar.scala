@@ -201,6 +201,7 @@ class quasar extends Module with RequireAsyncReset with lib {
   ifu.io.exu_ifu.exu_bp <> exu.io.exu_bp
   ifu.io.exu_ifu.exu_bp.exu_i0_br_fghr_r := exu.io.exu_bp.exu_i0_br_fghr_r
   ifu.io.exu_ifu.exu_bp.exu_i0_br_index_r := exu.io.dec_exu.tlu_exu.exu_i0_br_index_r
+  ifu.io.dec_tlu_flush_lower_wb := dec.io.dec_exu.tlu_exu.dec_tlu_flush_lower_r
   ifu.io.ifu_dec.dec_mem_ctrl.dec_tlu_flush_lower_wb := dec.io.dec_exu.tlu_exu.dec_tlu_flush_lower_r
   ifu.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt := dec.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt
 

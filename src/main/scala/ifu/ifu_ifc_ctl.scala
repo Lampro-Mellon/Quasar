@@ -7,32 +7,32 @@ import chisel3.util._
 
 class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
   val io = IO(new Bundle{
-    val exu_flush_final = Input(Bool())
-    val exu_flush_path_final = Input(UInt(31.W))
+    val exu_flush_final = Input(Bool()) // Miss Prediction for EXU
+    val exu_flush_path_final = Input(UInt(31.W)) // Replay PC
     val free_clk = Input(Clock())
     val active_clk = Input(Clock())
     val scan_mode = Input(Bool())
     val ic_hit_f = Input(Bool())
-    val ifu_ic_mb_empty = Input(Bool())
-    val ifu_fb_consume1 = Input(Bool())
-    val ifu_fb_consume2 = Input(Bool())
-    val ifu_bp_hit_taken_f = Input(Bool())
-    val ifu_bp_btb_target_f = Input(UInt(31.W))
-    val ic_dma_active = Input(Bool())
+    val ifu_ic_mb_empty = Input(Bool()) // Miss buffer of mem-ctl empty
+    val ifu_fb_consume1 = Input(Bool()) // Consume 1 fetch from FP
+    val ifu_fb_consume2 = Input(Bool()) // Consume 2 fetch from FP
+    val ifu_bp_hit_taken_f = Input(Bool()) // Branch taken from BP
+    val ifu_bp_btb_target_f = Input(UInt(31.W)) // Predicted PC
+    val ic_dma_active = Input(Bool()) // DMA for I$
     val ic_write_stall = Input(Bool())
-    val dec_ifc = new dec_ifc()
-    val dma_ifc = new dma_ifc()
-    val ifc_fetch_addr_f = Output(UInt(31.W))
-    val ifc_fetch_addr_bf = Output(UInt(31.W))
+    val dec_ifc = new dec_ifc() // DEC to IFC Bundle
+    val dma_ifc = new dma_ifc() // DMA to IFC Bundle
+    val ifc_fetch_addr_f = Output(UInt(31.W)) // Previous PC
+    val ifc_fetch_addr_bf = Output(UInt(31.W)) // Next PC
 
-    val ifc_fetch_req_f = Output(Bool())
+    val ifc_fetch_req_f = Output(Bool()) // Fetch State
 
-    val ifc_fetch_uncacheable_bf = Output(Bool())
+    val ifc_fetch_uncacheable_bf = Output(Bool()) // Fetch req for uncacheable
     val ifc_fetch_req_bf = Output(Bool())
     val ifc_fetch_req_bf_raw = Output(Bool())
-    val ifc_iccm_access_bf = Output(Bool())
-    val ifc_region_acc_fault_bf = Output(Bool())
-    val ifc_dma_access_ok = Output(Bool())
+    val ifc_iccm_access_bf = Output(Bool()) // ICCM access
+    val ifc_region_acc_fault_bf = Output(Bool()) // Region access fault
+    val ifc_dma_access_ok = Output(Bool()) // DMA accesing
   })
 
   val fetch_addr_bf = WireInit(UInt(31.W), init = 0.U)
@@ -69,6 +69,7 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
   val sel_next_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f
 
   // TODO: Make an assertion for the 1H-Mux under here
+  // Next PC calculation
   io.ifc_fetch_addr_bf := Mux1H(Seq(io.exu_flush_final.asBool -> io.exu_flush_path_final,  // Replay PC
         sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f,         // Hold the current PC
         sel_btb_addr_bf.asBool -> io.ifu_bp_btb_target_f,       // Take the predicted PC
@@ -77,6 +78,7 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
   val address_upper = io.ifc_fetch_addr_f(30,1)+1.U
   fetch_addr_next_0 := !(address_upper(ICACHE_TAG_INDEX_LO-2) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO-1)) & io.ifc_fetch_addr_f(0)
 
+  // Next PC to check from which boundary it is comming from
   fetch_addr_next := Cat(address_upper, fetch_addr_next_0)
 
   io.ifc_fetch_req_bf_raw := ~idle
@@ -103,12 +105,14 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
 
   flush_fb := io.exu_flush_final
 
+  // Checking FP for PMU
   fb_right := ( io.ifu_fb_consume1 & !io.ifu_fb_consume2 & (!io.ifc_fetch_req_f | miss_f)) |
     (io.ifu_fb_consume2 &  io.ifc_fetch_req_f)
 
   fb_right2 := (io.ifu_fb_consume2 & (~io.ifc_fetch_req_f | miss_f))
   fb_left := io.ifc_fetch_req_f & !(io.ifu_fb_consume1 | io.ifu_fb_consume2) & !miss_f
 
+  // Shifting the fb to remember the FP state
   fb_write_ns := Mux1H(Seq(flush_fb.asBool -> 1.U(4.W),
     (!flush_fb & fb_right).asBool -> Cat(0.U(1.W), fb_write_f(3,1)),
     (!flush_fb & fb_right2).asBool -> Cat(0.U(2.W), fb_write_f(3,2)),
@@ -126,6 +130,7 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
   io.dec_ifc.ifu_pmu_fetch_stall := wfm | (io.ifc_fetch_req_bf_raw &
     ((fb_full_f & !(io.ifu_fb_consume2 | io.ifu_fb_consume1 | io.exu_flush_final)) | dma_stall))
 
+  // Checking the next PC range and its region to access the ICCM or I$
   val (iccm_acc_in_region_bf, iccm_acc_in_range_bf) = if(ICCM_ENABLE)
     rvrangecheck(ICCM_SADR, ICCM_SIZE, Cat(io.ifc_fetch_addr_bf,0.U))
   else (0.U, 0.U)
