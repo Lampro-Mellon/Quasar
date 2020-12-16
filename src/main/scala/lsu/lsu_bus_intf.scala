@@ -3,8 +3,6 @@ import chisel3._
 import chisel3.util._
 import lib._
 import include._
-import snapshot._
-import ifu._
 
 class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
   val io = IO (new Bundle {

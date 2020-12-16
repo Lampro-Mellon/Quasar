@@ -4,7 +4,6 @@ import chisel3.experimental.chiselName
 import chisel3.util._
 import lib._
 import include._
-import snapshot._
 
 @chiselName
 class lsu_clkdomain extends Module  with RequireAsyncReset with lib{

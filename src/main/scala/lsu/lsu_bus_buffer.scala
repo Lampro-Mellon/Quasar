@@ -183,6 +183,7 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
     (io.lsu_addr_r(1,0)===1.U)->Cat(0.U(3.W), ldst_byteen_r(3)),
     (io.lsu_addr_r(1,0)===2.U)->Cat(0.U(2.W), ldst_byteen_r(3,2)),
     (io.lsu_addr_r(1,0)===3.U)->Cat(0.U(1.W), ldst_byteen_r(3,1))))
+
   val ldst_byteen_lo_r = Mux1H(Seq((io.lsu_addr_r(1,0)===0.U)->ldst_byteen_r,
     (io.lsu_addr_r(1,0)===1.U)->Cat(ldst_byteen_r(2,0), 0.U),
     (io.lsu_addr_r(1,0)===2.U)->Cat(ldst_byteen_r(1,0), 0.U(2.W)),
