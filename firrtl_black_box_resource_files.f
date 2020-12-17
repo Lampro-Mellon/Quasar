@@ -1,1 +1,1 @@
-/home/abdulhameed.akram/Videos/Quasar/gated_latch.v
+/home/waleedbinehsan/Downloads/Quasar/gated_latch.v

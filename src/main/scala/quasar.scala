@@ -173,7 +173,6 @@ class quasar extends Module with RequireAsyncReset with lib {
   lsu.io.free_clk := free_clk
 
   // Debug lets go
-  dbg.reset := io.core_rst_l
   dbg.io.core_dbg_rddata := Mux(dma_ctrl.io.dma_dbg_cmd_done, dma_ctrl.io.dma_dbg_rddata, dec.io.dec_dbg_rddata)
   dbg.io.core_dbg_cmd_done := dma_ctrl.io.dma_dbg_cmd_done | dec.io.dec_dbg_cmd_done
   dbg.io.core_dbg_cmd_fail := dma_ctrl.io.dma_dbg_cmd_fail | dec.io.dec_dbg_cmd_fail
