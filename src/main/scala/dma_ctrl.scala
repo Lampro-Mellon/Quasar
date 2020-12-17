@@ -496,6 +496,4 @@ class dma_ctrl extends Module with lib with RequireAsyncReset {
   io.ifu_dma.dma_mem_ctl.dma_mem_tag := io.lsu_dma.dma_mem_tag
 }
 
-object dma extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new dma_ctrl()))
-}
+

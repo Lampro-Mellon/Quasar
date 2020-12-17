@@ -118,6 +118,4 @@ class ifu extends Module with lib with RequireAsyncReset {
   io.iccm_dma_sb_error := mem_ctl.io.iccm_dma_sb_error
 }
 
-object ifu_main extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new ifu()))
-}
+
