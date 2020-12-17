@@ -617,8 +617,8 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
   i0_d_c.load               :=  i0_dp.load & i0_legal_decode_d
   i0_d_c.alu                :=  i0_dp.alu  & i0_legal_decode_d
 
-  val i0_x_c = withClock(io.active_clk){RegEnable(i0_d_c,0.U.asTypeOf(i0_d_c), i0_x_ctl_en.asBool)}
-  val i0_r_c = withClock(io.active_clk){RegEnable(i0_x_c,0.U.asTypeOf(i0_x_c), i0_r_ctl_en.asBool)}
+  val i0_x_c = withClock(io.active_clk){RegEnable(i0_d_c, i0_x_ctl_en.asBool)}
+  val i0_r_c = withClock(io.active_clk){RegEnable(i0_x_c, i0_r_ctl_en.asBool)}
   i0_pipe_en := Cat(io.dec_aln.dec_i0_decode_d,withClock(io.active_clk){RegNext(i0_pipe_en(3,1), init=0.U)})
 
   i0_x_ctl_en               := (i0_pipe_en(3,2).orR | io.clk_override)
