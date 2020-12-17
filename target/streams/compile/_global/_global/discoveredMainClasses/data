@@ -1,1 +1,1 @@
-["dec.dec_dec_ctl","dec.dec_decode","dec.dec_main","dec.dec_trig","dec.gpr_gen","dec.ib_gen","dec.test","dec.tlu_gen","exu.alu","pic_main"]
+["QUASAR","QUASAR_Wrp","dbg.dbg_main","dec.dec_main","dma","exu.exu_main","ifu.ifu_main","lib.ahb_to_axi4","lib.axi4_to_ahb","lsu.bus_buffer","lsu.lsu_top","pic_gen"]

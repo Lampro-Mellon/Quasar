@@ -12,35 +12,11 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     val nmi_vec = Input(UInt(31.W))
     val jtag_id = Input(UInt(31.W))
 
-    val trace = new trace_pkt_t
-//    val trace_rv_i_insn_ip = Output(UInt(32.W))
-//    val trace_rv_i_address_ip = Output(UInt(32.W))
-//    val trace_rv_i_valid_ip = Output(UInt(2.W))
-//    val trace_rv_i_exception_ip = Output(UInt(2.W))
-//    val trace_rv_i_ecause_ip = Output(UInt(5.W))
-//    val trace_rv_i_interrupt_ip = Output(UInt(2.W))
-//    val trace_rv_i_tval_ip = Output(UInt(32.W))
-
     // AXI Signals
-    val lsu_axi = new axi_channels(LSU_BUS_TAG)
-    val ifu_axi = new axi_channels(IFU_BUS_TAG)
-    val sb_axi = new axi_channels(SB_BUS_TAG)
-    val dma_axi = Flipped(new axi_channels(DMA_BUS_TAG))
-
-    // DMA slave
-    val dma_hsel = Input(Bool())
-    val dma_haddr = Input(UInt(32.W))
-    val dma_hburst = Input(UInt(3.W))
-    val dma_hmastlock = Input(Bool())
-    val dma_hprot = Input(UInt(4.W))
-    val dma_hsize = Input(UInt(3.W))
-    val dma_htrans = Input(UInt(2.W))
-    val dma_hwrite = Input(Bool())
-    val dma_hwdata = Input(UInt(64.W))
-    val dma_hreadyin = Input(Bool())
-    val dma_hrdata = Output(UInt(64.W))
-    val dma_hreadyout = Output(Bool())
-    val dma_hresp = Output(Bool())
+    val lsu_brg = bridge_gen(LSU_BUS_TAG, false)
+    val ifu_brg = bridge_gen(IFU_BUS_TAG, false)
+    val sb_brg  = bridge_gen(SB_BUS_TAG , false)
+    val dma_brg = bridge_gen(DMA_BUS_TAG, true)
 
     val lsu_bus_clk_en = Input(Bool())
     val ifu_bus_clk_en = Input(Bool())
@@ -80,12 +56,14 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     val o_cpu_run_ack = Output(Bool())
     val mbist_mode = Input(Bool())
 
+    val rv_trace_pkt = new trace_pkt_t()
     val scan_mode = Input(Bool())
 
-})
+  })
   val mem = Module(new quasar.mem())
   val dmi_wrapper = Module(new dmi_wrapper())
   val core = Module(new quasar())
+  core.io.scan_mode := io.scan_mode
   dmi_wrapper.io.trst_n := io.jtag_trst_n
   dmi_wrapper.io.tck := io.jtag_tck
   dmi_wrapper.io.tms := io.jtag_tms
@@ -93,8 +71,6 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   dmi_wrapper.io.core_clk := clock
   dmi_wrapper.io.jtag_id := io.jtag_id
   dmi_wrapper.io.rd_data := core.io.dmi_reg_rdata
-
-
   dmi_wrapper.io.core_rst_n := io.dbg_rst_l
   core.io.dmi_reg_wdata := dmi_wrapper.io.reg_wr_data
   core.io.dmi_reg_addr := dmi_wrapper.io.reg_wr_addr
@@ -107,30 +83,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   mem.io.dccm_clk_override := core.io.dccm_clk_override
   mem.io.icm_clk_override := core.io.icm_clk_override
   mem.io.dec_tlu_core_ecc_disable := core.io.dec_tlu_core_ecc_disable
-  mem.io.dccm <> core.io.swerv_mem
-//  mem.io.iccm_rw_addr := core.io.iccm_rw_addr
-//  mem.io.iccm_buf_correct_ecc := core.io.iccm_buf_correct_ecc
-//  mem.io.iccm_correction_state := core.io.iccm_correction_state
-//  mem.io.iccm_wren := core.io.iccm_wren
-//  mem.io.iccm_rden := core.io.iccm_rden
-//  mem.io.iccm_wr_size := core.io.iccm_wr_size
-//  mem.io.iccm_wr_data := core.io.iccm_wr_data
-
-
-//  mem.io.ic_rw_addr := core.io.ic_rw_addr
-//  mem.io.ic_tag_valid := core.io.ic_tag_valid
-//  mem.io.ic_wr_en := core.io.ic_wr_en
-//  mem.io.ic_rd_en := core.io.ic_rd_en
-//  mem.io.ic_premux_data := core.io.ic_premux_data
-//  mem.io.ic_sel_premux_data := core.io.ic_sel_premux_data
-//  mem.io.ic_wr_data := core.io.ic_wr_data
-//  mem.io.ic_debug_wr_data := core.io.ic_debug_wr_data
-//
-//  mem.io.ic_debug_addr := core.io.ic_debug_addr
-//  mem.io.ic_debug_rd_en := core.io.ic_debug_rd_en
-//  mem.io.ic_debug_wr_en := core.io.ic_debug_wr_en
-//  mem.io.ic_debug_tag_array := core.io.ic_debug_tag_array
-//  mem.io.ic_debug_way := core.io.ic_debug_way
+  mem.io.dccm <> core.io.dccm
   mem.io.rst_l := reset
   mem.io.clk := clock
   mem.io.scan_mode := io.scan_mode
@@ -138,26 +91,30 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   core.io.dbg_rst_l := io.dbg_rst_l
   core.io.ic <> mem.io.ic
   core.io.iccm <> mem.io.iccm
- // core.io.iccm_rd_data_ecc := mem.io.iccm_rd_data_ecc
-//  core.io.dccm_rd_data_hi := mem.io.dccm_rd_data_hi
-//  core.io.ic_rd_data := mem.io.ic_rd_data
-//  core.io.ictag_debug_rd_data := mem.io.ictag_debug_rd_data
-//  core.io.ic_eccerr := mem.io.ic_eccerr
-//  core.io.ic_parerr := mem.io.ic_parerr
-//  core.io.ic_rd_hit := mem.io.ic_rd_hit
-//  core.io.ic_tag_perr := mem.io.ic_tag_perr
-//  core.io.ic_debug_rd_data := mem.io.ic_debug_rd_data
-//  core.io.iccm_rd_data := mem.io.iccm_rd_data
-  core.io.sb_hready := 0.U
-  core.io.hrdata := 0.U
-  core.io.sb_hresp := 0.U
-  core.io.lsu_hrdata := 0.U
-  core.io.lsu_hresp := 0.U
-  core.io.lsu_hready := 0.U
-  core.io.hready := 0.U
-  core.io.hresp := 0.U
-  core.io.sb_hrdata := 0.U
-  core.io.scan_mode := io.scan_mode
+
+
+  if(BUILD_AXI4) {
+    core.io.ifu_ahb <> 0.U.asTypeOf(core.io.ifu_ahb)
+    core.io.lsu_ahb <> 0.U.asTypeOf(core.io.lsu_ahb)
+    core.io.sb_ahb  <> 0.U.asTypeOf(core.io.sb_ahb)
+    core.io.dma_ahb <> 0.U.asTypeOf(core.io.dma_ahb)
+
+    core.io.lsu_axi <> io.lsu_brg
+    core.io.ifu_axi <> io.ifu_brg
+    core.io.sb_axi  <> io.sb_brg
+    core.io.dma_axi <> io.dma_brg
+  }
+  else {
+    core.io.ifu_ahb <> io.ifu_brg
+    core.io.lsu_ahb <> io.lsu_brg
+    core.io.sb_ahb <> io.sb_brg
+    core.io.dma_ahb <> io.dma_brg
+
+    core.io.lsu_axi <> 0.U.asTypeOf(core.io.lsu_axi)
+    core.io.ifu_axi <> 0.U.asTypeOf(core.io.ifu_axi)
+    core.io.sb_axi  <> 0.U.asTypeOf(core.io.sb_axi)
+    core.io.dma_axi <> 0.U.asTypeOf(core.io.lsu_axi)
+  }
   // core Inputs
   core.io.dbg_rst_l := io.dbg_rst_l
   core.io.rst_vec := io.rst_vec
@@ -174,48 +131,6 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   core.io.mpc_debug_run_req := io.mpc_debug_run_req
   core.io.mpc_reset_run_req := io.mpc_reset_run_req
 
-  //-------------------------- LSU AXI signals--------------------------
-  // AXI Write Channels
-  core.io.lsu_axi <> io.lsu_axi
-  //-------------------------- IFU AXI signals--------------------------
-  // AXI Write Channels
-  core.io.ifu_axi <> io.ifu_axi
-  //-------------------------- SB AXI signals--------------------------
-  // AXI Write Channels
-  core.io.sb_axi <> io.sb_axi
-
-  //-------------------------- DMA AXI signals--------------------------
-  // AXI Write Channels
-  core.io.dma_axi <> io.dma_axi
-
-  // DMA Slave
-  core.io.dma_hsel := io.dma_hsel
-  core.io.dma_haddr := io.dma_haddr
-  core.io.dma_hburst := io.dma_hburst
-  core.io.dma_hmastlock := io.dma_hmastlock
-  core.io.dma_hprot := io.dma_hprot
-  core.io.dma_hsize := io.dma_hsize
-  core.io.dma_htrans := io.dma_htrans
-  core.io.dma_hwrite := io.dma_hwrite
-  core.io.dma_hwdata := io.dma_hwdata
-  core.io.dma_hreadyin := io.dma_hreadyin
-
-  core.io.lsu_bus_clk_en
-  core.io.ifu_bus_clk_en
-  core.io.dbg_bus_clk_en
-  core.io.dma_bus_clk_en
-
-  core.io.dmi_reg_en
-  core.io.dmi_reg_addr
-  core.io.dmi_reg_wr_en
-  core.io.dmi_reg_wdata
-  core.io.dmi_hard_reset
-
-  core.io.extintsrc_req
-  core.io.timer_int
-  core.io.soft_int
-  core.io.scan_mode
-
   core.io.lsu_bus_clk_en := io.lsu_bus_clk_en
   core.io.ifu_bus_clk_en := io.ifu_bus_clk_en
   core.io.dbg_bus_clk_en := io.dbg_bus_clk_en
@@ -227,14 +142,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
 
   // Outputs
   val core_rst_l = core.io.core_rst_l
-  io.trace <> core.io.trace
-//  io.trace_rv_i_insn_ip := core.io.trace_rv_i_insn_ip
-//  io.trace_rv_i_address_ip := core.io.trace_rv_i_address_ip
-//  io.trace_rv_i_valid_ip := core.io.trace_rv_i_valid_ip
-//  io.trace_rv_i_exception_ip := core.io.trace_rv_i_exception_ip
-//  io.trace_rv_i_ecause_ip := core.io.trace_rv_i_ecause_ip
-//  io.trace_rv_i_interrupt_ip := core.io.trace_rv_i_interrupt_ip
-//  io.trace_rv_i_tval_ip := core.io.trace_rv_i_tval_ip
+  io.rv_trace_pkt <> core.io.rv_trace_pkt
 
   // external halt/run interface
   io.o_cpu_halt_ack := core.io.o_cpu_halt_ack
@@ -250,15 +158,6 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   io.dec_tlu_perfcnt1 := core.io.dec_tlu_perfcnt1
   io.dec_tlu_perfcnt2 := core.io.dec_tlu_perfcnt2
   io.dec_tlu_perfcnt3 := core.io.dec_tlu_perfcnt3
-
-
-  //-------------------------- LSU AXI signals--------------------------
-  // AXI Write Channels
-
-  // DMA Slave
-  io.dma_hrdata := core.io.dma_hrdata
-  io.dma_hreadyout := core.io.dma_hreadyout
-  io.dma_hresp := core.io.dma_hresp
 
 }
 object QUASAR_Wrp extends App {

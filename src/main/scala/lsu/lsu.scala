@@ -6,7 +6,7 @@ import chisel3.util._
 import include._
 import mem._
 
-class lsu extends Module with RequireAsyncReset with lib {
+class lsu extends Module with RequireAsyncReset with param with lib {
   val io = IO (new Bundle {
     val clk_override                      = Input(Bool())
     val lsu_dma = new lsu_dma
@@ -319,6 +319,6 @@ class lsu extends Module with RequireAsyncReset with lib {
   withClock(clkdomain.io.lsu_c2_r_clk){lsu_raw_fwd_lo_r := RegNext(lsu_raw_fwd_lo_m,0.U)}
 
 }
-//object lsu_top extends App {
- // println((new chisel3.stage.ChiselStage).emitVerilog(new lsu()))
-//}
+object lsu_top extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new lsu()))
+}

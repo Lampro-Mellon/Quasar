@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
       <module name="chisel-module-template" target="1.8" />
+      <module name="Quasar" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

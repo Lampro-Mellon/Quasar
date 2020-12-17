@@ -11,15 +11,15 @@ trait lib extends param{
 
   def repl(b:Int, a:UInt) = VecInit.tabulate(b)(i => a).reduce(Cat(_,_))
 
- // def bridge_gen(tag: Int, ahb_type: Boolean) = if(BUILD_AXI4) flip(tag, ahb_type) else ahb_bridge_gen(ahb_type)
+  def bridge_gen(tag: Int, ahb_type: Boolean) = if(BUILD_AXI4) flip(tag, ahb_type) else ahb_bridge_gen(ahb_type)
 
-//  def flip(tag: Int , ahb_type: Boolean) = if(ahb_type) Flipped(new axi_channels(tag)) else new axi_channels(tag)
+  def flip(tag: Int , ahb_type: Boolean) = if(ahb_type) Flipped(new axi_channels(tag)) else new axi_channels(tag)
 
-//  def ahb_bridge_gen(ahb_type: Boolean) = if(ahb_type) new Bundle{
-//    val sig = Flipped(new ahb_channel())
- //   val hsel = Input(Bool())
- //   val hreadyin = Input(Bool())}
-//  else new ahb_channel()
+  def ahb_bridge_gen(ahb_type: Boolean) = if(ahb_type) new Bundle{
+    val sig = Flipped(new ahb_channel())
+    val hsel = Input(Bool())
+    val hreadyin = Input(Bool())}
+  else new ahb_channel()
 
   def MEM_CAL : (Int, Int, Int, Int)=
     (ICACHE_WAYPACK, ICACHE_ECC) match{
@@ -321,7 +321,7 @@ trait lib extends param{
       val EN  = Input(Bool())
       val SE = Input(Bool())
     })
-    addResource("/vsrc/gated_latch.sv")
+    addResource("/vsrc/gated_latch.v")
   }
 
   class rvclkhdr extends Module {

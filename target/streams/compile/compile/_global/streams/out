@@ -1,2 +1,8 @@
-[0m[[0m[0mdebug[0m] [0m[0mAcquiring lock on file /home/abdulhameed.akram/Documents/SweRV-Chislified/project/target/.sbt-compilation-infos/swerv-chislified-compile/.sbt-idea-lock ...[0m
-[0m[[0m[0mdebug[0m] [0m[0mReleasing lock on file /home/abdulhameed.akram/Documents/SweRV-Chislified/project/target/.sbt-compilation-infos/swerv-chislified-compile/.sbt-idea-lock.[0m
+[0m[[0m[33mwarn[0m] [0m[0mthere were 101 feature warnings; re-run with -feature for details[0m
+[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
+[0m[[0m[33mwarn[0m] [0m[0m/home/abdulhameed.akram/Videos/Quasar/src/main/scala/quasar.scala:289:8: Generated class QUASAR differs only in case from quasar.[0m
+[0m[[0m[33mwarn[0m] [0m[0m  Such classes will overwrite one another on case-insensitive filesystems.[0m
+[0m[[0m[33mwarn[0m] [0m[0mobject QUASAR extends App {[0m
+[0m[[0m[33mwarn[0m] [0m[0m       ^[0m
+[0m[[0m[33mwarn[0m] [0m[0mthere were 123 feature warnings; re-run with -feature for details[0m
+[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m

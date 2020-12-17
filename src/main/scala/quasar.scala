@@ -14,20 +14,20 @@ class quasar_bundle extends Bundle with  lib{
   val sb_axi  = new axi_channels(SB_BUS_TAG)
   val dma_axi = Flipped(new axi_channels(DMA_BUS_TAG))
 
+  val lsu_ahb = new ahb_channel
+  val ifu_ahb = new ahb_channel
+  val sb_ahb = new ahb_channel
+  val dma_ahb = new Bundle{
+    val sig = Flipped(new ahb_channel())
+    val hsel = Input(Bool())
+    val hreadyin = Input(Bool())}
+
   val dbg_rst_l = Input(AsyncReset())
   val rst_vec = Input(UInt(31.W))
   val nmi_int = Input(Bool())
   val nmi_vec = Input(UInt(31.W))
   val core_rst_l = Output(AsyncReset())
-
-  val trace = new trace_pkt_t
-//  val trace_rv_i_insn_ip = Output(UInt(32.W))
-//  val trace_rv_i_address_ip = Output(UInt(32.W))
-//  val trace_rv_i_valid_ip = Output(UInt(2.W))
-//  val trace_rv_i_exception_ip = Output(UInt(2.W))
-//  val trace_rv_i_ecause_ip = Output(UInt(5.W))
-//  val trace_rv_i_interrupt_ip = Output(UInt(2.W))
-//  val trace_rv_i_tval_ip = Output(UInt(32.W))
+  val rv_trace_pkt = new trace_pkt_t()
   val dccm_clk_override = Output(Bool())
   val icm_clk_override = Output(Bool())
   val dec_tlu_core_ecc_disable = Output(Bool())
@@ -48,96 +48,10 @@ class quasar_bundle extends Bundle with  lib{
   val dec_tlu_perfcnt1 = Output(Bool())
   val dec_tlu_perfcnt2 = Output(Bool())
   val dec_tlu_perfcnt3 = Output(Bool())
-  val swerv_mem = Flipped(new mem_lsu)
+  val dccm = Flipped(new mem_lsu)
   val ic = new ic_mem()
   val iccm = new iccm_mem()
 
- // val iccm_rw_addr = Output(UInt((ICCM_BITS-1).W))
-//  val iccm_wren = Output(Bool())
- // val iccm_rden = Output(Bool())
-//  val iccm_wr_size = Output(UInt(3.W))
- // val iccm_wr_data = Output(UInt(78.W))
- // val iccm_buf_correct_ecc = Output(Bool())
-//  val iccm_correction_state = Output(Bool())
-
-//  val iccm_rd_data = Input(UInt(64.W))
- // val iccm_rd_data_ecc = Input(UInt(78.W))
-
- // val ic_rw_addr = Output(UInt(31.W))
-//  val ic_tag_valid = Output(UInt(ICACHE_NUM_WAYS.W))
- // val ic_wr_en = Output(UInt(ICACHE_NUM_WAYS.W))
- // val ic_rd_en = Output(Bool())
- // val ic_wr_data = Output(Vec(ICACHE_BANKS_WAY, UInt(71.W)))
- // val ic_rd_data = Input(UInt(64.W))
- // val ic_debug_rd_data = Input(UInt(71.W))
- // val ictag_debug_rd_data = Input(UInt(26.W))
- // val ic_debug_wr_data = Output(UInt(71.W))
-
- // val ic_eccerr = Input(UInt(ICACHE_BANKS_WAY.W))
- // val ic_parerr = Input(UInt(ICACHE_BANKS_WAY.W))
- // val ic_premux_data = Output(UInt(64.W))
- // val ic_sel_premux_data = Output(Bool())
-
-//  val ic_debug_addr = Output(UInt((ICACHE_INDEX_HI-2).W))
- // val ic_debug_rd_en = Output(Bool())
- // val ic_debug_wr_en = Output(Bool())
-//  val ic_debug_tag_array = Output(Bool())
- // val ic_debug_way = Output(UInt(ICACHE_NUM_WAYS.W))
- // val ic_rd_hit = Input(UInt(ICACHE_NUM_WAYS.W))
- // val ic_tag_perr = Input(Bool())
-
-  // AHB Lite Bus
-  val haddr = Output(UInt(32.W))
-  val hburst = Output(UInt(3.W))
-  val hmastlock = Output(Bool())
-  val hprot = Output(UInt(4.W))
-  val hsize = Output(UInt(3.W))
-  val htrans = Output(UInt(2.W))
-  val hwrite = Output(Bool())
-  val hrdata = Input(UInt(64.W))
-  val hready = Input(Bool())
-  val hresp = Input(Bool())
-
-  // AHB Master
-  val lsu_haddr = Output(UInt(32.W))
-  val lsu_hburst = Output(UInt(3.W))
-  val lsu_hmastlock = Output(Bool())
-  val lsu_hprot = Output(UInt(4.W))
-  val lsu_hsize = Output(UInt(3.W))
-  val lsu_htrans = Output(UInt(2.W))
-  val lsu_hwrite = Output(Bool())
-  val lsu_hwdata = Output(UInt(64.W))
-  val lsu_hrdata = Input(UInt(64.W))
-  val lsu_hready = Input(Bool())
-  val lsu_hresp = Input(Bool())
-
-  // System Bus Debug Master
-  val sb_haddr = Output(UInt(32.W))
-  val sb_hburst = Output(UInt(3.W))
-  val sb_hmastlock = Output(Bool())
-  val sb_hprot = Output(UInt(4.W))
-  val sb_hsize = Output(UInt(3.W))
-  val sb_htrans = Output(UInt(2.W))
-  val sb_hwrite = Output(Bool())
-  val sb_hwdata = Output(UInt(64.W))
-  val sb_hrdata = Input(UInt(64.W))
-  val sb_hready = Input(Bool())
-  val sb_hresp = Input(Bool())
-
-  // DMA slave
-  val dma_hsel = Input(Bool())
-  val dma_haddr = Input(UInt(32.W))
-  val dma_hburst = Input(UInt(3.W))
-  val dma_hmastlock = Input(Bool())
-  val dma_hprot = Input(UInt(4.W))
-  val dma_hsize = Input(UInt(3.W))
-  val dma_htrans = Input(UInt(2.W))
-  val dma_hwrite = Input(Bool())
-  val dma_hwdata = Input(UInt(64.W))
-  val dma_hreadyin = Input(Bool())
-  val dma_hrdata = Output(UInt(64.W))
-  val dma_hreadyout = Output(Bool())
-  val dma_hresp = Output(Bool())
   val lsu_bus_clk_en = Input(Bool())
   val ifu_bus_clk_en = Input(Bool())
   val dbg_bus_clk_en = Input(Bool())
@@ -153,8 +67,10 @@ class quasar_bundle extends Bundle with  lib{
   val soft_int = Input(Bool())
   val scan_mode = Input(Bool())
 }
+
 class quasar extends Module with RequireAsyncReset with lib {
   val io = IO (new quasar_bundle)
+
   val ifu = Module(new ifu)
   val dec = Module(new dec)
   val dbg = Module(new dbg)
@@ -167,9 +83,6 @@ class quasar extends Module with RequireAsyncReset with lib {
   val active_state = (!dec.io.dec_pause_state_cg | dec.io.dec_exu.tlu_exu.dec_tlu_flush_lower_r) | dec.io.dec_tlu_misc_clk_override
   val free_clk = rvclkhdr(clock, true.B, io.scan_mode)
   val active_clk = rvclkhdr(clock, active_state.asBool, io.scan_mode)
-  val core_dbg_cmd_done = dma_ctrl.io.dma_dbg_cmd_done | dec.io.dec_dbg_cmd_done
-  val core_dbg_cmd_fail = dma_ctrl.io.dma_dbg_cmd_fail | dec.io.dec_dbg_cmd_fail
-  val core_dbg_rddata = Mux(dma_ctrl.io.dma_dbg_cmd_done, dma_ctrl.io.dma_dbg_rddata, dec.io.dec_dbg_rddata)
 
   // Lets start with IFU
   ifu.io.ifu_dec <> dec.io.ifu_dec
@@ -178,32 +91,19 @@ class quasar extends Module with RequireAsyncReset with lib {
   ifu.io.scan_mode := io.scan_mode
   ifu.io.free_clk := free_clk
   ifu.io.active_clk := active_clk
- // ifu.io.iccm_rd_data_ecc := io.iccm_rd_data_ecc
+
   ifu.io.exu_flush_final := dec.io.exu_flush_final
   ifu.io.exu_flush_path_final := exu.io.exu_flush_path_final
-  ifu.io.ifu.ar.ready := Mux(BUILD_AHB_LITE.B, 0.U, io.ifu_axi.ar.ready)
-  ifu.io.ifu.r.valid := Mux(BUILD_AHB_LITE.B, 0.U, io.ifu_axi.r.valid)
-  ifu.io.ifu.r.bits.id := Mux(BUILD_AHB_LITE.B, 0.U, io.ifu_axi.r.bits.id)
-  ifu.io.ifu.r.bits.data := Mux(BUILD_AHB_LITE.B, 0.U, io.ifu_axi.r.bits.data)
-  ifu.io.ifu.r.bits.resp := Mux(BUILD_AHB_LITE.B, 0.U, io.ifu_axi.r.bits.resp)
+
   ifu.io.ifu_bus_clk_en := io.ifu_bus_clk_en
   ifu.io.ifu_dma <> dma_ctrl.io.ifu_dma
   ifu.io.ic <> io.ic
   ifu.io.iccm <> io.iccm
-//  ifu.io.ic_rd_data := io.ic_rd_data
-//  ifu.io.ic_debug_rd_data := io.ic_debug_rd_data
-//  ifu.io.ictag_debug_rd_data := io.ictag_debug_rd_data
-//  ifu.io.ic_eccerr := io.ic_eccerr
-//  ifu.io.ic_parerr := io.ic_parerr
-//  ifu.io.ic_rd_hit := io.ic_rd_hit
-//  ifu.io.ic_tag_perr := io.ic_tag_perr
-//  ifu.io.iccm_rd_data := io.iccm_rd_data
   ifu.io.exu_ifu.exu_bp <> exu.io.exu_bp
   ifu.io.exu_ifu.exu_bp.exu_i0_br_fghr_r := exu.io.exu_bp.exu_i0_br_fghr_r
   ifu.io.exu_ifu.exu_bp.exu_i0_br_index_r := exu.io.dec_exu.tlu_exu.exu_i0_br_index_r
   ifu.io.dec_tlu_flush_lower_wb := dec.io.dec_exu.tlu_exu.dec_tlu_flush_lower_r
-  ifu.io.ifu_dec.dec_mem_ctrl.dec_tlu_flush_lower_wb := dec.io.dec_exu.tlu_exu.dec_tlu_flush_lower_r
-  ifu.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt := dec.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt
+  ifu.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt <> dec.io.ifu_dec.dec_mem_ctrl.dec_tlu_ic_diag_pkt
 
   // Lets start with Dec
   dec.reset := io.core_rst_l
@@ -221,9 +121,9 @@ class quasar extends Module with RequireAsyncReset with lib {
   dec.io.mpc_reset_run_req := io.mpc_reset_run_req
   dec.io.lsu_dec <> lsu.io.lsu_dec
   dec.io.lsu_tlu <> lsu.io.lsu_tlu
-  dec.io.dec_dma <> dma_ctrl.io.dec_dma
-  dec.io.dec_pic <> pic_ctrl_inst.io.dec_pic
   dec.io.lsu_pmu_misaligned_m := lsu.io.lsu_pmu_misaligned_m
+  dec.io.dec_dma <> dma_ctrl.io.dec_dma
+
   dec.io.lsu_fir_addr := lsu.io.lsu_fir_addr
   dec.io.lsu_fir_error := lsu.io.lsu_fir_error
   dec.io.lsu_trigger_match_m := lsu.io.lsu_trigger_match_m
@@ -239,11 +139,8 @@ class quasar extends Module with RequireAsyncReset with lib {
   dec.io.lsu_store_stall_any := lsu.io.lsu_store_stall_any
   dec.io.iccm_dma_sb_error := ifu.io.iccm_dma_sb_error
   dec.io.exu_flush_final := exu.io.exu_flush_final
-//  dec.io.mexintpend := pic_ctrl_inst.io.mexintpend
+
   dec.io.soft_int := io.soft_int
-//  dec.io.pic_claimid := pic_ctrl_inst.io.claimid
-//  dec.io.pic_pl := pic_ctrl_inst.io.pl
-//  dec.io.mhwakeup := pic_ctrl_inst.io.mhwakeup
   dec.io.dbg_halt_req := dbg.io.dbg_halt_req
   dec.io.dbg_resume_req := dbg.io.dbg_resume_req
   dec.io.exu_i0_br_way_r := exu.io.exu_bp.exu_i0_br_way_r
@@ -269,24 +166,13 @@ class quasar extends Module with RequireAsyncReset with lib {
   lsu.io.dec_lsu_valid_raw_d := dec.io.dec_lsu_valid_raw_d
   lsu.io.dec_tlu_mrac_ff := dec.io.ifu_dec.dec_ifc.dec_tlu_mrac_ff
   lsu.io.trigger_pkt_any <> dec.io.trigger_pkt_any
-  lsu.io.axi.aw.ready := Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi.aw.ready)
-  lsu.io.axi.w.ready :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi.w.ready)
-  lsu.io.axi.b.valid :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi.b.valid)
-  lsu.io.axi.b.bits.resp :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi.b.bits.resp)
-  lsu.io.axi.b.bits.id :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi.b.bits.id)
-  lsu.io.axi.ar.ready :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi.ar.ready)
-  lsu.io.axi.r.valid :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi.r.valid)
-  lsu.io.axi.r.bits.id :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi.r.bits.id)
-  lsu.io.axi.r.bits.data :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi.r.bits.data)
-  lsu.io.axi.r.bits.resp :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi.r.bits.resp)
-  lsu.io.axi.r.bits.last :=  Mux(BUILD_AHB_LITE.B, 0.U, io.lsu_axi.r.bits.last)
+
   lsu.io.lsu_bus_clk_en := io.lsu_bus_clk_en
   lsu.io.lsu_dma <> dma_ctrl.io.lsu_dma
   lsu.io.scan_mode := io.scan_mode
   lsu.io.free_clk := free_clk
 
   // Debug lets go
-  dbg.reset := io.core_rst_l
   dbg.io.core_dbg_rddata := Mux(dma_ctrl.io.dma_dbg_cmd_done, dma_ctrl.io.dma_dbg_rddata, dec.io.dec_dbg_rddata)
   dbg.io.core_dbg_cmd_done := dma_ctrl.io.dma_dbg_cmd_done | dec.io.dec_dbg_cmd_done
   dbg.io.core_dbg_cmd_fail := dma_ctrl.io.dma_dbg_cmd_fail | dec.io.dec_dbg_cmd_fail
@@ -298,7 +184,6 @@ class quasar extends Module with RequireAsyncReset with lib {
   dbg.io.dmi_reg_addr := io.dmi_reg_addr
   dbg.io.dmi_reg_wr_en := io.dmi_reg_wr_en
   dbg.io.dmi_reg_wdata := io.dmi_reg_wdata
-  dbg.io.sb_axi <> io.sb_axi
   dbg.io.dbg_bus_clk_en := io.dbg_bus_clk_en
   dbg.io.dbg_rst_l := io.dbg_rst_l.asBool()
   dbg.io.clk_override := dec.io.dec_tlu_misc_clk_override
@@ -328,15 +213,9 @@ class quasar extends Module with RequireAsyncReset with lib {
   pic_ctrl_inst.io.clk_override := dec.io.dec_tlu_pic_clk_override
   pic_ctrl_inst.io.extintsrc_req := io.extintsrc_req
   pic_ctrl_inst.io.lsu_pic <> lsu.io.lsu_pic
+  pic_ctrl_inst.io.dec_pic <> dec.io.dec_pic
   // Trace Packet
-  io.trace <> dec.io.rv_trace_pkt
-//  io.trace_rv_i_insn_ip := dec.io.rv_trace_pkt.rv_i_insn_ip
-//  io.trace_rv_i_address_ip := dec.io.rv_trace_pkt.rv_i_address_ip
-//  io.trace_rv_i_valid_ip := dec.io.rv_trace_pkt.rv_i_valid_ip
-//  io.trace_rv_i_exception_ip := dec.io.rv_trace_pkt.rv_i_exception_ip
-//  io.trace_rv_i_ecause_ip := dec.io.rv_trace_pkt.rv_i_ecause_ip
-//  io.trace_rv_i_interrupt_ip := dec.io.rv_trace_pkt.rv_i_interrupt_ip
-//  io.trace_rv_i_tval_ip := dec.io.rv_trace_pkt.rv_i_tval_ip
+  io.rv_trace_pkt := dec.io.rv_trace_pkt
 
   // Outputs
   io.dccm_clk_override := dec.io.dec_tlu_dccm_clk_override
@@ -353,75 +232,59 @@ class quasar extends Module with RequireAsyncReset with lib {
   io.dec_tlu_perfcnt1 := dec.io.dec_tlu_perfcnt1
   io.dec_tlu_perfcnt2 := dec.io.dec_tlu_perfcnt2
   io.dec_tlu_perfcnt3 := dec.io.dec_tlu_perfcnt3
+  io.dmi_reg_rdata := dbg.io.dmi_reg_rdata
+
   // LSU Outputs
-  io.swerv_mem <> lsu.io.dccm
-  // IFU Outputs
-//  io.iccm_rw_addr := ifu.io.iccm_rw_addr
-//  io.iccm_wren := ifu.io.iccm_wren
-//  io.iccm_rden := ifu.io.iccm_rden
-//  io.iccm_wr_size := ifu.io.iccm_wr_size
-//  io.iccm_wr_data := ifu.io.iccm_wr_data
-//  io.iccm_buf_correct_ecc := ifu.io.iccm_buf_correct_ecc
-//  io.iccm_correction_state := ifu.io.iccm_correction_state
-//  io.ic_rw_addr := ifu.io.ic_rw_addr
-//  io.ic_tag_valid := ifu.io.ic_tag_valid
-//  io.ic_wr_en := ifu.io.ic_wr_en
-//  io.ic_rd_en := ifu.io.ic_rd_en
-//  io.ic_wr_data := ifu.io.ic_wr_data
-//  io.ic_debug_wr_data := ifu.io.ic_debug_wr_data
-//  io.ic_premux_data := ifu.io.ic_premux_data
-//  io.ic_sel_premux_data := ifu.io.ic_sel_premux_data
-//  io.ic_debug_addr := ifu.io.ic_debug_addr
-//  io.ic_debug_rd_en := ifu.io.ic_debug_rd_en
-//  io.ic_debug_wr_en := ifu.io.ic_debug_wr_en
-//  io.ic_debug_tag_array := ifu.io.ic_debug_tag_array
-//  io.ic_debug_way := ifu.io.ic_debug_way
+  io.dccm <> lsu.io.dccm
 
-  // AXI LSU SIDE
-  io.lsu_axi <> lsu.io.axi
+  if(BUILD_AHB_LITE) {
+    val sb_axi4_to_ahb = Module(new axi4_to_ahb(SB_BUS_TAG))
+    val ifu_axi4_to_ahb = Module(new axi4_to_ahb(IFU_BUS_TAG))
+    val lsu_axi4_to_ahb = Module(new axi4_to_ahb(LSU_BUS_TAG))
+    val dma_ahb_to_axi4 = Module(new ahb_to_axi4(DMA_BUS_TAG))
 
-  // AXI IFU
-  io.ifu_axi <> ifu.io.ifu
-  io.dma_axi <> dma_ctrl.io.dma_axi
+    lsu_axi4_to_ahb.io.scan_mode := io.scan_mode
+    lsu_axi4_to_ahb.io.bus_clk_en := io.lsu_bus_clk_en
+    lsu_axi4_to_ahb.io.clk_override := dec.io.dec_tlu_bus_clk_override
+    lsu_axi4_to_ahb.io.axi <> lsu.io.axi
+    lsu_axi4_to_ahb.io.ahb <> io.lsu_ahb
 
-  // AHB Signals
-  io.hburst := 0.U
-  io.hmastlock := 0.U
-  io.hprot := 0.U
-  io.hsize := 0.U
-  io.htrans := 0.U
-  io.hwrite := 0.U
-  io.haddr := 0.U
+    ifu_axi4_to_ahb.io.scan_mode := io.scan_mode
+    ifu_axi4_to_ahb.io.bus_clk_en := io.ifu_bus_clk_en
+    ifu_axi4_to_ahb.io.clk_override := dec.io.dec_tlu_bus_clk_override
+    ifu_axi4_to_ahb.io.axi <> ifu.io.ifu
+    ifu_axi4_to_ahb.io.ahb <> io.ifu_ahb
+    ifu_axi4_to_ahb.io.axi.b.ready := true.B
 
-  io.lsu_haddr := 0.U
-  io.lsu_hburst := 0.U
-  io.lsu_hmastlock := 0.U
-  io.lsu_hprot := 0.U
-  io.lsu_hsize := 0.U
-  io.lsu_htrans := 0.U
-  io.lsu_hwrite := 0.U
-  io.lsu_hwdata := 0.U
+    sb_axi4_to_ahb.io.scan_mode := io.scan_mode
+    sb_axi4_to_ahb.io.bus_clk_en := io.dbg_bus_clk_en
+    sb_axi4_to_ahb.io.clk_override := dec.io.dec_tlu_bus_clk_override
+    sb_axi4_to_ahb.io.axi <> dbg.io.sb_axi
+    sb_axi4_to_ahb.io.ahb <> io.sb_ahb
 
-  io.sb_haddr := 0.U
-  io.sb_hburst := 0.U
-  io.sb_hmastlock := 0.U
-  io.sb_hprot := 0.U
-  io.sb_hsize := 0.U
-  io.sb_htrans := 0.U
-  io.sb_hwrite := 0.U
-  io.sb_hwdata := 0.U
+    dma_ahb_to_axi4.io.scan_mode := io.scan_mode
+    dma_ahb_to_axi4.io.bus_clk_en := io.dma_bus_clk_en
+    dma_ahb_to_axi4.io.clk_override := dec.io.dec_tlu_bus_clk_override
+    dma_ahb_to_axi4.io.axi <> dma_ctrl.io.dma_axi
+    dma_ahb_to_axi4.io.ahb <> io.dma_ahb
 
-  io.dma_hrdata := 0.U
-  io.dma_hreadyout := 0.U
-  io.dma_hresp := 0.U
+    io.dma_axi      <> 0.U.asTypeOf(io.dma_axi)
+    io.sb_axi       <> 0.U.asTypeOf(io.sb_axi)
+    io.ifu_axi      <> 0.U.asTypeOf(io.ifu_axi)
+    io.lsu_axi      <> 0.U.asTypeOf(io.lsu_axi)
+  }
+    else{
+      io.lsu_ahb          <> 0.U.asTypeOf(io.lsu_ahb)
+      io.ifu_ahb          <> 0.U.asTypeOf(io.ifu_ahb)
+      io.sb_ahb           <> 0.U.asTypeOf(io.sb_ahb)
+      io.dma_ahb          <> 0.U.asTypeOf(io.dma_ahb)
+      dma_ctrl.io.dma_axi <> io.dma_axi
+      dbg.io.sb_axi       <> io.sb_axi
+      ifu.io.ifu          <> io.ifu_axi
+      lsu.io.axi          <> io.lsu_axi
+    }
 
-  io.dma_hresp := 0.U
-
-  io.dmi_reg_rdata := 0.U
 }
-//object QUASAR extends App {
- // println((new chisel3.stage.ChiselStage).emitVerilog(new quasar()))
-//}
-
-
-
+object QUASAR extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new quasar()))
+}

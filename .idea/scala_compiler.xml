@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ScalaCompilerConfiguration">
     <profile name="sbt 1" modules="swerv-chislified-master_3681" />
-    <profile name="sbt 2" modules="chisel-module-template">
+    <profile name="sbt 2" modules="Quasar,chisel-module-template">
       <parameters>
         <parameter value="-Xsource:2.11" />
       </parameters>

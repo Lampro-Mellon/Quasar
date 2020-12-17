@@ -71,8 +71,6 @@ class lsu_ecc extends Module with lib with RequireAsyncReset {
   val dccm_wdata_lo_any            = WireInit(0.U(DCCM_DATA_WIDTH.W))
   val dccm_rdata_hi_any            = WireInit(0.U(DCCM_DATA_WIDTH.W))
   val dccm_rdata_lo_any            = WireInit(0.U(DCCM_DATA_WIDTH.W))
-  // val dccm_wdata_ecc_hi_any        = WireInit(0.U(DCCM_ECC_WIDTH.W))
-  //val dccm_wdata_ecc_lo_any        = WireInit(0.U(DCCM_ECC_WIDTH.W))
   val dccm_data_ecc_hi_any         = WireInit(0.U(DCCM_ECC_WIDTH.W))
   val dccm_data_ecc_lo_any         = WireInit(0.U(DCCM_ECC_WIDTH.W))
   val double_ecc_error_hi_m	       = WireInit(Bool(),init = 0.U)

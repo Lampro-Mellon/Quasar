@@ -6,7 +6,7 @@
   {
     "class":"firrtl.transforms.BlackBoxResourceAnno",
     "target":"quasar_wrapper.gated_latch",
-    "resourceId":"/vsrc/gated_latch.sv"
+    "resourceId":"/vsrc/gated_latch.v"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
@@ -979,6 +979,10 @@
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
     "target":"~quasar_wrapper|dec_trigger>io_dec_i0_trigger_match_d"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~quasar_wrapper|csr_tlu>_T_745"
   },
   {
     "class":"firrtl.transforms.BlackBoxResourceAnno",

@@ -1,9 +1,14 @@
 [0m[[0m[0mdebug[0m] [0m[0mCopy resource mappings: [0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/gated_latch.v,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/gated_latch.v)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/dmi_jtag_to_core_sync.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/dmi_jtag_to_core_sync.sv)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/el2_mem.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/el2_mem.sv)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/el2_ifu_ic_mem.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/el2_ifu_ic_mem.sv)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/el2_ifu_iccm_mem.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/el2_ifu_iccm_mem.sv)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/dmi_wrapper.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/dmi_wrapper.sv)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/el2_lsu_dccm_mem.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/el2_lsu_dccm_mem.sv)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Documents/SweRV-Chislified/src/main/resources/vsrc/rvtaj_tap.sv,/home/abdulhameed.akram/Documents/SweRV-Chislified/target/scala-2.12/classes/vsrc/rvtaj_tap.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/ifu_iccm_mem.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/ifu_iccm_mem.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/gated_latch.v,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/gated_latch.v)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/dmi_jtag_to_core_sync.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/dmi_jtag_to_core_sync.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/lsu_dccm_mem.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/lsu_dccm_mem.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/dmi_wrapper.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/dmi_wrapper.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/gated_latch.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/gated_latch.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/rvjtag_tap.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/rvjtag_tap.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/rvtaj_tap.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/rvtaj_tap.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/mem.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/mem.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/mem_mod.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/mem_mod.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/beh_lib.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/beh_lib.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/mem_lib.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/mem_lib.sv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/abdulhameed.akram/Videos/Quasar/src/main/resources/vsrc/ifu_ic_mem.sv,/home/abdulhameed.akram/Videos/Quasar/target/scala-2.12/classes/vsrc/ifu_ic_mem.sv)[0m

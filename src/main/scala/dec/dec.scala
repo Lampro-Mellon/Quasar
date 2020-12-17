@@ -162,7 +162,7 @@ class dec extends Module with param with RequireAsyncReset{
   decode.io.lsu_store_stall_any                :=  io.lsu_store_stall_any
   decode.io.exu_div_wren                       :=  io.exu_div_wren
   decode.io.dec_tlu_i0_kill_writeb_wb          :=  tlu.io.dec_tlu_i0_kill_writeb_wb
-  decode.io.dec_tlu_flush_lower_wb             :=  tlu.io.tlu_bp.dec_tlu_flush_lower_wb
+  decode.io.dec_tlu_flush_lower_wb             :=  tlu.io.dec_tlu_flush_lower_wb
   decode.io.dec_tlu_i0_kill_writeb_r           :=  tlu.io.dec_tlu_i0_kill_writeb_r
   decode.io.dec_tlu_flush_lower_r              :=  tlu.io.tlu_exu.dec_tlu_flush_lower_r
   decode.io.dec_tlu_flush_pause_r              :=  tlu.io.dec_tlu_flush_pause_r
@@ -245,10 +245,6 @@ class dec extends Module with param with RequireAsyncReset{
   tlu.io.dbg_resume_req                     :=  io.dbg_resume_req
   tlu.io.lsu_idle_any                       :=  io.lsu_idle_any
   tlu.io.dec_div_active                     :=  decode.io.dec_div_active
-//  tlu.io.pic_claimid                        :=  io.dec_pic.pic_claimid
-//  tlu.io.pic_pl                             :=  io.dec_pic.pic_pl
-//  tlu.io.mhwakeup                           :=  io.dec_pic.mhwakeup
-//  tlu.io.mexintpend                         :=  io.mexintpend
   tlu.io.timer_int                          :=  io.timer_int
   tlu.io.soft_int                           :=  io.soft_int
   tlu.io.core_id                            :=  io.core_id
@@ -269,8 +265,6 @@ class dec extends Module with param with RequireAsyncReset{
   io.mpc_debug_halt_ack     := tlu.io.mpc_debug_halt_ack
   io.mpc_debug_run_ack      := tlu.io.mpc_debug_run_ack
   io.debug_brkpt_status     := tlu.io.debug_brkpt_status
-//  io.dec_pic.dec_tlu_meicurpl       := tlu.io.dec_tlu_meicurpl
-//  io.dec_pic.dec_tlu_meipt          := tlu.io.dec_tlu_meipt
   io.dec_tlu_i0_kill_writeb_r    := tlu.io.dec_tlu_i0_kill_writeb_r
   io.dec_tlu_perfcnt0       := tlu.io.dec_tlu_perfcnt0
   io.dec_tlu_perfcnt1       := tlu.io.dec_tlu_perfcnt1
@@ -302,4 +296,8 @@ class dec extends Module with param with RequireAsyncReset{
 
   // debug command read data
   io.dec_dbg_rddata := decode.io.dec_i0_wdata_r
+}
+
+object dec_main extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new dec()))
 }

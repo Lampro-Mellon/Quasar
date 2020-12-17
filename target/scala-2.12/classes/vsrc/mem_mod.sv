@@ -1,5 +1,5 @@
 module el2_btb_tag_hash #(
-`include "param.vh"
+`include "el2_param.vh"
  ) (
                        input logic [pt.BTB_ADDR_HI+pt.BTB_BTAG_SIZE+pt.BTB_BTAG_SIZE+pt.BTB_BTAG_SIZE:pt.BTB_ADDR_HI+1] pc,
                        output logic [pt.BTB_BTAG_SIZE-1:0] hash
@@ -11,7 +11,7 @@ module el2_btb_tag_hash #(
 endmodule
 
 module el2_btb_tag_hash_fold  #(
-`include "param.vh"
+`include "el2_param.vh"
  )(
                        input logic [pt.BTB_ADDR_HI+pt.BTB_BTAG_SIZE+pt.BTB_BTAG_SIZE:pt.BTB_ADDR_HI+1] pc,
                        output logic [pt.BTB_BTAG_SIZE-1:0] hash
@@ -24,7 +24,7 @@ module el2_btb_tag_hash_fold  #(
 endmodule
 
 module el2_btb_addr_hash  #(
-`include "param.vh"
+`include "el2_param.vh"
  )(
                         input logic [pt.BTB_INDEX3_HI:pt.BTB_INDEX1_LO] pc,
                         output logic [pt.BTB_ADDR_HI:pt.BTB_ADDR_LO] hash
@@ -44,7 +44,7 @@ end
 endmodule
 
 module el2_btb_ghr_hash  #(
-`include "param.vh"
+`include "el2_param.vh"
  )(
                        input logic [pt.BTB_ADDR_HI:pt.BTB_ADDR_LO] hashin,
                        input logic [pt.BHT_GHR_SIZE-1:0] ghr,
