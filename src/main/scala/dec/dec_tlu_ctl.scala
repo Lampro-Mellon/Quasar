@@ -340,7 +340,8 @@ class dec_tlu_ctl extends Module with lib with RequireAsyncReset with CSR_VAL{
 	val nmi_lsu_load_type_f		=withClock(io.free_clk){RegNext(nmi_lsu_load_type,0.U)}
 	val nmi_lsu_store_type_f	=withClock(io.free_clk){RegNext(nmi_lsu_store_type,0.U)}
 
-
+	io.tlu_bp.dec_tlu_flush_lower_wb := io.dec_tlu_flush_lower_wb
+	io.tlu_mem.dec_tlu_flush_lower_wb := io.tlu_bp.dec_tlu_flush_lower_wb
    // Filter subsequent bus errors after the first, until the lock on MDSEAC is cleared
 	val nmi_lsu_detected = ~mdseac_locked_f & (io.tlu_busbuff.lsu_imprecise_error_load_any | io.tlu_busbuff.lsu_imprecise_error_store_any)
 
