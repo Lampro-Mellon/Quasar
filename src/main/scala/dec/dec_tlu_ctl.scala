@@ -2498,7 +2498,7 @@ for(i <- 0 until 4) {io.trigger_pkt_any(i).tdata2 := mtdata2_t(i)}
  				        io.csr_pkt.csr_misa.asBool            -> 0x40001104.U(32.W),
                 io.csr_pkt.csr_mvendorid.asBool       -> 0x00000045.U(32.W),
                 io.csr_pkt.csr_marchid.asBool         -> 0x00000010.U(32.W),
-                io.csr_pkt.csr_mimpid.asBool          -> 0x2.U(32.W),
+                io.csr_pkt.csr_mimpid.asBool          -> 0x1.U(32.W),
                 io.csr_pkt.csr_mhartid.asBool         -> Cat(io.core_id,0.U(4.W)),
                 io.csr_pkt.csr_mstatus.asBool         -> Cat(0.U(19.W), 3.U(2.W), 0.U(3.W), io.mstatus(1), 0.U(3.W), io.mstatus(0), 0.U(3.W)),
                 io.csr_pkt.csr_mtvec.asBool           -> Cat(io.mtvec(30,1), 0.U(1.W), io.mtvec(0)),
