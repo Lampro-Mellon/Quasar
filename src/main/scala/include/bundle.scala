@@ -34,7 +34,6 @@ class tlu_dma extends Bundle{
 
 class dec_bp extends Bundle{
   val dec_tlu_br0_r_pkt = Flipped(Valid(new br_tlu_pkt_t))
-  //  val dec_tlu_flush_lower_wb = Input(Bool())
   val dec_tlu_flush_leak_one_wb = Input(Bool())
   val dec_tlu_bpred_disable = Input(Bool())
 }
@@ -71,8 +70,8 @@ class ahb_out extends Bundle{
   val hwdata        = Output(UInt(64.W)) // [63:0]  // ahb bus write data
 }
 class ahb_channel extends Bundle{
-  val in  = new ahb_in
-  val out = new ahb_out
+  val in  = new ahb_in()
+  val out = new ahb_out()
 }
 class axi_channels(val BUS_TAG :Int=3) extends Bundle with lib{
   val aw = Decoupled(new write_addr(BUS_TAG))
@@ -272,13 +271,16 @@ class ifu_dec extends Bundle{
   val dec_ifc = new dec_ifc
   val dec_bp = new dec_bp
 }
+
 class exu_ifu extends Bundle{
   val exu_bp = Flipped(new exu_bp())
 }
+
 class ifu_dma extends Bundle{
   val dma_ifc  = new dma_ifc
   val dma_mem_ctl = new dma_mem_ctl
 }
+
 class dma_mem_ctl extends Bundle{
   val dma_iccm_req = Input(Bool())
   val dma_mem_addr = Input(UInt(32.W))
@@ -287,6 +289,7 @@ class dma_mem_ctl extends Bundle{
   val dma_mem_wdata = Input(UInt(64.W))
   val dma_mem_tag = Input(UInt(3.W))
 }
+
 class dma_ifc extends  Bundle{
   val dma_iccm_stall_any = Input(Bool())
 }
@@ -301,14 +304,11 @@ class trace_pkt_t extends Bundle{
   val rv_i_tval_ip       = Output(UInt(32.W) )
 }
 
-
-
-
 class dec_dbg extends Bundle{
   val dbg_ib = new dbg_ib
   val dbg_dctl = new dbg_dctl
-
 }
+
 class dbg_ib extends Bundle{
   val dbg_cmd_valid           = Input(Bool())    // debugger abstract command valid
   val dbg_cmd_write           = Input(Bool())    // command is a write
@@ -319,8 +319,6 @@ class dbg_ib extends Bundle{
 class dbg_dctl extends Bundle{
   val dbg_cmd_wrdata          = Input(UInt(32.W))    // command write data, for fence/fence_i
 }
-
-
 
 class dec_alu extends Bundle {
   val                  dec_i0_alu_decode_d          = Input(UInt(1.W))          // Valid
@@ -418,7 +416,6 @@ object inst_pkt_t extends Enumeration{
 }
 
 class load_cam_pkt_t extends Bundle {
-  //val valid = UInt(1.W)
   val wb    = UInt(1.W)
   val tag   = UInt(3.W)
   val rd    = UInt(5.W)
@@ -431,7 +428,6 @@ class rets_pkt_t extends Bundle {
 }
 
 class br_pkt_t extends Bundle {
-  // val valid          = UInt(1.W)
   val toffset        = UInt(12.W)
   val hist           = UInt(2.W)
   val br_error       = UInt(1.W)
@@ -444,7 +440,6 @@ class br_pkt_t extends Bundle {
 
 
 class br_tlu_pkt_t extends Bundle {
-  // val valid           = UInt(1.W)
   val hist            = UInt(2.W)
   val br_error        = UInt(1.W)
   val br_start_error  = UInt(1.W)
@@ -459,7 +454,6 @@ class predict_pkt_t extends Bundle {
   val pc4        = UInt(1.W)
   val hist       = UInt(2.W)
   val toffset    = UInt(12.W)
-  // val valid      = UInt(1.W)
   val br_error   = UInt(1.W)
   val br_start_error = UInt(1.W)
   val prett      = UInt(31.W)
@@ -477,7 +471,7 @@ class trap_pkt_t extends Bundle {
   val icaf_type = UInt(2.W)
   val fence_i   = UInt(1.W)
   val i0trigger = UInt(4.W)
-  val pmu_i0_itype =UInt(4.W) //new inst_pkt_t   //pmu-instructiontype
+  val pmu_i0_itype =UInt(4.W) //pmu-instructiontype
   val pmu_i0_br_unpred   = UInt(1.W)  //pmu
   val pmu_divide         = UInt(1.W)
   val pmu_lsu_misaligned = UInt(1.W)
@@ -489,7 +483,6 @@ class dest_pkt_t extends Bundle {
   val i0store   = UInt(1.W)
   val i0div     = UInt(1.W)
   val i0v       = UInt(1.W)
-  // val i0valid   = UInt(1.W)
   val csrwen    = UInt(1.W)
   val csrwonly  = UInt(1.W)
   val csrwaddr  = UInt(12.W)
@@ -543,11 +536,9 @@ class lsu_pkt_t extends Bundle {
   val store_data_bypass_d  = Bool()
   val load_ldst_bypass_d   = Bool()
   val store_data_bypass_m  = Bool()
-  //  val valid      = Bool()
 }
 
 class lsu_error_pkt_t extends Bundle {
-  // val exc_valid   = UInt(1.W)
   val single_ecc_error  = UInt(1.W)
   val inst_type    = UInt(1.W)    //0: Load, 1: Store
   val exc_type     = UInt(1.W)    //0: MisAligned, 1: Access Fault
@@ -609,7 +600,6 @@ class dec_pkt_t extends Bundle {
 }
 
 class mul_pkt_t extends Bundle {
-  // val valid     = UInt(1.W)
   val rs1_sign  = UInt(1.W)
   val rs2_sign  = UInt(1.W)
   val low       = UInt(1.W)
@@ -631,7 +621,6 @@ class mul_pkt_t extends Bundle {
 }
 
 class div_pkt_t extends Bundle {
-  // val valid     = UInt(1.W)
   val unsign    = UInt(1.W)
   val rem       = UInt(1.W)
 }
@@ -640,7 +629,6 @@ class ccm_ext_in_pkt_t extends Bundle {
   val        TEST1    = UInt(1.W)
   val        RME      = UInt(1.W)
   val        RM       = UInt(4.W)
-
   val        LS        = UInt(1.W)
   val        DS        = UInt(1.W)
   val        SD        = UInt(1.W)

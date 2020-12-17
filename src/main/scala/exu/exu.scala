@@ -48,10 +48,10 @@ class exu extends Module with lib with RequireAsyncReset{
   val i0_pred_correct_upper_d	  = Wire(UInt(1.W))
   val i0_flush_upper_d		      = Wire(UInt(1.W))
   io.exu_bp.exu_mp_pkt.bits.prett			:=0.U
-  io.exu_bp.exu_mp_pkt.bits.br_start_error:=0.U
-  io.exu_bp.exu_mp_pkt.bits.br_error		:=0.U
-  io.exu_bp.exu_mp_pkt.valid			      :=0.U
-  i0_pp_r.bits.toffset          := 0.U
+  io.exu_bp.exu_mp_pkt.bits.br_start_error :=0.U
+  io.exu_bp.exu_mp_pkt.bits.br_error  := 0.U
+  io.exu_bp.exu_mp_pkt.valid			    := 0.U
+  i0_pp_r.bits.toffset                := 0.U
 
   val x_data_en                 =  io.dec_exu.decode_exu.dec_data_en(1)
   val r_data_en                 =  io.dec_exu.decode_exu.dec_data_en(0)
@@ -138,10 +138,10 @@ class exu extends Module with lib with RequireAsyncReset{
     (i0_rs2_bypass_en_d).asBool								-> i0_rs2_bypass_data_d
   ))
 
-  csr_rs1_in_d       := Mux( io.dec_exu.dec_alu.dec_csr_ren_d.asBool, i0_rs1_d, io.dec_exu.decode_exu.exu_csr_rs1_x)
+  csr_rs1_in_d       := Mux(io.dec_exu.dec_alu.dec_csr_ren_d.asBool, i0_rs1_d, io.dec_exu.decode_exu.exu_csr_rs1_x)
 
 
-  val i_alu=Module(new exu_alu_ctl)
+  val i_alu=Module(new exu_alu_ctl())
   i_alu.io.dec_alu <> io.dec_exu.dec_alu
   i_alu.io.scan_mode		:=io.scan_mode
   i_alu.io.enable			:=x_ctl_en
@@ -159,21 +159,21 @@ class exu extends Module with lib with RequireAsyncReset{
   i0_predict_p_d			:=i_alu.io.predict_p_out
   i0_pred_correct_upper_d :=i_alu.io.pred_correct_out
 
-  val i_mul=Module(new exu_mul_ctl)
-  i_mul.io.scan_mode		:=io.scan_mode
-  i_mul.io.mul_p			:=io.dec_exu.decode_exu.mul_p
-  i_mul.io.rs1_in			:=muldiv_rs1_d
-  i_mul.io.rs2_in			:=muldiv_rs2_d
-  val mul_result_x		 =i_mul.io.result_x
+  val i_mul = Module(new exu_mul_ctl())
+  i_mul.io.scan_mode	:= io.scan_mode
+  i_mul.io.mul_p			:= io.dec_exu.decode_exu.mul_p
+  i_mul.io.rs1_in			:= muldiv_rs1_d
+  i_mul.io.rs2_in			:= muldiv_rs2_d
+  val mul_result_x		=  i_mul.io.result_x
 
-  val i_div=Module(new exu_div_ctl)
+  val i_div = Module(new exu_div_ctl())
   i_div.io.dec_div <> io.dec_exu.dec_div
-  i_div.io.scan_mode		:=io.scan_mode
+  i_div.io.scan_mode		:= io.scan_mode
 
-  i_div.io.dividend		:=muldiv_rs1_d
-  i_div.io.divisor		:=muldiv_rs2_d
-  io.exu_div_wren			:=i_div.io.exu_div_wren
-  io.exu_div_result		:=i_div.io.exu_div_result
+  i_div.io.dividend		:= muldiv_rs1_d
+  i_div.io.divisor		:= muldiv_rs2_d
+  io.exu_div_wren			:= i_div.io.exu_div_wren
+  io.exu_div_result		:= i_div.io.exu_div_result
 
   io.dec_exu.decode_exu.exu_i0_result_x    		 := Mux(mul_valid_x.asBool, mul_result_x,  alu_result_x)
   i0_predict_newp_d            :=  io.dec_exu.decode_exu.dec_i0_predict_p_d
@@ -215,22 +215,22 @@ class exu extends Module with lib with RequireAsyncReset{
   val after_flush_eghr              = Mux((i0_flush_upper_x===1.U & !(io.dec_exu.tlu_exu.dec_tlu_flush_lower_r===1.U)),  ghr_d,  ghr_x)
 
 
-  io.exu_bp.exu_mp_pkt.bits.way                :=  final_predict_mp.bits.way
-  io.exu_bp.exu_mp_pkt.bits.misp               :=  final_predict_mp.bits.misp
-  io.exu_bp.exu_mp_pkt.bits.pcall              :=  final_predict_mp.bits.pcall
-  io.exu_bp.exu_mp_pkt.bits.pja                :=  final_predict_mp.bits.pja
-  io.exu_bp.exu_mp_pkt.bits.pret               :=  final_predict_mp.bits.pret
-  io.exu_bp.exu_mp_pkt.bits.ataken             :=  final_predict_mp.bits.ataken
-  io.exu_bp.exu_mp_pkt.bits.boffset            :=  final_predict_mp.bits.boffset
-  io.exu_bp.exu_mp_pkt.bits.pc4                :=  final_predict_mp.bits.pc4
-  io.exu_bp.exu_mp_pkt.bits.hist		 		 :=  final_predict_mp.bits.hist(1,0)
-  io.exu_bp.exu_mp_pkt.bits.toffset		 	 :=  final_predict_mp.bits.toffset(11,0)
-  io.exu_bp.exu_mp_fghr                   :=  after_flush_eghr
-  io.exu_bp.exu_mp_index			 		 :=  final_predpipe_mp(PREDPIPESIZE-BHT_GHR_SIZE-1,BTB_BTAG_SIZE)
-  io.exu_bp.exu_mp_btag			 		 :=  final_predpipe_mp(BTB_BTAG_SIZE-1,0)
-  io.exu_bp.exu_mp_eghr                   :=  final_predpipe_mp(PREDPIPESIZE-1,BTB_ADDR_HI-BTB_ADDR_LO+BTB_BTAG_SIZE+1) // mp ghr for bht write
-  io.exu_flush_path_final		 	 := Mux(io.dec_exu.tlu_exu.dec_tlu_flush_lower_r.asBool, io.dec_exu.tlu_exu.dec_tlu_flush_path_r,  i0_flush_path_d)
-  io.dec_exu.tlu_exu.exu_npc_r			 		 := Mux(i0_pred_correct_upper_r===1.U,  pred_correct_npc_r, i0_flush_path_upper_r)
+  io.exu_bp.exu_mp_pkt.bits.way     :=  final_predict_mp.bits.way
+  io.exu_bp.exu_mp_pkt.bits.misp    :=  final_predict_mp.bits.misp
+  io.exu_bp.exu_mp_pkt.bits.pcall   :=  final_predict_mp.bits.pcall
+  io.exu_bp.exu_mp_pkt.bits.pja     :=  final_predict_mp.bits.pja
+  io.exu_bp.exu_mp_pkt.bits.pret    :=  final_predict_mp.bits.pret
+  io.exu_bp.exu_mp_pkt.bits.ataken  :=  final_predict_mp.bits.ataken
+  io.exu_bp.exu_mp_pkt.bits.boffset :=  final_predict_mp.bits.boffset
+  io.exu_bp.exu_mp_pkt.bits.pc4     :=  final_predict_mp.bits.pc4
+  io.exu_bp.exu_mp_pkt.bits.hist		:=  final_predict_mp.bits.hist(1,0)
+  io.exu_bp.exu_mp_pkt.bits.toffset	:=  final_predict_mp.bits.toffset(11,0)
+  io.exu_bp.exu_mp_fghr             :=  after_flush_eghr
+  io.exu_bp.exu_mp_index			 		  :=  final_predpipe_mp(PREDPIPESIZE-BHT_GHR_SIZE-1,BTB_BTAG_SIZE)
+  io.exu_bp.exu_mp_btag			 		    :=  final_predpipe_mp(BTB_BTAG_SIZE-1,0)
+  io.exu_bp.exu_mp_eghr             :=  final_predpipe_mp(PREDPIPESIZE-1,BTB_ADDR_HI-BTB_ADDR_LO+BTB_BTAG_SIZE+1) // mp ghr for bht write
+  io.exu_flush_path_final	:= Mux(io.dec_exu.tlu_exu.dec_tlu_flush_lower_r.asBool, io.dec_exu.tlu_exu.dec_tlu_flush_path_r,  i0_flush_path_d)
+  io.dec_exu.tlu_exu.exu_npc_r			:= Mux(i0_pred_correct_upper_r===1.U,  pred_correct_npc_r, i0_flush_path_upper_r)
 }
 
 object exu_main extends App {

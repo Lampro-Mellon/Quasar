@@ -15,7 +15,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     // AXI Signals
     val lsu_brg = bridge_gen(LSU_BUS_TAG, false)
     val ifu_brg = bridge_gen(IFU_BUS_TAG, false)
-    val sb_brg = bridge_gen(SB_BUS_TAG, false)
+    val sb_brg  = bridge_gen(SB_BUS_TAG , false)
     val dma_brg = bridge_gen(DMA_BUS_TAG, true)
 
     val lsu_bus_clk_en = Input(Bool())
@@ -71,8 +71,6 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   dmi_wrapper.io.core_clk := clock
   dmi_wrapper.io.jtag_id := io.jtag_id
   dmi_wrapper.io.rd_data := core.io.dmi_reg_rdata
-
-
   dmi_wrapper.io.core_rst_n := io.dbg_rst_l
   core.io.dmi_reg_wdata := dmi_wrapper.io.reg_wr_data
   core.io.dmi_reg_addr := dmi_wrapper.io.reg_wr_addr
@@ -144,7 +142,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
 
   // Outputs
   val core_rst_l = core.io.core_rst_l
-  io.rv_trace_pkt := core.io.rv_trace_pkt
+  io.rv_trace_pkt <> core.io.rv_trace_pkt
 
   // external halt/run interface
   io.o_cpu_halt_ack := core.io.o_cpu_halt_ack

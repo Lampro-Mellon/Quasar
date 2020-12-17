@@ -982,7 +982,7 @@
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~quasar_wrapper|csr_tlu>_T_755"
+    "target":"~quasar_wrapper|csr_tlu>_T_745"
   },
   {
     "class":"firrtl.transforms.BlackBoxResourceAnno",

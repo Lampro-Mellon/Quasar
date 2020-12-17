@@ -18,5 +18,4 @@ class lsu_trigger extends Module with RequireAsyncReset with lib {
   io.lsu_trigger_match_m :=  (0 until 4).map(i =>io.lsu_pkt_m.valid & !io.lsu_pkt_m.bits.dma & ((io.trigger_pkt_any(i).store & io.lsu_pkt_m.bits.store)|
     (io.trigger_pkt_any(i).load & io.lsu_pkt_m.bits.load & !io.trigger_pkt_any(i).select) )&
     rvmaskandmatch(io.trigger_pkt_any(i).tdata2, lsu_match_data(i), io.trigger_pkt_any(i).match_pkt.asBool())).reverse.reduce(Cat(_,_))
-
 }
