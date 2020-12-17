@@ -437,7 +437,7 @@ class axi4_to_ahb extends Module with lib with RequireAsyncReset with Config {
   ahbm_data_clk := rvclkhdr(clock, ahbm_data_clken, io.scan_mode)
 }
 
-object AXImain extends App {
-  println("Generate Verilog")
-  println((new chisel3.stage.ChiselStage).emitVerilog(new axi4_to_ahb()))
-}
+//object AXImain extends App {
+ // println("Generate Verilog")
+//  println((new chisel3.stage.ChiselStage).emitVerilog(new axi4_to_ahb()))
+//}

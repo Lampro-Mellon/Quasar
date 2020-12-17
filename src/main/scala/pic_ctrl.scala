@@ -165,7 +165,7 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
 
 
 
-  if (PIC_2CYCLE == 1) {
+  if (PIC_2CYCLE) {
     val level_intpend_w_prior_en = Wire(Vec((NUM_LEVELS/2)+1, Vec(PIC_TOTAL_INT_PLUS1+3, UInt(INTPRIORITY_BITS.W))))  //PIC_TOTAL_INT_PLUS1+3 should be there
     val level_intpend_id = Wire(Vec((NUM_LEVELS/2)+1, Vec(PIC_TOTAL_INT_PLUS1+3, UInt(ID_BITS.W)))) //PIC_TOTAL_INT_PLUS1+3 should be there
     for(i<-0 until (NUM_LEVELS/2)+1; j<-0 until  PIC_TOTAL_INT_PLUS1+3){ //PIC_TOTAL_INT_PLUS1+3 should be there
@@ -406,7 +406,6 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
 
 }
 
-object pic_main extends App{
-  println("Generating Verilog...")
-  println((new chisel3.stage.ChiselStage).emitVerilog(new pic_ctrl()))
-}
+//object pic_gen extends App {
+//  println((new chisel3.stage.ChiselStage).emitVerilog(new pic_ctrl()))
+//}

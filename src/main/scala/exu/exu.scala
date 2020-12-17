@@ -233,6 +233,6 @@ class exu extends Module with lib with RequireAsyncReset{
   io.dec_exu.tlu_exu.exu_npc_r			 		 := Mux(i0_pred_correct_upper_r===1.U,  pred_correct_npc_r, i0_flush_path_upper_r)
 }
 
-object exu_main extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new exu()))
-}
+//object exu_main extends App {
+//  println((new chisel3.stage.ChiselStage).emitVerilog(new exu()))
+//}
