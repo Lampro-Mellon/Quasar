@@ -981,6 +981,10 @@
     "target":"~quasar_wrapper|dec_trigger>io_dec_i0_trigger_match_d"
   },
   {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~quasar_wrapper|csr_tlu>_T_755"
+  },
+  {
     "class":"firrtl.transforms.BlackBoxResourceAnno",
     "target":"quasar_wrapper.dmi_wrapper",
     "resourceId":"/vsrc/dmi_wrapper.sv"
