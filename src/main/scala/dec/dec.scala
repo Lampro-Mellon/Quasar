@@ -162,7 +162,7 @@ class dec extends Module with param with RequireAsyncReset{
   decode.io.lsu_store_stall_any                :=  io.lsu_store_stall_any
   decode.io.exu_div_wren                       :=  io.exu_div_wren
   decode.io.dec_tlu_i0_kill_writeb_wb          :=  tlu.io.dec_tlu_i0_kill_writeb_wb
-  decode.io.dec_tlu_flush_lower_wb             :=  tlu.io.dec_tlu_flush_lower_wb
+  decode.io.dec_tlu_flush_lower_wb             :=  tlu.io.tlu_bp.dec_tlu_flush_lower_wb
   decode.io.dec_tlu_i0_kill_writeb_r           :=  tlu.io.dec_tlu_i0_kill_writeb_r
   decode.io.dec_tlu_flush_lower_r              :=  tlu.io.tlu_exu.dec_tlu_flush_lower_r
   decode.io.dec_tlu_flush_pause_r              :=  tlu.io.dec_tlu_flush_pause_r
@@ -302,8 +302,4 @@ class dec extends Module with param with RequireAsyncReset{
 
   // debug command read data
   io.dec_dbg_rddata := decode.io.dec_i0_wdata_r
-}
-
-object dec_main extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new dec()))
 }
