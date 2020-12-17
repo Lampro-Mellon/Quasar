@@ -386,23 +386,10 @@ class dma_ctrl extends Module with lib with RequireAsyncReset {
   val dma_buffer_c1_clken = (bus_cmd_valid & io.dma_bus_clk_en) | io.dbg_dma.dbg_ib.dbg_cmd_valid | io.clk_override
   val dma_free_clken      = (bus_cmd_valid | bus_rsp_valid | io.dbg_dma.dbg_ib.dbg_cmd_valid | io.dma_dbg_cmd_done | dma_dbg_cmd_done_q | (fifo_valid.orR) | io.clk_override)
 
-  val dma_buffer_c1cgc = Module(new rvclkhdr)
-  dma_buffer_c1cgc.io.en        := dma_buffer_c1_clken
-  dma_buffer_c1cgc.io.scan_mode := io.scan_mode
-  dma_buffer_c1cgc.io.clk       := clock
-  dma_buffer_c1_clk             := dma_buffer_c1cgc.io.l1clk
-
-  val dma_free_cgc = Module(new rvclkhdr)
-  dma_free_cgc.io.en        := dma_free_clken
-  dma_free_cgc.io.scan_mode := io.scan_mode
-  dma_free_cgc.io.clk       := clock
-  dma_free_clk              := dma_free_cgc.io.l1clk
-
-  val dma_bus_cgc = Module(new rvclkhdr)
-  dma_bus_cgc.io.en        := io.dma_bus_clk_en
-  dma_bus_cgc.io.scan_mode := io.scan_mode
-  dma_bus_cgc.io.clk       := clock
-  dma_bus_clk              := dma_bus_cgc.io.l1clk
+  dma_buffer_c1_clk := rvclkhdr(clock,dma_buffer_c1_clken.asBool,io.scan_mode)
+  dma_free_clk      := rvclkhdr(clock,dma_free_clken.asBool(),io.scan_mode)
+  dma_bus_clk       := rvclkhdr(clock,io.dma_bus_clk_en,io.scan_mode)
+ 
 
   // Write channel buffer
 
