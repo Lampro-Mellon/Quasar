@@ -1747,7 +1747,7 @@ val wr_mcycleh_r                = WireInit(UInt(1.W), 0.U)
  mfdc_int := rvdffe(mfdc_ns,wr_mfdc_r.asBool,clock,io.scan_mode)
 //  rvdffe #(15)  mfdc_ff (.*, .en(wr_mfdc_r), .din({mfdc_ns[14:0]}), .dout(mfdc_int[14:0]));
 
- if(BUILD_AXI4 == true){
+ if(BUILD_AXI4 == 1){
  // flip poweron value of bit 6 for AXI build
     mfdc_ns := Cat(~io.dec_csr_wrdata_r(18,16),io.dec_csr_wrdata_r(11,7), ~io.dec_csr_wrdata_r(6), io.dec_csr_wrdata_r(5,0))
     mfdc    := Cat(~mfdc_int(14,12),0.U(4.W), mfdc_int(11,7), ~mfdc_int(6), mfdc_int(5,0))
@@ -2118,7 +2118,7 @@ miccme_ce_req := (("hffffffff".U(32.W) << miccmect(31,27)) & Cat(0.U(5.W), miccm
 
  val dicad0h = rvdffe(dicad0h_ns,(wr_dicad0h_r | io.ifu_ic_debug_rd_data_valid).asBool,clock,io.scan_mode)
 
- if (ICACHE_ECC == true) {
+ if (ICACHE_ECC == 1) {
  // ----------------------------------------------------------------------
  // DICAD1 (R/W) (Only accessible in debug mode)
  // [6:0]     : ECC
@@ -2151,7 +2151,7 @@ miccme_ce_req := (("hffffffff".U(32.W) << miccmect(31,27)) & Cat(0.U(5.W), miccm
  // DICAGO (R/W) (Only accessible in debug mode)
  // [0]     : Go
 
- if (ICACHE_ECC == true)  io.dec_tlu_ic_diag_pkt.icache_wrdata := Cat(dicad1(6,0), dicad0h(31,0), dicad0(31,0))
+ if (ICACHE_ECC == 1)  io.dec_tlu_ic_diag_pkt.icache_wrdata := Cat(dicad1(6,0), dicad0h(31,0), dicad0(31,0))
  else    io.dec_tlu_ic_diag_pkt.icache_wrdata := Cat(0.U(2.W),dicad1(3,0), dicad0h(31,0), dicad0(31,0))
 
  io.dec_tlu_ic_diag_pkt.icache_dicawics := dicawics

@@ -1,10 +1,10 @@
 module gated_latch
   (
-   input wire SE, EN, CK,
+   input logic SE, EN, CK,
    output Q
    );
-   reg  en_ff;
-   wire  enable;
+   logic  en_ff;
+   logic  enable;
    assign      enable = EN | SE;
   always @(CK, enable) begin
       if(!CK)
