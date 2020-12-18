@@ -21,8 +21,8 @@ trait param {
   val BTB_INDEX3_HI          = 	0x19
   val BTB_INDEX3_LO          = 	0x12
   val BTB_SIZE               = 	0x200
-  val BUILD_AHB_LITE         = 	0x1
-  val BUILD_AXI4             = 	0x0
+  val BUILD_AHB_LITE         = 	0x0
+  val BUILD_AXI4             = 	0x1
   val BUILD_AXI_NATIVE       = 	0x1
   val BUS_PRTY_DEFAULT       = 	0x3
   val DATA_ACCESS_ADDR0      = 	0x00000000
