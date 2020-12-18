@@ -1,0 +1,16 @@
++libext+.v+.sv
+//-y $SYNOPSYS_SYN_ROOT/dw/sim_ver
+$RV_ROOT/generated_rtl/quasar_wrapper.sv
+$RV_ROOT/design/src/main/resources/vsrc/mem.sv
+$RV_ROOT/design/src/main/resources/vsrc/ifu_ic_mem.sv
+$RV_ROOT/design/src/main/resources/vsrc/ifu_iccm_mem.sv
+$RV_ROOT/design/src/main/resources/vsrc/lsu_dccm_mem.sv
+$RV_ROOT/design/src/main/resources/vsrc/dmi_wrapper.sv
+$RV_ROOT/design/src/main/resources/vsrc/dmi_jtag_to_core_sync.sv
+$RV_ROOT/design/src/main/resources/vsrc/rvjtag_tap.sv
+$RV_ROOT/design/src/main/resources/vsrc/gated_latch.sv
+-v $RV_ROOT/design/src/main/resources/vsrc/beh_lib.sv
+-v $RV_ROOT/design/src/main/resources/vsrc/mem_lib.sv
+-v $RV_ROOT/testbench/axi_lsu_dma_bridge.sv
+-v $RV_ROOT/testbench/ahb_sif.sv
+

@@ -335,6 +335,6 @@ class axi4_to_ahb(val TAG : Int = 3) extends Module with lib with RequireAsyncRe
   ahbm_data_clk := rvclkhdr(clock, ahbm_data_clken, io.scan_mode)
 }
 
-object axi4_to_ahb extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new axi4_to_ahb(3)))
-}
+//object axi4_to_ahb extends App {
+//  println((new chisel3.stage.ChiselStage).emitVerilog(new axi4_to_ahb(3)))
+//}

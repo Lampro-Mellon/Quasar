@@ -4,71 +4,6 @@
   <component name="SVCompilerDirectivesDefines">
     <option name="define">
       <map>
-        <entry key="EL2_LOCAL_RAM_TEST_IO">
-          <value>
-            <Define>
-              <option name="definitions">
-                <list>
-                  <Body>
-                    <option name="offset" value="668" />
-                    <option name="replacementList" value="input logic WE,              &#10;input logic ME,              &#10;input logic CLK" />
-                    <option name="source" value="mem_lib.sv" />
-                  </Body>
-                </list>
-              </option>
-            </Define>
-          </value>
-        </entry>
-        <entry key="EL2_RAM">
-          <value>
-            <Define>
-              <option name="definitions">
-                <list>
-                  <Body>
-                    <option name="offset" value="788" />
-                    <option name="parameters">
-                      <list>
-                        <Parameter>
-                          <option name="name" value="depth" />
-                        </Parameter>
-                        <Parameter>
-                          <option name="name" value="width" />
-                        </Parameter>
-                      </list>
-                    </option>
-                    <option name="replacementList" value="module ram_``depth``x``width(               &#10;   input logic [$clog2(depth)-1:0] ADR,     &#10;   input logic [(width-1):0] D,             &#10;   output logic [(width-1):0] Q,            &#10;    `EL2_LOCAL_RAM_TEST_IO                 &#10;);                                          &#10;reg [(width-1):0] ram_core [(depth-1):0];   &#10;                                            &#10;always @(posedge CLK) begin              &#10;   if (ME &amp;&amp; WE) ram_core[ADR] = D;        &#10;   if (ME &amp;&amp; ~WE) Q &lt;= ram_core[ADR];       &#10;end                                         &#10;                                            &#10;endmodule" />
-                    <option name="source" value="mem_lib.sv" />
-                  </Body>
-                </list>
-              </option>
-            </Define>
-          </value>
-        </entry>
-        <entry key="EL2_RAM_BE">
-          <value>
-            <Define>
-              <option name="definitions">
-                <list>
-                  <Body>
-                    <option name="offset" value="1437" />
-                    <option name="parameters">
-                      <list>
-                        <Parameter>
-                          <option name="name" value="depth" />
-                        </Parameter>
-                        <Parameter>
-                          <option name="name" value="width" />
-                        </Parameter>
-                      </list>
-                    </option>
-                    <option name="replacementList" value="module ram_be_``depth``x``width(            &#10;   input logic [$clog2(depth)-1:0] ADR,     &#10;   input logic [(width-1):0] D, WEM,        &#10;   output logic [(width-1):0] Q,            &#10;    `EL2_LOCAL_RAM_TEST_IO                 &#10;);                                          &#10;reg [(width-1):0] ram_core [(depth-1):0];   &#10;                                            &#10;always @(posedge CLK) begin              &#10;   if (ME &amp;&amp; WE) ram_core[ADR] = D &amp; WEM | ~WEM &amp; ram_core[ADR];&#10;   if (ME &amp;&amp; ~WE) Q &lt;= ram_core[ADR];       &#10;end                                         &#10;                                            &#10;                                            &#10;endmodule" />
-                    <option name="source" value="mem_lib.sv" />
-                  </Body>
-                </list>
-              </option>
-            </Define>
-          </value>
-        </entry>
         <entry key="RANDOM">
           <value>
             <Define>
@@ -150,29 +85,9 @@
                     <option name="source" value="el2_ifu_mem_ctl.v" />
                   </Body>
                   <Body>
-                    <option name="offset" value="44499" />
+                    <option name="offset" value="149445" />
                     <option name="replacementList" value="$random" />
-                    <option name="source" value="dbg.v" />
-                  </Body>
-                  <Body>
-                    <option name="offset" value="9623" />
-                    <option name="replacementList" value="$random" />
-                    <option name="source" value="lsu.v" />
-                  </Body>
-                  <Body>
-                    <option name="offset" value="55649" />
-                    <option name="replacementList" value="$random" />
-                    <option name="source" value="dma_ctrl.v" />
-                  </Body>
-                  <Body>
-                    <option name="offset" value="151383" />
-                    <option name="replacementList" value="$random" />
-                    <option name="source" value="pic_ctrl.v" />
-                  </Body>
-                  <Body>
-                    <option name="offset" value="198988" />
-                    <option name="replacementList" value="$random" />
-                    <option name="source" value="lsu_bus_buffer.v" />
+                    <option name="source" value="dec.v" />
                   </Body>
                 </list>
               </option>
@@ -188,11 +103,7 @@
                   <option value="el2_exu_alu_ctl.v" />
                   <option value="el2_lsu.v" />
                   <option value="el2_ifu_mem_ctl.v" />
-                  <option value="dbg.v" />
-                  <option value="lsu.v" />
-                  <option value="dma_ctrl.v" />
-                  <option value="pic_ctrl.v" />
-                  <option value="lsu_bus_buffer.v" />
+                  <option value="dec.v" />
                 </set>
               </option>
             </Define>
@@ -932,8 +843,8 @@
                         </InclusionDependency>
                       </list>
                     </option>
-                    <option name="offset" value="44300" />
-                    <option name="source" value="dbg.v" />
+                    <option name="offset" value="149246" />
+                    <option name="source" value="dec.v" />
                   </Body>
                   <Body>
                     <option name="inclusionDependencies">
@@ -944,8 +855,8 @@
                         </InclusionDependency>
                       </list>
                     </option>
-                    <option name="offset" value="44357" />
-                    <option name="source" value="dbg.v" />
+                    <option name="offset" value="149303" />
+                    <option name="source" value="dec.v" />
                   </Body>
                   <Body>
                     <option name="inclusionDependencies">
@@ -956,8 +867,8 @@
                         </InclusionDependency>
                       </list>
                     </option>
-                    <option name="offset" value="44408" />
-                    <option name="source" value="dbg.v" />
+                    <option name="offset" value="149354" />
+                    <option name="source" value="dec.v" />
                   </Body>
                   <Body>
                     <option name="inclusionDependencies">
@@ -968,200 +879,8 @@
                         </InclusionDependency>
                       </list>
                     </option>
-                    <option name="offset" value="44459" />
-                    <option name="source" value="dbg.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_GARBAGE_ASSIGN" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="9424" />
-                    <option name="source" value="lsu.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_INVALID_ASSIGN" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="9481" />
-                    <option name="source" value="lsu.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_REG_INIT" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="9532" />
-                    <option name="source" value="lsu.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_MEM_INIT" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="9583" />
-                    <option name="source" value="lsu.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_GARBAGE_ASSIGN" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="55450" />
-                    <option name="source" value="dma_ctrl.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_INVALID_ASSIGN" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="55507" />
-                    <option name="source" value="dma_ctrl.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_REG_INIT" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="55558" />
-                    <option name="source" value="dma_ctrl.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_MEM_INIT" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="55609" />
-                    <option name="source" value="dma_ctrl.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_GARBAGE_ASSIGN" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="151184" />
-                    <option name="source" value="pic_ctrl.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_INVALID_ASSIGN" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="151241" />
-                    <option name="source" value="pic_ctrl.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_REG_INIT" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="151292" />
-                    <option name="source" value="pic_ctrl.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_MEM_INIT" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="151343" />
-                    <option name="source" value="pic_ctrl.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_GARBAGE_ASSIGN" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="198789" />
-                    <option name="source" value="lsu_bus_buffer.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_INVALID_ASSIGN" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="198846" />
-                    <option name="source" value="lsu_bus_buffer.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_REG_INIT" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="198897" />
-                    <option name="source" value="lsu_bus_buffer.v" />
-                  </Body>
-                  <Body>
-                    <option name="inclusionDependencies">
-                      <list>
-                        <InclusionDependency>
-                          <option name="name" value="RANDOMIZE_MEM_INIT" />
-                          <option name="rule" value="DEFINED" />
-                        </InclusionDependency>
-                      </list>
-                    </option>
-                    <option name="offset" value="198948" />
-                    <option name="source" value="lsu_bus_buffer.v" />
+                    <option name="offset" value="149405" />
+                    <option name="source" value="dec.v" />
                   </Body>
                 </list>
               </option>

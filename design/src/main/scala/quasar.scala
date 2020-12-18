@@ -127,7 +127,7 @@ class quasar extends Module with RequireAsyncReset with lib {
   dec.io.lsu_fir_addr := lsu.io.lsu_fir_addr
   dec.io.lsu_fir_error := lsu.io.lsu_fir_error
   dec.io.lsu_trigger_match_m := lsu.io.lsu_trigger_match_m
-  dec.io.dec_dbg <> dbg.io.dbg_dec
+  dec.io.dec_dbg <> dbg.io.dbg_dec_dma
   dec.io.lsu_idle_any := lsu.io.lsu_idle_any
   dec.io.lsu_error_pkt_r <> lsu.io.lsu_error_pkt_r
   dec.io.lsu_single_ecc_error_incr := lsu.io.lsu_single_ecc_error_incr
@@ -151,7 +151,7 @@ class quasar extends Module with RequireAsyncReset with lib {
   dec.io.dec_exu <> exu.io.dec_exu
   exu.reset := io.core_rst_l
   exu.io.scan_mode := io.scan_mode
-  exu.io.dbg_cmd_wrdata := dbg.io.dbg_dec.dbg_dctl.dbg_cmd_wrdata
+  exu.io.dbg_cmd_wrdata := dbg.io.dbg_dec_dma.dbg_dctl.dbg_cmd_wrdata
 
   // LSU Lets go
   lsu.reset := io.core_rst_l
@@ -196,8 +196,8 @@ class quasar extends Module with RequireAsyncReset with lib {
   dma_ctrl.io.dma_bus_clk_en := io.dma_bus_clk_en
   dma_ctrl.io.clk_override := dec.io.dec_tlu_misc_clk_override
   dma_ctrl.io.scan_mode := io.scan_mode
+  dma_ctrl.io.dbg_dec_dma <> dbg.io.dbg_dec_dma
   dma_ctrl.io.dbg_dma <> dbg.io.dbg_dma
-  dma_ctrl.io.dbg_dma_io <> dbg.io.dbg_dma_io
   dma_ctrl.io.dbg_cmd_size := dbg.io.dbg_cmd_size
   dma_ctrl.io.iccm_dma_rvalid := ifu.io.iccm_dma_rvalid
   dma_ctrl.io.iccm_dma_rtag := ifu.io.iccm_dma_rtag
@@ -211,7 +211,7 @@ class quasar extends Module with RequireAsyncReset with lib {
   pic_ctrl_inst.io.free_clk := free_clk
   pic_ctrl_inst.io.active_clk := active_clk
   pic_ctrl_inst.io.clk_override := dec.io.dec_tlu_pic_clk_override
-  pic_ctrl_inst.io.extintsrc_req := Cat(io.extintsrc_req, 0.U)
+  pic_ctrl_inst.io.extintsrc_req := Cat(io.extintsrc_req,0.U)
   pic_ctrl_inst.io.lsu_pic <> lsu.io.lsu_pic
   pic_ctrl_inst.io.dec_pic <> dec.io.dec_pic
   // Trace Packet
@@ -285,6 +285,6 @@ class quasar extends Module with RequireAsyncReset with lib {
     }
 
 }
-object QUASAR extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new quasar()))
-}
+//object QUASAR extends App {
+ // println((new chisel3.stage.ChiselStage).emitVerilog(new quasar()))
+//}

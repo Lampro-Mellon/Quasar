@@ -54,9 +54,9 @@ class dbg extends Module with lib with RequireAsyncReset {
     val dmi_reg_wdata = Input(UInt(32.W))
     val dmi_reg_rdata = Output(UInt(32.W))
     val sb_axi = new axi_channels(SB_BUS_TAG)
-    val dbg_dec = Flipped(new dec_dbg)
-    val dbg_dma = Flipped(new dec_dbg)
-    val dbg_dma_io = Flipped(new dbg_dma)
+    val dbg_dec_dma = Flipped(new dec_dbg)
+//    val dbg_dma = Flipped(new dec_dbg)
+    val dbg_dma = Flipped(new dbg_dma)
     val dbg_bus_clk_en = Input(Bool())
     val dbg_rst_l = Input(Bool())
     val clk_override = Input(Bool())
@@ -289,7 +289,7 @@ class dbg extends Module with lib with RequireAsyncReset {
     }
     is(state_t.cmd_start) {
       dbg_nxtstate := Mux(dmcontrol_reg(1), state_t.idle, Mux(abstractcs_reg(10, 8).orR, state_t.cmd_done, state_t.cmd_wait))
-      dbg_state_en := io.dbg_dec.dbg_ib.dbg_cmd_valid | abstractcs_reg(10, 8).orR | dmcontrol_reg(1)
+      dbg_state_en := io.dbg_dec_dma.dbg_ib.dbg_cmd_valid | abstractcs_reg(10, 8).orR | dmcontrol_reg(1)
       io.dbg_halt_req := (dmcontrol_wren_Q & dmcontrol_reg(31) & (~dmcontrol_reg(1)).asUInt()).asBool()
     }
     is(state_t.cmd_wait) {
@@ -326,13 +326,13 @@ class dbg extends Module with lib with RequireAsyncReset {
     RegEnable(dmi_reg_rdata_din, 0.U, io.dmi_reg_en)
   } // dmi_rddata_reg
 
-  io.dbg_dec.dbg_ib.dbg_cmd_addr := Mux((command_reg(31, 24) === "h2".U), Cat(data1_reg(31, 2), "b00".U(2.W)), Cat(0.U(20.W), command_reg(11, 0)))
-  io.dbg_dec.dbg_dctl.dbg_cmd_wrdata := data0_reg(31, 0)
-  io.dbg_dec.dbg_ib.dbg_cmd_valid := ((dbg_state === state_t.cmd_start) & !(abstractcs_reg(10, 8).orR) & io.dbg_dma_io.dma_dbg_ready).asBool()
-  io.dbg_dec.dbg_ib.dbg_cmd_write := command_reg(16).asBool()
-  io.dbg_dec.dbg_ib.dbg_cmd_type := Mux((command_reg(31, 24) === "h2".U), "b10".U(2.W), Cat("b0".U, (command_reg(15, 12) === "b0".U)))
+  io.dbg_dec_dma.dbg_ib.dbg_cmd_addr := Mux((command_reg(31, 24) === "h2".U), Cat(data1_reg(31, 2), "b00".U(2.W)), Cat(0.U(20.W), command_reg(11, 0)))
+  io.dbg_dec_dma.dbg_dctl.dbg_cmd_wrdata := data0_reg(31, 0)
+  io.dbg_dec_dma.dbg_ib.dbg_cmd_valid := ((dbg_state === state_t.cmd_start) & !(abstractcs_reg(10, 8).orR) & io.dbg_dma.dma_dbg_ready).asBool()
+  io.dbg_dec_dma.dbg_ib.dbg_cmd_write := command_reg(16).asBool()
+  io.dbg_dec_dma.dbg_ib.dbg_cmd_type := Mux((command_reg(31, 24) === "h2".U), "b10".U(2.W), Cat("b0".U, (command_reg(15, 12) === "b0".U)))
   io.dbg_cmd_size := command_reg(21, 20)
-  io.dbg_dma_io.dbg_dma_bubble := ((dbg_state === state_t.cmd_start) & !(abstractcs_reg(10, 8).orR) | (dbg_state === state_t.cmd_wait)).asBool()
+  io.dbg_dma.dbg_dma_bubble := ((dbg_state === state_t.cmd_start) & !(abstractcs_reg(10, 8).orR) | (dbg_state === state_t.cmd_wait)).asBool()
 
   val sb_nxtstate = WireInit(sb_state_t.sbidle)
   sb_nxtstate := sb_state_t.sbidle
@@ -449,13 +449,11 @@ class dbg extends Module with lib with RequireAsyncReset {
     Fill(64, (sbcs_reg(19, 17) === "h3".U)) & io.sb_axi.r.bits.data(63, 0)
 
 
-  io.dbg_dma.dbg_ib.dbg_cmd_addr      := io.dbg_dec.dbg_ib.dbg_cmd_addr
-  io.dbg_dma.dbg_dctl.dbg_cmd_wrdata  := io.dbg_dec.dbg_dctl.dbg_cmd_wrdata
-  io.dbg_dma.dbg_ib.dbg_cmd_valid     := io.dbg_dec.dbg_ib.dbg_cmd_valid
-  io.dbg_dma.dbg_ib.dbg_cmd_write     := io.dbg_dec.dbg_ib.dbg_cmd_write
-  io.dbg_dma.dbg_ib.dbg_cmd_type      := io.dbg_dec.dbg_ib.dbg_cmd_type
+//  io.dbg_dma.dbg_ib.dbg_cmd_addr      := io.dbg_dec_dma.dbg_ib.dbg_cmd_addr
+//  io.dbg_dma.dbg_dctl.dbg_cmd_wrdata  := io.dbg_dec_dma.dbg_dctl.dbg_cmd_wrdata
+//  io.dbg_dma.dbg_ib.dbg_cmd_valid     := io.dbg_dec_dma.dbg_ib.dbg_cmd_valid
+//  io.dbg_dma.dbg_ib.dbg_cmd_write     := io.dbg_dec_dma.dbg_ib.dbg_cmd_write
+//  io.dbg_dma.dbg_ib.dbg_cmd_type      := io.dbg_dec_dma.dbg_ib.dbg_cmd_type
 }
 
-object dbg_main extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new dbg()))
-}
+

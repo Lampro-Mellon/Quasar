@@ -468,39 +468,5 @@ module gated_flop
 
 endmodule
 
-module rvclkhdr
-  (
-   input  logic en,
-   input  logic clk,
-   input  logic scan_mode,
-   output logic l1clk
-   );
-
-   logic   SE;
-   assign       SE = scan_mode;
-
-   gated_flop clkhdr ( .*, .EN(en), .CK(clk), .Q(l1clk));
-
-endmodule // rvclkhdr
-
-module rvoclkhdr
-  (
-   input  logic en,
-   input  logic clk,
-   input  logic scan_mode,
-   output logic l1clk
-   );
-
-   logic   SE;
-   assign       SE = scan_mode;
-
-`ifdef RV_FPGA_OPTIMIZE
-   assign l1clk = clk;
-`else
-   gated_flop clkhdr ( .*, .EN(en), .CK(clk), .Q(l1clk));
-`endif
-
-endmodule
-
 
 
