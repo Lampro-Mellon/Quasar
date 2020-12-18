@@ -321,7 +321,7 @@ trait lib extends param{
       val EN  = Input(Bool())
       val SE = Input(Bool())
     })
-    addResource("/vsrc/gated_latch.v")
+    addResource("/vsrc/gated_latch.sv")
   }
 
   class rvclkhdr extends Module {

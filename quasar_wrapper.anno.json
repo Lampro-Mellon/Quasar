@@ -6,7 +6,7 @@
   {
     "class":"firrtl.transforms.BlackBoxResourceAnno",
     "target":"quasar_wrapper.gated_latch",
-    "resourceId":"/vsrc/gated_latch.v"
+    "resourceId":"/vsrc/gated_latch.sv"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
