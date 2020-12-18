@@ -94,10 +94,6 @@ class dec_tlu_ctl_IO extends Bundle with lib {
 	val dbg_resume_req = Input(UInt(1.W)) // DM requests a resume
 	val dec_div_active = Input(UInt(1.W)) // oop div is active
 	val trigger_pkt_any             = Output(Vec(4,new trigger_pkt_t))// trigger info for trigger blocks
-//	val pic_claimid  = Input(UInt(8.W)) // pic claimid for csr
-//	val pic_pl = Input(UInt(4.W)) // pic priv level for csr
-//	val mhwakeup = Input(UInt(1.W)) // high priority external int, wakeup if halted
-//	val mexintpend= Input(UInt(1.W)) // external interrupt pending
 	val timer_int= Input(UInt(1.W)) // timer interrupt pending
 	val soft_int= Input(UInt(1.W)) // software interrupt pending
 	val o_cpu_halt_status     = Output(UInt(1.W)) // PMU interface, halted
@@ -112,9 +108,7 @@ class dec_tlu_ctl_IO extends Bundle with lib {
 	val mpc_debug_halt_ack          = Output(UInt(1.W)) // Halt ack
 	val mpc_debug_run_ack           = Output(UInt(1.W)) // Run ack
 	val debug_brkpt_status          = Output(UInt(1.W)) // debug breakpoint
-//	val dec_tlu_meicurpl            = Output(UInt(4.W)) // to PIC
-//	val  dec_tlu_meipt              = Output(UInt(4.W)) // to PIC
-	val  dec_csr_rddata_d           = Output(UInt(32.W))      // csr read data at wb
+	val dec_csr_rddata_d            = Output(UInt(32.W))      // csr read data at wb
 	val dec_csr_legal_d             = Output(UInt(1.W))              // csr indicates legal operation
 	val dec_tlu_i0_kill_writeb_wb   = Output(UInt(1.W))    // I0 is flushed, don't writeback any results to arch state
 	val dec_tlu_i0_kill_writeb_r    = Output(UInt(1.W))    // I0 is flushed, don't writeback any results to arch state
@@ -2480,7 +2474,7 @@ for(i <- 0 until 4) {io.trigger_pkt_any(i).tdata2 := mtdata2_t(i)}
  				        io.csr_pkt.csr_misa.asBool            -> 0x40001104.U(32.W),
                 io.csr_pkt.csr_mvendorid.asBool       -> 0x00000045.U(32.W),
                 io.csr_pkt.csr_marchid.asBool         -> 0x00000010.U(32.W),
-                io.csr_pkt.csr_mimpid.asBool          -> 0x2.U(32.W),
+                io.csr_pkt.csr_mimpid.asBool          -> 0x1.U(32.W),
                 io.csr_pkt.csr_mhartid.asBool         -> Cat(io.core_id,0.U(4.W)),
                 io.csr_pkt.csr_mstatus.asBool         -> Cat(0.U(19.W), 3.U(2.W), 0.U(3.W), io.mstatus(1), 0.U(3.W), io.mstatus(0), 0.U(3.W)),
                 io.csr_pkt.csr_mtvec.asBool           -> Cat(io.mtvec(30,1), 0.U(1.W), io.mtvec(0)),
