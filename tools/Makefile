@@ -136,6 +136,11 @@ help:
 
 
 clean:
+	rm -rvf ${RV_ROOT}/design/*.v
+	rm -rvf ${RV_ROOT}/design/*.sv
+	rm -rvf ${RV_ROOT}/design/*.f
+	rm -rvf ${RV_ROOT}/design/*.json
+	rm -rvf ${RV_ROOT}/design/*.fir
 	rm -rvf ${RV_ROOT}/verif/sim/*.log 
 	rm -rvf ${RV_ROOT}/verif/sim/*.s 
 	rm -rvf ${RV_ROOT}/verif/sim/*.hex 
