@@ -1,0 +1,1 @@
+/home/waleedbinehsan/Downloads/Quasar/design/gated_latch.sv
