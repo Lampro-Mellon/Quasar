@@ -414,7 +414,7 @@ circuit lsu_clkdomain :
     rvclkhdr_8.reset <= reset
     rvclkhdr_8.io.clk <= clock @[lib.scala 344:17]
     rvclkhdr_8.io.en <= _T_37 @[lib.scala 345:16]
-    rvclkhdr_8.io.scan_mode <= io.scan_mode @[lib.scala 346:23]
+    rvclkhdr_8.io.scan_mode <= UInt<1>("h00") @[lib.scala 346:23]
     io.lsu_bus_obuf_c1_clk <= rvclkhdr_8.io.l1clk @[lsu_clkdomain.scala 95:26]
     node _T_38 = bits(lsu_bus_buf_c1_clken, 0, 0) @[lsu_clkdomain.scala 96:66]
     inst rvclkhdr_9 of rvclkhdr_9 @[lib.scala 352:22]
@@ -430,7 +430,7 @@ circuit lsu_clkdomain :
     rvclkhdr_10.reset <= reset
     rvclkhdr_10.io.clk <= clock @[lib.scala 344:17]
     rvclkhdr_10.io.en <= _T_39 @[lib.scala 345:16]
-    rvclkhdr_10.io.scan_mode <= io.scan_mode @[lib.scala 346:23]
+    rvclkhdr_10.io.scan_mode <= UInt<1>("h00") @[lib.scala 346:23]
     io.lsu_busm_clk <= rvclkhdr_10.io.l1clk @[lsu_clkdomain.scala 97:26]
     node _T_40 = bits(lsu_free_c2_clken, 0, 0) @[lsu_clkdomain.scala 98:63]
     inst rvclkhdr_11 of rvclkhdr_11 @[lib.scala 352:22]

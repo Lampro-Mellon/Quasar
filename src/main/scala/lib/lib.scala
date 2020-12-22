@@ -343,7 +343,7 @@ trait lib extends param{
       val cg = Module(new rvclkhdr)
       cg.io.clk := clk
       cg.io.en := en
-      cg.io.scan_mode := scan_mode
+      cg.io.scan_mode := 0.U
       cg.io.l1clk
     }
   }
