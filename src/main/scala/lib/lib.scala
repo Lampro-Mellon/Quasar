@@ -347,6 +347,15 @@ trait lib extends param{
       cg.io.l1clk
     }
   }
+  object rvoclkhdr {
+    def apply(clk: Clock, en: Bool, scan_mode: Bool): Clock = {
+      val cg = Module(new rvclkhdr)
+      cg.io.clk := clk
+      cg.io.en := en
+      cg.io.scan_mode := 0.U
+      cg.io.l1clk
+    }
+  }
 
   def rvrangecheck_ch(addr:UInt,CCM_SADR:UInt, CCM_SIZE:Int=128) = {
     val REGION_BITS = 4

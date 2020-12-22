@@ -84,19 +84,21 @@ class lsu_clkdomain extends Module  with RequireAsyncReset with lib{
   lsu_c1_m_clken_q       := withClock(io.lsu_free_c2_clk) {RegNext(lsu_c1_m_clken, 0.U)}
   lsu_c1_r_clken_q       := withClock(io.lsu_free_c2_clk) {RegNext(lsu_c1_r_clken, 0.U)}
 
-  io.lsu_c1_m_clk        := rvclkhdr(clock,lsu_c1_m_clken.asBool,io.scan_mode)
-  io.lsu_c1_r_clk        := rvclkhdr(clock,lsu_c1_r_clken.asBool,io.scan_mode)
-  io.lsu_c2_m_clk        := rvclkhdr(clock,lsu_c2_m_clken.asBool,io.scan_mode)
-  io.lsu_c2_r_clk        := rvclkhdr(clock,lsu_c2_r_clken.asBool,io.scan_mode)
-  io.lsu_store_c1_m_clk  := rvclkhdr(clock,lsu_store_c1_m_clken.asBool,io.scan_mode)
-  io.lsu_store_c1_r_clk  := rvclkhdr(clock,lsu_store_c1_r_clken.asBool,io.scan_mode)
-  io.lsu_stbuf_c1_clk    := rvclkhdr(clock,lsu_stbuf_c1_clken.asBool,io.scan_mode)
-  io.lsu_bus_ibuf_c1_clk := rvclkhdr(clock,lsu_bus_ibuf_c1_clken.asBool,io.scan_mode)
+  io.lsu_c1_m_clk        := rvoclkhdr(clock,lsu_c1_m_clken.asBool,io.scan_mode)
+  io.lsu_c1_r_clk        := rvoclkhdr(clock,lsu_c1_r_clken.asBool,io.scan_mode)
+  io.lsu_c2_m_clk        := rvoclkhdr(clock,lsu_c2_m_clken.asBool,io.scan_mode)
+  io.lsu_c2_r_clk        := rvoclkhdr(clock,lsu_c2_r_clken.asBool,io.scan_mode)
+  io.lsu_store_c1_m_clk  := rvoclkhdr(clock,lsu_store_c1_m_clken.asBool,io.scan_mode)
+  io.lsu_store_c1_r_clk  := rvoclkhdr(clock,lsu_store_c1_r_clken.asBool,io.scan_mode)
+  io.lsu_stbuf_c1_clk    := rvoclkhdr(clock,lsu_stbuf_c1_clken.asBool,io.scan_mode)
+  io.lsu_bus_ibuf_c1_clk := rvoclkhdr(clock,lsu_bus_ibuf_c1_clken.asBool,io.scan_mode)
   io.lsu_bus_obuf_c1_clk := rvclkhdr(clock,io.lsu_bus_obuf_c1_clken.asBool,io.scan_mode)
-  io.lsu_bus_buf_c1_clk  := rvclkhdr(clock,lsu_bus_buf_c1_clken.asBool,io.scan_mode)
+  io.lsu_bus_buf_c1_clk  := rvoclkhdr(clock,lsu_bus_buf_c1_clken.asBool,io.scan_mode)
   io.lsu_busm_clk        := rvclkhdr(clock,io.lsu_busm_clken.asBool,io.scan_mode)
-  io.lsu_free_c2_clk     := rvclkhdr(clock,lsu_free_c2_clken.asBool,io.scan_mode)
+  io.lsu_free_c2_clk     := rvoclkhdr(clock,lsu_free_c2_clken.asBool,io.scan_mode)
 }
-
+object clkdomain extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new lsu_clkdomain()))
+}
 
 

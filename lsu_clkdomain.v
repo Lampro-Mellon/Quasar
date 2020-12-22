@@ -107,54 +107,54 @@ module lsu_clkdomain(
   reg [31:0] _RAND_1;
   reg [31:0] _RAND_2;
 `endif // RANDOMIZE_REG_INIT
-  wire  rvclkhdr_io_l1clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_io_clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_io_en; // @[lib.scala 343:22]
-  wire  rvclkhdr_io_scan_mode; // @[lib.scala 343:22]
-  wire  rvclkhdr_1_io_l1clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_1_io_clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_1_io_en; // @[lib.scala 343:22]
-  wire  rvclkhdr_1_io_scan_mode; // @[lib.scala 343:22]
-  wire  rvclkhdr_2_io_l1clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_2_io_clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_2_io_en; // @[lib.scala 343:22]
-  wire  rvclkhdr_2_io_scan_mode; // @[lib.scala 343:22]
-  wire  rvclkhdr_3_io_l1clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_3_io_clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_3_io_en; // @[lib.scala 343:22]
-  wire  rvclkhdr_3_io_scan_mode; // @[lib.scala 343:22]
-  wire  rvclkhdr_4_io_l1clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_4_io_clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_4_io_en; // @[lib.scala 343:22]
-  wire  rvclkhdr_4_io_scan_mode; // @[lib.scala 343:22]
-  wire  rvclkhdr_5_io_l1clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_5_io_clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_5_io_en; // @[lib.scala 343:22]
-  wire  rvclkhdr_5_io_scan_mode; // @[lib.scala 343:22]
-  wire  rvclkhdr_6_io_l1clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_6_io_clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_6_io_en; // @[lib.scala 343:22]
-  wire  rvclkhdr_6_io_scan_mode; // @[lib.scala 343:22]
-  wire  rvclkhdr_7_io_l1clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_7_io_clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_7_io_en; // @[lib.scala 343:22]
-  wire  rvclkhdr_7_io_scan_mode; // @[lib.scala 343:22]
+  wire  rvclkhdr_io_l1clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_io_clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_io_en; // @[lib.scala 352:22]
+  wire  rvclkhdr_io_scan_mode; // @[lib.scala 352:22]
+  wire  rvclkhdr_1_io_l1clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_1_io_clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_1_io_en; // @[lib.scala 352:22]
+  wire  rvclkhdr_1_io_scan_mode; // @[lib.scala 352:22]
+  wire  rvclkhdr_2_io_l1clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_2_io_clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_2_io_en; // @[lib.scala 352:22]
+  wire  rvclkhdr_2_io_scan_mode; // @[lib.scala 352:22]
+  wire  rvclkhdr_3_io_l1clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_3_io_clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_3_io_en; // @[lib.scala 352:22]
+  wire  rvclkhdr_3_io_scan_mode; // @[lib.scala 352:22]
+  wire  rvclkhdr_4_io_l1clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_4_io_clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_4_io_en; // @[lib.scala 352:22]
+  wire  rvclkhdr_4_io_scan_mode; // @[lib.scala 352:22]
+  wire  rvclkhdr_5_io_l1clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_5_io_clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_5_io_en; // @[lib.scala 352:22]
+  wire  rvclkhdr_5_io_scan_mode; // @[lib.scala 352:22]
+  wire  rvclkhdr_6_io_l1clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_6_io_clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_6_io_en; // @[lib.scala 352:22]
+  wire  rvclkhdr_6_io_scan_mode; // @[lib.scala 352:22]
+  wire  rvclkhdr_7_io_l1clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_7_io_clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_7_io_en; // @[lib.scala 352:22]
+  wire  rvclkhdr_7_io_scan_mode; // @[lib.scala 352:22]
   wire  rvclkhdr_8_io_l1clk; // @[lib.scala 343:22]
   wire  rvclkhdr_8_io_clk; // @[lib.scala 343:22]
   wire  rvclkhdr_8_io_en; // @[lib.scala 343:22]
   wire  rvclkhdr_8_io_scan_mode; // @[lib.scala 343:22]
-  wire  rvclkhdr_9_io_l1clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_9_io_clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_9_io_en; // @[lib.scala 343:22]
-  wire  rvclkhdr_9_io_scan_mode; // @[lib.scala 343:22]
+  wire  rvclkhdr_9_io_l1clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_9_io_clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_9_io_en; // @[lib.scala 352:22]
+  wire  rvclkhdr_9_io_scan_mode; // @[lib.scala 352:22]
   wire  rvclkhdr_10_io_l1clk; // @[lib.scala 343:22]
   wire  rvclkhdr_10_io_clk; // @[lib.scala 343:22]
   wire  rvclkhdr_10_io_en; // @[lib.scala 343:22]
   wire  rvclkhdr_10_io_scan_mode; // @[lib.scala 343:22]
-  wire  rvclkhdr_11_io_l1clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_11_io_clk; // @[lib.scala 343:22]
-  wire  rvclkhdr_11_io_en; // @[lib.scala 343:22]
-  wire  rvclkhdr_11_io_scan_mode; // @[lib.scala 343:22]
+  wire  rvclkhdr_11_io_l1clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_11_io_clk; // @[lib.scala 352:22]
+  wire  rvclkhdr_11_io_en; // @[lib.scala 352:22]
+  wire  rvclkhdr_11_io_scan_mode; // @[lib.scala 352:22]
   wire  _T = io_lsu_p_valid | io_dma_dccm_req; // @[lsu_clkdomain.scala 64:47]
   wire  lsu_c1_m_clken = _T | io_clk_override; // @[lsu_clkdomain.scala 64:65]
   reg  lsu_c1_m_clken_q; // @[lsu_clkdomain.scala 84:67]
@@ -182,49 +182,49 @@ module lsu_clkdomain(
   reg  lsu_free_c1_clken_q; // @[lsu_clkdomain.scala 82:62]
   wire  _T_21 = lsu_free_c1_clken | lsu_free_c1_clken_q; // @[lsu_clkdomain.scala 78:50]
   wire  _T_24 = _T_12 | io_clk_override; // @[lsu_clkdomain.scala 79:72]
-  rvclkhdr rvclkhdr ( // @[lib.scala 343:22]
+  rvclkhdr rvclkhdr ( // @[lib.scala 352:22]
     .io_l1clk(rvclkhdr_io_l1clk),
     .io_clk(rvclkhdr_io_clk),
     .io_en(rvclkhdr_io_en),
     .io_scan_mode(rvclkhdr_io_scan_mode)
   );
-  rvclkhdr rvclkhdr_1 ( // @[lib.scala 343:22]
+  rvclkhdr rvclkhdr_1 ( // @[lib.scala 352:22]
     .io_l1clk(rvclkhdr_1_io_l1clk),
     .io_clk(rvclkhdr_1_io_clk),
     .io_en(rvclkhdr_1_io_en),
     .io_scan_mode(rvclkhdr_1_io_scan_mode)
   );
-  rvclkhdr rvclkhdr_2 ( // @[lib.scala 343:22]
+  rvclkhdr rvclkhdr_2 ( // @[lib.scala 352:22]
     .io_l1clk(rvclkhdr_2_io_l1clk),
     .io_clk(rvclkhdr_2_io_clk),
     .io_en(rvclkhdr_2_io_en),
     .io_scan_mode(rvclkhdr_2_io_scan_mode)
   );
-  rvclkhdr rvclkhdr_3 ( // @[lib.scala 343:22]
+  rvclkhdr rvclkhdr_3 ( // @[lib.scala 352:22]
     .io_l1clk(rvclkhdr_3_io_l1clk),
     .io_clk(rvclkhdr_3_io_clk),
     .io_en(rvclkhdr_3_io_en),
     .io_scan_mode(rvclkhdr_3_io_scan_mode)
   );
-  rvclkhdr rvclkhdr_4 ( // @[lib.scala 343:22]
+  rvclkhdr rvclkhdr_4 ( // @[lib.scala 352:22]
     .io_l1clk(rvclkhdr_4_io_l1clk),
     .io_clk(rvclkhdr_4_io_clk),
     .io_en(rvclkhdr_4_io_en),
     .io_scan_mode(rvclkhdr_4_io_scan_mode)
   );
-  rvclkhdr rvclkhdr_5 ( // @[lib.scala 343:22]
+  rvclkhdr rvclkhdr_5 ( // @[lib.scala 352:22]
     .io_l1clk(rvclkhdr_5_io_l1clk),
     .io_clk(rvclkhdr_5_io_clk),
     .io_en(rvclkhdr_5_io_en),
     .io_scan_mode(rvclkhdr_5_io_scan_mode)
   );
-  rvclkhdr rvclkhdr_6 ( // @[lib.scala 343:22]
+  rvclkhdr rvclkhdr_6 ( // @[lib.scala 352:22]
     .io_l1clk(rvclkhdr_6_io_l1clk),
     .io_clk(rvclkhdr_6_io_clk),
     .io_en(rvclkhdr_6_io_en),
     .io_scan_mode(rvclkhdr_6_io_scan_mode)
   );
-  rvclkhdr rvclkhdr_7 ( // @[lib.scala 343:22]
+  rvclkhdr rvclkhdr_7 ( // @[lib.scala 352:22]
     .io_l1clk(rvclkhdr_7_io_l1clk),
     .io_clk(rvclkhdr_7_io_clk),
     .io_en(rvclkhdr_7_io_en),
@@ -236,7 +236,7 @@ module lsu_clkdomain(
     .io_en(rvclkhdr_8_io_en),
     .io_scan_mode(rvclkhdr_8_io_scan_mode)
   );
-  rvclkhdr rvclkhdr_9 ( // @[lib.scala 343:22]
+  rvclkhdr rvclkhdr_9 ( // @[lib.scala 352:22]
     .io_l1clk(rvclkhdr_9_io_l1clk),
     .io_clk(rvclkhdr_9_io_clk),
     .io_en(rvclkhdr_9_io_en),
@@ -248,7 +248,7 @@ module lsu_clkdomain(
     .io_en(rvclkhdr_10_io_en),
     .io_scan_mode(rvclkhdr_10_io_scan_mode)
   );
-  rvclkhdr rvclkhdr_11 ( // @[lib.scala 343:22]
+  rvclkhdr rvclkhdr_11 ( // @[lib.scala 352:22]
     .io_l1clk(rvclkhdr_11_io_l1clk),
     .io_clk(rvclkhdr_11_io_clk),
     .io_en(rvclkhdr_11_io_en),
@@ -268,42 +268,42 @@ module lsu_clkdomain(
   assign io_lsu_bus_buf_c1_clk = rvclkhdr_9_io_l1clk; // @[lsu_clkdomain.scala 96:26]
   assign io_lsu_busm_clk = rvclkhdr_10_io_l1clk; // @[lsu_clkdomain.scala 97:26]
   assign io_lsu_free_c2_clk = rvclkhdr_11_io_l1clk; // @[lsu_clkdomain.scala 98:26]
-  assign rvclkhdr_io_clk = clock; // @[lib.scala 344:17]
-  assign rvclkhdr_io_en = _T | io_clk_override; // @[lib.scala 345:16]
-  assign rvclkhdr_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
-  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 344:17]
-  assign rvclkhdr_1_io_en = _T_1 | io_clk_override; // @[lib.scala 345:16]
-  assign rvclkhdr_1_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
-  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 344:17]
-  assign rvclkhdr_2_io_en = _T_2 | io_clk_override; // @[lib.scala 345:16]
-  assign rvclkhdr_2_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
-  assign rvclkhdr_3_io_clk = clock; // @[lib.scala 344:17]
-  assign rvclkhdr_3_io_en = _T_3 | io_clk_override; // @[lib.scala 345:16]
-  assign rvclkhdr_3_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
-  assign rvclkhdr_4_io_clk = clock; // @[lib.scala 344:17]
-  assign rvclkhdr_4_io_en = _T_4 | io_clk_override; // @[lib.scala 345:16]
-  assign rvclkhdr_4_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
-  assign rvclkhdr_5_io_clk = clock; // @[lib.scala 344:17]
-  assign rvclkhdr_5_io_en = _T_5 | io_clk_override; // @[lib.scala 345:16]
-  assign rvclkhdr_5_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
-  assign rvclkhdr_6_io_clk = clock; // @[lib.scala 344:17]
-  assign rvclkhdr_6_io_en = _T_7 | io_clk_override; // @[lib.scala 345:16]
-  assign rvclkhdr_6_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
-  assign rvclkhdr_7_io_clk = clock; // @[lib.scala 344:17]
-  assign rvclkhdr_7_io_en = io_lsu_busreq_r | io_clk_override; // @[lib.scala 345:16]
-  assign rvclkhdr_7_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
+  assign rvclkhdr_io_clk = clock; // @[lib.scala 353:17]
+  assign rvclkhdr_io_en = _T | io_clk_override; // @[lib.scala 354:16]
+  assign rvclkhdr_io_scan_mode = 1'h0; // @[lib.scala 355:23]
+  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 353:17]
+  assign rvclkhdr_1_io_en = _T_1 | io_clk_override; // @[lib.scala 354:16]
+  assign rvclkhdr_1_io_scan_mode = 1'h0; // @[lib.scala 355:23]
+  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 353:17]
+  assign rvclkhdr_2_io_en = _T_2 | io_clk_override; // @[lib.scala 354:16]
+  assign rvclkhdr_2_io_scan_mode = 1'h0; // @[lib.scala 355:23]
+  assign rvclkhdr_3_io_clk = clock; // @[lib.scala 353:17]
+  assign rvclkhdr_3_io_en = _T_3 | io_clk_override; // @[lib.scala 354:16]
+  assign rvclkhdr_3_io_scan_mode = 1'h0; // @[lib.scala 355:23]
+  assign rvclkhdr_4_io_clk = clock; // @[lib.scala 353:17]
+  assign rvclkhdr_4_io_en = _T_4 | io_clk_override; // @[lib.scala 354:16]
+  assign rvclkhdr_4_io_scan_mode = 1'h0; // @[lib.scala 355:23]
+  assign rvclkhdr_5_io_clk = clock; // @[lib.scala 353:17]
+  assign rvclkhdr_5_io_en = _T_5 | io_clk_override; // @[lib.scala 354:16]
+  assign rvclkhdr_5_io_scan_mode = 1'h0; // @[lib.scala 355:23]
+  assign rvclkhdr_6_io_clk = clock; // @[lib.scala 353:17]
+  assign rvclkhdr_6_io_en = _T_7 | io_clk_override; // @[lib.scala 354:16]
+  assign rvclkhdr_6_io_scan_mode = 1'h0; // @[lib.scala 355:23]
+  assign rvclkhdr_7_io_clk = clock; // @[lib.scala 353:17]
+  assign rvclkhdr_7_io_en = io_lsu_busreq_r | io_clk_override; // @[lib.scala 354:16]
+  assign rvclkhdr_7_io_scan_mode = 1'h0; // @[lib.scala 355:23]
   assign rvclkhdr_8_io_clk = clock; // @[lib.scala 344:17]
   assign rvclkhdr_8_io_en = io_lsu_bus_obuf_c1_clken; // @[lib.scala 345:16]
   assign rvclkhdr_8_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
-  assign rvclkhdr_9_io_clk = clock; // @[lib.scala 344:17]
-  assign rvclkhdr_9_io_en = _T_13 | io_clk_override; // @[lib.scala 345:16]
-  assign rvclkhdr_9_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
+  assign rvclkhdr_9_io_clk = clock; // @[lib.scala 353:17]
+  assign rvclkhdr_9_io_en = _T_13 | io_clk_override; // @[lib.scala 354:16]
+  assign rvclkhdr_9_io_scan_mode = 1'h0; // @[lib.scala 355:23]
   assign rvclkhdr_10_io_clk = clock; // @[lib.scala 344:17]
   assign rvclkhdr_10_io_en = io_lsu_busm_clken; // @[lib.scala 345:16]
   assign rvclkhdr_10_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
-  assign rvclkhdr_11_io_clk = clock; // @[lib.scala 344:17]
-  assign rvclkhdr_11_io_en = _T_21 | io_clk_override; // @[lib.scala 345:16]
-  assign rvclkhdr_11_io_scan_mode = io_scan_mode; // @[lib.scala 346:23]
+  assign rvclkhdr_11_io_clk = clock; // @[lib.scala 353:17]
+  assign rvclkhdr_11_io_en = _T_21 | io_clk_override; // @[lib.scala 354:16]
+  assign rvclkhdr_11_io_scan_mode = 1'h0; // @[lib.scala 355:23]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
