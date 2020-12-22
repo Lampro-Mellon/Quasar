@@ -271,3 +271,6 @@ class lsu_stbuf extends Module with lib with RequireAsyncReset {
   val stbuf_fwdpipe4_hi = Mux(ld_byte_rhit_hi(3),ld_fwddata_rpipe_hi(31,24),stbuf_fwddata_hi_pre_m(31,24))
   io.stbuf_fwddata_hi_m := Cat(stbuf_fwdpipe4_hi,stbuf_fwdpipe3_hi,stbuf_fwdpipe2_hi,stbuf_fwdpipe1_hi)
 }
+object stbuf extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new lsu_stbuf()))
+}
