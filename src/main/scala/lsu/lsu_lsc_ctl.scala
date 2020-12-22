@@ -10,6 +10,7 @@ import chisel3.experimental.chiselName
 class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
 {
   val io = IO(new Bundle{
+    val clk_override = Input(Bool())
     val lsu_c1_m_clk = Input(Clock())
     val lsu_c1_r_clk = Input(Clock())
     val lsu_c2_m_clk = Input(Clock())
@@ -27,6 +28,9 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
 
     val flush_m_up = Input(UInt(1.W))
     val flush_r    = Input(UInt(1.W))
+    val ldst_dual_d = Input(UInt(1.W))
+    val ldst_dual_m    = Input(UInt(1.W))
+    val ldst_dual_r    = Input(UInt(1.W))
 
     val lsu_exu = new lsu_exu()
 
@@ -86,7 +90,8 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
     val scan_mode    = Input(UInt(1.W))
   })
 
-
+  val end_addr_pre_m  =WireInit(0.U(29.W))
+  val end_addr_pre_r  =WireInit(0.U(29.W))
   val dma_pkt_d       = Wire(Valid(new lsu_pkt_t()))
   val lsu_pkt_m_in    = Wire(Valid(new lsu_pkt_t()))
   val lsu_pkt_r_in    = Wire(Valid(new lsu_pkt_t()))
@@ -177,8 +182,10 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
     lsu_error_pkt_m.bits.mscause          := Mux(((io.lsu_double_ecc_error_m & !misaligned_fault_m & !access_fault_m)===1.U),1.U(4.W), exc_mscause_m(3,0))
     lsu_error_pkt_m.bits.addr             := io.lsu_addr_m(31,0)//lsu_addr_d->lsu_full_addr
     lsu_fir_error_m                  := Mux(fir_nondccm_access_error_m.asBool,3.U(2.W), Mux(fir_dccm_access_error_m.asBool,2.U(2.W), Mux((io.lsu_pkt_m.bits.fast_int & io.lsu_double_ecc_error_m).asBool,1.U(2.W),0.U(2.W))))
-    io.lsu_error_pkt_r               := withClock(io.lsu_c2_r_clk){RegNext(lsu_error_pkt_m,0.U.asTypeOf(lsu_error_pkt_m.cloneType))}
-    io.lsu_fir_error                 := withClock(io.lsu_c2_r_clk){RegNext(lsu_fir_error_m,0.U)}
+    io.lsu_error_pkt_r := rvdffe(lsu_error_pkt_m,(lsu_error_pkt_m.valid | lsu_error_pkt_m.bits.single_ecc_error | io.clk_override),clock,io.scan_mode)
+    io.lsu_error_pkt_r.bits.single_ecc_error := withClock(io.lsu_c2_r_clk){RegNext(lsu_error_pkt_m.bits.single_ecc_error, 0.U)}
+    io.lsu_error_pkt_r.valid := withClock(io.lsu_c2_r_clk){RegNext(lsu_error_pkt_m.valid, 0.U)}
+    io.lsu_fir_error                 := RegNext(lsu_fir_error_m,0.U)
   }
   dma_pkt_d.bits.unsign   := 0.U
   dma_pkt_d.bits.fast_int := 0.U
@@ -218,6 +225,14 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
   val store_data_pre_m      =  withClock(io.lsu_store_c1_m_clk){RegNext(store_data_m_in,0.U)}
   io.lsu_addr_m        :=  withClock(io.lsu_c1_m_clk){RegNext(io.lsu_addr_d,0.U)}
   io.lsu_addr_r        :=  withClock(io.lsu_c1_r_clk){RegNext(io.lsu_addr_m,0.U)}
+
+  io.end_addr_m := Cat(Mux(io.ldst_dual_m,end_addr_pre_m,io.lsu_addr_m(31,3)), withClock(io.lsu_c1_m_clk){RegNext(io.end_addr_d(2,0),0.U)})
+  io.end_addr_r := Cat(Mux(io.ldst_dual_r,end_addr_pre_r,io.lsu_addr_r(31,3)), withClock(io.lsu_c1_m_clk){RegNext(io.end_addr_m(2,0),0.U)})
+
+  end_addr_pre_m := rvdffe(io.end_addr_d(31,3),((io.lsu_pkt_d.valid & io.ldst_dual_d) | io.clk_override),clock,io.scan_mode)
+  end_addr_pre_r := rvdffe(io.end_addr_m(31,3),((io.lsu_pkt_m.valid & io.ldst_dual_m) | io.clk_override),clock,io.scan_mode)
+
+
   io.end_addr_m        :=  withClock(io.lsu_c1_m_clk){RegNext(io.end_addr_d,0.U)}
   io.end_addr_r        :=  withClock(io.lsu_c1_r_clk){RegNext(io.end_addr_m,0.U)}
   io.addr_in_dccm_m    :=  withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_dccm_d,0.U)}
@@ -226,8 +241,9 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
   io.addr_in_pic_r     :=  withClock(io.lsu_c1_r_clk){RegNext(io.addr_in_pic_m,0.U)}
   io.addr_external_m   :=  withClock(io.lsu_c1_m_clk){RegNext(addr_external_d,0.U)}
   val addr_external_r       =  withClock(io.lsu_c1_r_clk){RegNext(io.addr_external_m,0.U)}
-  val bus_read_data_r       =  withClock(io.lsu_c1_r_clk){RegNext(io.bus_read_data_m,0.U)}
-  // Fast interrupt address
+  val bus_read_data_r       =  rvdffe(io.bus_read_data_m,io.addr_external_m | io.clk_override,clock,io.scan_mode)
+
+// Fast interrupt address
   io.lsu_fir_addr          := io.lsu_ld_data_corr_r(31,1)   //original (31,1)  TBD
   // absence load/store all 0's
   io.lsu_addr_d            := full_addr_d

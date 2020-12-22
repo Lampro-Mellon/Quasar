@@ -7,15 +7,17 @@ import include._
 class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
   val io = IO (new Bundle {
     val scan_mode   = Input(Bool())
+    val clk_override   = Input(Bool())
     val tlu_busbuff = new tlu_busbuff()
-    val lsu_c1_m_clk        = Input(Clock())
+    val lsu_bus_obuf_c1_clken     = Input(Bool())// obuf clock enable
+    val lsu_busm_clken            = Input(Bool())
     val lsu_c1_r_clk        = Input(Clock())
     val lsu_c2_r_clk        = Input(Clock())
     val lsu_bus_ibuf_c1_clk = Input(Clock())
     val lsu_bus_obuf_c1_clk = Input(Clock())
     val lsu_bus_buf_c1_clk  = Input(Clock())
     val lsu_free_c2_clk     = Input(Clock())
-    val free_clk            = Input(Clock())
+    val active_clk            = Input(Clock())
     val lsu_busm_clk        = Input(Clock())
     val axi                 = new axi_channels(LSU_BUS_TAG)
     val dec_lsu_valid_raw_d = Input(Bool())
@@ -24,13 +26,14 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
     val lsu_pkt_m           = Flipped(Valid(new lsu_pkt_t()))
     val lsu_pkt_r           = Flipped(Valid(new lsu_pkt_t()))
 
-    val lsu_addr_d          = Input(UInt(32.W))
     val lsu_addr_m          = Input(UInt(32.W))
     val lsu_addr_r          = Input(UInt(32.W))
 
-    val end_addr_d          = Input(UInt(32.W))
     val end_addr_m          = Input(UInt(32.W))
     val end_addr_r          = Input(UInt(32.W))
+    val ldst_dual_d         = Input(Bool())
+    val ldst_dual_m         = Input(Bool())
+    val ldst_dual_r         = Input(Bool())
 
     val store_data_r        = Input(UInt(32.W))
     val dec_tlu_force_halt  = Input(Bool())
@@ -44,7 +47,7 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
     val lsu_bus_buffer_pend_any       = Output(Bool())
     val lsu_bus_buffer_full_any       = Output(Bool())
     val lsu_bus_buffer_empty_any      = Output(Bool())
-    val lsu_bus_idle_any              = Output(Bool())
+    //val lsu_bus_idle_any              = Output(Bool())
     val bus_read_data_m               = Output(UInt(32.W))
 
     val dctl_busbuff = new dctl_busbuff()
@@ -53,9 +56,6 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
   })
 
   val lsu_bus_clk_en_q        = WireInit(Bool(), init = false.B)
-  val ldst_dual_d             = WireInit(Bool(), init = false.B)
-  val ldst_dual_m             = WireInit(Bool(), init = false.B)
-  val ldst_dual_r             = WireInit(Bool(), init = false.B)
   val ldst_byteen_m           = WireInit(UInt(4.W), init = 0.U)
   val ldst_byteen_r           = WireInit(UInt(4.W), init = 0.U)
   val ldst_byteen_ext_m       = WireInit(UInt(8.W), init = 0.U)
@@ -101,7 +101,9 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
 
   bus_buffer.io.scan_mode   := io.scan_mode
   io.tlu_busbuff <> bus_buffer.io.tlu_busbuff
-
+  bus_buffer.io.clk_override                      := io.clk_override
+  bus_buffer.io.lsu_bus_obuf_c1_clken             := io.lsu_bus_obuf_c1_clken
+  bus_buffer.io.lsu_busm_clken                    := io.lsu_busm_clken
   bus_buffer.io.dec_tlu_force_halt                := io.dec_tlu_force_halt
   bus_buffer.io.lsu_c2_r_clk                      := io.lsu_c2_r_clk
   bus_buffer.io.lsu_bus_ibuf_c1_clk               := io.lsu_bus_ibuf_c1_clk
@@ -126,14 +128,14 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
   bus_buffer.io.flush_m_up                        := io.flush_m_up
   bus_buffer.io.flush_r                           := io.flush_r
   bus_buffer.io.lsu_commit_r                      := io.lsu_commit_r
-  bus_buffer.io.lsu_axi                   <> io.axi
+  bus_buffer.io.lsu_axi                           <> io.axi
   bus_buffer.io.lsu_bus_clk_en                    := io.lsu_bus_clk_en
 
   io.lsu_busreq_r                    := bus_buffer.io.lsu_busreq_r
   io.lsu_bus_buffer_pend_any         := bus_buffer.io.lsu_bus_buffer_pend_any
   io.lsu_bus_buffer_full_any         := bus_buffer.io.lsu_bus_buffer_full_any
   io.lsu_bus_buffer_empty_any        := bus_buffer.io.lsu_bus_buffer_empty_any
-  io.lsu_bus_idle_any                := bus_buffer.io.lsu_bus_idle_any
+  //io.lsu_bus_idle_any                := bus_buffer.io.lsu_bus_idle_any
   ld_byte_hit_buf_lo                 := bus_buffer.io.ld_byte_hit_buf_lo
   ld_byte_hit_buf_hi                 := bus_buffer.io.ld_byte_hit_buf_hi
   ld_fwddata_buf_lo                  := bus_buffer.io.ld_fwddata_buf_lo
@@ -142,19 +144,18 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
   bus_buffer.io.no_word_merge_r                   := no_word_merge_r
   bus_buffer.io.no_dword_merge_r                  := no_dword_merge_r
   bus_buffer.io.is_sideeffects_r                  := is_sideeffects_r
-  bus_buffer.io.ldst_dual_d                       := ldst_dual_d
-  bus_buffer.io.ldst_dual_m                       := ldst_dual_m
-  bus_buffer.io.ldst_dual_r                       := ldst_dual_r
+  bus_buffer.io.ldst_dual_d                       := io.ldst_dual_d
+  bus_buffer.io.ldst_dual_m                       := io.ldst_dual_m
+  bus_buffer.io.ldst_dual_r                       := io.ldst_dual_r
   bus_buffer.io.ldst_byteen_ext_m                 := ldst_byteen_ext_m
   bus_buffer.io.ld_full_hit_m                     := ld_full_hit_m
   bus_buffer.io.lsu_bus_clk_en_q                  := lsu_bus_clk_en_q
 
   ldst_byteen_m           := Mux1H(Seq(io.lsu_pkt_m.bits.word.asBool -> 15.U(4.W), io.lsu_pkt_m.bits.half.asBool -> 3.U(4.W), io.lsu_pkt_m.bits.by.asBool -> 1.U(4.W)))
-  ldst_dual_d             := io.lsu_addr_d(2) =/= io.end_addr_d(2)
   addr_match_dw_lo_r_m    := (io.lsu_addr_r(31,3) === io.lsu_addr_m(31,3))
   addr_match_word_lo_r_m  := addr_match_dw_lo_r_m & !(io.lsu_addr_r(2)^io.lsu_addr_m(2))
-  no_word_merge_r         := io.lsu_busreq_r & !ldst_dual_r & io.lsu_busreq_m & (io.lsu_pkt_m.bits.load | !addr_match_word_lo_r_m)
-  no_dword_merge_r        := io.lsu_busreq_r & !ldst_dual_r & io.lsu_busreq_m & (io.lsu_pkt_m.bits.load | !addr_match_dw_lo_r_m)
+  no_word_merge_r         := io.lsu_busreq_r & !io.ldst_dual_r & io.lsu_busreq_m & (io.lsu_pkt_m.bits.load | !addr_match_word_lo_r_m)
+  no_dword_merge_r        := io.lsu_busreq_r & !io.ldst_dual_r & io.lsu_busreq_m & (io.lsu_pkt_m.bits.load | !addr_match_dw_lo_r_m)
 
   ldst_byteen_ext_m       := ldst_byteen_m(3,0) << io.lsu_addr_m(1,0)
   ldst_byteen_ext_r       := ldst_byteen_r(3,0) << io.lsu_addr_r(1,0)
@@ -190,14 +191,11 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
   ld_fwddata_m            := Cat(ld_fwddata_hi(31,0), ld_fwddata_lo(31,0)) >> (8.U*io.lsu_addr_m(1,0))
   io.bus_read_data_m      := ld_fwddata_m(31,0)
 
-  withClock(io.free_clk) {
+  withClock(io.active_clk) {
     lsu_bus_clk_en_q := RegNext(io.lsu_bus_clk_en, init = 0.U)
   }
-  withClock(io.lsu_c1_m_clk) {
-    ldst_dual_m := RegNext(ldst_dual_d, init = 0.U)
-  }
+
   withClock(io.lsu_c1_r_clk) {
-    ldst_dual_r       := RegNext(ldst_dual_m, init = 0.U)
     is_sideeffects_r  := RegNext(io.is_sideeffects_m, init = 0.U)
     ldst_byteen_r     := RegNext(ldst_byteen_m, init = 0.U(4.W))
   }
