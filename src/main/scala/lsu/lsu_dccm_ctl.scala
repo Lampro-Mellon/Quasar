@@ -153,7 +153,7 @@ class  lsu_dccm_ctl extends Module with RequireAsyncReset with lib
     io.lsu_ld_data_r       := 0.U
     //Registers
     lsu_rdata_corr_m       := Reverse(Cat(VecInit.tabulate(8)(i=> Reverse(Mux(((Cat(io.stbuf_fwdbyteen_hi_m,io.stbuf_fwdbyteen_lo_m))(i)).asBool,(Cat(io.stbuf_fwddata_hi_m,io.stbuf_fwddata_lo_m))((8*i)+7,8*i), Mux(io.addr_in_pic_m.asBool,picm_rd_data_m((8*i)+7,8*i),(Fill(8,io.addr_in_dccm_m) & dccm_rdata_corr_m((8*i)+7,8*i))))))))
-    lsu_rdata_m            := Reverse(Cat(VecInit.tabulate(8)(i=> Reverse(Mux(((Cat(io.stbuf_fwdbyteen_hi_m,io.stbuf_fwdbyteen_lo_m))(i)).asBool,(Cat(io.stbuf_fwddata_hi_m,io.stbuf_fwddata_lo_m))((8*i)+7,8*i), Mux(io.addr_in_pic_m.asBool,picm_rd_data_m((8*i)+7,8*i),(Fill(2,io.addr_in_dccm_m) & dccm_rdata_m((8*i)+7,8*i))))))))
+    lsu_rdata_m            := Reverse(Cat(VecInit.tabulate(8)(i=> Reverse(Mux(((Cat(io.stbuf_fwdbyteen_hi_m,io.stbuf_fwdbyteen_lo_m))(i)).asBool,(Cat(io.stbuf_fwddata_hi_m,io.stbuf_fwddata_lo_m))((8*i)+7,8*i), Mux(io.addr_in_pic_m.asBool,picm_rd_data_m((8*i)+7,8*i),(Fill(8,io.addr_in_dccm_m) & dccm_rdata_m((8*i)+7,8*i))))))))
     io.lsu_ld_data_corr_r  := rvdffe(lsu_ld_data_corr_m,((io.lsu_pkt_m.valid & io.lsu_pkt_m.bits.load & (io.addr_in_pic_m | io.addr_in_dccm_m)) | io.clk_override),clock,io.scan_mode)
     io.lsu_ld_data_m       := lsu_rdata_m >> 8.U*io.lsu_addr_m(1,0)
     lsu_ld_data_corr_m     := lsu_rdata_corr_m >> 8.U*io.lsu_addr_m(1,0)
