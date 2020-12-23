@@ -297,4 +297,6 @@ class  lsu_dccm_ctl extends Module with RequireAsyncReset with lib
   }
 
 }
-
+object dccm_ctl extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new lsu_dccm_ctl()))
+}
