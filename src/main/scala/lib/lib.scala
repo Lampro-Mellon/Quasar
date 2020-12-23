@@ -378,7 +378,7 @@ trait lib extends param{
       val l1clk = obj.io.l1clk
       obj.io.clk := clk
       obj.io.en := en
-      obj.io.scan_mode := scan_mode
+      obj.io.scan_mode := 0.U
       withClock(l1clk) {
         RegNext(din, 0.U)
       }
@@ -388,7 +388,7 @@ trait lib extends param{
       val l1clk = obj.io.l1clk
       obj.io.clk := clk
       obj.io.en := en
-      obj.io.scan_mode := scan_mode
+      obj.io.scan_mode := 0.U
       withClock(l1clk) {
         RegNext(din,0.U.asTypeOf(din.cloneType))
       }
@@ -398,7 +398,7 @@ trait lib extends param{
       val l1clk = obj.io.l1clk
       obj.io.clk := clk
       obj.io.en := en
-      obj.io.scan_mode := scan_mode
+      obj.io.scan_mode := 0.U
       withClock(l1clk) {
         RegNext(din, 0.S)
       }

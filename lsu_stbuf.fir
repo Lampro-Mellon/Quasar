@@ -1024,7 +1024,7 @@ circuit lsu_stbuf :
     rvclkhdr.reset <= reset
     rvclkhdr.io.clk <= clock @[lib.scala 379:18]
     rvclkhdr.io.en <= _T_663 @[lib.scala 380:17]
-    rvclkhdr.io.scan_mode <= io.scan_mode @[lib.scala 381:24]
+    rvclkhdr.io.scan_mode <= UInt<1>("h00") @[lib.scala 381:24]
     reg _T_664 : UInt, rvclkhdr.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[lib.scala 383:16]
     _T_664 <= stbuf_addrin[0] @[lib.scala 383:16]
     stbuf_addr[0] <= _T_664 @[lsu_stbuf.scala 169:21]
@@ -1035,7 +1035,7 @@ circuit lsu_stbuf :
     rvclkhdr_1.reset <= reset
     rvclkhdr_1.io.clk <= clock @[lib.scala 379:18]
     rvclkhdr_1.io.en <= _T_666 @[lib.scala 380:17]
-    rvclkhdr_1.io.scan_mode <= io.scan_mode @[lib.scala 381:24]
+    rvclkhdr_1.io.scan_mode <= UInt<1>("h00") @[lib.scala 381:24]
     reg _T_667 : UInt, rvclkhdr_1.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[lib.scala 383:16]
     _T_667 <= stbuf_datain[0] @[lib.scala 383:16]
     stbuf_data[0] <= _T_667 @[lsu_stbuf.scala 170:21]
@@ -1046,7 +1046,7 @@ circuit lsu_stbuf :
     rvclkhdr_2.reset <= reset
     rvclkhdr_2.io.clk <= clock @[lib.scala 379:18]
     rvclkhdr_2.io.en <= _T_669 @[lib.scala 380:17]
-    rvclkhdr_2.io.scan_mode <= io.scan_mode @[lib.scala 381:24]
+    rvclkhdr_2.io.scan_mode <= UInt<1>("h00") @[lib.scala 381:24]
     reg _T_670 : UInt, rvclkhdr_2.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[lib.scala 383:16]
     _T_670 <= stbuf_addrin[1] @[lib.scala 383:16]
     stbuf_addr[1] <= _T_670 @[lsu_stbuf.scala 169:21]
@@ -1057,7 +1057,7 @@ circuit lsu_stbuf :
     rvclkhdr_3.reset <= reset
     rvclkhdr_3.io.clk <= clock @[lib.scala 379:18]
     rvclkhdr_3.io.en <= _T_672 @[lib.scala 380:17]
-    rvclkhdr_3.io.scan_mode <= io.scan_mode @[lib.scala 381:24]
+    rvclkhdr_3.io.scan_mode <= UInt<1>("h00") @[lib.scala 381:24]
     reg _T_673 : UInt, rvclkhdr_3.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[lib.scala 383:16]
     _T_673 <= stbuf_datain[1] @[lib.scala 383:16]
     stbuf_data[1] <= _T_673 @[lsu_stbuf.scala 170:21]
@@ -1068,7 +1068,7 @@ circuit lsu_stbuf :
     rvclkhdr_4.reset <= reset
     rvclkhdr_4.io.clk <= clock @[lib.scala 379:18]
     rvclkhdr_4.io.en <= _T_675 @[lib.scala 380:17]
-    rvclkhdr_4.io.scan_mode <= io.scan_mode @[lib.scala 381:24]
+    rvclkhdr_4.io.scan_mode <= UInt<1>("h00") @[lib.scala 381:24]
     reg _T_676 : UInt, rvclkhdr_4.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[lib.scala 383:16]
     _T_676 <= stbuf_addrin[2] @[lib.scala 383:16]
     stbuf_addr[2] <= _T_676 @[lsu_stbuf.scala 169:21]
@@ -1079,7 +1079,7 @@ circuit lsu_stbuf :
     rvclkhdr_5.reset <= reset
     rvclkhdr_5.io.clk <= clock @[lib.scala 379:18]
     rvclkhdr_5.io.en <= _T_678 @[lib.scala 380:17]
-    rvclkhdr_5.io.scan_mode <= io.scan_mode @[lib.scala 381:24]
+    rvclkhdr_5.io.scan_mode <= UInt<1>("h00") @[lib.scala 381:24]
     reg _T_679 : UInt, rvclkhdr_5.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[lib.scala 383:16]
     _T_679 <= stbuf_datain[2] @[lib.scala 383:16]
     stbuf_data[2] <= _T_679 @[lsu_stbuf.scala 170:21]
@@ -1090,7 +1090,7 @@ circuit lsu_stbuf :
     rvclkhdr_6.reset <= reset
     rvclkhdr_6.io.clk <= clock @[lib.scala 379:18]
     rvclkhdr_6.io.en <= _T_681 @[lib.scala 380:17]
-    rvclkhdr_6.io.scan_mode <= io.scan_mode @[lib.scala 381:24]
+    rvclkhdr_6.io.scan_mode <= UInt<1>("h00") @[lib.scala 381:24]
     reg _T_682 : UInt, rvclkhdr_6.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[lib.scala 383:16]
     _T_682 <= stbuf_addrin[3] @[lib.scala 383:16]
     stbuf_addr[3] <= _T_682 @[lsu_stbuf.scala 169:21]
@@ -1101,7 +1101,7 @@ circuit lsu_stbuf :
     rvclkhdr_7.reset <= reset
     rvclkhdr_7.io.clk <= clock @[lib.scala 379:18]
     rvclkhdr_7.io.en <= _T_684 @[lib.scala 380:17]
-    rvclkhdr_7.io.scan_mode <= io.scan_mode @[lib.scala 381:24]
+    rvclkhdr_7.io.scan_mode <= UInt<1>("h00") @[lib.scala 381:24]
     reg _T_685 : UInt, rvclkhdr_7.io.l1clk with : (reset => (reset, UInt<1>("h00"))) @[lib.scala 383:16]
     _T_685 <= stbuf_datain[3] @[lib.scala 383:16]
     stbuf_data[3] <= _T_685 @[lsu_stbuf.scala 170:21]
