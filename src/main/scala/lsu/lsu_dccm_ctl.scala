@@ -144,7 +144,7 @@ class  lsu_dccm_ctl extends Module with RequireAsyncReset with lib
   else{
     io.dma_dccm_ctl.dccm_dma_rvalid     := io.lsu_pkt_m.valid & io.lsu_pkt_m.bits.load & io.lsu_pkt_m.bits.dma
     io.dma_dccm_ctl.dccm_dma_ecc_error  := io.lsu_double_ecc_error_m //from ecc
-    io.dma_dccm_ctl.dccm_dma_rdata      := Mux(io.ldst_dual_m,lsu_rdata_corr_m, Fill(2,lsu_rdata_corr_m))
+    io.dma_dccm_ctl.dccm_dma_rdata      := Mux(io.ldst_dual_m,lsu_rdata_corr_m, Fill(2,lsu_rdata_corr_m(31,0)))
     io.dma_dccm_ctl.dccm_dma_rtag       := io.dma_mem_tag_m
     io.dccm_rdata_lo_r     := 0.U
     io.dccm_rdata_hi_r     := 0.U
