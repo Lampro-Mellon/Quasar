@@ -284,3 +284,6 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
       ((Fill(32,io.lsu_pkt_r.bits.word))  & lsu_ld_datafn_corr_r(31,0))
   }
 }
+object lsc_ctl extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new lsu_lsc_ctl()))
+}
