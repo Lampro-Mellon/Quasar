@@ -371,7 +371,7 @@ module lsu_bus_buffer(
   wire  _T_4131 = _T_4128 | _T_4130; // @[lsu_bus_buffer.scala 459:77]
   reg  obuf_valid; // @[lsu_bus_buffer.scala 348:54]
   wire  _T_4132 = _T_4131 & obuf_valid; // @[lsu_bus_buffer.scala 459:135]
-  reg  obuf_wr_enQ; // @[lib.scala 377:18]
+  reg  obuf_wr_enQ; // @[lib.scala 377:33]
   wire  _T_4133 = _T_4132 & obuf_wr_enQ; // @[lsu_bus_buffer.scala 459:148]
   wire  _T_4155 = 3'h3 == buf_state_3; // @[Conditional.scala 37:30]
   wire  _T_4239 = 3'h4 == buf_state_3; // @[Conditional.scala 37:30]
@@ -1053,7 +1053,7 @@ module lsu_bus_buffer(
   wire [3:0] buf_numvld_cmd_any = _T_4449 + _GEN_370; // @[lsu_bus_buffer.scala 530:126]
   wire  _T_1017 = buf_numvld_cmd_any == 4'h1; // @[lsu_bus_buffer.scala 266:72]
   wire  _T_1018 = _T_1016 & _T_1017; // @[lsu_bus_buffer.scala 266:51]
-  reg  _T_1784; // @[lib.scala 377:18]
+  reg  _T_1784; // @[lib.scala 377:33]
   wire [2:0] obuf_wr_timer = {{2'd0}, _T_1784}; // @[lsu_bus_buffer.scala 363:17]
   wire  _T_1019 = obuf_wr_timer != 3'h7; // @[lsu_bus_buffer.scala 266:97]
   wire  _T_1020 = _T_1018 & _T_1019; // @[lsu_bus_buffer.scala 266:80]
@@ -1275,8 +1275,8 @@ module lsu_bus_buffer(
   wire  _T_1229 = _T_1148 & _T_1228; // @[lsu_bus_buffer.scala 289:164]
   wire  _T_1230 = _T_1094 | _T_1229; // @[lsu_bus_buffer.scala 287:98]
   reg  obuf_write; // @[Reg.scala 27:20]
-  reg  obuf_cmd_done; // @[lib.scala 377:18]
-  reg  obuf_data_done; // @[lib.scala 377:18]
+  reg  obuf_cmd_done; // @[lib.scala 377:33]
+  reg  obuf_data_done; // @[lib.scala 377:33]
   wire  _T_4814 = obuf_cmd_done | obuf_data_done; // @[lsu_bus_buffer.scala 563:54]
   wire  _T_4815 = obuf_cmd_done ? io_lsu_axi_w_ready : io_lsu_axi_aw_ready; // @[lsu_bus_buffer.scala 563:75]
   wire  _T_4816 = io_lsu_axi_aw_ready & io_lsu_axi_w_ready; // @[lsu_bus_buffer.scala 563:153]
@@ -1399,7 +1399,7 @@ module lsu_bus_buffer(
   wire  _T_1348 = obuf_valid & _T_1347; // @[lsu_bus_buffer.scala 327:18]
   reg  obuf_rdrsp_pend; // @[Reg.scala 27:20]
   wire  bus_rsp_read = io_lsu_axi_r_valid & io_lsu_axi_r_ready; // @[lsu_bus_buffer.scala 567:38]
-  reg [2:0] obuf_rdrsp_tag; // @[lib.scala 377:18]
+  reg [2:0] obuf_rdrsp_tag; // @[lib.scala 377:33]
   wire  _T_1349 = io_lsu_axi_r_bits_id == obuf_rdrsp_tag; // @[lsu_bus_buffer.scala 327:90]
   wire  _T_1350 = bus_rsp_read & _T_1349; // @[lsu_bus_buffer.scala 327:70]
   wire  _T_1351 = ~_T_1350; // @[lsu_bus_buffer.scala 327:55]
@@ -3779,7 +3779,7 @@ end // initial
       obuf_valid <= _T_1771 & _T_1772;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_lsu_busm_clk or posedge reset) begin
     if (reset) begin
       obuf_wr_enQ <= 1'h0;
     end else begin
@@ -4079,7 +4079,7 @@ end // initial
       ibuf_sz <= ibuf_sz_in;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_lsu_busm_clk or posedge reset) begin
     if (reset) begin
       _T_1784 <= 1'h0;
     end else begin
@@ -4220,14 +4220,14 @@ end // initial
       end
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_lsu_busm_clk or posedge reset) begin
     if (reset) begin
       obuf_cmd_done <= 1'h0;
     end else begin
       obuf_cmd_done <= _T_1303 & _T_4821;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_lsu_busm_clk or posedge reset) begin
     if (reset) begin
       obuf_data_done <= 1'h0;
     end else begin
@@ -4301,7 +4301,7 @@ end // initial
       obuf_rdrsp_pend <= obuf_rdrsp_pend_in;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_lsu_busm_clk or posedge reset) begin
     if (reset) begin
       obuf_rdrsp_tag <= 3'h0;
     end else if (_T_1330) begin
