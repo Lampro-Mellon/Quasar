@@ -26,6 +26,14 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~lsu_lsc_ctl|lsu_lsc_ctl>io_end_addr_r",
+    "sources":[
+      "~lsu_lsc_ctl|lsu_lsc_ctl>io_ldst_dual_r",
+      "~lsu_lsc_ctl|lsu_lsc_ctl>io_lsu_addr_r"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~lsu_lsc_ctl|lsu_lsc_ctl>io_lsu_pkt_d_bits_store",
     "sources":[
       "~lsu_lsc_ctl|lsu_lsc_ctl>io_lsu_p_bits_store",
@@ -91,6 +99,14 @@
     "sink":"~lsu_lsc_ctl|lsu_lsc_ctl>io_lsu_fir_addr",
     "sources":[
       "~lsu_lsc_ctl|lsu_lsc_ctl>io_lsu_ld_data_corr_r"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~lsu_lsc_ctl|lsu_lsc_ctl>io_end_addr_m",
+    "sources":[
+      "~lsu_lsc_ctl|lsu_lsc_ctl>io_ldst_dual_m",
+      "~lsu_lsc_ctl|lsu_lsc_ctl>io_lsu_addr_m"
     ]
   },
   {

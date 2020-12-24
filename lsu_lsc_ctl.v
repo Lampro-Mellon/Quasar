@@ -369,6 +369,8 @@ module lsu_lsc_ctl(
   reg [31:0] _RAND_47;
   reg [31:0] _RAND_48;
   reg [31:0] _RAND_49;
+  reg [31:0] _RAND_50;
+  reg [31:0] _RAND_51;
 `endif // RANDOMIZE_REG_INIT
   wire  addrcheck_reset; // @[lsu_lsc_ctl.scala 118:25]
   wire  addrcheck_io_lsu_c2_m_clk; // @[lsu_lsc_ctl.scala 118:25]
@@ -520,76 +522,80 @@ module lsu_lsc_ctl(
   reg [31:0] store_data_pre_m; // @[lsu_lsc_ctl.scala 225:72]
   reg [31:0] _T_152; // @[lsu_lsc_ctl.scala 226:62]
   reg [31:0] _T_153; // @[lsu_lsc_ctl.scala 227:62]
-  wire  _T_167 = io_lsu_pkt_d_valid & io_ldst_dual_d; // @[lsu_lsc_ctl.scala 232:69]
-  wire  _T_173 = io_lsu_pkt_m_valid & io_ldst_dual_m; // @[lsu_lsc_ctl.scala 233:69]
-  reg [31:0] _T_178; // @[lsu_lsc_ctl.scala 236:62]
-  reg [31:0] _T_179; // @[lsu_lsc_ctl.scala 237:62]
-  reg  _T_180; // @[lsu_lsc_ctl.scala 238:62]
-  reg  _T_181; // @[lsu_lsc_ctl.scala 239:62]
-  reg  _T_182; // @[lsu_lsc_ctl.scala 240:62]
-  reg  _T_183; // @[lsu_lsc_ctl.scala 241:62]
-  reg  _T_184; // @[lsu_lsc_ctl.scala 242:62]
-  reg  addr_external_r; // @[lsu_lsc_ctl.scala 243:66]
+  reg [28:0] end_addr_pre_m; // @[lib.scala 383:16]
+  wire [28:0] _T_156 = io_ldst_dual_m ? end_addr_pre_m : io_lsu_addr_m[31:3]; // @[lsu_lsc_ctl.scala 228:27]
+  reg [2:0] _T_158; // @[lsu_lsc_ctl.scala 228:114]
+  reg [28:0] end_addr_pre_r; // @[lib.scala 383:16]
+  wire [28:0] _T_162 = io_ldst_dual_r ? end_addr_pre_r : io_lsu_addr_r[31:3]; // @[lsu_lsc_ctl.scala 229:27]
+  reg [2:0] _T_164; // @[lsu_lsc_ctl.scala 229:114]
+  wire  _T_167 = io_lsu_pkt_d_valid & io_ldst_dual_d; // @[lsu_lsc_ctl.scala 230:69]
+  wire  _T_173 = io_lsu_pkt_m_valid & io_ldst_dual_m; // @[lsu_lsc_ctl.scala 231:69]
+  reg  _T_178; // @[lsu_lsc_ctl.scala 232:62]
+  reg  _T_179; // @[lsu_lsc_ctl.scala 233:62]
+  reg  _T_180; // @[lsu_lsc_ctl.scala 234:62]
+  reg  _T_181; // @[lsu_lsc_ctl.scala 235:62]
+  reg  _T_182; // @[lsu_lsc_ctl.scala 236:62]
+  reg  addr_external_r; // @[lsu_lsc_ctl.scala 237:66]
   reg [31:0] bus_read_data_r; // @[lib.scala 383:16]
-  wire  _T_189 = io_lsu_pkt_r_bits_store | io_lsu_pkt_r_bits_load; // @[lsu_lsc_ctl.scala 251:68]
-  wire  _T_190 = io_lsu_pkt_r_valid & _T_189; // @[lsu_lsc_ctl.scala 251:41]
-  wire  _T_191 = ~io_flush_r; // @[lsu_lsc_ctl.scala 251:96]
-  wire  _T_192 = _T_190 & _T_191; // @[lsu_lsc_ctl.scala 251:94]
-  wire  _T_193 = ~io_lsu_pkt_r_bits_dma; // @[lsu_lsc_ctl.scala 251:110]
-  wire  _T_196 = ~io_addr_in_pic_m; // @[lsu_lsc_ctl.scala 252:69]
-  wire [31:0] _T_198 = _T_196 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_199 = io_picm_mask_data_m | _T_198; // @[lsu_lsc_ctl.scala 252:59]
-  wire [31:0] _T_201 = io_lsu_pkt_m_bits_store_data_bypass_m ? io_lsu_result_m : store_data_pre_m; // @[lsu_lsc_ctl.scala 252:94]
-  wire [31:0] lsu_ld_datafn_m = io_addr_external_m ? io_bus_read_data_m : io_lsu_ld_data_m; // @[lsu_lsc_ctl.scala 273:33]
-  wire [31:0] lsu_ld_datafn_corr_r = addr_external_r ? bus_read_data_r : io_lsu_ld_data_corr_r; // @[lsu_lsc_ctl.scala 274:33]
-  wire  _T_207 = io_lsu_pkt_m_bits_unsign & io_lsu_pkt_m_bits_by; // @[lsu_lsc_ctl.scala 275:66]
-  wire [31:0] _T_209 = _T_207 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_211 = {24'h0,lsu_ld_datafn_m[7:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_212 = _T_209 & _T_211; // @[lsu_lsc_ctl.scala 275:94]
-  wire  _T_213 = io_lsu_pkt_m_bits_unsign & io_lsu_pkt_m_bits_half; // @[lsu_lsc_ctl.scala 276:43]
-  wire [31:0] _T_215 = _T_213 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_217 = {16'h0,lsu_ld_datafn_m[15:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_218 = _T_215 & _T_217; // @[lsu_lsc_ctl.scala 276:71]
-  wire [31:0] _T_219 = _T_212 | _T_218; // @[lsu_lsc_ctl.scala 275:133]
-  wire  _T_220 = ~io_lsu_pkt_m_bits_unsign; // @[lsu_lsc_ctl.scala 277:17]
-  wire  _T_221 = _T_220 & io_lsu_pkt_m_bits_by; // @[lsu_lsc_ctl.scala 277:43]
-  wire [31:0] _T_223 = _T_221 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [23:0] _T_226 = lsu_ld_datafn_m[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_228 = {_T_226,lsu_ld_datafn_m[7:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_229 = _T_223 & _T_228; // @[lsu_lsc_ctl.scala 277:71]
-  wire [31:0] _T_230 = _T_219 | _T_229; // @[lsu_lsc_ctl.scala 276:114]
-  wire  _T_232 = _T_220 & io_lsu_pkt_m_bits_half; // @[lsu_lsc_ctl.scala 278:43]
-  wire [31:0] _T_234 = _T_232 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [15:0] _T_237 = lsu_ld_datafn_m[15] ? 16'hffff : 16'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_239 = {_T_237,lsu_ld_datafn_m[15:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_240 = _T_234 & _T_239; // @[lsu_lsc_ctl.scala 278:71]
-  wire [31:0] _T_241 = _T_230 | _T_240; // @[lsu_lsc_ctl.scala 277:134]
-  wire [31:0] _T_243 = io_lsu_pkt_m_bits_word ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_245 = _T_243 & lsu_ld_datafn_m; // @[lsu_lsc_ctl.scala 279:43]
-  wire  _T_247 = io_lsu_pkt_r_bits_unsign & io_lsu_pkt_r_bits_by; // @[lsu_lsc_ctl.scala 280:66]
-  wire [31:0] _T_249 = _T_247 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_251 = {24'h0,lsu_ld_datafn_corr_r[7:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_252 = _T_249 & _T_251; // @[lsu_lsc_ctl.scala 280:94]
-  wire  _T_253 = io_lsu_pkt_r_bits_unsign & io_lsu_pkt_r_bits_half; // @[lsu_lsc_ctl.scala 281:43]
-  wire [31:0] _T_255 = _T_253 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_257 = {16'h0,lsu_ld_datafn_corr_r[15:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_258 = _T_255 & _T_257; // @[lsu_lsc_ctl.scala 281:71]
-  wire [31:0] _T_259 = _T_252 | _T_258; // @[lsu_lsc_ctl.scala 280:138]
-  wire  _T_260 = ~io_lsu_pkt_r_bits_unsign; // @[lsu_lsc_ctl.scala 282:17]
-  wire  _T_261 = _T_260 & io_lsu_pkt_r_bits_by; // @[lsu_lsc_ctl.scala 282:43]
-  wire [31:0] _T_263 = _T_261 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [23:0] _T_266 = lsu_ld_datafn_corr_r[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_268 = {_T_266,lsu_ld_datafn_corr_r[7:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_269 = _T_263 & _T_268; // @[lsu_lsc_ctl.scala 282:71]
-  wire [31:0] _T_270 = _T_259 | _T_269; // @[lsu_lsc_ctl.scala 281:119]
-  wire  _T_272 = _T_260 & io_lsu_pkt_r_bits_half; // @[lsu_lsc_ctl.scala 283:43]
-  wire [31:0] _T_274 = _T_272 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [15:0] _T_277 = lsu_ld_datafn_corr_r[15] ? 16'hffff : 16'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_279 = {_T_277,lsu_ld_datafn_corr_r[15:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_280 = _T_274 & _T_279; // @[lsu_lsc_ctl.scala 283:71]
-  wire [31:0] _T_281 = _T_270 | _T_280; // @[lsu_lsc_ctl.scala 282:144]
-  wire [31:0] _T_283 = io_lsu_pkt_r_bits_word ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_285 = _T_283 & lsu_ld_datafn_corr_r; // @[lsu_lsc_ctl.scala 284:43]
+  wire  _T_187 = io_lsu_pkt_r_bits_store | io_lsu_pkt_r_bits_load; // @[lsu_lsc_ctl.scala 245:68]
+  wire  _T_188 = io_lsu_pkt_r_valid & _T_187; // @[lsu_lsc_ctl.scala 245:41]
+  wire  _T_189 = ~io_flush_r; // @[lsu_lsc_ctl.scala 245:96]
+  wire  _T_190 = _T_188 & _T_189; // @[lsu_lsc_ctl.scala 245:94]
+  wire  _T_191 = ~io_lsu_pkt_r_bits_dma; // @[lsu_lsc_ctl.scala 245:110]
+  wire  _T_194 = ~io_addr_in_pic_m; // @[lsu_lsc_ctl.scala 246:69]
+  wire [31:0] _T_196 = _T_194 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
+  wire [31:0] _T_197 = io_picm_mask_data_m | _T_196; // @[lsu_lsc_ctl.scala 246:59]
+  wire [31:0] _T_199 = io_lsu_pkt_m_bits_store_data_bypass_m ? io_lsu_result_m : store_data_pre_m; // @[lsu_lsc_ctl.scala 246:94]
+  wire [31:0] lsu_ld_datafn_m = io_addr_external_m ? io_bus_read_data_m : io_lsu_ld_data_m; // @[lsu_lsc_ctl.scala 267:33]
+  wire [31:0] lsu_ld_datafn_corr_r = addr_external_r ? bus_read_data_r : io_lsu_ld_data_corr_r; // @[lsu_lsc_ctl.scala 268:33]
+  wire  _T_205 = io_lsu_pkt_m_bits_unsign & io_lsu_pkt_m_bits_by; // @[lsu_lsc_ctl.scala 269:66]
+  wire [31:0] _T_207 = _T_205 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
+  wire [31:0] _T_209 = {24'h0,lsu_ld_datafn_m[7:0]}; // @[Cat.scala 29:58]
+  wire [31:0] _T_210 = _T_207 & _T_209; // @[lsu_lsc_ctl.scala 269:94]
+  wire  _T_211 = io_lsu_pkt_m_bits_unsign & io_lsu_pkt_m_bits_half; // @[lsu_lsc_ctl.scala 270:43]
+  wire [31:0] _T_213 = _T_211 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
+  wire [31:0] _T_215 = {16'h0,lsu_ld_datafn_m[15:0]}; // @[Cat.scala 29:58]
+  wire [31:0] _T_216 = _T_213 & _T_215; // @[lsu_lsc_ctl.scala 270:71]
+  wire [31:0] _T_217 = _T_210 | _T_216; // @[lsu_lsc_ctl.scala 269:133]
+  wire  _T_218 = ~io_lsu_pkt_m_bits_unsign; // @[lsu_lsc_ctl.scala 271:17]
+  wire  _T_219 = _T_218 & io_lsu_pkt_m_bits_by; // @[lsu_lsc_ctl.scala 271:43]
+  wire [31:0] _T_221 = _T_219 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
+  wire [23:0] _T_224 = lsu_ld_datafn_m[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 72:12]
+  wire [31:0] _T_226 = {_T_224,lsu_ld_datafn_m[7:0]}; // @[Cat.scala 29:58]
+  wire [31:0] _T_227 = _T_221 & _T_226; // @[lsu_lsc_ctl.scala 271:71]
+  wire [31:0] _T_228 = _T_217 | _T_227; // @[lsu_lsc_ctl.scala 270:114]
+  wire  _T_230 = _T_218 & io_lsu_pkt_m_bits_half; // @[lsu_lsc_ctl.scala 272:43]
+  wire [31:0] _T_232 = _T_230 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
+  wire [15:0] _T_235 = lsu_ld_datafn_m[15] ? 16'hffff : 16'h0; // @[Bitwise.scala 72:12]
+  wire [31:0] _T_237 = {_T_235,lsu_ld_datafn_m[15:0]}; // @[Cat.scala 29:58]
+  wire [31:0] _T_238 = _T_232 & _T_237; // @[lsu_lsc_ctl.scala 272:71]
+  wire [31:0] _T_239 = _T_228 | _T_238; // @[lsu_lsc_ctl.scala 271:134]
+  wire [31:0] _T_241 = io_lsu_pkt_m_bits_word ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
+  wire [31:0] _T_243 = _T_241 & lsu_ld_datafn_m; // @[lsu_lsc_ctl.scala 273:43]
+  wire  _T_245 = io_lsu_pkt_r_bits_unsign & io_lsu_pkt_r_bits_by; // @[lsu_lsc_ctl.scala 274:66]
+  wire [31:0] _T_247 = _T_245 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
+  wire [31:0] _T_249 = {24'h0,lsu_ld_datafn_corr_r[7:0]}; // @[Cat.scala 29:58]
+  wire [31:0] _T_250 = _T_247 & _T_249; // @[lsu_lsc_ctl.scala 274:94]
+  wire  _T_251 = io_lsu_pkt_r_bits_unsign & io_lsu_pkt_r_bits_half; // @[lsu_lsc_ctl.scala 275:43]
+  wire [31:0] _T_253 = _T_251 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
+  wire [31:0] _T_255 = {16'h0,lsu_ld_datafn_corr_r[15:0]}; // @[Cat.scala 29:58]
+  wire [31:0] _T_256 = _T_253 & _T_255; // @[lsu_lsc_ctl.scala 275:71]
+  wire [31:0] _T_257 = _T_250 | _T_256; // @[lsu_lsc_ctl.scala 274:138]
+  wire  _T_258 = ~io_lsu_pkt_r_bits_unsign; // @[lsu_lsc_ctl.scala 276:17]
+  wire  _T_259 = _T_258 & io_lsu_pkt_r_bits_by; // @[lsu_lsc_ctl.scala 276:43]
+  wire [31:0] _T_261 = _T_259 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
+  wire [23:0] _T_264 = lsu_ld_datafn_corr_r[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 72:12]
+  wire [31:0] _T_266 = {_T_264,lsu_ld_datafn_corr_r[7:0]}; // @[Cat.scala 29:58]
+  wire [31:0] _T_267 = _T_261 & _T_266; // @[lsu_lsc_ctl.scala 276:71]
+  wire [31:0] _T_268 = _T_257 | _T_267; // @[lsu_lsc_ctl.scala 275:119]
+  wire  _T_270 = _T_258 & io_lsu_pkt_r_bits_half; // @[lsu_lsc_ctl.scala 277:43]
+  wire [31:0] _T_272 = _T_270 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
+  wire [15:0] _T_275 = lsu_ld_datafn_corr_r[15] ? 16'hffff : 16'h0; // @[Bitwise.scala 72:12]
+  wire [31:0] _T_277 = {_T_275,lsu_ld_datafn_corr_r[15:0]}; // @[Cat.scala 29:58]
+  wire [31:0] _T_278 = _T_272 & _T_277; // @[lsu_lsc_ctl.scala 277:71]
+  wire [31:0] _T_279 = _T_268 | _T_278; // @[lsu_lsc_ctl.scala 276:144]
+  wire [31:0] _T_281 = io_lsu_pkt_r_bits_word ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
+  wire [31:0] _T_283 = _T_281 & lsu_ld_datafn_corr_r; // @[lsu_lsc_ctl.scala 278:43]
   lsu_addrcheck addrcheck ( // @[lsu_lsc_ctl.scala 118:25]
     .reset(addrcheck_reset),
     .io_lsu_c2_m_clk(addrcheck_io_lsu_c2_m_clk),
@@ -635,18 +641,18 @@ module lsu_lsc_ctl(
     .io_clk(rvclkhdr_3_io_clk),
     .io_en(rvclkhdr_3_io_en)
   );
-  assign io_lsu_result_m = _T_241 | _T_245; // @[lsu_lsc_ctl.scala 275:27]
-  assign io_lsu_result_corr_r = _T_281 | _T_285; // @[lsu_lsc_ctl.scala 280:27]
-  assign io_lsu_addr_d = {_T_40,_T_10[11:0]}; // @[lsu_lsc_ctl.scala 249:28]
+  assign io_lsu_result_m = _T_239 | _T_243; // @[lsu_lsc_ctl.scala 269:27]
+  assign io_lsu_result_corr_r = _T_279 | _T_283; // @[lsu_lsc_ctl.scala 274:27]
+  assign io_lsu_addr_d = {_T_40,_T_10[11:0]}; // @[lsu_lsc_ctl.scala 243:28]
   assign io_lsu_addr_m = _T_152; // @[lsu_lsc_ctl.scala 226:24]
   assign io_lsu_addr_r = _T_153; // @[lsu_lsc_ctl.scala 227:24]
   assign io_end_addr_d = rs1_d + _T_64; // @[lsu_lsc_ctl.scala 115:24]
-  assign io_end_addr_m = _T_178; // @[lsu_lsc_ctl.scala 229:17 lsu_lsc_ctl.scala 236:24]
-  assign io_end_addr_r = _T_179; // @[lsu_lsc_ctl.scala 230:17 lsu_lsc_ctl.scala 237:24]
-  assign io_store_data_m = _T_199 & _T_201; // @[lsu_lsc_ctl.scala 252:29]
+  assign io_end_addr_m = {_T_156,_T_158}; // @[lsu_lsc_ctl.scala 228:17]
+  assign io_end_addr_r = {_T_162,_T_164}; // @[lsu_lsc_ctl.scala 229:17]
+  assign io_store_data_m = _T_197 & _T_199; // @[lsu_lsc_ctl.scala 246:29]
   assign io_lsu_exc_m = access_fault_m | misaligned_fault_m; // @[lsu_lsc_ctl.scala 155:16]
   assign io_is_sideeffects_m = addrcheck_io_is_sideeffects_m; // @[lsu_lsc_ctl.scala 128:42]
-  assign io_lsu_commit_r = _T_192 & _T_193; // @[lsu_lsc_ctl.scala 251:19]
+  assign io_lsu_commit_r = _T_190 & _T_191; // @[lsu_lsc_ctl.scala 245:19]
   assign io_lsu_single_ecc_error_incr = _T_73 & io_lsu_pkt_r_valid; // @[lsu_lsc_ctl.scala 156:32]
   assign io_lsu_error_pkt_r_valid = _T_111; // @[lsu_lsc_ctl.scala 185:24 lsu_lsc_ctl.scala 187:30]
   assign io_lsu_error_pkt_r_bits_single_ecc_error = _T_110; // @[lsu_lsc_ctl.scala 185:24 lsu_lsc_ctl.scala 186:46]
@@ -654,15 +660,15 @@ module lsu_lsc_ctl(
   assign io_lsu_error_pkt_r_bits_exc_type = _T_109_bits_exc_type; // @[lsu_lsc_ctl.scala 185:24]
   assign io_lsu_error_pkt_r_bits_mscause = _T_109_bits_mscause; // @[lsu_lsc_ctl.scala 185:24]
   assign io_lsu_error_pkt_r_bits_addr = _T_109_bits_addr; // @[lsu_lsc_ctl.scala 185:24]
-  assign io_lsu_fir_addr = io_lsu_ld_data_corr_r[31:1]; // @[lsu_lsc_ctl.scala 247:28]
+  assign io_lsu_fir_addr = io_lsu_ld_data_corr_r[31:1]; // @[lsu_lsc_ctl.scala 241:28]
   assign io_lsu_fir_error = _T_112; // @[lsu_lsc_ctl.scala 188:38]
   assign io_addr_in_dccm_d = addrcheck_io_addr_in_dccm_d; // @[lsu_lsc_ctl.scala 129:42]
-  assign io_addr_in_dccm_m = _T_180; // @[lsu_lsc_ctl.scala 238:24]
-  assign io_addr_in_dccm_r = _T_181; // @[lsu_lsc_ctl.scala 239:24]
+  assign io_addr_in_dccm_m = _T_178; // @[lsu_lsc_ctl.scala 232:24]
+  assign io_addr_in_dccm_r = _T_179; // @[lsu_lsc_ctl.scala 233:24]
   assign io_addr_in_pic_d = addrcheck_io_addr_in_pic_d; // @[lsu_lsc_ctl.scala 130:42]
-  assign io_addr_in_pic_m = _T_182; // @[lsu_lsc_ctl.scala 240:24]
-  assign io_addr_in_pic_r = _T_183; // @[lsu_lsc_ctl.scala 241:24]
-  assign io_addr_external_m = _T_184; // @[lsu_lsc_ctl.scala 242:24]
+  assign io_addr_in_pic_m = _T_180; // @[lsu_lsc_ctl.scala 234:24]
+  assign io_addr_in_pic_r = _T_181; // @[lsu_lsc_ctl.scala 235:24]
+  assign io_addr_external_m = _T_182; // @[lsu_lsc_ctl.scala 236:24]
   assign io_lsu_pkt_d_valid = _T_127 | io_dma_lsc_ctl_dma_dccm_req; // @[lsu_lsc_ctl.scala 208:20 lsu_lsc_ctl.scala 212:24]
   assign io_lsu_pkt_d_bits_fast_int = io_dec_lsu_valid_raw_d & io_lsu_p_bits_fast_int; // @[lsu_lsc_ctl.scala 208:20]
   assign io_lsu_pkt_d_bits_by = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_by : dma_pkt_d_bits_by; // @[lsu_lsc_ctl.scala 208:20]
@@ -842,23 +848,27 @@ initial begin
   _RAND_40 = {1{`RANDOM}};
   _T_153 = _RAND_40[31:0];
   _RAND_41 = {1{`RANDOM}};
-  _T_178 = _RAND_41[31:0];
+  end_addr_pre_m = _RAND_41[28:0];
   _RAND_42 = {1{`RANDOM}};
-  _T_179 = _RAND_42[31:0];
+  _T_158 = _RAND_42[2:0];
   _RAND_43 = {1{`RANDOM}};
-  _T_180 = _RAND_43[0:0];
+  end_addr_pre_r = _RAND_43[28:0];
   _RAND_44 = {1{`RANDOM}};
-  _T_181 = _RAND_44[0:0];
+  _T_164 = _RAND_44[2:0];
   _RAND_45 = {1{`RANDOM}};
-  _T_182 = _RAND_45[0:0];
+  _T_178 = _RAND_45[0:0];
   _RAND_46 = {1{`RANDOM}};
-  _T_183 = _RAND_46[0:0];
+  _T_179 = _RAND_46[0:0];
   _RAND_47 = {1{`RANDOM}};
-  _T_184 = _RAND_47[0:0];
+  _T_180 = _RAND_47[0:0];
   _RAND_48 = {1{`RANDOM}};
-  addr_external_r = _RAND_48[0:0];
+  _T_181 = _RAND_48[0:0];
   _RAND_49 = {1{`RANDOM}};
-  bus_read_data_r = _RAND_49[31:0];
+  _T_182 = _RAND_49[0:0];
+  _RAND_50 = {1{`RANDOM}};
+  addr_external_r = _RAND_50[0:0];
+  _RAND_51 = {1{`RANDOM}};
+  bus_read_data_r = _RAND_51[31:0];
 `endif // RANDOMIZE_REG_INIT
   if (reset) begin
     access_fault_m = 1'h0;
@@ -984,10 +994,22 @@ initial begin
     _T_153 = 32'h0;
   end
   if (reset) begin
-    _T_178 = 32'h0;
+    end_addr_pre_m = 29'h0;
   end
   if (reset) begin
-    _T_179 = 32'h0;
+    _T_158 = 3'h0;
+  end
+  if (reset) begin
+    end_addr_pre_r = 29'h0;
+  end
+  if (reset) begin
+    _T_164 = 3'h0;
+  end
+  if (reset) begin
+    _T_178 = 1'h0;
+  end
+  if (reset) begin
+    _T_179 = 1'h0;
   end
   if (reset) begin
     _T_180 = 1'h0;
@@ -997,12 +1019,6 @@ initial begin
   end
   if (reset) begin
     _T_182 = 1'h0;
-  end
-  if (reset) begin
-    _T_183 = 1'h0;
-  end
-  if (reset) begin
-    _T_184 = 1'h0;
   end
   if (reset) begin
     addr_external_r = 1'h0;
@@ -1315,53 +1331,67 @@ end // initial
       _T_153 <= io_lsu_addr_m;
     end
   end
+  always @(posedge rvclkhdr_1_io_l1clk or posedge reset) begin
+    if (reset) begin
+      end_addr_pre_m <= 29'h0;
+    end else begin
+      end_addr_pre_m <= io_end_addr_d[31:3];
+    end
+  end
   always @(posedge io_lsu_c1_m_clk or posedge reset) begin
     if (reset) begin
-      _T_178 <= 32'h0;
+      _T_158 <= 3'h0;
     end else begin
-      _T_178 <= io_end_addr_d;
+      _T_158 <= io_end_addr_d[2:0];
+    end
+  end
+  always @(posedge rvclkhdr_2_io_l1clk or posedge reset) begin
+    if (reset) begin
+      end_addr_pre_r <= 29'h0;
+    end else begin
+      end_addr_pre_r <= io_end_addr_m[31:3];
+    end
+  end
+  always @(posedge io_lsu_c1_m_clk or posedge reset) begin
+    if (reset) begin
+      _T_164 <= 3'h0;
+    end else begin
+      _T_164 <= io_end_addr_m[2:0];
+    end
+  end
+  always @(posedge io_lsu_c1_m_clk or posedge reset) begin
+    if (reset) begin
+      _T_178 <= 1'h0;
+    end else begin
+      _T_178 <= io_addr_in_dccm_d;
     end
   end
   always @(posedge io_lsu_c1_r_clk or posedge reset) begin
     if (reset) begin
-      _T_179 <= 32'h0;
+      _T_179 <= 1'h0;
     end else begin
-      _T_179 <= io_end_addr_m;
+      _T_179 <= io_addr_in_dccm_m;
     end
   end
   always @(posedge io_lsu_c1_m_clk or posedge reset) begin
     if (reset) begin
       _T_180 <= 1'h0;
     end else begin
-      _T_180 <= io_addr_in_dccm_d;
+      _T_180 <= io_addr_in_pic_d;
     end
   end
   always @(posedge io_lsu_c1_r_clk or posedge reset) begin
     if (reset) begin
       _T_181 <= 1'h0;
     end else begin
-      _T_181 <= io_addr_in_dccm_m;
+      _T_181 <= io_addr_in_pic_m;
     end
   end
   always @(posedge io_lsu_c1_m_clk or posedge reset) begin
     if (reset) begin
       _T_182 <= 1'h0;
     end else begin
-      _T_182 <= io_addr_in_pic_d;
-    end
-  end
-  always @(posedge io_lsu_c1_r_clk or posedge reset) begin
-    if (reset) begin
-      _T_183 <= 1'h0;
-    end else begin
-      _T_183 <= io_addr_in_pic_m;
-    end
-  end
-  always @(posedge io_lsu_c1_m_clk or posedge reset) begin
-    if (reset) begin
-      _T_184 <= 1'h0;
-    end else begin
-      _T_184 <= addrcheck_io_addr_external_d;
+      _T_182 <= addrcheck_io_addr_external_d;
     end
   end
   always @(posedge io_lsu_c1_r_clk or posedge reset) begin
