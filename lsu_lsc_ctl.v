@@ -228,6 +228,7 @@ module lsu_lsc_ctl(
   input  [31:0] io_lsu_exu_exu_lsu_rs2_d,
   input         io_lsu_p_valid,
   input         io_lsu_p_bits_fast_int,
+  input         io_lsu_p_bits_stack,
   input         io_lsu_p_bits_by,
   input         io_lsu_p_bits_half,
   input         io_lsu_p_bits_word,
@@ -279,6 +280,7 @@ module lsu_lsc_ctl(
   input  [63:0] io_dma_lsc_ctl_dma_mem_wdata,
   output        io_lsu_pkt_d_valid,
   output        io_lsu_pkt_d_bits_fast_int,
+  output        io_lsu_pkt_d_bits_stack,
   output        io_lsu_pkt_d_bits_by,
   output        io_lsu_pkt_d_bits_half,
   output        io_lsu_pkt_d_bits_word,
@@ -292,6 +294,7 @@ module lsu_lsc_ctl(
   output        io_lsu_pkt_d_bits_store_data_bypass_m,
   output        io_lsu_pkt_m_valid,
   output        io_lsu_pkt_m_bits_fast_int,
+  output        io_lsu_pkt_m_bits_stack,
   output        io_lsu_pkt_m_bits_by,
   output        io_lsu_pkt_m_bits_half,
   output        io_lsu_pkt_m_bits_word,
@@ -305,6 +308,7 @@ module lsu_lsc_ctl(
   output        io_lsu_pkt_m_bits_store_data_bypass_m,
   output        io_lsu_pkt_r_valid,
   output        io_lsu_pkt_r_bits_fast_int,
+  output        io_lsu_pkt_r_bits_stack,
   output        io_lsu_pkt_r_bits_by,
   output        io_lsu_pkt_r_bits_half,
   output        io_lsu_pkt_r_bits_word,
@@ -371,6 +375,8 @@ module lsu_lsc_ctl(
   reg [31:0] _RAND_49;
   reg [31:0] _RAND_50;
   reg [31:0] _RAND_51;
+  reg [31:0] _RAND_52;
+  reg [31:0] _RAND_53;
 `endif // RANDOMIZE_REG_INIT
   wire  addrcheck_reset; // @[lsu_lsc_ctl.scala 118:25]
   wire  addrcheck_io_lsu_c2_m_clk; // @[lsu_lsc_ctl.scala 118:25]
@@ -476,126 +482,128 @@ module lsu_lsc_ctl(
   reg [31:0] _T_109_bits_addr; // @[lib.scala 393:16]
   reg  _T_110; // @[lsu_lsc_ctl.scala 186:83]
   reg  _T_111; // @[lsu_lsc_ctl.scala 187:67]
-  reg [1:0] _T_112; // @[lsu_lsc_ctl.scala 188:48]
-  wire  dma_pkt_d_bits_load = ~io_dma_lsc_ctl_dma_mem_write; // @[lsu_lsc_ctl.scala 195:30]
-  wire  dma_pkt_d_bits_by = io_dma_lsc_ctl_dma_mem_sz == 3'h0; // @[lsu_lsc_ctl.scala 196:62]
-  wire  dma_pkt_d_bits_half = io_dma_lsc_ctl_dma_mem_sz == 3'h1; // @[lsu_lsc_ctl.scala 197:62]
-  wire  dma_pkt_d_bits_word = io_dma_lsc_ctl_dma_mem_sz == 3'h2; // @[lsu_lsc_ctl.scala 198:62]
-  wire  dma_pkt_d_bits_dword = io_dma_lsc_ctl_dma_mem_sz == 3'h3; // @[lsu_lsc_ctl.scala 199:62]
-  wire  _T_124 = ~io_lsu_p_bits_fast_int; // @[lsu_lsc_ctl.scala 212:64]
-  wire  _T_125 = io_flush_m_up & _T_124; // @[lsu_lsc_ctl.scala 212:61]
-  wire  _T_126 = ~_T_125; // @[lsu_lsc_ctl.scala 212:45]
-  wire  _T_127 = io_lsu_p_valid & _T_126; // @[lsu_lsc_ctl.scala 212:43]
-  wire  _T_129 = ~io_lsu_pkt_d_bits_dma; // @[lsu_lsc_ctl.scala 213:68]
-  wire  _T_130 = io_flush_m_up & _T_129; // @[lsu_lsc_ctl.scala 213:65]
-  wire  _T_131 = ~_T_130; // @[lsu_lsc_ctl.scala 213:49]
-  wire  _T_134 = io_flush_m_up & _T_78; // @[lsu_lsc_ctl.scala 214:65]
-  wire  _T_135 = ~_T_134; // @[lsu_lsc_ctl.scala 214:49]
-  reg  _T_138_bits_fast_int; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_138_bits_by; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_138_bits_half; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_138_bits_word; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_138_bits_dword; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_138_bits_load; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_138_bits_store; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_138_bits_unsign; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_138_bits_dma; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_138_bits_store_data_bypass_d; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_138_bits_load_ldst_bypass_d; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_138_bits_store_data_bypass_m; // @[lsu_lsc_ctl.scala 216:65]
-  reg  _T_140_bits_fast_int; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_140_bits_by; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_140_bits_half; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_140_bits_word; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_140_bits_dword; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_140_bits_load; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_140_bits_store; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_140_bits_unsign; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_140_bits_dma; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_140_bits_store_data_bypass_d; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_140_bits_load_ldst_bypass_d; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_140_bits_store_data_bypass_m; // @[lsu_lsc_ctl.scala 217:65]
-  reg  _T_141; // @[lsu_lsc_ctl.scala 218:65]
-  reg  _T_142; // @[lsu_lsc_ctl.scala 219:65]
+  reg [1:0] _T_112; // @[lsu_lsc_ctl.scala 188:75]
+  wire  dma_pkt_d_bits_load = ~io_dma_lsc_ctl_dma_mem_write; // @[lsu_lsc_ctl.scala 196:30]
+  wire  dma_pkt_d_bits_by = io_dma_lsc_ctl_dma_mem_sz == 3'h0; // @[lsu_lsc_ctl.scala 197:62]
+  wire  dma_pkt_d_bits_half = io_dma_lsc_ctl_dma_mem_sz == 3'h1; // @[lsu_lsc_ctl.scala 198:62]
+  wire  dma_pkt_d_bits_word = io_dma_lsc_ctl_dma_mem_sz == 3'h2; // @[lsu_lsc_ctl.scala 199:62]
+  wire  dma_pkt_d_bits_dword = io_dma_lsc_ctl_dma_mem_sz == 3'h3; // @[lsu_lsc_ctl.scala 200:62]
+  wire  _T_124 = ~io_lsu_p_bits_fast_int; // @[lsu_lsc_ctl.scala 213:64]
+  wire  _T_125 = io_flush_m_up & _T_124; // @[lsu_lsc_ctl.scala 213:61]
+  wire  _T_126 = ~_T_125; // @[lsu_lsc_ctl.scala 213:45]
+  wire  _T_127 = io_lsu_p_valid & _T_126; // @[lsu_lsc_ctl.scala 213:43]
+  wire  _T_129 = ~io_lsu_pkt_d_bits_dma; // @[lsu_lsc_ctl.scala 214:68]
+  wire  _T_130 = io_flush_m_up & _T_129; // @[lsu_lsc_ctl.scala 214:65]
+  wire  _T_131 = ~_T_130; // @[lsu_lsc_ctl.scala 214:49]
+  wire  _T_134 = io_flush_m_up & _T_78; // @[lsu_lsc_ctl.scala 215:65]
+  wire  _T_135 = ~_T_134; // @[lsu_lsc_ctl.scala 215:49]
+  reg  _T_138_bits_fast_int; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_stack; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_by; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_half; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_word; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_dword; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_load; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_store; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_unsign; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_dma; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_store_data_bypass_d; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_load_ldst_bypass_d; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_138_bits_store_data_bypass_m; // @[lsu_lsc_ctl.scala 217:65]
+  reg  _T_140_bits_fast_int; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_stack; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_by; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_half; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_word; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_dword; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_load; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_store; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_unsign; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_dma; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_store_data_bypass_d; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_load_ldst_bypass_d; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_140_bits_store_data_bypass_m; // @[lsu_lsc_ctl.scala 218:65]
+  reg  _T_141; // @[lsu_lsc_ctl.scala 219:65]
+  reg  _T_142; // @[lsu_lsc_ctl.scala 220:65]
   wire [5:0] _T_145 = {io_dma_lsc_ctl_dma_mem_addr[2:0],3'h0}; // @[Cat.scala 29:58]
-  wire [63:0] dma_mem_wdata_shifted = io_dma_lsc_ctl_dma_mem_wdata >> _T_145; // @[lsu_lsc_ctl.scala 221:66]
-  reg [31:0] store_data_pre_m; // @[lsu_lsc_ctl.scala 225:72]
-  reg [31:0] _T_152; // @[lsu_lsc_ctl.scala 226:62]
-  reg [31:0] _T_153; // @[lsu_lsc_ctl.scala 227:62]
+  wire [63:0] dma_mem_wdata_shifted = io_dma_lsc_ctl_dma_mem_wdata >> _T_145; // @[lsu_lsc_ctl.scala 222:66]
+  reg [31:0] store_data_pre_m; // @[lsu_lsc_ctl.scala 226:72]
+  reg [31:0] _T_152; // @[lsu_lsc_ctl.scala 227:62]
+  reg [31:0] _T_153; // @[lsu_lsc_ctl.scala 228:62]
   reg [28:0] end_addr_pre_m; // @[lib.scala 383:16]
-  wire [28:0] _T_156 = io_ldst_dual_m ? end_addr_pre_m : io_lsu_addr_m[31:3]; // @[lsu_lsc_ctl.scala 228:27]
-  reg [2:0] _T_158; // @[lsu_lsc_ctl.scala 228:114]
+  wire [28:0] _T_156 = io_ldst_dual_m ? end_addr_pre_m : io_lsu_addr_m[31:3]; // @[lsu_lsc_ctl.scala 229:27]
+  reg [2:0] _T_158; // @[lsu_lsc_ctl.scala 229:114]
   reg [28:0] end_addr_pre_r; // @[lib.scala 383:16]
-  wire [28:0] _T_162 = io_ldst_dual_r ? end_addr_pre_r : io_lsu_addr_r[31:3]; // @[lsu_lsc_ctl.scala 229:27]
-  reg [2:0] _T_164; // @[lsu_lsc_ctl.scala 229:114]
-  wire  _T_167 = io_lsu_pkt_d_valid & io_ldst_dual_d; // @[lsu_lsc_ctl.scala 230:69]
-  wire  _T_173 = io_lsu_pkt_m_valid & io_ldst_dual_m; // @[lsu_lsc_ctl.scala 231:69]
-  reg  _T_178; // @[lsu_lsc_ctl.scala 232:62]
-  reg  _T_179; // @[lsu_lsc_ctl.scala 233:62]
-  reg  _T_180; // @[lsu_lsc_ctl.scala 234:62]
-  reg  _T_181; // @[lsu_lsc_ctl.scala 235:62]
-  reg  _T_182; // @[lsu_lsc_ctl.scala 236:62]
-  reg  addr_external_r; // @[lsu_lsc_ctl.scala 237:66]
+  wire [28:0] _T_162 = io_ldst_dual_r ? end_addr_pre_r : io_lsu_addr_r[31:3]; // @[lsu_lsc_ctl.scala 230:27]
+  reg [2:0] _T_164; // @[lsu_lsc_ctl.scala 230:114]
+  wire  _T_167 = io_lsu_pkt_d_valid & io_ldst_dual_d; // @[lsu_lsc_ctl.scala 231:69]
+  wire  _T_173 = io_lsu_pkt_m_valid & io_ldst_dual_m; // @[lsu_lsc_ctl.scala 232:69]
+  reg  _T_178; // @[lsu_lsc_ctl.scala 233:62]
+  reg  _T_179; // @[lsu_lsc_ctl.scala 234:62]
+  reg  _T_180; // @[lsu_lsc_ctl.scala 235:62]
+  reg  _T_181; // @[lsu_lsc_ctl.scala 236:62]
+  reg  _T_182; // @[lsu_lsc_ctl.scala 237:62]
+  reg  addr_external_r; // @[lsu_lsc_ctl.scala 238:66]
   reg [31:0] bus_read_data_r; // @[lib.scala 383:16]
-  wire  _T_187 = io_lsu_pkt_r_bits_store | io_lsu_pkt_r_bits_load; // @[lsu_lsc_ctl.scala 245:68]
-  wire  _T_188 = io_lsu_pkt_r_valid & _T_187; // @[lsu_lsc_ctl.scala 245:41]
-  wire  _T_189 = ~io_flush_r; // @[lsu_lsc_ctl.scala 245:96]
-  wire  _T_190 = _T_188 & _T_189; // @[lsu_lsc_ctl.scala 245:94]
-  wire  _T_191 = ~io_lsu_pkt_r_bits_dma; // @[lsu_lsc_ctl.scala 245:110]
-  wire  _T_194 = ~io_addr_in_pic_m; // @[lsu_lsc_ctl.scala 246:69]
+  wire  _T_187 = io_lsu_pkt_r_bits_store | io_lsu_pkt_r_bits_load; // @[lsu_lsc_ctl.scala 246:68]
+  wire  _T_188 = io_lsu_pkt_r_valid & _T_187; // @[lsu_lsc_ctl.scala 246:41]
+  wire  _T_189 = ~io_flush_r; // @[lsu_lsc_ctl.scala 246:96]
+  wire  _T_190 = _T_188 & _T_189; // @[lsu_lsc_ctl.scala 246:94]
+  wire  _T_191 = ~io_lsu_pkt_r_bits_dma; // @[lsu_lsc_ctl.scala 246:110]
+  wire  _T_194 = ~io_addr_in_pic_m; // @[lsu_lsc_ctl.scala 247:69]
   wire [31:0] _T_196 = _T_194 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_197 = io_picm_mask_data_m | _T_196; // @[lsu_lsc_ctl.scala 246:59]
-  wire [31:0] _T_199 = io_lsu_pkt_m_bits_store_data_bypass_m ? io_lsu_result_m : store_data_pre_m; // @[lsu_lsc_ctl.scala 246:94]
-  wire [31:0] lsu_ld_datafn_m = io_addr_external_m ? io_bus_read_data_m : io_lsu_ld_data_m; // @[lsu_lsc_ctl.scala 267:33]
-  wire [31:0] lsu_ld_datafn_corr_r = addr_external_r ? bus_read_data_r : io_lsu_ld_data_corr_r; // @[lsu_lsc_ctl.scala 268:33]
-  wire  _T_205 = io_lsu_pkt_m_bits_unsign & io_lsu_pkt_m_bits_by; // @[lsu_lsc_ctl.scala 269:66]
+  wire [31:0] _T_197 = io_picm_mask_data_m | _T_196; // @[lsu_lsc_ctl.scala 247:59]
+  wire [31:0] _T_199 = io_lsu_pkt_m_bits_store_data_bypass_m ? io_lsu_result_m : store_data_pre_m; // @[lsu_lsc_ctl.scala 247:94]
+  wire [31:0] lsu_ld_datafn_m = io_addr_external_m ? io_bus_read_data_m : io_lsu_ld_data_m; // @[lsu_lsc_ctl.scala 268:33]
+  wire [31:0] lsu_ld_datafn_corr_r = addr_external_r ? bus_read_data_r : io_lsu_ld_data_corr_r; // @[lsu_lsc_ctl.scala 269:33]
+  wire  _T_205 = io_lsu_pkt_m_bits_unsign & io_lsu_pkt_m_bits_by; // @[lsu_lsc_ctl.scala 270:66]
   wire [31:0] _T_207 = _T_205 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
   wire [31:0] _T_209 = {24'h0,lsu_ld_datafn_m[7:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_210 = _T_207 & _T_209; // @[lsu_lsc_ctl.scala 269:94]
-  wire  _T_211 = io_lsu_pkt_m_bits_unsign & io_lsu_pkt_m_bits_half; // @[lsu_lsc_ctl.scala 270:43]
+  wire [31:0] _T_210 = _T_207 & _T_209; // @[lsu_lsc_ctl.scala 270:94]
+  wire  _T_211 = io_lsu_pkt_m_bits_unsign & io_lsu_pkt_m_bits_half; // @[lsu_lsc_ctl.scala 271:43]
   wire [31:0] _T_213 = _T_211 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
   wire [31:0] _T_215 = {16'h0,lsu_ld_datafn_m[15:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_216 = _T_213 & _T_215; // @[lsu_lsc_ctl.scala 270:71]
-  wire [31:0] _T_217 = _T_210 | _T_216; // @[lsu_lsc_ctl.scala 269:133]
-  wire  _T_218 = ~io_lsu_pkt_m_bits_unsign; // @[lsu_lsc_ctl.scala 271:17]
-  wire  _T_219 = _T_218 & io_lsu_pkt_m_bits_by; // @[lsu_lsc_ctl.scala 271:43]
+  wire [31:0] _T_216 = _T_213 & _T_215; // @[lsu_lsc_ctl.scala 271:71]
+  wire [31:0] _T_217 = _T_210 | _T_216; // @[lsu_lsc_ctl.scala 270:133]
+  wire  _T_218 = ~io_lsu_pkt_m_bits_unsign; // @[lsu_lsc_ctl.scala 272:17]
+  wire  _T_219 = _T_218 & io_lsu_pkt_m_bits_by; // @[lsu_lsc_ctl.scala 272:43]
   wire [31:0] _T_221 = _T_219 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
   wire [23:0] _T_224 = lsu_ld_datafn_m[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 72:12]
   wire [31:0] _T_226 = {_T_224,lsu_ld_datafn_m[7:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_227 = _T_221 & _T_226; // @[lsu_lsc_ctl.scala 271:71]
-  wire [31:0] _T_228 = _T_217 | _T_227; // @[lsu_lsc_ctl.scala 270:114]
-  wire  _T_230 = _T_218 & io_lsu_pkt_m_bits_half; // @[lsu_lsc_ctl.scala 272:43]
+  wire [31:0] _T_227 = _T_221 & _T_226; // @[lsu_lsc_ctl.scala 272:71]
+  wire [31:0] _T_228 = _T_217 | _T_227; // @[lsu_lsc_ctl.scala 271:114]
+  wire  _T_230 = _T_218 & io_lsu_pkt_m_bits_half; // @[lsu_lsc_ctl.scala 273:43]
   wire [31:0] _T_232 = _T_230 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
   wire [15:0] _T_235 = lsu_ld_datafn_m[15] ? 16'hffff : 16'h0; // @[Bitwise.scala 72:12]
   wire [31:0] _T_237 = {_T_235,lsu_ld_datafn_m[15:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_238 = _T_232 & _T_237; // @[lsu_lsc_ctl.scala 272:71]
-  wire [31:0] _T_239 = _T_228 | _T_238; // @[lsu_lsc_ctl.scala 271:134]
+  wire [31:0] _T_238 = _T_232 & _T_237; // @[lsu_lsc_ctl.scala 273:71]
+  wire [31:0] _T_239 = _T_228 | _T_238; // @[lsu_lsc_ctl.scala 272:134]
   wire [31:0] _T_241 = io_lsu_pkt_m_bits_word ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_243 = _T_241 & lsu_ld_datafn_m; // @[lsu_lsc_ctl.scala 273:43]
-  wire  _T_245 = io_lsu_pkt_r_bits_unsign & io_lsu_pkt_r_bits_by; // @[lsu_lsc_ctl.scala 274:66]
+  wire [31:0] _T_243 = _T_241 & lsu_ld_datafn_m; // @[lsu_lsc_ctl.scala 274:43]
+  wire  _T_245 = io_lsu_pkt_r_bits_unsign & io_lsu_pkt_r_bits_by; // @[lsu_lsc_ctl.scala 275:66]
   wire [31:0] _T_247 = _T_245 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
   wire [31:0] _T_249 = {24'h0,lsu_ld_datafn_corr_r[7:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_250 = _T_247 & _T_249; // @[lsu_lsc_ctl.scala 274:94]
-  wire  _T_251 = io_lsu_pkt_r_bits_unsign & io_lsu_pkt_r_bits_half; // @[lsu_lsc_ctl.scala 275:43]
+  wire [31:0] _T_250 = _T_247 & _T_249; // @[lsu_lsc_ctl.scala 275:94]
+  wire  _T_251 = io_lsu_pkt_r_bits_unsign & io_lsu_pkt_r_bits_half; // @[lsu_lsc_ctl.scala 276:43]
   wire [31:0] _T_253 = _T_251 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
   wire [31:0] _T_255 = {16'h0,lsu_ld_datafn_corr_r[15:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_256 = _T_253 & _T_255; // @[lsu_lsc_ctl.scala 275:71]
-  wire [31:0] _T_257 = _T_250 | _T_256; // @[lsu_lsc_ctl.scala 274:138]
-  wire  _T_258 = ~io_lsu_pkt_r_bits_unsign; // @[lsu_lsc_ctl.scala 276:17]
-  wire  _T_259 = _T_258 & io_lsu_pkt_r_bits_by; // @[lsu_lsc_ctl.scala 276:43]
+  wire [31:0] _T_256 = _T_253 & _T_255; // @[lsu_lsc_ctl.scala 276:71]
+  wire [31:0] _T_257 = _T_250 | _T_256; // @[lsu_lsc_ctl.scala 275:138]
+  wire  _T_258 = ~io_lsu_pkt_r_bits_unsign; // @[lsu_lsc_ctl.scala 277:17]
+  wire  _T_259 = _T_258 & io_lsu_pkt_r_bits_by; // @[lsu_lsc_ctl.scala 277:43]
   wire [31:0] _T_261 = _T_259 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
   wire [23:0] _T_264 = lsu_ld_datafn_corr_r[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 72:12]
   wire [31:0] _T_266 = {_T_264,lsu_ld_datafn_corr_r[7:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_267 = _T_261 & _T_266; // @[lsu_lsc_ctl.scala 276:71]
-  wire [31:0] _T_268 = _T_257 | _T_267; // @[lsu_lsc_ctl.scala 275:119]
-  wire  _T_270 = _T_258 & io_lsu_pkt_r_bits_half; // @[lsu_lsc_ctl.scala 277:43]
+  wire [31:0] _T_267 = _T_261 & _T_266; // @[lsu_lsc_ctl.scala 277:71]
+  wire [31:0] _T_268 = _T_257 | _T_267; // @[lsu_lsc_ctl.scala 276:119]
+  wire  _T_270 = _T_258 & io_lsu_pkt_r_bits_half; // @[lsu_lsc_ctl.scala 278:43]
   wire [31:0] _T_272 = _T_270 ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
   wire [15:0] _T_275 = lsu_ld_datafn_corr_r[15] ? 16'hffff : 16'h0; // @[Bitwise.scala 72:12]
   wire [31:0] _T_277 = {_T_275,lsu_ld_datafn_corr_r[15:0]}; // @[Cat.scala 29:58]
-  wire [31:0] _T_278 = _T_272 & _T_277; // @[lsu_lsc_ctl.scala 277:71]
-  wire [31:0] _T_279 = _T_268 | _T_278; // @[lsu_lsc_ctl.scala 276:144]
+  wire [31:0] _T_278 = _T_272 & _T_277; // @[lsu_lsc_ctl.scala 278:71]
+  wire [31:0] _T_279 = _T_268 | _T_278; // @[lsu_lsc_ctl.scala 277:144]
   wire [31:0] _T_281 = io_lsu_pkt_r_bits_word ? 32'hffffffff : 32'h0; // @[Bitwise.scala 72:12]
-  wire [31:0] _T_283 = _T_281 & lsu_ld_datafn_corr_r; // @[lsu_lsc_ctl.scala 278:43]
+  wire [31:0] _T_283 = _T_281 & lsu_ld_datafn_corr_r; // @[lsu_lsc_ctl.scala 279:43]
   lsu_addrcheck addrcheck ( // @[lsu_lsc_ctl.scala 118:25]
     .reset(addrcheck_reset),
     .io_lsu_c2_m_clk(addrcheck_io_lsu_c2_m_clk),
@@ -641,18 +649,18 @@ module lsu_lsc_ctl(
     .io_clk(rvclkhdr_3_io_clk),
     .io_en(rvclkhdr_3_io_en)
   );
-  assign io_lsu_result_m = _T_239 | _T_243; // @[lsu_lsc_ctl.scala 269:27]
-  assign io_lsu_result_corr_r = _T_279 | _T_283; // @[lsu_lsc_ctl.scala 274:27]
-  assign io_lsu_addr_d = {_T_40,_T_10[11:0]}; // @[lsu_lsc_ctl.scala 243:28]
-  assign io_lsu_addr_m = _T_152; // @[lsu_lsc_ctl.scala 226:24]
-  assign io_lsu_addr_r = _T_153; // @[lsu_lsc_ctl.scala 227:24]
+  assign io_lsu_result_m = _T_239 | _T_243; // @[lsu_lsc_ctl.scala 270:27]
+  assign io_lsu_result_corr_r = _T_279 | _T_283; // @[lsu_lsc_ctl.scala 275:27]
+  assign io_lsu_addr_d = {_T_40,_T_10[11:0]}; // @[lsu_lsc_ctl.scala 244:28]
+  assign io_lsu_addr_m = _T_152; // @[lsu_lsc_ctl.scala 227:24]
+  assign io_lsu_addr_r = _T_153; // @[lsu_lsc_ctl.scala 228:24]
   assign io_end_addr_d = rs1_d + _T_64; // @[lsu_lsc_ctl.scala 115:24]
-  assign io_end_addr_m = {_T_156,_T_158}; // @[lsu_lsc_ctl.scala 228:17]
-  assign io_end_addr_r = {_T_162,_T_164}; // @[lsu_lsc_ctl.scala 229:17]
-  assign io_store_data_m = _T_197 & _T_199; // @[lsu_lsc_ctl.scala 246:29]
+  assign io_end_addr_m = {_T_156,_T_158}; // @[lsu_lsc_ctl.scala 229:17]
+  assign io_end_addr_r = {_T_162,_T_164}; // @[lsu_lsc_ctl.scala 230:17]
+  assign io_store_data_m = _T_197 & _T_199; // @[lsu_lsc_ctl.scala 247:29]
   assign io_lsu_exc_m = access_fault_m | misaligned_fault_m; // @[lsu_lsc_ctl.scala 155:16]
   assign io_is_sideeffects_m = addrcheck_io_is_sideeffects_m; // @[lsu_lsc_ctl.scala 128:42]
-  assign io_lsu_commit_r = _T_190 & _T_191; // @[lsu_lsc_ctl.scala 245:19]
+  assign io_lsu_commit_r = _T_190 & _T_191; // @[lsu_lsc_ctl.scala 246:19]
   assign io_lsu_single_ecc_error_incr = _T_73 & io_lsu_pkt_r_valid; // @[lsu_lsc_ctl.scala 156:32]
   assign io_lsu_error_pkt_r_valid = _T_111; // @[lsu_lsc_ctl.scala 185:24 lsu_lsc_ctl.scala 187:30]
   assign io_lsu_error_pkt_r_bits_single_ecc_error = _T_110; // @[lsu_lsc_ctl.scala 185:24 lsu_lsc_ctl.scala 186:46]
@@ -660,54 +668,57 @@ module lsu_lsc_ctl(
   assign io_lsu_error_pkt_r_bits_exc_type = _T_109_bits_exc_type; // @[lsu_lsc_ctl.scala 185:24]
   assign io_lsu_error_pkt_r_bits_mscause = _T_109_bits_mscause; // @[lsu_lsc_ctl.scala 185:24]
   assign io_lsu_error_pkt_r_bits_addr = _T_109_bits_addr; // @[lsu_lsc_ctl.scala 185:24]
-  assign io_lsu_fir_addr = io_lsu_ld_data_corr_r[31:1]; // @[lsu_lsc_ctl.scala 241:28]
+  assign io_lsu_fir_addr = io_lsu_ld_data_corr_r[31:1]; // @[lsu_lsc_ctl.scala 242:28]
   assign io_lsu_fir_error = _T_112; // @[lsu_lsc_ctl.scala 188:38]
   assign io_addr_in_dccm_d = addrcheck_io_addr_in_dccm_d; // @[lsu_lsc_ctl.scala 129:42]
-  assign io_addr_in_dccm_m = _T_178; // @[lsu_lsc_ctl.scala 232:24]
-  assign io_addr_in_dccm_r = _T_179; // @[lsu_lsc_ctl.scala 233:24]
+  assign io_addr_in_dccm_m = _T_178; // @[lsu_lsc_ctl.scala 233:24]
+  assign io_addr_in_dccm_r = _T_179; // @[lsu_lsc_ctl.scala 234:24]
   assign io_addr_in_pic_d = addrcheck_io_addr_in_pic_d; // @[lsu_lsc_ctl.scala 130:42]
-  assign io_addr_in_pic_m = _T_180; // @[lsu_lsc_ctl.scala 234:24]
-  assign io_addr_in_pic_r = _T_181; // @[lsu_lsc_ctl.scala 235:24]
-  assign io_addr_external_m = _T_182; // @[lsu_lsc_ctl.scala 236:24]
-  assign io_lsu_pkt_d_valid = _T_127 | io_dma_lsc_ctl_dma_dccm_req; // @[lsu_lsc_ctl.scala 208:20 lsu_lsc_ctl.scala 212:24]
-  assign io_lsu_pkt_d_bits_fast_int = io_dec_lsu_valid_raw_d & io_lsu_p_bits_fast_int; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_d_bits_by = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_by : dma_pkt_d_bits_by; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_d_bits_half = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_half : dma_pkt_d_bits_half; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_d_bits_word = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_word : dma_pkt_d_bits_word; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_d_bits_dword = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_dword : dma_pkt_d_bits_dword; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_d_bits_load = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_load : dma_pkt_d_bits_load; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_d_bits_store = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_store : io_dma_lsc_ctl_dma_mem_write; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_d_bits_unsign = io_dec_lsu_valid_raw_d & io_lsu_p_bits_unsign; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_d_bits_dma = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_dma : 1'h1; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_d_bits_store_data_bypass_d = io_dec_lsu_valid_raw_d & io_lsu_p_bits_store_data_bypass_d; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_d_bits_load_ldst_bypass_d = io_dec_lsu_valid_raw_d & io_lsu_p_bits_load_ldst_bypass_d; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_d_bits_store_data_bypass_m = io_dec_lsu_valid_raw_d & io_lsu_p_bits_store_data_bypass_m; // @[lsu_lsc_ctl.scala 208:20]
-  assign io_lsu_pkt_m_valid = _T_141; // @[lsu_lsc_ctl.scala 216:28 lsu_lsc_ctl.scala 218:28]
-  assign io_lsu_pkt_m_bits_fast_int = _T_138_bits_fast_int; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_m_bits_by = _T_138_bits_by; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_m_bits_half = _T_138_bits_half; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_m_bits_word = _T_138_bits_word; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_m_bits_dword = _T_138_bits_dword; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_m_bits_load = _T_138_bits_load; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_m_bits_store = _T_138_bits_store; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_m_bits_unsign = _T_138_bits_unsign; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_m_bits_dma = _T_138_bits_dma; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_m_bits_store_data_bypass_d = _T_138_bits_store_data_bypass_d; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_m_bits_load_ldst_bypass_d = _T_138_bits_load_ldst_bypass_d; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_m_bits_store_data_bypass_m = _T_138_bits_store_data_bypass_m; // @[lsu_lsc_ctl.scala 216:28]
-  assign io_lsu_pkt_r_valid = _T_142; // @[lsu_lsc_ctl.scala 217:28 lsu_lsc_ctl.scala 219:28]
-  assign io_lsu_pkt_r_bits_fast_int = _T_140_bits_fast_int; // @[lsu_lsc_ctl.scala 217:28]
-  assign io_lsu_pkt_r_bits_by = _T_140_bits_by; // @[lsu_lsc_ctl.scala 217:28]
-  assign io_lsu_pkt_r_bits_half = _T_140_bits_half; // @[lsu_lsc_ctl.scala 217:28]
-  assign io_lsu_pkt_r_bits_word = _T_140_bits_word; // @[lsu_lsc_ctl.scala 217:28]
-  assign io_lsu_pkt_r_bits_dword = _T_140_bits_dword; // @[lsu_lsc_ctl.scala 217:28]
-  assign io_lsu_pkt_r_bits_load = _T_140_bits_load; // @[lsu_lsc_ctl.scala 217:28]
-  assign io_lsu_pkt_r_bits_store = _T_140_bits_store; // @[lsu_lsc_ctl.scala 217:28]
-  assign io_lsu_pkt_r_bits_unsign = _T_140_bits_unsign; // @[lsu_lsc_ctl.scala 217:28]
-  assign io_lsu_pkt_r_bits_dma = _T_140_bits_dma; // @[lsu_lsc_ctl.scala 217:28]
-  assign io_lsu_pkt_r_bits_store_data_bypass_d = _T_140_bits_store_data_bypass_d; // @[lsu_lsc_ctl.scala 217:28]
-  assign io_lsu_pkt_r_bits_load_ldst_bypass_d = _T_140_bits_load_ldst_bypass_d; // @[lsu_lsc_ctl.scala 217:28]
-  assign io_lsu_pkt_r_bits_store_data_bypass_m = _T_140_bits_store_data_bypass_m; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_addr_in_pic_m = _T_180; // @[lsu_lsc_ctl.scala 235:24]
+  assign io_addr_in_pic_r = _T_181; // @[lsu_lsc_ctl.scala 236:24]
+  assign io_addr_external_m = _T_182; // @[lsu_lsc_ctl.scala 237:24]
+  assign io_lsu_pkt_d_valid = _T_127 | io_dma_lsc_ctl_dma_dccm_req; // @[lsu_lsc_ctl.scala 209:20 lsu_lsc_ctl.scala 213:24]
+  assign io_lsu_pkt_d_bits_fast_int = io_dec_lsu_valid_raw_d & io_lsu_p_bits_fast_int; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_stack = io_dec_lsu_valid_raw_d & io_lsu_p_bits_stack; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_by = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_by : dma_pkt_d_bits_by; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_half = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_half : dma_pkt_d_bits_half; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_word = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_word : dma_pkt_d_bits_word; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_dword = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_dword : dma_pkt_d_bits_dword; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_load = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_load : dma_pkt_d_bits_load; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_store = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_store : io_dma_lsc_ctl_dma_mem_write; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_unsign = io_dec_lsu_valid_raw_d & io_lsu_p_bits_unsign; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_dma = io_dec_lsu_valid_raw_d ? io_lsu_p_bits_dma : 1'h1; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_store_data_bypass_d = io_dec_lsu_valid_raw_d & io_lsu_p_bits_store_data_bypass_d; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_load_ldst_bypass_d = io_dec_lsu_valid_raw_d & io_lsu_p_bits_load_ldst_bypass_d; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_d_bits_store_data_bypass_m = io_dec_lsu_valid_raw_d & io_lsu_p_bits_store_data_bypass_m; // @[lsu_lsc_ctl.scala 209:20]
+  assign io_lsu_pkt_m_valid = _T_141; // @[lsu_lsc_ctl.scala 217:28 lsu_lsc_ctl.scala 219:28]
+  assign io_lsu_pkt_m_bits_fast_int = _T_138_bits_fast_int; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_stack = _T_138_bits_stack; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_by = _T_138_bits_by; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_half = _T_138_bits_half; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_word = _T_138_bits_word; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_dword = _T_138_bits_dword; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_load = _T_138_bits_load; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_store = _T_138_bits_store; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_unsign = _T_138_bits_unsign; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_dma = _T_138_bits_dma; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_store_data_bypass_d = _T_138_bits_store_data_bypass_d; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_load_ldst_bypass_d = _T_138_bits_load_ldst_bypass_d; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_m_bits_store_data_bypass_m = _T_138_bits_store_data_bypass_m; // @[lsu_lsc_ctl.scala 217:28]
+  assign io_lsu_pkt_r_valid = _T_142; // @[lsu_lsc_ctl.scala 218:28 lsu_lsc_ctl.scala 220:28]
+  assign io_lsu_pkt_r_bits_fast_int = _T_140_bits_fast_int; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_stack = _T_140_bits_stack; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_by = _T_140_bits_by; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_half = _T_140_bits_half; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_word = _T_140_bits_word; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_dword = _T_140_bits_dword; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_load = _T_140_bits_load; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_store = _T_140_bits_store; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_unsign = _T_140_bits_unsign; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_dma = _T_140_bits_dma; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_store_data_bypass_d = _T_140_bits_store_data_bypass_d; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_load_ldst_bypass_d = _T_140_bits_load_ldst_bypass_d; // @[lsu_lsc_ctl.scala 218:28]
+  assign io_lsu_pkt_r_bits_store_data_bypass_m = _T_140_bits_store_data_bypass_m; // @[lsu_lsc_ctl.scala 218:28]
   assign addrcheck_reset = reset;
   assign addrcheck_io_lsu_c2_m_clk = io_lsu_c2_m_clk; // @[lsu_lsc_ctl.scala 120:42]
   assign addrcheck_io_start_addr_d = {_T_40,_T_10[11:0]}; // @[lsu_lsc_ctl.scala 122:42]
@@ -792,83 +803,87 @@ initial begin
   _RAND_12 = {1{`RANDOM}};
   _T_138_bits_fast_int = _RAND_12[0:0];
   _RAND_13 = {1{`RANDOM}};
-  _T_138_bits_by = _RAND_13[0:0];
+  _T_138_bits_stack = _RAND_13[0:0];
   _RAND_14 = {1{`RANDOM}};
-  _T_138_bits_half = _RAND_14[0:0];
+  _T_138_bits_by = _RAND_14[0:0];
   _RAND_15 = {1{`RANDOM}};
-  _T_138_bits_word = _RAND_15[0:0];
+  _T_138_bits_half = _RAND_15[0:0];
   _RAND_16 = {1{`RANDOM}};
-  _T_138_bits_dword = _RAND_16[0:0];
+  _T_138_bits_word = _RAND_16[0:0];
   _RAND_17 = {1{`RANDOM}};
-  _T_138_bits_load = _RAND_17[0:0];
+  _T_138_bits_dword = _RAND_17[0:0];
   _RAND_18 = {1{`RANDOM}};
-  _T_138_bits_store = _RAND_18[0:0];
+  _T_138_bits_load = _RAND_18[0:0];
   _RAND_19 = {1{`RANDOM}};
-  _T_138_bits_unsign = _RAND_19[0:0];
+  _T_138_bits_store = _RAND_19[0:0];
   _RAND_20 = {1{`RANDOM}};
-  _T_138_bits_dma = _RAND_20[0:0];
+  _T_138_bits_unsign = _RAND_20[0:0];
   _RAND_21 = {1{`RANDOM}};
-  _T_138_bits_store_data_bypass_d = _RAND_21[0:0];
+  _T_138_bits_dma = _RAND_21[0:0];
   _RAND_22 = {1{`RANDOM}};
-  _T_138_bits_load_ldst_bypass_d = _RAND_22[0:0];
+  _T_138_bits_store_data_bypass_d = _RAND_22[0:0];
   _RAND_23 = {1{`RANDOM}};
-  _T_138_bits_store_data_bypass_m = _RAND_23[0:0];
+  _T_138_bits_load_ldst_bypass_d = _RAND_23[0:0];
   _RAND_24 = {1{`RANDOM}};
-  _T_140_bits_fast_int = _RAND_24[0:0];
+  _T_138_bits_store_data_bypass_m = _RAND_24[0:0];
   _RAND_25 = {1{`RANDOM}};
-  _T_140_bits_by = _RAND_25[0:0];
+  _T_140_bits_fast_int = _RAND_25[0:0];
   _RAND_26 = {1{`RANDOM}};
-  _T_140_bits_half = _RAND_26[0:0];
+  _T_140_bits_stack = _RAND_26[0:0];
   _RAND_27 = {1{`RANDOM}};
-  _T_140_bits_word = _RAND_27[0:0];
+  _T_140_bits_by = _RAND_27[0:0];
   _RAND_28 = {1{`RANDOM}};
-  _T_140_bits_dword = _RAND_28[0:0];
+  _T_140_bits_half = _RAND_28[0:0];
   _RAND_29 = {1{`RANDOM}};
-  _T_140_bits_load = _RAND_29[0:0];
+  _T_140_bits_word = _RAND_29[0:0];
   _RAND_30 = {1{`RANDOM}};
-  _T_140_bits_store = _RAND_30[0:0];
+  _T_140_bits_dword = _RAND_30[0:0];
   _RAND_31 = {1{`RANDOM}};
-  _T_140_bits_unsign = _RAND_31[0:0];
+  _T_140_bits_load = _RAND_31[0:0];
   _RAND_32 = {1{`RANDOM}};
-  _T_140_bits_dma = _RAND_32[0:0];
+  _T_140_bits_store = _RAND_32[0:0];
   _RAND_33 = {1{`RANDOM}};
-  _T_140_bits_store_data_bypass_d = _RAND_33[0:0];
+  _T_140_bits_unsign = _RAND_33[0:0];
   _RAND_34 = {1{`RANDOM}};
-  _T_140_bits_load_ldst_bypass_d = _RAND_34[0:0];
+  _T_140_bits_dma = _RAND_34[0:0];
   _RAND_35 = {1{`RANDOM}};
-  _T_140_bits_store_data_bypass_m = _RAND_35[0:0];
+  _T_140_bits_store_data_bypass_d = _RAND_35[0:0];
   _RAND_36 = {1{`RANDOM}};
-  _T_141 = _RAND_36[0:0];
+  _T_140_bits_load_ldst_bypass_d = _RAND_36[0:0];
   _RAND_37 = {1{`RANDOM}};
-  _T_142 = _RAND_37[0:0];
+  _T_140_bits_store_data_bypass_m = _RAND_37[0:0];
   _RAND_38 = {1{`RANDOM}};
-  store_data_pre_m = _RAND_38[31:0];
+  _T_141 = _RAND_38[0:0];
   _RAND_39 = {1{`RANDOM}};
-  _T_152 = _RAND_39[31:0];
+  _T_142 = _RAND_39[0:0];
   _RAND_40 = {1{`RANDOM}};
-  _T_153 = _RAND_40[31:0];
+  store_data_pre_m = _RAND_40[31:0];
   _RAND_41 = {1{`RANDOM}};
-  end_addr_pre_m = _RAND_41[28:0];
+  _T_152 = _RAND_41[31:0];
   _RAND_42 = {1{`RANDOM}};
-  _T_158 = _RAND_42[2:0];
+  _T_153 = _RAND_42[31:0];
   _RAND_43 = {1{`RANDOM}};
-  end_addr_pre_r = _RAND_43[28:0];
+  end_addr_pre_m = _RAND_43[28:0];
   _RAND_44 = {1{`RANDOM}};
-  _T_164 = _RAND_44[2:0];
+  _T_158 = _RAND_44[2:0];
   _RAND_45 = {1{`RANDOM}};
-  _T_178 = _RAND_45[0:0];
+  end_addr_pre_r = _RAND_45[28:0];
   _RAND_46 = {1{`RANDOM}};
-  _T_179 = _RAND_46[0:0];
+  _T_164 = _RAND_46[2:0];
   _RAND_47 = {1{`RANDOM}};
-  _T_180 = _RAND_47[0:0];
+  _T_178 = _RAND_47[0:0];
   _RAND_48 = {1{`RANDOM}};
-  _T_181 = _RAND_48[0:0];
+  _T_179 = _RAND_48[0:0];
   _RAND_49 = {1{`RANDOM}};
-  _T_182 = _RAND_49[0:0];
+  _T_180 = _RAND_49[0:0];
   _RAND_50 = {1{`RANDOM}};
-  addr_external_r = _RAND_50[0:0];
+  _T_181 = _RAND_50[0:0];
   _RAND_51 = {1{`RANDOM}};
-  bus_read_data_r = _RAND_51[31:0];
+  _T_182 = _RAND_51[0:0];
+  _RAND_52 = {1{`RANDOM}};
+  addr_external_r = _RAND_52[0:0];
+  _RAND_53 = {1{`RANDOM}};
+  bus_read_data_r = _RAND_53[31:0];
 `endif // RANDOMIZE_REG_INIT
   if (reset) begin
     access_fault_m = 1'h0;
@@ -910,6 +925,9 @@ initial begin
     _T_138_bits_fast_int = 1'h0;
   end
   if (reset) begin
+    _T_138_bits_stack = 1'h0;
+  end
+  if (reset) begin
     _T_138_bits_by = 1'h0;
   end
   if (reset) begin
@@ -944,6 +962,9 @@ initial begin
   end
   if (reset) begin
     _T_140_bits_fast_int = 1'h0;
+  end
+  if (reset) begin
+    _T_140_bits_stack = 1'h0;
   end
   if (reset) begin
     _T_140_bits_by = 1'h0;
@@ -1111,7 +1132,7 @@ end // initial
       _T_111 <= _T_81 & _T_82;
     end
   end
-  always @(posedge clock or posedge reset) begin
+  always @(posedge io_lsu_c2_r_clk or posedge reset) begin
     if (reset) begin
       _T_112 <= 2'h0;
     end else if (fir_nondccm_access_error_m) begin
@@ -1129,6 +1150,13 @@ end // initial
       _T_138_bits_fast_int <= 1'h0;
     end else begin
       _T_138_bits_fast_int <= io_lsu_pkt_d_bits_fast_int;
+    end
+  end
+  always @(posedge io_lsu_c1_m_clk or posedge reset) begin
+    if (reset) begin
+      _T_138_bits_stack <= 1'h0;
+    end else begin
+      _T_138_bits_stack <= io_lsu_pkt_d_bits_stack;
     end
   end
   always @(posedge io_lsu_c1_m_clk or posedge reset) begin
@@ -1213,6 +1241,13 @@ end // initial
       _T_140_bits_fast_int <= 1'h0;
     end else begin
       _T_140_bits_fast_int <= io_lsu_pkt_m_bits_fast_int;
+    end
+  end
+  always @(posedge io_lsu_c1_r_clk or posedge reset) begin
+    if (reset) begin
+      _T_140_bits_stack <= 1'h0;
+    end else begin
+      _T_140_bits_stack <= io_lsu_pkt_m_bits_stack;
     end
   end
   always @(posedge io_lsu_c1_r_clk or posedge reset) begin

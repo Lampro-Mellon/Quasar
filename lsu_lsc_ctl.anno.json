@@ -127,6 +127,14 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~lsu_lsc_ctl|lsu_lsc_ctl>io_lsu_pkt_d_bits_stack",
+    "sources":[
+      "~lsu_lsc_ctl|lsu_lsc_ctl>io_lsu_p_bits_stack",
+      "~lsu_lsc_ctl|lsu_lsc_ctl>io_dec_lsu_valid_raw_d"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~lsu_lsc_ctl|lsu_lsc_ctl>io_addr_in_pic_d",
     "sources":[
       "~lsu_lsc_ctl|lsu_lsc_ctl>io_lsu_result_m",

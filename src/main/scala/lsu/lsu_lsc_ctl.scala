@@ -185,9 +185,10 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
     io.lsu_error_pkt_r := rvdffe(lsu_error_pkt_m,(lsu_error_pkt_m.valid | lsu_error_pkt_m.bits.single_ecc_error | io.clk_override),clock,io.scan_mode)
     io.lsu_error_pkt_r.bits.single_ecc_error := withClock(io.lsu_c2_r_clk){RegNext(lsu_error_pkt_m.bits.single_ecc_error, 0.U)}
     io.lsu_error_pkt_r.valid := withClock(io.lsu_c2_r_clk){RegNext(lsu_error_pkt_m.valid, 0.U)}
-    io.lsu_fir_error                 := RegNext(lsu_fir_error_m,0.U)
+    io.lsu_fir_error                 := withClock(io.lsu_c2_r_clk){RegNext(lsu_fir_error_m,0.U)}
   }
   dma_pkt_d.bits.unsign   := 0.U
+  dma_pkt_d.bits.stack   := 0.U
   dma_pkt_d.bits.fast_int := 0.U
   dma_pkt_d.valid    := io.dma_lsc_ctl.dma_dccm_req
   dma_pkt_d.bits.dma      := 1.U

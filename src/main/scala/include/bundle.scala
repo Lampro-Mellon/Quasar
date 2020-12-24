@@ -525,6 +525,7 @@ class alu_pkt_t extends Bundle {
 
 class lsu_pkt_t extends Bundle {
   val fast_int   = Bool()
+  val stack      = Bool()
   val by         = Bool()
   val half       = Bool()
   val word       = Bool()
@@ -545,7 +546,6 @@ class lsu_error_pkt_t extends Bundle {
   val mscause      = UInt(4.W)
   val addr         = UInt(32.W)
 }
-
 class dec_pkt_t extends Bundle {
   val alu       = Bool()
   val rs1       = Bool()
