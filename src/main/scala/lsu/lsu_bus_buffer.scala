@@ -8,7 +8,7 @@ import chisel3.util.ImplicitConversions.intToUInt
 import ifu._
 
 @chiselName
-class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
+class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   val io = IO(new Bundle {
     val clk_override           = Input(Bool())
     val scan_mode           = Input(Bool())
@@ -344,23 +344,23 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
     (!indexing(buf_write, CmdPtr0) & indexing(buf_dual.map(_.asUInt).reverse.reduce(Cat(_,_)), CmdPtr0) & !indexing(buf_dualhi.map(_.asUInt).reverse.reduce(Cat(_,_)), CmdPtr0) & indexing(buf_samedw.map(_.asUInt).reverse.reduce(Cat(_,_)), CmdPtr0))) |
     (ibuf_buf_byp & ldst_samedw_r & io.ldst_dual_r)
 
-  val obuf_wr_enQ = withClock(io.lsu_busm_clk){RegNext(obuf_wr_en, false.B)}
+  val obuf_wr_enQ = rvdff_fpga (obuf_wr_en,io.lsu_busm_clk,io.lsu_busm_clken,clock)
   obuf_valid := withClock(io.lsu_free_c2_clk){RegNext(Mux(obuf_wr_en, true.B, obuf_valid) & !obuf_rst, false.B)}
   obuf_nosend := withClock(io.lsu_free_c2_clk){RegEnable(obuf_nosend_in, false.B, obuf_wr_en)}
-  obuf_cmd_done := withClock(io.lsu_busm_clk){RegNext(obuf_cmd_done_in, false.B)}
-  obuf_data_done := withClock(io.lsu_busm_clk){RegNext(obuf_data_done_in, false.B)}
-  obuf_rdrsp_pend := withClock(io.lsu_busm_clk){RegNext(obuf_rdrsp_pend_in, false.B)}
-  obuf_rdrsp_tag := withClock(io.lsu_busm_clk){RegNext(obuf_rdrsp_tag_in, 0.U)}
-  obuf_tag0 := withClock(io.lsu_bus_obuf_c1_clk){RegEnable(obuf_tag0_in, 0.U, obuf_wr_en)}
-  val obuf_tag1 = withClock(io.lsu_bus_obuf_c1_clk){RegEnable(obuf_tag1_in, 0.U, obuf_wr_en)}
-  val obuf_merge = withClock(io.lsu_bus_obuf_c1_clk){RegEnable(obuf_merge_in, false.B, obuf_wr_en)}
-  obuf_write := withClock(io.lsu_bus_obuf_c1_clk){RegEnable(obuf_write_in, false.B, obuf_wr_en)}
-  obuf_sideeffect := withClock(io.lsu_bus_obuf_c1_clk){RegEnable(obuf_sideeffect_in, false.B, obuf_wr_en)}
-  val obuf_sz = withClock(io.lsu_bus_obuf_c1_clk){RegEnable(obuf_sz_in, 0.U, obuf_wr_en)}
+  obuf_rdrsp_pend := withClock(io.lsu_free_c2_clk){RegEnable(obuf_rdrsp_pend_in, false.B,obuf_rdrsp_pend_en)}
+  obuf_cmd_done := rvdff_fpga (obuf_cmd_done_in,io.lsu_busm_clk,io.lsu_busm_clken,clock)
+  obuf_data_done := rvdff_fpga (obuf_data_done_in,io.lsu_busm_clk,io.lsu_busm_clken,clock)
+  obuf_rdrsp_tag := rvdff_fpga (obuf_rdrsp_tag_in,io.lsu_busm_clk,io.lsu_busm_clken,clock)
+  obuf_tag0 := rvdffs_fpga (obuf_tag0_in,obuf_wr_en,io.lsu_bus_obuf_c1_clk,io.lsu_bus_obuf_c1_clken,clock)
+  val obuf_tag1 = rvdffs_fpga (obuf_tag1_in,obuf_wr_en,io.lsu_bus_obuf_c1_clk,io.lsu_bus_obuf_c1_clken,clock)
+  val obuf_merge = rvdffs_fpga (obuf_merge_in,obuf_wr_en,io.lsu_bus_obuf_c1_clk,io.lsu_bus_obuf_c1_clken,clock)
+  obuf_write := rvdffs_fpga (obuf_write_in,obuf_wr_en,io.lsu_bus_obuf_c1_clk,io.lsu_bus_obuf_c1_clken,clock)
+  obuf_sideeffect := rvdffs_fpga (obuf_sideeffect_in,obuf_wr_en,io.lsu_bus_obuf_c1_clk,io.lsu_bus_obuf_c1_clken,clock)
+  val obuf_sz = rvdffs_fpga (obuf_sz_in,obuf_wr_en,io.lsu_bus_obuf_c1_clk,io.lsu_bus_obuf_c1_clken,clock)
+  val obuf_byteen = rvdffs_fpga (obuf_byteen_in,obuf_wr_en,io.lsu_bus_obuf_c1_clk,io.lsu_bus_obuf_c1_clken,clock)
   obuf_addr := rvdffe(obuf_addr_in, obuf_wr_en, clock, io.scan_mode)
-  val obuf_byteen = withClock(io.lsu_bus_obuf_c1_clk){RegEnable(obuf_byteen_in, 0.U, obuf_wr_en)}
   val obuf_data = rvdffe(obuf_data_in, obuf_wr_en, clock, io.scan_mode)
-  obuf_wr_timer := withClock(io.lsu_busm_clk){RegNext(obuf_wr_timer_in, 0.U)}
+  obuf_wr_timer := rvdff_fpga (obuf_data_done_in,io.lsu_busm_clk,obuf_wr_en,clock)
   val WrPtr0_m = WireInit(UInt(DEPTH_LOG2.W), 0.U)
 
   WrPtr0_m := MuxCase(3.U, (0 until DEPTH).map(i=>((buf_state(i)===idle_C) &
@@ -624,4 +624,6 @@ class  lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   io.lsu_busreq_r := withClock(io.lsu_c2_r_clk){RegNext(io.lsu_busreq_m & !io.flush_r & !io.ld_full_hit_m, false.B)}
   lsu_nonblock_load_valid_r := withClock(io.lsu_c2_r_clk){RegNext(io.dctl_busbuff.lsu_nonblock_load_valid_m, false.B)}
 }
-
+object buffer extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new lsu_bus_buffer()))
+}
