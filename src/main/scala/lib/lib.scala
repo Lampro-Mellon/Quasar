@@ -381,7 +381,7 @@ trait lib extends param{
     def apply(din: UInt, en:Bool,clk: Clock, clken: Bool,rawclk:Clock):UInt = {
       if (RV_FPGA_OPTIMIZE)
         withClock (clk) {RegEnable (din, 0.U, clken & en)}
-      else RegEnable (din, 0.U,en)
+      else withClock (clk) {RegEnable (din, 0.U,en)}
     }
   }
   ////rvdffe ///////////////////////////////////////////////////////////////////////
