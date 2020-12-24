@@ -1387,7 +1387,7 @@ end // initial
       end_addr_pre_r <= io_end_addr_m[31:3];
     end
   end
-  always @(posedge io_lsu_c1_m_clk or posedge reset) begin
+  always @(posedge io_lsu_c1_r_clk or posedge reset) begin
     if (reset) begin
       _T_164 <= 3'h0;
     end else begin

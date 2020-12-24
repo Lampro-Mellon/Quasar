@@ -227,7 +227,7 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
   io.lsu_addr_m        :=  withClock(io.lsu_c1_m_clk){RegNext(io.lsu_addr_d,0.U)}
   io.lsu_addr_r        :=  withClock(io.lsu_c1_r_clk){RegNext(io.lsu_addr_m,0.U)}
   io.end_addr_m := Cat(Mux(io.ldst_dual_m,end_addr_pre_m,io.lsu_addr_m(31,3)), withClock(io.lsu_c1_m_clk){RegNext(io.end_addr_d(2,0),0.U)})
-  io.end_addr_r := Cat(Mux(io.ldst_dual_r,end_addr_pre_r,io.lsu_addr_r(31,3)), withClock(io.lsu_c1_m_clk){RegNext(io.end_addr_m(2,0),0.U)})
+  io.end_addr_r := Cat(Mux(io.ldst_dual_r,end_addr_pre_r,io.lsu_addr_r(31,3)), withClock(io.lsu_c1_r_clk){RegNext(io.end_addr_m(2,0),0.U)})
   end_addr_pre_m := rvdffe(io.end_addr_d(31,3),((io.lsu_pkt_d.valid & io.ldst_dual_d) | io.clk_override),clock,io.scan_mode)
   end_addr_pre_r := rvdffe(io.end_addr_m(31,3),((io.lsu_pkt_m.valid & io.ldst_dual_m) | io.clk_override),clock,io.scan_mode)
   io.addr_in_dccm_m    :=  withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_dccm_d,0.U)}

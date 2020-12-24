@@ -788,7 +788,7 @@ circuit lsu_lsc_ctl :
     node _T_161 = bits(io.lsu_addr_r, 31, 3) @[lsu_lsc_ctl.scala 230:71]
     node _T_162 = mux(_T_160, end_addr_pre_r, _T_161) @[lsu_lsc_ctl.scala 230:27]
     node _T_163 = bits(io.end_addr_m, 2, 0) @[lsu_lsc_ctl.scala 230:128]
-    reg _T_164 : UInt, io.lsu_c1_m_clk with : (reset => (reset, UInt<1>("h00"))) @[lsu_lsc_ctl.scala 230:114]
+    reg _T_164 : UInt, io.lsu_c1_r_clk with : (reset => (reset, UInt<1>("h00"))) @[lsu_lsc_ctl.scala 230:114]
     _T_164 <= _T_163 @[lsu_lsc_ctl.scala 230:114]
     node _T_165 = cat(_T_162, _T_164) @[Cat.scala 29:58]
     io.end_addr_r <= _T_165 @[lsu_lsc_ctl.scala 230:17]
