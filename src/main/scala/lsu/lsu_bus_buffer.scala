@@ -284,11 +284,13 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   val obuf_nosend = WireInit(Bool(), false.B)
  // val lsu_bus_cntr_overflow = WireInit(Bool(), false.B)
   val bus_addr_match_pending = WireInit(Bool(), false.B)
+
   obuf_wr_en := ((ibuf_buf_byp & io.lsu_commit_r & !(io.is_sideeffects_r & bus_sideeffect_pend)) |
     ((indexing(buf_state, CmdPtr0) === cmd_C) &
       found_cmdptr0 & !indexing(buf_cmd_state_bus_en.map(_.asUInt).reverse.reduce(Cat(_,_)), CmdPtr0) & !(indexing(buf_sideeffect, CmdPtr0) & bus_sideeffect_pend) &
       (!(indexing(buf_dual.map(_.asUInt).reverse.reduce(Cat(_,_)), CmdPtr0) & indexing(buf_samedw.map(_.asUInt).reverse.reduce(Cat(_,_)), CmdPtr0) & !indexing(buf_write, CmdPtr0)) | found_cmdptr1 | indexing(buf_nomerge.map(_.asUInt).reverse.reduce(Cat(_,_)), CmdPtr0) |
         obuf_force_wr_en))) & (bus_cmd_ready | !obuf_valid | obuf_nosend) & !obuf_wr_wait  & !bus_addr_match_pending & io.lsu_bus_clk_en
+
   val bus_cmd_sent = WireInit(Bool(), false.B)
   val obuf_rst = ((bus_cmd_sent | (obuf_valid & obuf_nosend)) & !obuf_wr_en & io.lsu_bus_clk_en) | io.dec_tlu_force_halt
   val obuf_write_in = Mux(ibuf_buf_byp, io.lsu_pkt_r.bits.store, indexing(buf_write, CmdPtr0))
@@ -467,7 +469,7 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
         buf_data_in(i) := Mux(buf_error_en(i), bus_rsp_rdata(31, 0), Mux(buf_addr(i)(2), bus_rsp_rdata(63, 32), bus_rsp_rdata(31, 0)))
       }
       is(resp_C) {
-        buf_nxtstate(i) := Mux((io.dec_tlu_force_halt | (buf_write(i) & bus_rsp_write_error)).asBool(), idle_C,
+          buf_nxtstate(i) := Mux((io.dec_tlu_force_halt | (buf_write(i) & !bus_rsp_write_error)).asBool(), idle_C,
           Mux((buf_dual(i) & !buf_samedw(i) & !buf_write(i) & (buf_state(buf_dualtag(i)) =/= done_partial_C)), done_partial_C,
             Mux((buf_ldfwd(i) | any_done_wait_state | (buf_dual(i) & !buf_samedw(i) & !buf_write(i) & indexing(buf_ldfwd,buf_dualtag(i)) & (buf_state(buf_dualtag(i)) === done_partial_C) & any_done_wait_state)), done_wait_C, done_C)))
         buf_resp_state_bus_en(i) := (bus_rsp_write & (bus_rsp_write_tag === (i.asUInt(LSU_BUS_TAG.W)))) |
