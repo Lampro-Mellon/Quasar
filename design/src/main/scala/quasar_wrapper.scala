@@ -84,7 +84,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   mem.io.icm_clk_override := core.io.icm_clk_override
   mem.io.dec_tlu_core_ecc_disable := core.io.dec_tlu_core_ecc_disable
   mem.io.dccm <> core.io.dccm
-  mem.io.rst_l := reset
+  mem.io.rst_l := core.io.core_rst_l
   mem.io.clk := clock
   mem.io.scan_mode := io.scan_mode
   // Memory outputs
@@ -161,7 +161,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
 
 }
 
-class sbox(val word_len: Int, val sbox_size:Int) extends Module{
+/*class sbox(val word_len: Int, val sbox_size:Int) extends Module{
   val io = IO(new Bundle{
     val in = Input(UInt(word_len.W))
     val op = Input(Bool())  // 0-> sbox,  1-> inv_sbox
@@ -184,7 +184,7 @@ class sbox(val word_len: Int, val sbox_size:Int) extends Module{
   io.inv_s_box_out.valid    := io.op
   io.s_box_out.bits := Mux1H((0 until sbox_size*sbox_size).map(i=>(io.in === i.U).asBool()->sbox(i).U))
   io.inv_s_box_out.bits := Mux1H((0 until sbox_size*sbox_size).map(i=>(io.in === i.U).asBool()->inv_sbox_list(i).U))
-}
-object sbox_code extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new sbox(4, 4)))
+}*/
+object wrapper extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new quasar_wrapper))
 }
