@@ -392,6 +392,9 @@ trait lib extends param{
       obj.io.clk := clk
       obj.io.en := en
       obj.io.scan_mode := 0.U
+        if(RV_FPGA_OPTIMIZE)
+        withClock(clk){RegEnable(din,0.U,en)}
+        else
       withClock(l1clk) {
         RegNext(din, 0.U)
       }
