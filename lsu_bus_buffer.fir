@@ -451,10 +451,10 @@ circuit lsu_bus_buffer :
     buf_ldfwdtag[2] <= UInt<1>("h00") @[lsu_bus_buffer.scala 117:16]
     buf_ldfwdtag[3] <= UInt<1>("h00") @[lsu_bus_buffer.scala 117:16]
     wire buf_rst : UInt<1>[4] @[lsu_bus_buffer.scala 118:21]
-    buf_rst[0] <= io.dec_tlu_force_halt @[lsu_bus_buffer.scala 119:11]
-    buf_rst[1] <= io.dec_tlu_force_halt @[lsu_bus_buffer.scala 119:11]
-    buf_rst[2] <= io.dec_tlu_force_halt @[lsu_bus_buffer.scala 119:11]
-    buf_rst[3] <= io.dec_tlu_force_halt @[lsu_bus_buffer.scala 119:11]
+    buf_rst[0] <= UInt<1>("h00") @[lsu_bus_buffer.scala 119:11]
+    buf_rst[1] <= UInt<1>("h00") @[lsu_bus_buffer.scala 119:11]
+    buf_rst[2] <= UInt<1>("h00") @[lsu_bus_buffer.scala 119:11]
+    buf_rst[3] <= UInt<1>("h00") @[lsu_bus_buffer.scala 119:11]
     wire ibuf_drainvec_vld : UInt<4>
     ibuf_drainvec_vld <= UInt<1>("h00")
     wire buf_byteen_in : UInt<4>[4] @[lsu_bus_buffer.scala 121:27]
