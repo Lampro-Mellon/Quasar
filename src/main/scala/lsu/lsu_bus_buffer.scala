@@ -353,6 +353,7 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   obuf_cmd_done := rvdff_fpga (obuf_cmd_done_in,io.lsu_busm_clk,io.lsu_busm_clken,clock)
   obuf_data_done := rvdff_fpga (obuf_data_done_in,io.lsu_busm_clk,io.lsu_busm_clken,clock)
   obuf_rdrsp_tag := rvdff_fpga (obuf_rdrsp_tag_in,io.lsu_busm_clk,io.lsu_busm_clken,clock)
+
   obuf_tag0 := rvdffs_fpga (obuf_tag0_in,obuf_wr_en,io.lsu_bus_obuf_c1_clk,io.lsu_bus_obuf_c1_clken,clock)
   val obuf_tag1 = rvdffs_fpga (obuf_tag1_in,obuf_wr_en,io.lsu_bus_obuf_c1_clk,io.lsu_bus_obuf_c1_clken,clock)
   val obuf_merge = rvdffs_fpga (obuf_merge_in,obuf_wr_en,io.lsu_bus_obuf_c1_clk,io.lsu_bus_obuf_c1_clken,clock)
@@ -479,7 +480,7 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
         buf_state_bus_en(i) := buf_resp_state_bus_en(i)
         buf_state_en(i) := (buf_state_bus_en(i) & io.lsu_bus_clk_en) | io.dec_tlu_force_halt
         buf_data_en(i) := buf_state_bus_en(i) & bus_rsp_read & io.lsu_bus_clk_en
-        buf_error_en(i) := buf_state_bus_en(i) & io.lsu_bus_clk_en & ((bus_rsp_read_error & (bus_rsp_read_tag === (i.asUInt(LSU_BUS_TAG.W)))) |
+   buf_error_en(i) := buf_state_bus_en(i) & io.lsu_bus_clk_en & ((bus_rsp_read_error & (bus_rsp_read_tag === (i.asUInt(LSU_BUS_TAG.W)))) |
           (bus_rsp_read_error & buf_ldfwd(i) & (bus_rsp_read_tag === buf_ldfwdtag(i))) |
           (bus_rsp_write_error  & (bus_rsp_write_tag === i.asUInt(LSU_BUS_TAG.W))))
         buf_data_in(i) := Mux((buf_state_en(i) & !buf_error_en(i)), Mux(buf_addr(i)(2), bus_rsp_rdata(63, 32), bus_rsp_rdata(31, 0)), bus_rsp_rdata(31, 0))
