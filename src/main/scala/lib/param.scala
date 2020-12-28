@@ -155,5 +155,5 @@ trait param {
   val SB_BUS_PRTY            = 	0x2
   val SB_BUS_TAG             = 	0x1
   val TIMER_LEGAL_EN         = 	0x1
-  val RV_FPGA_OPTIMIZE       =  0x0
+  val RV_FPGA_OPTIMIZE       =  0x1
 }
