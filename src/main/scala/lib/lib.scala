@@ -370,19 +370,18 @@ trait lib extends param{
       in_range := (addr(31,MASK_BITS) === start_addr(31,MASK_BITS)).asUInt
     (in_range,in_region)
   }
-
-  object rvdff_fpga {
+ object rvdff_fpga {
   def apply(din: UInt, clk: Clock, clken: Bool,rawclk:Clock):UInt = {
     if (RV_FPGA_OPTIMIZE)
-    withClock(clk) {RegEnable (din, 0.U, clken)}
-    else RegNext (din, 0.U)
+    withClock(rawclk) {RegEnable (din, 0.U, clken)}
+    else withClock(clk) {RegNext (din, 0.U)}
   }
 }
   object rvdffs_fpga {
     def apply(din: UInt, en:Bool,clk: Clock, clken: Bool,rawclk:Clock):UInt = {
       if (RV_FPGA_OPTIMIZE)
-        withClock (clk) {RegEnable (din, 0.U, (clken & en))}
-      else RegEnable (din, 0.U,en)
+        withClock (rawclk) {RegEnable (din, 0.U, (clken & en))}
+      else withClock(clk) {RegEnable (din, 0.U,en)}
     }
   }
   ////rvdffe ///////////////////////////////////////////////////////////////////////

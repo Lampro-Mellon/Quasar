@@ -255,45 +255,45 @@ module lsu_bus_buffer(
   reg [31:0] _RAND_105;
   reg [31:0] _RAND_106;
 `endif // RANDOMIZE_REG_INIT
-  wire  rvclkhdr_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_io_en; // @[lib.scala 391:23]
-  wire  rvclkhdr_1_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_1_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_1_io_en; // @[lib.scala 391:23]
-  wire  rvclkhdr_2_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_2_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_2_io_en; // @[lib.scala 391:23]
-  wire  rvclkhdr_3_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_3_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_3_io_en; // @[lib.scala 391:23]
-  wire  rvclkhdr_4_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_4_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_4_io_en; // @[lib.scala 391:23]
-  wire  rvclkhdr_5_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_5_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_5_io_en; // @[lib.scala 391:23]
-  wire  rvclkhdr_6_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_6_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_6_io_en; // @[lib.scala 391:23]
-  wire  rvclkhdr_7_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_7_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_7_io_en; // @[lib.scala 391:23]
-  wire  rvclkhdr_8_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_8_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_8_io_en; // @[lib.scala 391:23]
-  wire  rvclkhdr_9_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_9_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_9_io_en; // @[lib.scala 391:23]
-  wire  rvclkhdr_10_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_10_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_10_io_en; // @[lib.scala 391:23]
-  wire  rvclkhdr_11_io_l1clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_11_io_clk; // @[lib.scala 391:23]
-  wire  rvclkhdr_11_io_en; // @[lib.scala 391:23]
+  wire  rvclkhdr_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_io_en; // @[lib.scala 390:23]
+  wire  rvclkhdr_1_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_1_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_1_io_en; // @[lib.scala 390:23]
+  wire  rvclkhdr_2_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_2_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_2_io_en; // @[lib.scala 390:23]
+  wire  rvclkhdr_3_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_3_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_3_io_en; // @[lib.scala 390:23]
+  wire  rvclkhdr_4_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_4_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_4_io_en; // @[lib.scala 390:23]
+  wire  rvclkhdr_5_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_5_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_5_io_en; // @[lib.scala 390:23]
+  wire  rvclkhdr_6_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_6_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_6_io_en; // @[lib.scala 390:23]
+  wire  rvclkhdr_7_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_7_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_7_io_en; // @[lib.scala 390:23]
+  wire  rvclkhdr_8_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_8_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_8_io_en; // @[lib.scala 390:23]
+  wire  rvclkhdr_9_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_9_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_9_io_en; // @[lib.scala 390:23]
+  wire  rvclkhdr_10_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_10_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_10_io_en; // @[lib.scala 390:23]
+  wire  rvclkhdr_11_io_l1clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_11_io_clk; // @[lib.scala 390:23]
+  wire  rvclkhdr_11_io_en; // @[lib.scala 390:23]
   wire [3:0] ldst_byteen_hi_m = io_ldst_byteen_ext_m[7:4]; // @[lsu_bus_buffer.scala 76:46]
   wire [3:0] ldst_byteen_lo_m = io_ldst_byteen_ext_m[3:0]; // @[lsu_bus_buffer.scala 77:46]
-  reg [31:0] buf_addr_0; // @[lib.scala 397:16]
+  reg [31:0] buf_addr_0; // @[lib.scala 396:16]
   wire  _T_2 = io_lsu_addr_m[31:2] == buf_addr_0[31:2]; // @[lsu_bus_buffer.scala 79:74]
   reg  _T_4355; // @[Reg.scala 27:20]
   reg  _T_4352; // @[Reg.scala 27:20]
@@ -305,21 +305,21 @@ module lsu_bus_buffer(
   wire  _T_5 = buf_state_0 != 3'h0; // @[lsu_bus_buffer.scala 79:129]
   wire  _T_6 = _T_4 & _T_5; // @[lsu_bus_buffer.scala 79:113]
   wire  ld_addr_hitvec_lo_0 = _T_6 & io_lsu_busreq_m; // @[lsu_bus_buffer.scala 79:141]
-  reg [31:0] buf_addr_1; // @[lib.scala 397:16]
+  reg [31:0] buf_addr_1; // @[lib.scala 396:16]
   wire  _T_9 = io_lsu_addr_m[31:2] == buf_addr_1[31:2]; // @[lsu_bus_buffer.scala 79:74]
   wire  _T_11 = _T_9 & buf_write[1]; // @[lsu_bus_buffer.scala 79:98]
   reg [2:0] buf_state_1; // @[Reg.scala 27:20]
   wire  _T_12 = buf_state_1 != 3'h0; // @[lsu_bus_buffer.scala 79:129]
   wire  _T_13 = _T_11 & _T_12; // @[lsu_bus_buffer.scala 79:113]
   wire  ld_addr_hitvec_lo_1 = _T_13 & io_lsu_busreq_m; // @[lsu_bus_buffer.scala 79:141]
-  reg [31:0] buf_addr_2; // @[lib.scala 397:16]
+  reg [31:0] buf_addr_2; // @[lib.scala 396:16]
   wire  _T_16 = io_lsu_addr_m[31:2] == buf_addr_2[31:2]; // @[lsu_bus_buffer.scala 79:74]
   wire  _T_18 = _T_16 & buf_write[2]; // @[lsu_bus_buffer.scala 79:98]
   reg [2:0] buf_state_2; // @[Reg.scala 27:20]
   wire  _T_19 = buf_state_2 != 3'h0; // @[lsu_bus_buffer.scala 79:129]
   wire  _T_20 = _T_18 & _T_19; // @[lsu_bus_buffer.scala 79:113]
   wire  ld_addr_hitvec_lo_2 = _T_20 & io_lsu_busreq_m; // @[lsu_bus_buffer.scala 79:141]
-  reg [31:0] buf_addr_3; // @[lib.scala 397:16]
+  reg [31:0] buf_addr_3; // @[lib.scala 396:16]
   wire  _T_23 = io_lsu_addr_m[31:2] == buf_addr_3[31:2]; // @[lsu_bus_buffer.scala 79:74]
   wire  _T_25 = _T_23 & buf_write[3]; // @[lsu_bus_buffer.scala 79:98]
   reg [2:0] buf_state_3; // @[Reg.scala 27:20]
@@ -460,7 +460,7 @@ module lsu_bus_buffer(
   wire  _T_256 = |_T_255; // @[lsu_bus_buffer.scala 149:144]
   wire  _T_257 = ~_T_256; // @[lsu_bus_buffer.scala 149:99]
   wire  _T_258 = ld_byte_hitvec_lo_0[3] & _T_257; // @[lsu_bus_buffer.scala 149:97]
-  reg [31:0] ibuf_addr; // @[lib.scala 397:16]
+  reg [31:0] ibuf_addr; // @[lib.scala 396:16]
   wire  _T_512 = io_lsu_addr_m[31:2] == ibuf_addr[31:2]; // @[lsu_bus_buffer.scala 155:51]
   reg  ibuf_write; // @[Reg.scala 27:20]
   wire  _T_513 = _T_512 & ibuf_write; // @[lsu_bus_buffer.scala 155:73]
@@ -793,16 +793,16 @@ module lsu_bus_buffer(
   wire [7:0] _T_553 = ld_byte_ibuf_hit_hi[3] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
   wire [31:0] ld_fwddata_buf_hi_initial = {_T_553,_T_550,_T_547,_T_544}; // @[Cat.scala 29:58]
   wire [7:0] _T_558 = ld_byte_hitvecfn_lo_3[0] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  reg [31:0] buf_data_0; // @[lib.scala 397:16]
+  reg [31:0] buf_data_0; // @[lib.scala 396:16]
   wire [7:0] _T_560 = _T_558 & buf_data_0[31:24]; // @[lsu_bus_buffer.scala 168:91]
   wire [7:0] _T_563 = ld_byte_hitvecfn_lo_3[1] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  reg [31:0] buf_data_1; // @[lib.scala 397:16]
+  reg [31:0] buf_data_1; // @[lib.scala 396:16]
   wire [7:0] _T_565 = _T_563 & buf_data_1[31:24]; // @[lsu_bus_buffer.scala 168:91]
   wire [7:0] _T_568 = ld_byte_hitvecfn_lo_3[2] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  reg [31:0] buf_data_2; // @[lib.scala 397:16]
+  reg [31:0] buf_data_2; // @[lib.scala 396:16]
   wire [7:0] _T_570 = _T_568 & buf_data_2[31:24]; // @[lsu_bus_buffer.scala 168:91]
   wire [7:0] _T_573 = ld_byte_hitvecfn_lo_3[3] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
-  reg [31:0] buf_data_3; // @[lib.scala 397:16]
+  reg [31:0] buf_data_3; // @[lib.scala 396:16]
   wire [7:0] _T_575 = _T_573 & buf_data_3[31:24]; // @[lsu_bus_buffer.scala 168:91]
   wire [7:0] _T_576 = _T_560 | _T_565; // @[lsu_bus_buffer.scala 168:123]
   wire [7:0] _T_577 = _T_576 | _T_570; // @[lsu_bus_buffer.scala 168:123]
@@ -841,7 +841,7 @@ module lsu_bus_buffer(
   wire [7:0] _T_646 = _T_645 | _T_639; // @[lsu_bus_buffer.scala 171:97]
   wire [7:0] _T_647 = _T_646 | _T_644; // @[lsu_bus_buffer.scala 171:97]
   wire [31:0] _T_650 = {_T_578,_T_601,_T_624,_T_647}; // @[Cat.scala 29:58]
-  reg [31:0] ibuf_data; // @[lib.scala 397:16]
+  reg [31:0] ibuf_data; // @[lib.scala 396:16]
   wire [31:0] _T_651 = ld_fwddata_buf_lo_initial & ibuf_data; // @[lsu_bus_buffer.scala 172:32]
   wire [7:0] _T_655 = ld_byte_hitvecfn_hi_3[0] ? 8'hff : 8'h0; // @[Bitwise.scala 72:12]
   wire [7:0] _T_657 = _T_655 & buf_data_0[31:24]; // @[lsu_bus_buffer.scala 174:91]
@@ -1289,7 +1289,7 @@ module lsu_bus_buffer(
   wire  _T_1234 = _T_1230 & _T_1233; // @[lsu_bus_buffer.scala 292:29]
   wire  _T_1235 = ~obuf_wr_wait; // @[lsu_bus_buffer.scala 292:77]
   wire  _T_1236 = _T_1234 & _T_1235; // @[lsu_bus_buffer.scala 292:75]
-  reg [31:0] obuf_addr; // @[lib.scala 397:16]
+  reg [31:0] obuf_addr; // @[lib.scala 396:16]
   wire  _T_4776 = obuf_addr[31:3] == buf_addr_0[31:3]; // @[lsu_bus_buffer.scala 564:37]
   wire  _T_4777 = obuf_valid & _T_4776; // @[lsu_bus_buffer.scala 564:19]
   wire  _T_4779 = obuf_tag1 == 2'h0; // @[lsu_bus_buffer.scala 564:107]
@@ -1547,10 +1547,10 @@ module lsu_bus_buffer(
   wire [55:0] _T_1618 = {_T_1612,_T_1607,_T_1602,_T_1597,_T_1592,_T_1587,_T_1582}; // @[Cat.scala 29:58]
   wire  _T_1771 = obuf_wr_en | obuf_valid; // @[lsu_bus_buffer.scala 350:58]
   wire  _T_1772 = ~obuf_rst; // @[lsu_bus_buffer.scala 350:93]
-  wire  _T_1780 = io_lsu_bus_obuf_c1_clken & obuf_wr_en; // @[lib.scala 384:54]
+  wire  _T_1780 = io_lsu_bus_obuf_c1_clken & obuf_wr_en; // @[lib.scala 383:57]
   reg [1:0] obuf_sz; // @[Reg.scala 27:20]
   reg [7:0] obuf_byteen; // @[Reg.scala 27:20]
-  reg [63:0] obuf_data; // @[lib.scala 397:16]
+  reg [63:0] obuf_data; // @[lib.scala 396:16]
   wire  _T_1792 = buf_state_0 == 3'h0; // @[lsu_bus_buffer.scala 369:65]
   wire  _T_1793 = ibuf_tag == 2'h0; // @[lsu_bus_buffer.scala 370:30]
   wire  _T_1794 = ibuf_valid & _T_1793; // @[lsu_bus_buffer.scala 370:19]
@@ -2692,62 +2692,62 @@ module lsu_bus_buffer(
   wire  _T_4952 = ~io_flush_r; // @[lsu_bus_buffer.scala 627:75]
   wire  _T_4953 = io_lsu_busreq_m & _T_4952; // @[lsu_bus_buffer.scala 627:73]
   reg  _T_4956; // @[lsu_bus_buffer.scala 627:56]
-  rvclkhdr rvclkhdr ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_io_l1clk),
     .io_clk(rvclkhdr_io_clk),
     .io_en(rvclkhdr_io_en)
   );
-  rvclkhdr rvclkhdr_1 ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr_1 ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_1_io_l1clk),
     .io_clk(rvclkhdr_1_io_clk),
     .io_en(rvclkhdr_1_io_en)
   );
-  rvclkhdr rvclkhdr_2 ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr_2 ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_2_io_l1clk),
     .io_clk(rvclkhdr_2_io_clk),
     .io_en(rvclkhdr_2_io_en)
   );
-  rvclkhdr rvclkhdr_3 ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr_3 ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_3_io_l1clk),
     .io_clk(rvclkhdr_3_io_clk),
     .io_en(rvclkhdr_3_io_en)
   );
-  rvclkhdr rvclkhdr_4 ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr_4 ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_4_io_l1clk),
     .io_clk(rvclkhdr_4_io_clk),
     .io_en(rvclkhdr_4_io_en)
   );
-  rvclkhdr rvclkhdr_5 ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr_5 ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_5_io_l1clk),
     .io_clk(rvclkhdr_5_io_clk),
     .io_en(rvclkhdr_5_io_en)
   );
-  rvclkhdr rvclkhdr_6 ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr_6 ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_6_io_l1clk),
     .io_clk(rvclkhdr_6_io_clk),
     .io_en(rvclkhdr_6_io_en)
   );
-  rvclkhdr rvclkhdr_7 ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr_7 ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_7_io_l1clk),
     .io_clk(rvclkhdr_7_io_clk),
     .io_en(rvclkhdr_7_io_en)
   );
-  rvclkhdr rvclkhdr_8 ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr_8 ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_8_io_l1clk),
     .io_clk(rvclkhdr_8_io_clk),
     .io_en(rvclkhdr_8_io_en)
   );
-  rvclkhdr rvclkhdr_9 ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr_9 ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_9_io_l1clk),
     .io_clk(rvclkhdr_9_io_clk),
     .io_en(rvclkhdr_9_io_en)
   );
-  rvclkhdr rvclkhdr_10 ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr_10 ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_10_io_l1clk),
     .io_clk(rvclkhdr_10_io_clk),
     .io_en(rvclkhdr_10_io_en)
   );
-  rvclkhdr rvclkhdr_11 ( // @[lib.scala 391:23]
+  rvclkhdr rvclkhdr_11 ( // @[lib.scala 390:23]
     .io_l1clk(rvclkhdr_11_io_l1clk),
     .io_clk(rvclkhdr_11_io_clk),
     .io_en(rvclkhdr_11_io_en)
@@ -2803,30 +2803,30 @@ module lsu_bus_buffer(
   assign io_ld_byte_hit_buf_hi = {_T_84,_T_73}; // @[lsu_bus_buffer.scala 142:25]
   assign io_ld_fwddata_buf_lo = _T_650 | _T_651; // @[lsu_bus_buffer.scala 168:24]
   assign io_ld_fwddata_buf_hi = _T_747 | _T_748; // @[lsu_bus_buffer.scala 174:24]
-  assign rvclkhdr_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_io_en = _T_853 & _T_854; // @[lib.scala 394:17]
-  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_1_io_en = _T_853 & _T_854; // @[lib.scala 394:17]
-  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_2_io_en = _T_1238 & io_lsu_bus_clk_en; // @[lib.scala 394:17]
-  assign rvclkhdr_3_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_3_io_en = _T_1238 & io_lsu_bus_clk_en; // @[lib.scala 394:17]
-  assign rvclkhdr_4_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_4_io_en = _T_3531 & buf_state_en_0; // @[lib.scala 394:17]
-  assign rvclkhdr_5_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_5_io_en = _T_3722 & buf_state_en_1; // @[lib.scala 394:17]
-  assign rvclkhdr_6_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_6_io_en = _T_3913 & buf_state_en_2; // @[lib.scala 394:17]
-  assign rvclkhdr_7_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_7_io_en = _T_4104 & buf_state_en_3; // @[lib.scala 394:17]
-  assign rvclkhdr_8_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_8_io_en = _T_3531 ? buf_state_en_0 : _GEN_77; // @[lib.scala 394:17]
-  assign rvclkhdr_9_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_9_io_en = _T_3722 ? buf_state_en_1 : _GEN_154; // @[lib.scala 394:17]
-  assign rvclkhdr_10_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_10_io_en = _T_3913 ? buf_state_en_2 : _GEN_231; // @[lib.scala 394:17]
-  assign rvclkhdr_11_io_clk = clock; // @[lib.scala 393:18]
-  assign rvclkhdr_11_io_en = _T_4104 ? buf_state_en_3 : _GEN_308; // @[lib.scala 394:17]
+  assign rvclkhdr_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_io_en = _T_853 & _T_854; // @[lib.scala 393:17]
+  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_1_io_en = _T_853 & _T_854; // @[lib.scala 393:17]
+  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_2_io_en = _T_1238 & io_lsu_bus_clk_en; // @[lib.scala 393:17]
+  assign rvclkhdr_3_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_3_io_en = _T_1238 & io_lsu_bus_clk_en; // @[lib.scala 393:17]
+  assign rvclkhdr_4_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_4_io_en = _T_3531 & buf_state_en_0; // @[lib.scala 393:17]
+  assign rvclkhdr_5_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_5_io_en = _T_3722 & buf_state_en_1; // @[lib.scala 393:17]
+  assign rvclkhdr_6_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_6_io_en = _T_3913 & buf_state_en_2; // @[lib.scala 393:17]
+  assign rvclkhdr_7_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_7_io_en = _T_4104 & buf_state_en_3; // @[lib.scala 393:17]
+  assign rvclkhdr_8_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_8_io_en = _T_3531 ? buf_state_en_0 : _GEN_77; // @[lib.scala 393:17]
+  assign rvclkhdr_9_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_9_io_en = _T_3722 ? buf_state_en_1 : _GEN_154; // @[lib.scala 393:17]
+  assign rvclkhdr_10_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_10_io_en = _T_3913 ? buf_state_en_2 : _GEN_231; // @[lib.scala 393:17]
+  assign rvclkhdr_11_io_clk = clock; // @[lib.scala 392:18]
+  assign rvclkhdr_11_io_en = _T_4104 ? buf_state_en_3 : _GEN_308; // @[lib.scala 393:17]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -3747,7 +3747,7 @@ end // initial
       buf_ageQ_3 <= {_T_2474,_T_2397};
     end
   end
-  always @(posedge io_lsu_bus_obuf_c1_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       _T_1781 <= 2'h0;
     end else if (_T_1780) begin
@@ -3758,14 +3758,14 @@ end // initial
       end
     end
   end
-  always @(posedge io_lsu_bus_obuf_c1_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       obuf_merge <= 1'h0;
     end else if (_T_1780) begin
       obuf_merge <= obuf_merge_en;
     end
   end
-  always @(posedge io_lsu_bus_obuf_c1_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       obuf_tag1 <= 2'h0;
     end else if (_T_1780) begin
@@ -3783,7 +3783,7 @@ end // initial
       obuf_valid <= _T_1771 & _T_1772;
     end
   end
-  always @(posedge io_lsu_busm_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       obuf_wr_enQ <= 1'h0;
     end else if (io_lsu_busm_clken) begin
@@ -4083,7 +4083,7 @@ end // initial
       ibuf_sz <= ibuf_sz_in;
     end
   end
-  always @(posedge io_lsu_busm_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       _T_1791 <= 1'h0;
     end else if (obuf_wr_en) begin
@@ -4146,7 +4146,7 @@ end // initial
       _T_4316 <= buf_sideeffect_in[0];
     end
   end
-  always @(posedge io_lsu_bus_obuf_c1_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       obuf_sideeffect <= 1'h0;
     end else if (_T_1780) begin
@@ -4213,7 +4213,7 @@ end // initial
       buf_samedw_0 <= buf_samedw_in[0];
     end
   end
-  always @(posedge io_lsu_bus_obuf_c1_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       obuf_write <= 1'h0;
     end else if (_T_1780) begin
@@ -4224,14 +4224,14 @@ end // initial
       end
     end
   end
-  always @(posedge io_lsu_busm_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       obuf_cmd_done <= 1'h0;
     end else if (io_lsu_busm_clken) begin
       obuf_cmd_done <= obuf_cmd_done_in;
     end
   end
-  always @(posedge io_lsu_busm_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       obuf_data_done <= 1'h0;
     end else if (io_lsu_busm_clken) begin
@@ -4305,7 +4305,7 @@ end // initial
       obuf_rdrsp_pend <= obuf_rdrsp_pend_in;
     end
   end
-  always @(posedge io_lsu_busm_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       obuf_rdrsp_tag <= 3'h0;
     end else if (io_lsu_busm_clken) begin
@@ -4342,7 +4342,7 @@ end // initial
       buf_dualhi_0 <= buf_dualhi_in[0];
     end
   end
-  always @(posedge io_lsu_bus_obuf_c1_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       obuf_sz <= 2'h0;
     end else if (_T_1780) begin
@@ -4353,7 +4353,7 @@ end // initial
       end
     end
   end
-  always @(posedge io_lsu_bus_obuf_c1_clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       obuf_byteen <= 8'h0;
     end else if (_T_1780) begin
