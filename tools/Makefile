@@ -21,7 +21,7 @@ snapshot = $(target)
 
 # Allow tool override
 QUASAR_CONFIG = ${RV_ROOT}/configs/quasar.config
-VCS = vcs
+VCS = vcs_all
 VERILATOR = verilator
 GCC_PREFIX = riscv64-unknown-elf
 GCC_PREFIX_cpp = /home/waleedbinehsan/chipyard/riscv-tools-install/bin/riscv64-unknown-elf#riscv toolchain path
@@ -64,6 +64,8 @@ CFLAGS += "-std=c++11"
 VERILATOR_MAKE_FLAGS = OPT_FAST="-Os"
 #############Targets#######################################
 all:	clean conf sbt_ verilator
+
+vcs_all: clean conf sbt_ vcs
 
 ############ Model Builds ###############################
 conf:
@@ -134,29 +136,29 @@ help:
 
 
 clean:
-	rm -rvf ${RV_ROOT}/design/*.v
-	rm -rvf ${RV_ROOT}/design/*.sv
-	rm -rvf ${RV_ROOT}/design/*.f
-	rm -rvf ${RV_ROOT}/design/*.json
-	rm -rvf ${RV_ROOT}/design/*.fir
-	rm -rvf ${RV_ROOT}/verif/sim/*.log 
-	rm -rvf ${RV_ROOT}/verif/sim/*.s 
-	rm -rvf ${RV_ROOT}/verif/sim/*.hex 
-	rm -rvf ${RV_ROOT}/verif/sim/*.dis 
-	rm -rvf ${RV_ROOT}/verif/sim/*.tbl 
-	rm -rvf ${RV_ROOT}/verif/sim/vcs* 
-	rm -rvf ${RV_ROOT}/verif/sim/simv* 
-	rm -rvf ${RV_ROOT}/design/src/main/scala/lib/param.scala
-	rm -rvf ${RV_ROOT}/design/snapshots
-	rm -rvf ${RV_ROOT}/verif/sim/quasar*
-	rm -rvf ${RV_ROOT}/verif/sim/*.exe 
-	rm -rvf ${RV_ROOT}/verif/sim/obj* 
-	rm -rvf ${RV_ROOT}/verif/sim/*.o 
-	rm -rvf ${RV_ROOT}/verif/sim/ucli.key 
-	rm -rvf ${RV_ROOT}/verif/sim/vc_hdrs.h 
-	rm -rvf ${RV_ROOT}/verif/sim/csrc 
-	rm -rvf ${RV_ROOT}/verif/sim/*.csv 
-	rm -rvf ${RV_ROOT}/verif/sim/work
-	rm -rvf ${RV_ROOT}/verif/sim/*.dump
-	rm -rvf ${RV_ROOT}/verif/sim/*.fsdb
-	rm -rvf *.log *.s *.hex *.dis *.tbl vcs* simv* quasar* *.exe obj* *.o ucli.key vc_hdrs.h csrc *.csv work *.dump *.fsdb
+	rm -rf ${RV_ROOT}/design/*.v
+	rm -rf ${RV_ROOT}/design/*.sv
+	rm -rf ${RV_ROOT}/design/*.f
+	rm -rf ${RV_ROOT}/design/*.json
+	rm -rf ${RV_ROOT}/design/*.fir
+	rm -rf ${RV_ROOT}/verif/sim/*.log 
+	rm -rf ${RV_ROOT}/verif/sim/*.s 
+	rm -rf ${RV_ROOT}/verif/sim/*.hex 
+	rm -rf ${RV_ROOT}/verif/sim/*.dis 
+	rm -rf ${RV_ROOT}/verif/sim/*.tbl 
+	rm -rf ${RV_ROOT}/verif/sim/vcs* 
+	rm -rf ${RV_ROOT}/verif/sim/simv* 
+	rm -rf ${RV_ROOT}/design/src/main/scala/lib/param.scala
+	rm -rf ${RV_ROOT}/design/snapshots
+	rm -rf ${RV_ROOT}/verif/sim/quasar*
+	rm -rf ${RV_ROOT}/verif/sim/*.exe 
+	rm -rf ${RV_ROOT}/verif/sim/obj* 
+	rm -rf ${RV_ROOT}/verif/sim/*.o 
+	rm -rf ${RV_ROOT}/verif/sim/ucli.key 
+	rm -rf ${RV_ROOT}/verif/sim/vc_hdrs.h 
+	rm -rf ${RV_ROOT}/verif/sim/csrc 
+	rm -rf ${RV_ROOT}/verif/sim/*.csv 
+	rm -rf ${RV_ROOT}/verif/sim/work
+	rm -rf ${RV_ROOT}/verif/sim/*.dump
+	rm -rf ${RV_ROOT}/verif/sim/*.fsdb
+
