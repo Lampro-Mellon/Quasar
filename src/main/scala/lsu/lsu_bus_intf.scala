@@ -200,3 +200,6 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
     ldst_byteen_r     := RegNext(ldst_byteen_m, init = 0.U(4.W))
   }
 }
+object bus_intf extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new lsu_bus_intf()))
+}
