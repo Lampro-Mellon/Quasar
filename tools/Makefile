@@ -21,7 +21,7 @@ snapshot = $(target)
 
 # Allow tool override
 QUASAR_CONFIG = ${RV_ROOT}/configs/quasar.config
-VCS = vcs_all
+VCS = vcs
 VERILATOR = verilator
 GCC_PREFIX = riscv64-unknown-elf
 GCC_PREFIX_cpp = /home/waleedbinehsan/chipyard/riscv-tools-install/bin/riscv64-unknown-elf#riscv toolchain path
@@ -66,7 +66,6 @@ VERILATOR_MAKE_FLAGS = OPT_FAST="-Os"
 all:	clean conf sbt_ verilator
 
 vcs_all: clean conf sbt_ vcs
-
 ############ Model Builds ###############################
 conf:
 	BUILD_PATH=${BUILD_DIR} ${RV_ROOT}/configs/quasar.config -target=$(target) $(CONF_PARAMS)
