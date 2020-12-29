@@ -2473,19 +2473,19 @@ module lsu_bus_buffer(
   reg  _T_4337; // @[Reg.scala 27:20]
   reg  _T_4340; // @[Reg.scala 27:20]
   wire [3:0] buf_unsign = {_T_4340,_T_4337,_T_4334,_T_4331}; // @[Cat.scala 29:58]
+  wire  _T_4387 = ~buf_rst_0; // @[lsu_bus_buffer.scala 523:81]
   reg  _T_4406; // @[lsu_bus_buffer.scala 523:80]
   reg  _T_4401; // @[lsu_bus_buffer.scala 523:80]
   reg  _T_4396; // @[lsu_bus_buffer.scala 523:80]
   reg  _T_4391; // @[lsu_bus_buffer.scala 523:80]
   wire [3:0] buf_error = {_T_4406,_T_4401,_T_4396,_T_4391}; // @[Cat.scala 29:58]
-  wire  _T_4388 = buf_error_en_0 | buf_error[0]; // @[lsu_bus_buffer.scala 523:84]
-  wire  _T_4389 = ~buf_rst_0; // @[lsu_bus_buffer.scala 523:126]
-  wire  _T_4393 = buf_error_en_1 | buf_error[1]; // @[lsu_bus_buffer.scala 523:84]
-  wire  _T_4394 = ~buf_rst_1; // @[lsu_bus_buffer.scala 523:126]
-  wire  _T_4398 = buf_error_en_2 | buf_error[2]; // @[lsu_bus_buffer.scala 523:84]
-  wire  _T_4399 = ~buf_rst_2; // @[lsu_bus_buffer.scala 523:126]
-  wire  _T_4403 = buf_error_en_3 | buf_error[3]; // @[lsu_bus_buffer.scala 523:84]
-  wire  _T_4404 = ~buf_rst_3; // @[lsu_bus_buffer.scala 523:126]
+  wire  _T_4389 = buf_error_en_0 | buf_error[0]; // @[lsu_bus_buffer.scala 523:98]
+  wire  _T_4392 = ~buf_rst_1; // @[lsu_bus_buffer.scala 523:81]
+  wire  _T_4394 = buf_error_en_1 | buf_error[1]; // @[lsu_bus_buffer.scala 523:98]
+  wire  _T_4397 = ~buf_rst_2; // @[lsu_bus_buffer.scala 523:81]
+  wire  _T_4399 = buf_error_en_2 | buf_error[2]; // @[lsu_bus_buffer.scala 523:98]
+  wire  _T_4402 = ~buf_rst_3; // @[lsu_bus_buffer.scala 523:81]
+  wire  _T_4404 = buf_error_en_3 | buf_error[3]; // @[lsu_bus_buffer.scala 523:98]
   wire [1:0] _T_4410 = {io_lsu_busreq_m,1'h0}; // @[Cat.scala 29:58]
   wire [1:0] _T_4411 = io_ldst_dual_m ? _T_4410 : {{1'd0}, io_lsu_busreq_m}; // @[lsu_bus_buffer.scala 524:28]
   wire [1:0] _T_4412 = {io_lsu_busreq_r,1'h0}; // @[Cat.scala 29:58]
@@ -4589,28 +4589,28 @@ end // initial
     if (reset) begin
       _T_4406 <= 1'h0;
     end else begin
-      _T_4406 <= _T_4403 & _T_4404;
+      _T_4406 <= _T_4402 & _T_4404;
     end
   end
   always @(posedge io_lsu_bus_buf_c1_clk or posedge reset) begin
     if (reset) begin
       _T_4401 <= 1'h0;
     end else begin
-      _T_4401 <= _T_4398 & _T_4399;
+      _T_4401 <= _T_4397 & _T_4399;
     end
   end
   always @(posedge io_lsu_bus_buf_c1_clk or posedge reset) begin
     if (reset) begin
       _T_4396 <= 1'h0;
     end else begin
-      _T_4396 <= _T_4393 & _T_4394;
+      _T_4396 <= _T_4392 & _T_4394;
     end
   end
   always @(posedge io_lsu_bus_buf_c1_clk or posedge reset) begin
     if (reset) begin
       _T_4391 <= 1'h0;
     end else begin
-      _T_4391 <= _T_4388 & _T_4389;
+      _T_4391 <= _T_4387 & _T_4389;
     end
   end
   always @(posedge io_lsu_c2_r_clk or posedge reset) begin
