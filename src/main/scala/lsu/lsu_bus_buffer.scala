@@ -116,7 +116,7 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   val buf_ldfwdtag = Wire(Vec(DEPTH, UInt(DEPTH_LOG2.W)))
   buf_ldfwdtag := buf_ldfwdtag.map(i=> 0.U)
   val buf_rst = Wire(Vec(DEPTH, Bool()))
-  buf_rst := buf_rst.map(i=> io.dec_tlu_force_halt)
+  buf_rst := buf_rst.map(i=> false.B)
   val ibuf_drainvec_vld = WireInit(UInt(DEPTH.W), 0.U)
   val buf_byteen_in = Wire(Vec(DEPTH, UInt(DEPTH.W)))
   buf_byteen_in := buf_byteen_in.map(i=> 0.U)
