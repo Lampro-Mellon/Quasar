@@ -1,5 +1,4 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2020 Lampro Mellon or its affiliates.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +20,7 @@ target = default
 snapshot = $(target)
 
 # Allow tool override
-SWERV_CONFIG = ${RV_ROOT}/configs/swerv.config
+QUASAR_CONFIG = ${RV_ROOT}/configs/quasar.config
 VCS = vcs
 VERILATOR = verilator
 GCC_PREFIX = riscv64-unknown-elf
@@ -68,15 +67,14 @@ all:	clean conf sbt_ verilator
 
 ############ Model Builds ###############################
 conf:
-	BUILD_PATH=${BUILD_DIR} ${RV_ROOT}/configs/swerv.config -target=$(target) $(CONF_PARAMS)
+	BUILD_PATH=${BUILD_DIR} ${RV_ROOT}/configs/quasar.config -target=$(target) $(CONF_PARAMS)
 	
 
 sbt_:
-	cd ${RV_ROOT}/design/ && exec sbt "run"
-	mv ${RV_ROOT}/design/quasar_wrapper.v ${RV_ROOT}/design/io_file.sv 
+	cd ${RV_ROOT}/design/ && exec sbt "run" 
 	python3 ${RV_ROOT}/design/reset_script.py
-	rm -rf ${RV_ROOT}/design/io_file.sv
-	mv ${RV_ROOT}/design/no_io_file.sv ${RV_ROOT}/generated_rtl/quasar_wrapper.sv 
+	rm -rf ${RV_ROOT}/design/quasar_wrapper.v
+	mv ${RV_ROOT}/design/quasar_wrapper.sv ${RV_ROOT}/generated_rtl/quasar_wrapper.sv 
 
 
 vcs-build: ${TBFILES} conf
@@ -150,7 +148,7 @@ clean:
 	rm -rvf ${RV_ROOT}/verif/sim/simv* 
 	rm -rvf ${RV_ROOT}/design/src/main/scala/lib/param.scala
 	rm -rvf ${RV_ROOT}/design/snapshots
-	rm -rvf ${RV_ROOT}/verif/sim/swerv*
+	rm -rvf ${RV_ROOT}/verif/sim/quasar*
 	rm -rvf ${RV_ROOT}/verif/sim/*.exe 
 	rm -rvf ${RV_ROOT}/verif/sim/obj* 
 	rm -rvf ${RV_ROOT}/verif/sim/*.o 
@@ -161,4 +159,4 @@ clean:
 	rm -rvf ${RV_ROOT}/verif/sim/work
 	rm -rvf ${RV_ROOT}/verif/sim/*.dump
 	rm -rvf ${RV_ROOT}/verif/sim/*.fsdb
-	rm -rvf *.log *.s *.hex *.dis *.tbl vcs* simv* swerv* *.exe obj* *.o ucli.key vc_hdrs.h csrc *.csv work *.dump *.fsdb
+	rm -rvf *.log *.s *.hex *.dis *.tbl vcs* simv* quasar* *.exe obj* *.o ucli.key vc_hdrs.h csrc *.csv work *.dump *.fsdb

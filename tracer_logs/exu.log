@@ -202,75 +202,75 @@ clock cycle div enable, div result, dividend, divisor, out	,rs1 bypassen, rs1 by
   484,	x	x	x	x	x,		1,10034		x	x
   485,	x	x	x	x	x,		x	x		1,0
   486,	x	x	x	x	x,		x	x		1,0
-  489,	x	x	x	x	x,		x	x		1,53
+  489,	x	x	x	x	x,		x	x		1,51
   492,	x	x	x	x	x,		1,10035		x	x
   493,	x	x	x	x	x,		x	x		1,0
   494,	x	x	x	x	x,		x	x		1,0
-  497,	x	x	x	x	x,		x	x		1,77
+  497,	x	x	x	x	x,		x	x		1,75
   500,	x	x	x	x	x,		1,10036		x	x
   501,	x	x	x	x	x,		x	x		1,0
   502,	x	x	x	x	x,		x	x		1,0
-  505,	x	x	x	x	x,		x	x		1,65
+  505,	x	x	x	x	x,		x	x		1,61
   508,	x	x	x	x	x,		1,10037		x	x
   509,	x	x	x	x	x,		x	x		1,0
   510,	x	x	x	x	x,		x	x		1,0
-  513,	x	x	x	x	x,		x	x		1,52
+  513,	x	x	x	x	x,		x	x		1,73
   516,	x	x	x	x	x,		1,10038		x	x
   517,	x	x	x	x	x,		x	x		1,0
   518,	x	x	x	x	x,		x	x		1,0
-  521,	x	x	x	x	x,		x	x		1,56
+  521,	x	x	x	x	x,		x	x		1,61
   524,	x	x	x	x	x,		1,10039		x	x
   525,	x	x	x	x	x,		x	x		1,0
   526,	x	x	x	x	x,		x	x		1,0
-  529,	x	x	x	x	x,		x	x		1,20
+  529,	x	x	x	x	x,		x	x		1,72
   532,	x	x	x	x	x,		1,1003a		x	x
   533,	x	x	x	x	x,		x	x		1,0
   534,	x	x	x	x	x,		x	x		1,0
-  537,	x	x	x	x	x,		x	x		1,45
+  537,	x	x	x	x	x,		x	x		1,20
   540,	x	x	x	x	x,		1,1003b		x	x
   541,	x	x	x	x	x,		x	x		1,0
   542,	x	x	x	x	x,		x	x		1,0
-  545,	x	x	x	x	x,		x	x		1,4c
+  545,	x	x	x	x	x,		x	x		1,40
   548,	x	x	x	x	x,		1,1003c		x	x
   549,	x	x	x	x	x,		x	x		1,0
   550,	x	x	x	x	x,		x	x		1,0
-  553,	x	x	x	x	x,		x	x		1,32
+  553,	x	x	x	x	x,		x	x		1,4c
   556,	x	x	x	x	x,		1,1003d		x	x
   557,	x	x	x	x	x,		x	x		1,0
   558,	x	x	x	x	x,		x	x		1,0
-  561,	x	x	x	x	x,		x	x		1,20
+  561,	x	x	x	x	x,		x	x		1,4d
   564,	x	x	x	x	x,		1,1003e		x	x
   565,	x	x	x	x	x,		x	x		1,0
   566,	x	x	x	x	x,		x	x		1,0
-  569,	x	x	x	x	x,		x	x		1,40
+  569,	x	x	x	x	x,		x	x		1,20
   572,	x	x	x	x	x,		1,1003f		x	x
   573,	x	x	x	x	x,		x	x		1,0
   574,	x	x	x	x	x,		x	x		1,0
-  577,	x	x	x	x	x,		x	x		1,57
+  577,	x	x	x	x	x,		x	x		1,21
   580,	x	x	x	x	x,		1,10040		x	x
   581,	x	x	x	x	x,		x	x		1,0
   582,	x	x	x	x	x,		x	x		1,0
-  585,	x	x	x	x	x,		x	x		1,44
+  585,	x	x	x	x	x,		x	x		1,21
   588,	x	x	x	x	x,		1,10041		x	x
   589,	x	x	x	x	x,		x	x		1,0
   590,	x	x	x	x	x,		x	x		1,0
-  593,	x	x	x	x	x,		x	x		1,43
+  593,	x	x	x	x	x,		x	x		1,a
   596,	x	x	x	x	x,		1,10042		x	x
   597,	x	x	x	x	x,		x	x		1,0
   598,	x	x	x	x	x,		x	x		1,0
-  601,	x	x	x	x	x,		x	x		1,20
+  601,	x	x	x	x	x,		x	x		1,2d
   604,	x	x	x	x	x,		1,10043		x	x
   605,	x	x	x	x	x,		x	x		1,0
   606,	x	x	x	x	x,		x	x		1,0
-  609,	x	x	x	x	x,		x	x		1,21
+  609,	x	x	x	x	x,		x	x		1,2d
   612,	x	x	x	x	x,		1,10044		x	x
   613,	x	x	x	x	x,		x	x		1,0
   614,	x	x	x	x	x,		x	x		1,0
-  617,	x	x	x	x	x,		x	x		1,21
+  617,	x	x	x	x	x,		x	x		1,2d
   620,	x	x	x	x	x,		1,10045		x	x
   621,	x	x	x	x	x,		x	x		1,0
   622,	x	x	x	x	x,		x	x		1,0
-  625,	x	x	x	x	x,		x	x		1,a
+  625,	x	x	x	x	x,		x	x		1,2d
   628,	x	x	x	x	x,		1,10046		x	x
   629,	x	x	x	x	x,		x	x		1,0
   630,	x	x	x	x	x,		x	x		1,0
@@ -394,24 +394,8 @@ clock cycle div enable, div result, dividend, divisor, out	,rs1 bypassen, rs1 by
   868,	x	x	x	x	x,		1,10064		x	x
   869,	x	x	x	x	x,		x	x		1,0
   870,	x	x	x	x	x,		x	x		1,0
-  873,	x	x	x	x	x,		x	x		1,2d
+  873,	x	x	x	x	x,		x	x		1,a
   876,	x	x	x	x	x,		1,10065		x	x
   877,	x	x	x	x	x,		x	x		1,0
   878,	x	x	x	x	x,		x	x		1,0
-  881,	x	x	x	x	x,		x	x		1,2d
-  884,	x	x	x	x	x,		1,10066		x	x
-  885,	x	x	x	x	x,		x	x		1,0
-  886,	x	x	x	x	x,		x	x		1,0
-  889,	x	x	x	x	x,		x	x		1,2d
-  892,	x	x	x	x	x,		1,10067		x	x
-  893,	x	x	x	x	x,		x	x		1,0
-  894,	x	x	x	x	x,		x	x		1,0
-  897,	x	x	x	x	x,		x	x		1,2d
-  900,	x	x	x	x	x,		1,10068		x	x
-  901,	x	x	x	x	x,		x	x		1,0
-  902,	x	x	x	x	x,		x	x		1,0
-  905,	x	x	x	x	x,		x	x		1,a
-  908,	x	x	x	x	x,		1,10069		x	x
-  909,	x	x	x	x	x,		x	x		1,0
-  910,	x	x	x	x	x,		x	x		1,0
-  913,	x	x	x	x	x,		x	x		1,0
+  881,	x	x	x	x	x,		x	x		1,0

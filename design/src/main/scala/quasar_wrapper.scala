@@ -161,30 +161,6 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
 
 }
 
-/*class sbox(val word_len: Int, val sbox_size:Int) extends Module{
-  val io = IO(new Bundle{
-    val in = Input(UInt(word_len.W))
-    val op = Input(Bool())  // 0-> sbox,  1-> inv_sbox
-    val s_box_out = Valid(UInt(word_len.W))
-    val inv_s_box_out = Valid(UInt(word_len.W))
-  })
-
-  def sbox_gen(x: Int) = {
-    val r = scala.util.Random
-    r.shuffle((0 until x*x).map(i=>i)).toList
-  }
-  def inv_sbox(sbox: List[Int]) = {
-    List.tabulate(sbox.size)(i=>sbox.indexOf(i))
-  }
-  val sbox = sbox_gen(sbox_size)
-  val inv_sbox_list = inv_sbox(sbox)
-  println(sbox)
-  println(inv_sbox_list)
-  io.s_box_out.valid        := !io.op
-  io.inv_s_box_out.valid    := io.op
-  io.s_box_out.bits := Mux1H((0 until sbox_size*sbox_size).map(i=>(io.in === i.U).asBool()->sbox(i).U))
-  io.inv_s_box_out.bits := Mux1H((0 until sbox_size*sbox_size).map(i=>(io.in === i.U).asBool()->inv_sbox_list(i).U))
-}*/
 object wrapper extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new quasar_wrapper))
+  (new chisel3.stage.ChiselStage).emitVerilog(new quasar_wrapper)
 }

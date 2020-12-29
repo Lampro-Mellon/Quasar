@@ -2,8 +2,8 @@ import os
 key= "RV_ROOT"
 root = os.getenv(key)
 
-infile = root+"/design/io_file.sv"
-outfile = root+"/design/no_io_file.sv"
+infile = root+"/design/quasar_wrapper.v"
+outfile = root+"/design/quasar_wrapper.sv"
 
 delete_list1 = ["if (dbg_dm_rst_l)"]
 delete_list2 = ["if (rst_temp)"]

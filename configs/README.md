@@ -2,10 +2,10 @@
 ## Configuration
 
 ### Contents
-Name                    | Description
-----------------------  | ------------------------------
-swerv.config            | Configuration script for core 
-swerv_config_gen.py     | Python wrapper to run swerv.config
+Name                     | Description
+----------------------   | ------------------------------
+quasar.config            | Configuration script for core 
+quasar_config_gen.py     | Python wrapper to run quasar.config
 
 
 This script will generate a consistent set of `defines/#defines/parameters` needed for the design and testbench.  
@@ -28,7 +28,7 @@ This set of include files :
 While the defines may be modified by hand, it is recommended that this script be used to generate a consistent set.
 
 ### Targets
-There are 4 predefined target configurations: `default`, `default_ahb`, `typical_pd` and `high_perf` that can be selected via the `-target=name` option to swerv.config.
+There are 4 predefined target configurations: `default`, `default_ahb`, `typical_pd` and `high_perf` that can be selected via the `-target=name` option to quasar.config.
 
 Target                  | Description
 ----------------------  | ------------------------------
@@ -38,6 +38,6 @@ typical_pd              | No ICCM, AXI4 bus interface
 high_perf               | Large BTB/BHT, AXI4 interface
 
 
-`swerv.config` may be edited to add additional target configurations, or new configurations may be created via the command line `-set` or `-unset` options.
+`quasar.config` may be edited to add additional target configurations, or new configurations may be created via the command line `-set` or `-unset` options.
 
-**Run `$RV_ROOT/configs/swerv.config -h` for options and settable parameters.**
+**Run `$RV_ROOT/configs/quasar.config -h` for options and settable parameters.**
