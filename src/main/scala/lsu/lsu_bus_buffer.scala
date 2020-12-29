@@ -116,7 +116,7 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   val buf_ldfwdtag = Wire(Vec(DEPTH, UInt(DEPTH_LOG2.W)))
   buf_ldfwdtag := buf_ldfwdtag.map(i=> 0.U)
   val buf_rst = Wire(Vec(DEPTH, Bool()))
-  buf_rst := buf_rst.map(i=> false.B)
+  buf_rst := buf_rst.map(i=> io.dec_tlu_force_halt)
   val ibuf_drainvec_vld = WireInit(UInt(DEPTH.W), 0.U)
   val buf_byteen_in = Wire(Vec(DEPTH, UInt(DEPTH.W)))
   buf_byteen_in := buf_byteen_in.map(i=> 0.U)
@@ -537,7 +537,7 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   io.dctl_busbuff.lsu_nonblock_load_inv_tag_r := WrPtr0_r
   val lsu_nonblock_load_data_ready = Mux1H((0 until DEPTH).map(i=>(buf_state(i)===done_C) -> (!(buf_write(i)))))
   io.dctl_busbuff.lsu_nonblock_load_data_error := Mux1H((0 until DEPTH).map(i=>(buf_state(i)===done_C) -> (buf_error(i) & !buf_write(i))))
-  io.dctl_busbuff.lsu_nonblock_load_data_tag := Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & !buf_write(i) & (!buf_dual(i) | !buf_dualhi(i))) -> i.U))
+ io.dctl_busbuff.lsu_nonblock_load_data_tag := Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & !buf_write(i) & (!buf_dual(i) | !buf_dualhi(i))) -> i.U))
   val lsu_nonblock_load_data_lo = Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & !buf_write(i) & (!buf_dual(i) | !buf_dualhi(i))) -> buf_data(i)))
   val lsu_nonblock_load_data_hi = Mux1H((0 until DEPTH).map(i=>((buf_state(i)===done_C) & !buf_write(i) & (buf_dual(i) & buf_dualhi(i))) -> buf_data(i)))
   val lsu_nonblock_addr_offset = indexing(buf_addr, io.dctl_busbuff.lsu_nonblock_load_data_tag)(1,0)
