@@ -161,4 +161,5 @@ clean:
 	rm -rf ${RV_ROOT}/verif/sim/work
 	rm -rf ${RV_ROOT}/verif/sim/*.dump
 	rm -rf ${RV_ROOT}/verif/sim/*.fsdb
+	rm -rf *.log *.s *.hex *.dis *.tbl vcs* simv* quasar* *.exe obj* *.o ucli.key vc_hdrs.h csrc *.csv work *.dump *.fsdb
 
