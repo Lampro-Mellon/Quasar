@@ -140,6 +140,7 @@ clean:
 	rm -rf ${RV_ROOT}/design/*.f
 	rm -rf ${RV_ROOT}/design/*.json
 	rm -rf ${RV_ROOT}/design/*.fir
+	rm -rf ${RV_ROOT}/generated_rtl/*.sv
 	rm -rf ${RV_ROOT}/verif/sim/*.log 
 	rm -rf ${RV_ROOT}/verif/sim/*.s 
 	rm -rf ${RV_ROOT}/verif/sim/*.hex 

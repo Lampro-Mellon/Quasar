@@ -60,7 +60,7 @@ installed so that it can be used to prepare RISCV binaries to run.
 1. Clone the repository
 2. Setup RV_ROOT to point to the path in your local filesystem
 3. Determine your configuration {optional}
-4. Run make with tools/Makefile
+4. Run make with $RV_ROOT/tools/Makefile
 
 ## Release Notes for this version
 Please see [release notes](release-notes.md) for changes and bug fixes in this version of Quasar.
@@ -114,7 +114,7 @@ while in a work directory:
 
 Example for bash shell:  
 ```
-    export RV_ROOT=/path/to/QUASAR  
+    export RV_ROOT=$(pwd)  
 ```
 Example for csh or its derivatives:  
 ```
@@ -189,6 +189,15 @@ TEST        -  allows to run a C (<test>.c) or assembly (<test>.s) test, hello_w
 TEST_DIR    -  alternative to test source directory testbench/asm or testbench/tests.
 <snapshot>  -  run and build executable model of custom CPU configuration, remember to provide 'snapshot' argument for runs on custom configurations.
 CONF_PARAMS -  allows to provide -set options to quasar.conf script to alter predefined targets parameters.
+```
+#### Default for VCS/Verilotor
+If you want to run default configuration on verilator use the following command
+```
+make -f $RV_ROOT/tools/Makefile
+``` 
+For verilator use
+```
+make -f $RV_ROOT/tools/Makefile vcs_all
 ```
 Example:
 ```
