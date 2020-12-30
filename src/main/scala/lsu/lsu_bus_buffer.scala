@@ -520,7 +520,7 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   buf_addr := (0 until DEPTH).map(i=>rvdffe(buf_addr_in(i), buf_wr_en(i).asBool(), clock, io.scan_mode))
   buf_byteen := (0 until DEPTH).map(i=>withClock(io.lsu_bus_buf_c1_clk){RegEnable(buf_byteen_in(i), 0.U, buf_wr_en(i).asBool())})
   buf_data := (0 until DEPTH).map(i=>rvdffe(buf_data_in(i), buf_data_en(i), clock, io.scan_mode))
-  buf_error := (0 until DEPTH).map(i=>(withClockAndReset(io.lsu_bus_buf_c1_clk,buf_rst(i).asBool){RegNext(!buf_rst(i) & Mux(buf_error_en(i), true.B, buf_error(i)), io.dec_tlu_force_halt)}).asUInt()).reverse.reduce(Cat(_,_))
+  buf_error := (0 until DEPTH).map(i=>(withClock(io.lsu_bus_buf_c1_clk){RegNext(!buf_rst(i) & Mux(buf_error_en(i), true.B, buf_error(i)), false.B)}).asUInt()).reverse.reduce(Cat(_,_))
   val buf_numvld_any = (Mux(io.ldst_dual_m, Cat(io.lsu_busreq_m, 0.U),io.lsu_busreq_m) +& Mux(io.ldst_dual_r, Cat(io.lsu_busreq_r, 0.U),io.lsu_busreq_r) +& ibuf_valid) + buf_state.map(i=>(i=/=idle_C).asUInt).reduce(_+&_)
   buf_numvld_wrcmd_any := (0 until DEPTH).map(i=>(buf_write(i) & (buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(_ +& _)
   buf_numvld_cmd_any :=  (0 until DEPTH).map(i=>((buf_state(i)===cmd_C) & !buf_cmd_state_bus_en(i)).asUInt).reverse.reduce(_ +& _)
