@@ -195,7 +195,7 @@ If you want to run default configuration on verilator use the following command
 ```
 make -f $RV_ROOT/tools/Makefile
 ``` 
-For verilator use
+For VCS use
 ```
 make -f $RV_ROOT/tools/Makefile vcs_all
 ```
