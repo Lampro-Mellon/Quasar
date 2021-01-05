@@ -104,6 +104,13 @@ vcs: program.hex vcs-build
 	mv csrc simv* vc_hdrs.h ucli.key console.log *.csv ${RV_ROOT}/verif/sim
 	mv *.log ${RV_ROOT}/tracer_logs
 
+lec: #verilator
+	rm -rf ${RV_ROOT}/verif/LEC/LEC_RTL
+	git clone https://github.com/Lampro-Mellon/LEC_RTL.git
+	mv LEC_RTL ${RV_ROOT}/verif/LEC
+	fm_shell -f ${RV_ROOT}/verif/LEC/formality_work/run_me.fms
+	@mv *.log ${RV_ROOT}/verif/LEC/formality_work/formality_log
+
 verilator: program.hex verilator-build
 	./obj_dir/Vtb_top
 	rm -rf program.hex data.hex

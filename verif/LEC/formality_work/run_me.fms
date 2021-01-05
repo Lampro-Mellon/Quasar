@@ -1,9 +1,9 @@
 
 # Set Search Path for Golden/Implementation Design
-	set search_path ". ./LEC_RTL/Golden_RTL ./LEC_RTL/generated_rtl"
+	set search_path "./verif/LEC ./verif/LEC/LEC_RTL/Golden_RTL ./verif/LEC/LEC_RTL/generated_rtl"
 
 # Set LEC_ROOT to presentt working directory
-	set LEC_ROOT [pwd]
+	set LEC_ROOT [pwd]/verif/LEC
 
 # Set formality path to refference design
 	set fm_path_r $LEC_ROOT/LEC_RTL/Golden_RTL/
@@ -67,7 +67,7 @@ if {![file isdirectory $fm_path_r]} {
 }
 # Loading verilog implementation file
 	read_sverilog -i  "         	\
-			../../generated_rtl/quasar_wrapper.sv 
+			./generated_rtl/quasar_wrapper.sv 
 			$LEC_ROOT/LEC_RTL/generated_rtl/mem.sv 
 			$LEC_ROOT/LEC_RTL/generated_rtl/ifu_ic_mem.sv 
 			$LEC_ROOT/LEC_RTL/generated_rtl/ifu_iccm_mem.sv 
