@@ -1,7 +1,0 @@
-_end T 0000010e 
-_finish t 00000036 
-hw_data d 00010000 
-.L0  t 00000020 
-loop t 00000028 
-STACK D 00018070 
-_start T 00000000 
