@@ -602,6 +602,13 @@ class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib
   val shortq_shift        = WireInit(0.U(5.W))
   val shortq_decode        = WireInit(0.U(5.W))
   val shortq_shift_ff      = WireInit(0.U(5.W))
+  val adder1_out = WireInit(0.U(34.W))
+  val adder2_out = WireInit(0.U(35.W))
+  val adder3_out = WireInit(0.U(36.W))
+  val adder4_out = WireInit(0.U(37.W))
+  val adder5_out = WireInit(0.U(37.W))
+  val adder6_out = WireInit(0.U(37.W))
+  val adder7_out = WireInit(0.U(37.W))
   val valid_ff_in = io.valid_in & !io.cancel
   val control_in           = Cat((!io.valid_in & control_ff(2)) | (io.valid_in & io.signed_in  & io.dividend_in(31)), (!io.valid_in & control_ff(1)) | (io.valid_in & io.signed_in  &  io.divisor_in(31)), (!io.valid_in & control_ff(0)) | (io.valid_in & io.rem_in))
   val dividend_sign_ff     = control_ff(2)
@@ -634,13 +641,14 @@ class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib
   val r_adder5_sel         =  running_state & (quotient_new === 5.U) & !shortq_enable_ff
   val r_adder6_sel         =  running_state & (quotient_new === 6.U) & !shortq_enable_ff
   val r_adder7_sel         =  running_state & (quotient_new === 7.U) & !shortq_enable_ff
-  val adder1_out = Cat(r_ff(30,0),a_ff(32,30)) + b_ff(33,0)
-  val adder2_out = Cat(r_ff(31,0),a_ff(32,30)) + Cat(b_ff(33,0),0.U)
-  val adder3_out = Cat(r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U) + b_ff(35,0)
-  val adder4_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W))
-  val adder5_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + b_ff
-  val adder6_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + Cat(b_ff(35,0),0.U)
-  val adder7_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + Cat(b_ff(35,0),0.U) + b_ff
+
+   adder1_out := Cat(r_ff(30,0),a_ff(32,30)) + b_ff(33,0)
+   adder2_out := Cat(r_ff(31,0),a_ff(32,30)) + Cat(b_ff(33,0),0.U)
+   adder3_out := Cat(r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U) + b_ff(35,0)
+   adder4_out := Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W))
+   adder5_out := Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + b_ff
+   adder6_out := Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + Cat(b_ff(35,0),0.U)
+   adder7_out := Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + Cat(b_ff(35,0),0.U) + b_ff
   quotient_raw := Cat((!adder7_out(36) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder7_out === 0.U)),
                      (!adder6_out(36) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder6_out === 0.U)),
                      (!adder5_out(36) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder5_out === 0.U)),
