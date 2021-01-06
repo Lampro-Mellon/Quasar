@@ -432,66 +432,29 @@ class exu_div_new_2bit_fullshortq extends Module with RequireAsyncReset with lib
     val data_out              = Output(UInt(32.W))
     val valid_out             = Output(UInt(1.W))
   })
-//  val valid_ff_in          = WireInit(Bool(),init=false.B)
   val valid_ff             = WireInit(Bool(),init=false.B)
-//  val finish_raw           = WireInit(Bool(),init=false.B)
- // val finish               = WireInit(Bool(),init=false.B)
   val finish_ff            = WireInit(Bool(),init=false.B)
- // val running_state        = WireInit(Bool(),init=false.B)
- // val misc_enable          = WireInit(Bool(),init=false.B)
- // val control_in           = WireInit(0.U(3.W))
   val control_ff           = WireInit(0.U(3.W))
- // val dividend_sign_ff     = WireInit(Bool(),init=false.B)
-//  val divisor_sign_ff      = WireInit(Bool(),init=false.B)
-//  val count_enable         = WireInit(Bool(),init=false.B)
-//  val count_in             = WireInit(0.U(7.W))
   val count_ff             = WireInit(0.U(7.W))
   val smallnum             = WireInit(0.U(4.W))
-//  val smallnum_case        = WireInit(Bool(),init=false.B)
- // val a_enable             = WireInit(Bool(),init=false.B)
- // val a_shift              = WireInit(Bool(),init=false.B)
- // val b_enable             = WireInit(Bool(),init=false.B)
- // val b_twos_comp          = WireInit(Bool(),init=false.B)
- // val a_in                 = WireInit(0.U(32.W))
   val a_ff                 = WireInit(0.U(32.W))
-//  val b_in                 = WireInit(0.U(33.W))
   val b_ff1                = WireInit(0.U(33.W))
   val b_ff                 = WireInit(0.U(35.W))
-//  val q_in                 = WireInit(0.U(32.W))
   val q_ff                 = WireInit(0.U(32.W))
- // val r_in                 = WireInit(0.U(32.W))
   val r_ff                 = WireInit(0.U(32.W))
-//  val rq_enable            = WireInit(Bool(),init=false.B)
- // val r_sign_sel           = WireInit(Bool(),init=false.B)
- // val r_restore_sel        = WireInit(Bool(),init=false.B)
-//  val r_adder1_sel         = WireInit(Bool(),init=false.B)
-//  val r_adder2_sel         = WireInit(Bool(),init=false.B)
- // val r_adder3_sel         = WireInit(Bool(),init=false.B)
-//  val twos_comp_q_sel      = WireInit(Bool(),init=false.B)
-//  val twos_comp_b_sel      = WireInit(Bool(),init=false.B)
   val quotient_raw         = WireInit(0.U(4.W))
   val quotient_new         = WireInit(0.U(2.W))
   val shortq_enable        = WireInit(Bool(),init=false.B)
   val shortq_enable_ff     = WireInit(Bool(),init=false.B)
-//  val by_zero_case         = WireInit(Bool(),init=false.B)
   val by_zero_case_ff      = WireInit(Bool(),init=false.B)
- // val twos_comp_in         = WireInit(0.U(32.W))
-//  val twos_comp_out        = WireInit(0.U(32.W))
- // val adder1_out            = WireInit(0.U(33.W))
- // val adder2_out            = WireInit(0.U(34.W))
-//  val adder3_out            = WireInit(0.U(35.W))
   val ar_shifted           = WireInit(0.U(64.W))
- // val shortq               = WireInit(0.U(6.W))
-//  val shortq_shift         = WireInit(0.U(5.W))
   val shortq_shift_ff      = WireInit(0.U(5.W))
- // val shortq_dividend      = WireInit(0.U(33.W))
   val valid_ff_in = io.valid_in & !io.cancel
   val control_in           = Cat((!io.valid_in & control_ff(2)) | (io.valid_in & io.signed_in  & io.dividend_in(31)), (!io.valid_in & control_ff(1)) | (io.valid_in & io.signed_in  &  io.divisor_in(31)), (!io.valid_in & control_ff(0)) | (io.valid_in & io.rem_in))
   val dividend_sign_ff     = control_ff(2)
   val divisor_sign_ff      = control_ff(1)
   val rem_ff               = control_ff(0)
   val by_zero_case         =  valid_ff & (b_ff(31,0) === 0.U)
-
   val smallnum_case =  ((a_ff(31,4) === 0.U) & (b_ff(31,4) === 0.U) & !by_zero_case & !rem_ff & valid_ff & !io.cancel) |
     ((a_ff(31,0) === 0.U) & !by_zero_case & !rem_ff & valid_ff & !io.cancel)
   val running_state        = count_ff.orR() | shortq_enable_ff
@@ -608,12 +571,6 @@ class exu_div_new_2bit_fullshortq extends Module with RequireAsyncReset with lib
   q_ff := rvdffe(q_in, rq_enable,clock,io.scan_mode)
 
 }
-
-object div_main3 extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new exu_div_new_2bit_fullshortq()))
-}
-
-
 class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib {
   val io = IO(new Bundle{
     val scan_mode             = Input(Bool())
@@ -626,8 +583,215 @@ class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib
     val data_out              = Output(UInt(32.W))
     val valid_out             = Output(UInt(1.W))
   })
-  io.data_out :=0.U
-  io.valid_out :=0.U
+
+ // val valid_ff_in          = WireInit(Bool(),init=false.B)
+  val valid_ff             = WireInit(Bool(),init=false.B)
+ // val finish_raw           = WireInit(Bool(),init=false.B)
+  //val finish               = WireInit(Bool(),init=false.B)
+  val finish_ff            = WireInit(Bool(),init=false.B)
+//  val running_state        = WireInit(Bool(),init=false.B)
+//  val misc_enable          = WireInit(Bool(),init=false.B)
+//  val control_in           = WireInit(0.U(3.W))
+  val control_ff           = WireInit(0.U(3.W))
+//   val dividend_sign_ff     = WireInit(Bool(),init=false.B)
+//    val divisor_sign_ff      = WireInit(Bool(),init=false.B)
+//    val count_enable         = WireInit(Bool(),init=false.B)
+//    val count_in             = WireInit(0.U(7.W))
+  val count_ff             = WireInit(0.U(7.W))
+  val smallnum             = WireInit(0.U(4.W))
+ //  val smallnum_case        = WireInit(Bool(),init=false.B)
+//  val a_enable             = WireInit(Bool(),init=false.B)
+//  val a_shift              = WireInit(Bool(),init=false.B)
+//  val b_enable             = WireInit(Bool(),init=false.B)
+//  val b_twos_comp          = WireInit(Bool(),init=false.B)
+//  val a_in                 = WireInit(0.U(33.W))
+  val a_ff                 = WireInit(0.U(33.W))
+  //  val b_in                 = WireInit(0.U(33.W))
+  val b_ff1                = WireInit(0.U(33.W))
+  val b_ff                 = WireInit(0.U(37.W))
+ //   val q_in                 = WireInit(0.U(32.W))
+  val q_ff                 = WireInit(0.U(32.W))
+ //  val r_in                 = WireInit(0.U(33.W))
+  val r_ff                 = WireInit(0.U(33.W))
+  //  val rq_enable            = WireInit(Bool(),init=false.B)
+ //  val r_sign_sel           = WireInit(Bool(),init=false.B)
+ //  val r_restore_sel        = WireInit(Bool(),init=false.B)
+   // val r_adder1_sel         = WireInit(Bool(),init=false.B)
+  //  val r_adder2_sel         = WireInit(Bool(),init=false.B)
+ //  val r_adder3_sel         = WireInit(Bool(),init=false.B)
+  //  val r_adder4_sel         = WireInit(Bool(),init=false.B)
+  //  val r_adder5_sel         = WireInit(Bool(),init=false.B)
+  // val r_adder6_sel         = WireInit(Bool(),init=false.B)
+ //  val r_adder7_sel         = WireInit(Bool(),init=false.B)
+//    val twos_comp_q_sel      = WireInit(Bool(),init=false.B)
+//    val twos_comp_b_sel      = WireInit(Bool(),init=false.B)
+  val quotient_raw         = WireInit(0.U(8.W))
+  val quotient_new         = WireInit(0.U(3.W))
+  val shortq_enable        = WireInit(Bool(),init=false.B)
+  val shortq_enable_ff     = WireInit(Bool(),init=false.B)
+ //   val by_zero_case         = WireInit(Bool(),init=false.B)
+  val by_zero_case_ff      = WireInit(Bool(),init=false.B)
+ //  val twos_comp_in         = WireInit(0.U(32.W))
+ //   val twos_comp_out        = WireInit(0.U(32.W))
+ //  val adder1_out            = WireInit(0.U(34.W))
+//   val adder2_out            = WireInit(0.U(35.W))
+ //   val adder3_out            = WireInit(0.U(36.W))
+//   val adder4_out            = WireInit(0.U(37.W))
+ //  val adder5_out            = WireInit(0.U(37.W))
+ //   val adder6_out            = WireInit(0.U(37.W))
+//    val adder7_out            = WireInit(0.U(37.W))
+  val ar_shifted           = WireInit(0.U(66.W))
+//  val shortq               = WireInit(0.U(6.W))
+ //  val shortq_shift         = WireInit(0.U(5.W))
+   val shortq_decode         = WireInit(0.U(5.W))
+  val shortq_shift_ff      = WireInit(0.U(5.W))
+//   val shortq_dividend      = WireInit(0.U(33.W))
+  val valid_ff_in = io.valid_in & !io.cancel
+  val control_in           = Cat((!io.valid_in & control_ff(2)) | (io.valid_in & io.signed_in  & io.dividend_in(31)), (!io.valid_in & control_ff(1)) | (io.valid_in & io.signed_in  &  io.divisor_in(31)), (!io.valid_in & control_ff(0)) | (io.valid_in & io.rem_in))
+  val dividend_sign_ff     = control_ff(2)
+  val divisor_sign_ff      = control_ff(1)
+  val rem_ff               = control_ff(0)
+  val by_zero_case         =  valid_ff & (b_ff(31,0) === 0.U)
+
+  val smallnum_case =  ((a_ff(31,4) === 0.U) & (b_ff(31,4) === 0.U) & !by_zero_case & !rem_ff & valid_ff & !io.cancel) |
+    ((a_ff(31,0) === 0.U) & !by_zero_case & !rem_ff & valid_ff & !io.cancel)
+  val running_state        = count_ff.orR() | shortq_enable_ff
+  val misc_enable          =  io.valid_in | valid_ff | io.cancel | running_state | finish_ff
+  val finish_raw           =  smallnum_case | by_zero_case | (count_ff === 33.U)
+  val finish               = finish_raw & !io.cancel
+  val count_enable         = (valid_ff | running_state) & !finish & !finish_ff & !io.cancel & !shortq_enable
+  val count_in             = Fill(7,count_enable) & (count_ff + Cat(0.U(5.W),3.U) + Cat(0.U(2.W),shortq_shift_ff))
+  val a_enable             =  io.valid_in | running_state
+  val a_shift              =  running_state & !shortq_enable_ff
+  ar_shifted               := Cat (Fill(33,dividend_sign_ff),a_ff) << shortq_shift_ff
+  val b_twos_comp          =  valid_ff & !(dividend_sign_ff ^ divisor_sign_ff)
+  val twos_comp_b_sel      =  valid_ff  & !(dividend_sign_ff ^ divisor_sign_ff)
+  val twos_comp_q_sel      = !valid_ff & !rem_ff &  (dividend_sign_ff ^ divisor_sign_ff) & !by_zero_case_ff
+  val b_enable             =  io.valid_in | b_twos_comp
+  val rq_enable            =  io.valid_in | valid_ff | running_state
+  val r_sign_sel           =  valid_ff & dividend_sign_ff & !by_zero_case
+  val r_restore_sel        =  running_state & (quotient_new === 0.U) & !shortq_enable_ff
+  val r_adder1_sel         =  running_state & (quotient_new === 1.U) & !shortq_enable_ff
+  val r_adder2_sel         =  running_state & (quotient_new === 2.U) & !shortq_enable_ff
+  val r_adder3_sel         =  running_state & (quotient_new === 3.U) & !shortq_enable_ff
+  val r_adder4_sel         =  running_state & (quotient_new === 4.U) & !shortq_enable_ff
+  val r_adder5_sel         =  running_state & (quotient_new === 5.U) & !shortq_enable_ff
+  val r_adder6_sel         =  running_state & (quotient_new === 6.U) & !shortq_enable_ff
+  val r_adder7_sel         =  running_state & (quotient_new === 6.U) & !shortq_enable_ff
+  val adder1_out = Cat(r_ff(30,0),a_ff(32,30)) + b_ff(33,0)
+  val adder2_out = Cat(r_ff(31,0),a_ff(32,30)) + Cat(b_ff(33,0),0.U)
+  val adder3_out = Cat(r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U) + b_ff(35,0)
+  val adder4_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W))
+  val adder5_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + b_ff
+  val adder6_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + Cat(b_ff(35,0),0.U)
+  val adder7_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + Cat(b_ff(35,0),0.U) + b_ff
+  quotient_raw := Cat((!adder7_out(36) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder7_out === 0.U)),
+                     (!adder6_out(36) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder6_out === 0.U)),
+                     (!adder5_out(36) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder5_out === 0.U)),
+                     (!adder4_out(36) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder4_out === 0.U)),
+                     (!adder3_out(35) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder3_out === 0.U)),
+                     (!adder2_out(34) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder2_out === 0.U)),
+                     (!adder1_out(33) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder1_out === 0.U)), 0.U)
+    quotient_new := Cat ((quotient_raw(7) |  quotient_raw(6) | quotient_raw(5) |  quotient_raw(4)),
+                        (quotient_raw(7) |  quotient_raw(6) |(!quotient_raw(4) & quotient_raw(3)) |(!quotient_raw(3) & quotient_raw(2))),
+                        (quotient_raw(7) |  quotient_raw(6) & quotient_raw(5) |(!quotient_raw(4) & quotient_raw(3)) |(!quotient_raw(2) & quotient_raw(1))))
+  val twos_comp_in = Mux1H(Seq (
+    twos_comp_q_sel                       -> q_ff,
+    twos_comp_b_sel                     -> b_ff(31,0)
+  ))
+  val twos_comp_out = rvtwoscomp(twos_comp_in)
+
+  val a_in = Mux1H(Seq (
+    (!a_shift & !shortq_enable_ff).asBool -> Cat(io.signed_in & io.dividend_in(31),io.dividend_in(31,0)),
+    a_shift                             -> Cat(a_ff(29,0),0.U(3.W)),
+    shortq_enable_ff                    -> ar_shifted(32,0)
+  ))
+  val b_in = Mux1H(Seq (
+    !b_twos_comp                          -> Cat(io.signed_in & io.divisor_in(31),io.divisor_in(31,0)),
+    b_twos_comp                          -> Cat(!divisor_sign_ff,twos_comp_out(31,0))
+  ))
+
+  val r_in = Mux1H (Seq(
+    r_sign_sel                            -> "h1ffffffff".U(33.W),
+    r_restore_sel                         -> Cat(r_ff(29,0),a_ff(32,30)),
+    r_adder1_sel                           -> adder1_out(32,0),
+    r_adder2_sel                           -> adder2_out(32,0),
+    r_adder3_sel                           -> adder3_out(32,0),
+    r_adder4_sel                           -> adder4_out(32,0),
+    r_adder5_sel                           -> adder5_out(32,0),
+    r_adder6_sel                           -> adder6_out(32,0),
+    r_adder7_sel                           -> adder7_out(32,0),
+    shortq_enable_ff                       -> ar_shifted(65,33),
+    by_zero_case                           -> Cat(0.U,a_ff(31,0))
+))
+  val q_in = Mux1H (Seq(
+   !valid_ff                              -> Cat(q_ff(28,0),quotient_new),
+    smallnum_case                         -> Cat(0.U(28.W),smallnum),
+    by_zero_case                          -> Fill(32,1.U)
+  ))
+  io.valid_out := finish_ff & !io.cancel
+  io.data_out := Mux1H(Seq(
+    (!rem_ff & !twos_comp_q_sel).asBool() -> q_ff,
+    rem_ff                              -> r_ff(31,0),
+    twos_comp_q_sel                     -> twos_comp_out
+  ))
+  def pat1(x : List[Int], y : List[Int]) = {
+    val pat_a = (0 until x.size).map(i=> if(x(i)>=0) a_ff(x(i)) else !a_ff(x(i).abs)).reduce(_&_)
+    val pat_b = (0 until y.size).map(i=> if(y(i)>=0) b_ff(y(i)) else !b_ff(y(i).abs)).reduce(_&_)
+    pat_a & pat_b
+  }
+  smallnum := Cat(
+    pat1(List(3),List(-3, -2, -1)),
+
+    pat1(List(3),List(-3, -2))& !b_ff(0) | pat1(List(2),List(-3, -2, -1)) | pat1(List(3, 2),List(-3, -2)),
+
+    pat1(List(2),List(-3, -2))& !b_ff(0) | pat1(List(1),List(-3, -2, -1))    | pat1(List(3),List(-3, -1))& !b_ff(0) |
+      pat1(List(3, -2),List(-3, -2, 1, 0)) | pat1(List(-3, 2, 1),List(-3, -2)) | pat1(List(3, 2),List(-3))& !b_ff(0)  |
+      pat1(List(3, 2),List(-3, 2, -1))     | pat1(List(3, 1),List(-3,-1))     | pat1(List(3, 2, 1),List(-3, 2)),
+
+    pat1(List(2, 1, 0),List(-3, -1))        | pat1(List(3, -2, 0),List(-3, 1, 0))    | pat1(List(2),List(-3, -1))& !b_ff(0)     |
+      pat1(List(1),List(-3, -2))& !b_ff(0)    | pat1(List(0),List(-3, -2, -1))         | pat1(List(-3, 2, -1),List(-3, -2, 1, 0)) |
+      pat1(List(-3, 2, 1),List(-3))& !b_ff(0) | pat1(List(3),List(-2, -1)) & !b_ff(0)  | pat1(List(3, -2),List(-3, 2, 1))         |
+      pat1(List(-3, 2, 1),List(-3, 2, -1))    | pat1(List(-3, 2, 0),List(-3, -1))      | pat1(List(3, -2, -1),List(-3, 2, 0))     |
+      pat1(List(-2, 1, 0),List(-3, -2))       | pat1(List(3, 2),List(-1)) & !b_ff(0)   | pat1(List(-3, 2, 1, 0),List(-3, 2))      |
+      pat1(List(3, 2),List(3, -2))            | pat1(List(3, 1),List(3,-2,-1))         | pat1(List(3, 0),List(-2, -1))            |
+      pat1(List(3, -1),List(-3, 2, 1, 0))     | pat1(List(3, 2, 1),List(3)) & !b_ff(0) | pat1(List(3, 2, 1),List(3, -1))          |
+      pat1(List(3, 2, 0),List(3, -1))         | pat1(List(3, -2, 1),List(-3, 1))       | pat1(List(3, 1, 0),List(-2))             |
+      pat1(List(3, 2, 1, 0),List(3))          |pat1(List(3, 1),List(-2)) & !b_ff(0))
+
+  val shortq_dividend = Cat(dividend_sign_ff,a_ff)
+  val a_enc = Module(new exu_div_cls)
+  a_enc.io.operand := shortq_dividend
+  val dw_a_enc1 = a_enc.io.cls
+ val b_enc = Module(new exu_div_cls)
+  b_enc.io.operand := b_ff(32,0)
+  val dw_b_enc1 = b_enc.io.cls
+  val dw_a_enc = Cat (0.U, dw_a_enc1)
+  val dw_b_enc = Cat (0.U, dw_b_enc1)
+  val dw_shortq_raw = Cat(0.U,dw_b_enc) - Cat(0.U,dw_a_enc) + 1.U(7.W)
+  val shortq = Mux(dw_shortq_raw(6).asBool(),0.U,dw_shortq_raw(5,0))
+  shortq_enable := valid_ff & !shortq(5) & !(shortq(4,2) ===  "b111".U) & !io.cancel
+  val list = Array(27,27,27,27,27,27,24,24,24,21,21,21,18,18,18,15,15,15,12,12,12,9,9,9,6,6,6,3,0,0,0,0)
+  shortq_decode := Mux1H((31 to 0 by -1).map(i=> (shortq === i.U) -> list(i).U))
+  val shortq_shift = Mux(!shortq_enable,0.U,shortq_decode)
+  b_ff := Cat(b_ff1(32),b_ff1(32),b_ff1(32),b_ff1(32),b_ff1)
+  valid_ff := rvdffe(valid_ff_in, misc_enable,clock,io.scan_mode)
+  control_ff   := rvdffe(control_in, misc_enable,clock,io.scan_mode)
+  by_zero_case_ff := rvdffe(by_zero_case,misc_enable,clock,io.scan_mode)
+  shortq_enable_ff := rvdffe(shortq_enable, misc_enable,clock,io.scan_mode)
+  shortq_shift_ff := Cat(rvdffe(shortq_shift, misc_enable,clock,io.scan_mode),0.U)
+  finish_ff := rvdffe(finish, misc_enable,clock,io.scan_mode)
+  count_ff := rvdffe(count_in, misc_enable,clock,io.scan_mode)
+
+  a_ff := rvdffe(a_in, a_enable,clock,io.scan_mode)
+  b_ff1 := rvdffe(b_in(32,0), b_enable,clock,io.scan_mode)
+  r_ff := rvdffe(r_in, rq_enable,clock,io.scan_mode)
+  q_ff := rvdffe(q_in, rq_enable,clock,io.scan_mode)
+
+}
+
+object div_main4 extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new exu_div_new_3bit_fullshortq()))
 }
 class exu_div_new_4bit_fullshortq extends Module with RequireAsyncReset with lib {
   val io = IO(new Bundle{
