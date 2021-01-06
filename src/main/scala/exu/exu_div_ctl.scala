@@ -514,7 +514,7 @@ class exu_div_new_2bit_fullshortq extends Module with RequireAsyncReset with lib
   val r_adder2_sel         =  running_state & (quotient_new === 2.U) & !shortq_enable_ff
   val r_adder3_sel         =  running_state & (quotient_new === 3.U) & !shortq_enable_ff
   val adder1_out = Cat(r_ff(30,0),a_ff(31,30)) + b_ff(32,0)
-  val adder2_out = Cat(r_ff(30,0),a_ff(31,30)) + Cat(b_ff(32,0),0.U)
+  val adder2_out = Cat(r_ff(31,0),a_ff(31,30)) + Cat(b_ff(32,0),0.U)
   val adder3_out = Cat(r_ff(31),r_ff(31,0),a_ff(31,30)) + Cat(b_ff(33,0),0.U) + b_ff
   quotient_raw := Cat((!adder3_out(34) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder3_out === 0.U)),
     (!adder2_out(33) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder2_out === 0.U)),

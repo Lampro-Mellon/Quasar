@@ -1159,7 +1159,7 @@ circuit exu_div_new_2bit_fullshortq :
     node _T_90 = bits(b_ff, 32, 0) @[exu_div_ctl.scala 516:54]
     node _T_91 = add(_T_89, _T_90) @[exu_div_ctl.scala 516:48]
     node adder1_out = tail(_T_91, 1) @[exu_div_ctl.scala 516:48]
-    node _T_92 = bits(r_ff, 30, 0) @[exu_div_ctl.scala 517:28]
+    node _T_92 = bits(r_ff, 31, 0) @[exu_div_ctl.scala 517:28]
     node _T_93 = bits(a_ff, 31, 30) @[exu_div_ctl.scala 517:39]
     node _T_94 = cat(_T_92, _T_93) @[Cat.scala 29:58]
     node _T_95 = bits(b_ff, 32, 0) @[exu_div_ctl.scala 517:58]
