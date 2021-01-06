@@ -156,4 +156,7 @@ trait param {
   val SB_BUS_TAG             = 	0x1
   val TIMER_LEGAL_EN         = 	0x1
   val RV_FPGA_OPTIMIZE       =  0x1
+  val DIV_NEW                =  0x1
+  val DIV_BIT                =  0x4
+
 }

@@ -445,11 +445,13 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
         buf_data_en(i) := buf_state_en(i)
         buf_data_in(i) := Mux((ibuf_drain_vld & (i === ibuf_tag)).asBool(), ibuf_data_out(31, 0), store_data_lo_r(31, 0))
         buf_cmd_state_bus_en(i)  := 0.U
+	 buf_rst(i) := 	io.dec_tlu_force_halt
       }
       is(wait_C) {
         buf_nxtstate(i) := Mux(io.dec_tlu_force_halt.asBool(), idle_C, cmd_C)
         buf_state_en(i) := io.lsu_bus_clk_en | io.dec_tlu_force_halt
         buf_cmd_state_bus_en(i)  := 0.U
+	buf_rst(i) := 	io.dec_tlu_force_halt
       }
       is(cmd_C) {
         buf_nxtstate(i) := Mux(io.dec_tlu_force_halt.asBool(), idle_C, Mux((obuf_nosend & bus_rsp_read & (bus_rsp_read_tag === obuf_rdrsp_tag)), done_wait_C, resp_C))
@@ -462,7 +464,8 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
         buf_data_en(i) := buf_state_bus_en(i) & io.lsu_bus_clk_en & obuf_nosend & bus_rsp_read
         buf_error_en(i) := buf_state_bus_en(i) & io.lsu_bus_clk_en & obuf_nosend & bus_rsp_read_error
         buf_data_in(i) := Mux(buf_error_en(i), bus_rsp_rdata(31, 0), Mux(buf_addr(i)(2), bus_rsp_rdata(63, 32), bus_rsp_rdata(31, 0)))
-      }
+	buf_rst(i) := 	io.dec_tlu_force_halt     
+ }
       is(resp_C) {
           buf_nxtstate(i) := Mux((io.dec_tlu_force_halt | (buf_write(i) & !bus_rsp_write_error)).asBool(), idle_C,
           Mux((buf_dual(i) & !buf_samedw(i) & !buf_write(i) & (buf_state(buf_dualtag(i)) =/= done_partial_C)), done_partial_C,
@@ -479,6 +482,7 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
           (bus_rsp_write_error  & (bus_rsp_write_tag === i.asUInt(LSU_BUS_TAG.W))))
         buf_data_in(i) := Mux((buf_state_en(i) & !buf_error_en(i)), Mux(buf_addr(i)(2), bus_rsp_rdata(63, 32), bus_rsp_rdata(31, 0)), bus_rsp_rdata(31, 0))
         buf_cmd_state_bus_en(i)  := 0.U
+	buf_rst(i) := 	io.dec_tlu_force_halt
       }
       is(done_partial_C) { // Other part of dual load hasn't returned
         buf_nxtstate(i) := Mux(io.dec_tlu_force_halt.asBool(), idle_C, Mux((buf_ldfwd(i) | buf_ldfwd(buf_dualtag(i)) | any_done_wait_state), done_wait_C, done_C))
@@ -486,11 +490,13 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
           (buf_ldfwd(buf_dualtag(i)) & (bus_rsp_read_tag === buf_ldfwdtag(buf_dualtag(i)).asUInt())))
         buf_state_en(i) := (buf_state_bus_en(i) & io.lsu_bus_clk_en) | io.dec_tlu_force_halt
         buf_cmd_state_bus_en(i)  := 0.U
+	buf_rst(i) := 	io.dec_tlu_force_halt
       }
       is(done_wait_C) { // WAIT state if there are multiple outstanding nb returns
         buf_nxtstate(i) := Mux(io.dec_tlu_force_halt.asBool(), idle_C, done_C)
         buf_state_en(i) := ((RspPtr === i.asUInt(DEPTH_LOG2.W)) | (buf_dual(i) & (buf_dualtag(i) === RspPtr))) | io.dec_tlu_force_halt
         buf_cmd_state_bus_en(i)  := 0.U
+	buf_rst(i) := 	io.dec_tlu_force_halt
       }
       is(done_C) {
         buf_nxtstate(i) := idle_C

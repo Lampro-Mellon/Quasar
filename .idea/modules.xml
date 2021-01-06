@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Quasar.iml" filepath="$PROJECT_DIR$/.idea/modules/Quasar.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Quasar-build.iml" filepath="$PROJECT_DIR$/.idea/modules/Quasar-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/untitled/untitled.iml" filepath="$PROJECT_DIR$/untitled/untitled.iml" />
     </modules>
   </component>
 </project>

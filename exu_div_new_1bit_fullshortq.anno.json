@@ -1,0 +1,30 @@
+[
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~exu_div_new_1bit_fullshortq|exu_div_new_1bit_fullshortq>io_valid_out",
+    "sources":[
+      "~exu_div_new_1bit_fullshortq|exu_div_new_1bit_fullshortq>io_cancel"
+    ]
+  },
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxResourceAnno",
+    "target":"exu_div_new_1bit_fullshortq.gated_latch",
+    "resourceId":"/vsrc/gated_latch.sv"
+  },
+  {
+    "class":"firrtl.options.TargetDirAnnotation",
+    "directory":"."
+  },
+  {
+    "class":"firrtl.options.OutputAnnotationFileAnnotation",
+    "file":"exu_div_new_1bit_fullshortq"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"."
+  }
+]
