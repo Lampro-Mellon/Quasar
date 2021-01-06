@@ -447,7 +447,7 @@ class exu_div_new_2bit_fullshortq extends Module with RequireAsyncReset with lib
 //  val count_in             = WireInit(0.U(7.W))
   val count_ff             = WireInit(0.U(7.W))
   val smallnum             = WireInit(0.U(4.W))
-  val smallnum_case        = WireInit(Bool(),init=false.B)
+//  val smallnum_case        = WireInit(Bool(),init=false.B)
  // val a_enable             = WireInit(Bool(),init=false.B)
  // val a_shift              = WireInit(Bool(),init=false.B)
  // val b_enable             = WireInit(Bool(),init=false.B)
@@ -483,7 +483,7 @@ class exu_div_new_2bit_fullshortq extends Module with RequireAsyncReset with lib
   val ar_shifted           = WireInit(0.U(64.W))
  // val shortq               = WireInit(0.U(6.W))
 //  val shortq_shift         = WireInit(0.U(5.W))
-  val shortq_shift_ff      = WireInit(0.U(4.W))
+  val shortq_shift_ff      = WireInit(0.U(5.W))
  // val shortq_dividend      = WireInit(0.U(33.W))
   val valid_ff_in = io.valid_in & !io.cancel
   val control_in           = Cat((!io.valid_in & control_ff(2)) | (io.valid_in & io.signed_in  & io.dividend_in(31)), (!io.valid_in & control_ff(1)) | (io.valid_in & io.signed_in  &  io.divisor_in(31)), (!io.valid_in & control_ff(0)) | (io.valid_in & io.rem_in))
@@ -492,17 +492,17 @@ class exu_div_new_2bit_fullshortq extends Module with RequireAsyncReset with lib
   val rem_ff               = control_ff(0)
   val by_zero_case         =  valid_ff & (b_ff(31,0) === 0.U)
 
-//  val smallnum_case =  ((a_ff(31,4) === 0.U) & (b_ff(31,4) === 0.U) & !by_zero_case & !rem_ff & valid_ff & !io.cancel) |
+  val smallnum_case =  ((a_ff(31,4) === 0.U) & (b_ff(31,4) === 0.U) & !by_zero_case & !rem_ff & valid_ff & !io.cancel) |
     ((a_ff(31,0) === 0.U) & !by_zero_case & !rem_ff & valid_ff & !io.cancel)
   val running_state        = count_ff.orR() | shortq_enable_ff
   val misc_enable          =  io.valid_in | valid_ff | io.cancel | running_state | finish_ff
   val finish_raw           =  smallnum_case | by_zero_case | (count_ff === 32.U)
   val finish               = finish_raw & !io.cancel
   val count_enable         = (valid_ff | running_state) & !finish & !finish_ff & !io.cancel & !shortq_enable
-  val count_in             = Fill(7,count_enable) & (count_ff + Cat(0.U(5.W),2.U) + Cat(0.U(2.W),shortq_shift_ff,0.U))
+  val count_in             = Fill(7,count_enable) & (count_ff + Cat(0.U(5.W),2.U) + Cat(0.U(2.W),shortq_shift_ff(4,1),0.U))
   val a_enable             =  io.valid_in | running_state
   val a_shift              =  running_state & !shortq_enable_ff
-  ar_shifted               := Cat (Fill(32,dividend_sign_ff),a_ff) << Cat(shortq_shift_ff,0.U)
+  ar_shifted               := Cat (Fill(32,dividend_sign_ff),a_ff) << Cat(shortq_shift_ff(4,1),0.U)
   val b_twos_comp          =  valid_ff & !(dividend_sign_ff ^ divisor_sign_ff)
   val twos_comp_b_sel      =  valid_ff  & !(dividend_sign_ff ^ divisor_sign_ff)
   val twos_comp_q_sel      = !valid_ff & !rem_ff &  (dividend_sign_ff ^ divisor_sign_ff) & !by_zero_case_ff
@@ -598,7 +598,7 @@ class exu_div_new_2bit_fullshortq extends Module with RequireAsyncReset with lib
   control_ff   := rvdffe(control_in, misc_enable,clock,io.scan_mode)
   by_zero_case_ff := rvdffe(by_zero_case,misc_enable,clock,io.scan_mode)
   shortq_enable_ff := rvdffe(shortq_enable, misc_enable,clock,io.scan_mode)
-  shortq_shift_ff := rvdffe(shortq_shift(4,1), misc_enable,clock,io.scan_mode)
+  shortq_shift_ff := Cat(rvdffe(shortq_shift(4,1), misc_enable,clock,io.scan_mode),0.U)
   finish_ff := rvdffe(finish, misc_enable,clock,io.scan_mode)
   count_ff := rvdffe(count_in, misc_enable,clock,io.scan_mode)
 
