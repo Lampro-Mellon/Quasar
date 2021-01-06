@@ -469,7 +469,7 @@ class exu_div_new_2bit_fullshortq extends Module with RequireAsyncReset with lib
  // val r_adder3_sel         = WireInit(Bool(),init=false.B)
 //  val twos_comp_q_sel      = WireInit(Bool(),init=false.B)
 //  val twos_comp_b_sel      = WireInit(Bool(),init=false.B)
-  val quotient_raw         = WireInit(0.U(3.W))
+  val quotient_raw         = WireInit(0.U(4.W))
   val quotient_new         = WireInit(0.U(2.W))
   val shortq_enable        = WireInit(Bool(),init=false.B)
   val shortq_enable_ff     = WireInit(Bool(),init=false.B)
@@ -518,8 +518,8 @@ class exu_div_new_2bit_fullshortq extends Module with RequireAsyncReset with lib
   val adder3_out = Cat(r_ff(31),r_ff(31,0),a_ff(31,30)) + Cat(b_ff(33,0),0.U) + b_ff
   quotient_raw := Cat((!adder3_out(34) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder3_out === 0.U)),
     (!adder2_out(33) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder2_out === 0.U)),
-    (!adder1_out(32) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder1_out === 0.U)))
-  quotient_new := Cat ((quotient_raw(2) |  quotient_raw(1)) , (quotient_raw(2) |(!quotient_raw(1) & quotient_raw(0))))
+    (!adder1_out(32) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder1_out === 0.U)),0.U)
+  quotient_new := Cat ((quotient_raw(3) |  quotient_raw(2)) , (quotient_raw(3) |(!quotient_raw(2) & quotient_raw(1))))
   val twos_comp_in = Mux1H(Seq (
     twos_comp_q_sel                       -> q_ff,
     twos_comp_b_sel                     -> b_ff(31,0)
