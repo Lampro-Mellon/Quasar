@@ -80,6 +80,9 @@ if(!DIV_NEW) {
     io.exu_div_wren         := divider_new4.io.valid_out
   }
 }
+object div_main extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new exu_div_ctl()))
+}
 ////////////////////////////////////////// OLD DIVIDER /////////////////////////////////////
 class exu_div_existing_1bit_cheapshortq extends Module with RequireAsyncReset with lib {
   val io = IO(new Bundle{
@@ -277,8 +280,6 @@ class exu_div_existing_1bit_cheapshortq extends Module with RequireAsyncReset wi
   a_ff := rvdffe(a_in, aff_enable,clock,io.scan_mode)
   m_ff := rvdffe(Cat(io.signed_in & io.divisor_in(31), io.divisor_in(31,0)), io.valid_in,clock,io.scan_mode)
 
-
-
 }
 /////////////////////////////////////////////// 1 BIT FULL DIVIDER//////////////////////////////////
 class exu_div_new_1bit_fullshortq extends Module with RequireAsyncReset with lib {
@@ -420,6 +421,7 @@ val shortq_dividend = Cat(dividend_sign_ff,a_ff)
   r_ff := rvdffe(r_in, rq_enable,clock,io.scan_mode)
   q_ff := rvdffe(q_in, rq_enable,clock,io.scan_mode)
 }
+/////////////////////////////////////////////// 2 BIT FULL DIVIDER//////////////////////////////////
 class exu_div_new_2bit_fullshortq extends Module with RequireAsyncReset with lib {
   val io = IO(new Bundle{
     val scan_mode             = Input(Bool())
@@ -571,6 +573,7 @@ class exu_div_new_2bit_fullshortq extends Module with RequireAsyncReset with lib
   q_ff := rvdffe(q_in, rq_enable,clock,io.scan_mode)
 
 }
+/////////////////////////////////////////////// 3 BIT FULL DIVIDER//////////////////////////////////
 class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib {
   val io = IO(new Bundle{
     val scan_mode             = Input(Bool())
@@ -738,7 +741,7 @@ class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib
   q_ff := rvdffe(q_in, rq_enable,clock,io.scan_mode)
 
 }
-
+/////////////////////////////////////////////// 4 BIT FULL DIVIDER//////////////////////////////////
 class exu_div_new_4bit_fullshortq extends Module with RequireAsyncReset with lib {
   val io = IO(new Bundle {
     val scan_mode = Input(Bool())
@@ -942,10 +945,6 @@ class exu_div_new_4bit_fullshortq extends Module with RequireAsyncReset with lib
   q_ff := rvdffe(q_in, rq_enable,clock,io.scan_mode)
 
 }
-object div_main5 extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new exu_div_new_4bit_fullshortq()))
-}
-
 class exu_div_cls extends Module{
   val io= IO(new Bundle{
     val operand = Input(UInt(33.W))
