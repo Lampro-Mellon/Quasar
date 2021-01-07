@@ -711,10 +711,10 @@ class ifu_mem_ctl extends Module with lib with RequireAsyncReset {
       io.ic.rd_hit(2) -> Cat(1.U, way_status(1), 0.U),
       io.ic.rd_hit(3) -> Cat(0.U, way_status(1), 0.U)))
 
-    way_status_rep_new := Mux1H(Seq(io.ic.rd_hit(0) -> Cat(way_status_mb_ff(2), 3.U),
-      io.ic.rd_hit(1) -> Cat(way_status_mb_ff(2), 1.U(2.W)),
-      io.ic.rd_hit(2) -> Cat(1.U, way_status_mb_ff(1), 0.U),
-      io.ic.rd_hit(3) -> Cat(0.U, way_status_mb_ff(1), 0.U)))
+    way_status_rep_new := Mux1H(Seq(replace_way_mb_any(0) -> Cat(way_status_mb_ff(2), 3.U),
+      				     replace_way_mb_any(1) -> Cat(way_status_mb_ff(2), 1.U(2.W)),
+      				     replace_way_mb_any(2) -> Cat(1.U, way_status_mb_ff(1), 0.U),
+      				     replace_way_mb_any(3) -> Cat(0.U, way_status_mb_ff(1), 0.U)))
   }
   else {
     replace_way_mb_any(0) := (!way_status_mb_ff & tagv_mb_ff(0) & tagv_mb_ff(1)) | !tagv_mb_ff(0)
