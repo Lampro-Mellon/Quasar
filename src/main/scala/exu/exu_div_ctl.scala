@@ -599,16 +599,9 @@ class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib
   val shortq_enable_ff     = WireInit(Bool(),init=false.B)
   val by_zero_case_ff      = WireInit(Bool(),init=false.B)
   val ar_shifted           = WireInit(0.U(66.W))
-  val shortq_shift        = WireInit(0.U(5.W))
+  val shortq_shift         = WireInit(0.U(5.W))
   val shortq_decode        = WireInit(0.U(5.W))
   val shortq_shift_ff      = WireInit(0.U(5.W))
-  val adder1_out = WireInit(0.U(34.W))
-  val adder2_out = WireInit(0.U(35.W))
-  val adder3_out = WireInit(0.U(36.W))
-  val adder4_out = WireInit(0.U(37.W))
-  val adder5_out = WireInit(0.U(37.W))
-  val adder6_out = WireInit(0.U(37.W))
-  val adder7_out = WireInit(0.U(37.W))
   val valid_ff_in = io.valid_in & !io.cancel
   val control_in           = Cat((!io.valid_in & control_ff(2)) | (io.valid_in & io.signed_in  & io.dividend_in(31)), (!io.valid_in & control_ff(1)) | (io.valid_in & io.signed_in  &  io.divisor_in(31)), (!io.valid_in & control_ff(0)) | (io.valid_in & io.rem_in))
   val dividend_sign_ff     = control_ff(2)
@@ -642,13 +635,13 @@ class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib
   val r_adder6_sel         =  running_state & (quotient_new === 6.U) & !shortq_enable_ff
   val r_adder7_sel         =  running_state & (quotient_new === 7.U) & !shortq_enable_ff
 
-   adder1_out := Cat(r_ff(30,0),a_ff(32,30)) + b_ff(33,0)
-   adder2_out := Cat(r_ff(31,0),a_ff(32,30)) + Cat(b_ff(33,0),0.U)
-   adder3_out := Cat(r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U) + b_ff(35,0)
-   adder4_out := Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W))
-   adder5_out := Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + b_ff
-   adder6_out := Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + Cat(b_ff(35,0),0.U)
-   adder7_out := Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + Cat(b_ff(35,0),0.U) + b_ff
+   val adder1_out = Cat(r_ff(30,0),a_ff(32,30)) + b_ff(33,0)
+   val adder2_out = Cat(r_ff(31,0),a_ff(32,30)) + Cat(b_ff(33,0),0.U)
+   val adder3_out = Cat(r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U) + b_ff(35,0)
+   val adder4_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W))
+   val adder5_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + b_ff
+   val adder6_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + Cat(b_ff(35,0),0.U)
+   val adder7_out = Cat(r_ff(32),r_ff(32,0),a_ff(32,30)) + Cat(b_ff(34,0),0.U(2.W)) + Cat(b_ff(35,0),0.U) + b_ff
   quotient_raw := Cat((!adder7_out(36) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder7_out === 0.U)),
                      (!adder6_out(36) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder6_out === 0.U)),
                      (!adder5_out(36) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder5_out === 0.U)),
@@ -656,15 +649,14 @@ class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib
                      (!adder3_out(35) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder3_out === 0.U)),
                      (!adder2_out(34) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder2_out === 0.U)),
                      (!adder1_out(33) ^ dividend_sign_ff) | ((a_ff(29,0) === 0.U) & (adder1_out === 0.U)), 0.U)
-  quotient_new := Cat ((quotient_raw(7) |  quotient_raw(6) | quotient_raw(5) |  quotient_raw(4)),
+    quotient_new := Cat ((quotient_raw(7) |  quotient_raw(6) | quotient_raw(5) |  quotient_raw(4)),
                         (quotient_raw(7) |  quotient_raw(6) |(!quotient_raw(4) & quotient_raw(3)) |(!quotient_raw(3) & quotient_raw(2))),
-                        (quotient_raw(7) |  quotient_raw(6) & quotient_raw(5) |(!quotient_raw(4) & quotient_raw(3)) |(!quotient_raw(2) & quotient_raw(1))))
+                        (quotient_raw(7) |  (!quotient_raw(6) & quotient_raw(5)) | (!quotient_raw(4) & quotient_raw(3)) |(!quotient_raw(2) & quotient_raw(1))))
   val twos_comp_in = Mux1H(Seq (
     twos_comp_q_sel                       -> q_ff,
     twos_comp_b_sel                     -> b_ff(31,0)
   ))
   val twos_comp_out = rvtwoscomp(twos_comp_in)
-
   val a_in = Mux1H(Seq (
     (!a_shift & !shortq_enable_ff).asBool -> Cat(io.signed_in & io.dividend_in(31),io.dividend_in(31,0)),
     a_shift                             -> Cat(a_ff(29,0),0.U(3.W)),
@@ -672,11 +664,10 @@ class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib
   ))
   val b_in = Mux1H(Seq (
     !b_twos_comp                          -> Cat(io.signed_in & io.divisor_in(31),io.divisor_in(31,0)),
-    b_twos_comp                          -> Cat(!divisor_sign_ff,twos_comp_out(31,0))
+     b_twos_comp                          -> Cat(!divisor_sign_ff,twos_comp_out(31,0))
   ))
-
   val r_in = Mux1H (Seq(
-    r_sign_sel                            -> "h1ffffffff".U(33.W),
+    r_sign_sel                            -> Fill(33,1.U),
     r_restore_sel                         -> Cat(r_ff(29,0),a_ff(32,30)),
     r_adder1_sel                           -> adder1_out(32,0),
     r_adder2_sel                           -> adder2_out(32,0),
@@ -693,7 +684,7 @@ class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib
     smallnum_case                         -> Cat(0.U(28.W),smallnum),
     by_zero_case                          -> Fill(32,1.U)
   ))
-  io.valid_out := finish_ff & !io.cancel
+ io.valid_out := finish_ff & !io.cancel
   io.data_out := Mux1H(Seq(
     (!rem_ff & !twos_comp_q_sel).asBool() -> q_ff,
     rem_ff                              -> r_ff(31,0),
@@ -723,7 +714,7 @@ class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib
       pat1(List(3, 2, 0),List(3, -1))         | pat1(List(3, -2, 1),List(-3, 1))       | pat1(List(3, 1, 0),List(-2))             |
       pat1(List(3, 2, 1, 0),List(3))          |pat1(List(3, 1),List(-2)) & !b_ff(0))
 
-  val shortq_dividend = Cat(dividend_sign_ff,a_ff(31,0))
+ val shortq_dividend = Cat(dividend_sign_ff,a_ff(31,0))
   val a_enc = Module(new exu_div_cls)
   a_enc.io.operand := shortq_dividend
   val dw_a_enc1 = a_enc.io.cls
@@ -732,7 +723,8 @@ class exu_div_new_3bit_fullshortq extends Module with RequireAsyncReset with lib
   val dw_b_enc1 = b_enc.io.cls
   val dw_a_enc = Cat (0.U, dw_a_enc1)
   val dw_b_enc = Cat (0.U, dw_b_enc1)
-  val dw_shortq_raw = Cat(0.U,dw_b_enc) - Cat(0.U,dw_a_enc) + 1.U(7.W)
+
+   val dw_shortq_raw = Cat(0.U,dw_b_enc) - Cat(0.U,dw_a_enc) + 1.U(7.W)
   val shortq = Mux(dw_shortq_raw(6).asBool(),0.U,dw_shortq_raw(5,0))
   shortq_enable := valid_ff & !shortq(5) & !(shortq(4,2) ===  "b111".U) & !io.cancel
   val list = Array(27,27,27,27,27,27,24,24,24,21,21,21,18,18,18,15,15,15,12,12,12,9,9,9,6,6,6,3,0,0,0,0)
