@@ -796,14 +796,13 @@ class exu_div_new_4bit_fullshortq extends Module with RequireAsyncReset with lib
   val rq_enable            =  io.valid_in | valid_ff | running_state
   val r_sign_sel           =  valid_ff & dividend_sign_ff & !by_zero_case
   val r_adder_sel = (0 to 15 ).map(i=> (running_state & (quotient_new === i.asUInt) & !shortq_enable_ff))
-
   val adder1_out = Cat(r_ff(30,0),a_ff(31,28)) + b_ff(34,0)
   val adder2_out = Cat(r_ff(31,0),a_ff(31,28)) + Cat(b_ff(34,0),0.U)
   val adder3_out = Cat(r_ff(32,0),a_ff(31,28)) + Cat(b_ff(35,0),0.U) + b_ff(36,0)
-  val adder4_out = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(35,0),0.U(2.W))
-  val adder5_out = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(35,0),0.U(2.W)) + b_ff
-  val adder6_out = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(35,0),0.U(2.W)) + Cat(b_ff(36,0),0.U)
-  val adder7_out = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(35,0),0.U(2.W)) + Cat(b_ff(36,0),0.U) + b_ff
+  val adder4_out  = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(35,0),0.U(2.W))
+  val adder5_out  = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(35,0),0.U(2.W)) + b_ff
+  val adder6_out  = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(35,0),0.U(2.W)) + Cat(b_ff(36,0),0.U)
+  val adder7_out  = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(35,0),0.U(2.W)) + Cat(b_ff(36,0),0.U) + b_ff
   val adder8_out  = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(34,0),0.U(3.W))
   val adder9_out  = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(34,0),0.U(3.W)) + b_ff
   val adder10_out = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(34,0),0.U(3.W)) + Cat(b_ff(36,0),0.U)
@@ -812,7 +811,8 @@ class exu_div_new_4bit_fullshortq extends Module with RequireAsyncReset with lib
   val adder13_out = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(34,0),0.U(3.W)) + Cat(b_ff(35,0),0.U(2.W)) + b_ff
   val adder14_out = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(34,0),0.U(3.W)) + Cat(b_ff(35,0),0.U(2.W)) + Cat(b_ff(36,0),0.U)
   val adder15_out = Cat(r_ff(32),r_ff(32,0),a_ff(31,28)) + Cat(b_ff(34,0),0.U(3.W)) + Cat(b_ff(35,0),0.U(2.W)) + Cat(b_ff(36,0),0.U) + b_ff
-   quotient_raw := Cat(
+
+  quotient_raw := Cat(
     (!adder15_out(37) ^ dividend_sign_ff) | ((a_ff(27,0) === 0.U) & (adder15_out === 0.U)),
     (!adder14_out(37) ^ dividend_sign_ff) | ((a_ff(27,0) === 0.U) & (adder14_out === 0.U)),
     (!adder13_out(37) ^ dividend_sign_ff) | ((a_ff(27,0) === 0.U) & (adder13_out === 0.U)),
@@ -830,18 +830,17 @@ class exu_div_new_4bit_fullshortq extends Module with RequireAsyncReset with lib
     (!adder1_out(34) ^ dividend_sign_ff) | ((a_ff(27,0) === 0.U) & (adder1_out === 0.U)), 0.U)
 
   quotient_new := Cat(
-    ((quotient_raw(15)===1.U) | Mux1H((8 to 14).map(i=> (quotient_raw(15,i)=== Cat(Fill(15-i,0.U),1.U)).asBool -> 1.U))),
+    (Mux1H((8 to 14).map(i=> (quotient_raw(15,i)=== Cat(Fill(15-i,0.U),1.U)).asBool -> 1.U)) | (quotient_raw(15)===1.U)),
 
-    ( quotient_raw(15,4) === "b000000000001".U(12.U))| ( quotient_raw(15,5) === "b00000000001".U(11.U)) | ( quotient_raw(15,6) === "b0000000001".U(10.U)) |
-      ( quotient_raw(15,7) === "b000000001".U(9.U)) | ( quotient_raw(15,12)=== "b0001".U(4.U)) | ( quotient_raw(15,13)=== "b001".U(3.U)) |
-      ( quotient_raw(15,14)=== "b01".U(2.U)) | ( quotient_raw(15)   === "b1".U),
+    ( quotient_raw(15,4) === "b000000000001".U(12.W))| ( quotient_raw(15,5) === "b00000000001".U(11.W)) | ( quotient_raw(15,6) === "b0000000001".U(10.W)) |
+      ( quotient_raw(15,7) === "b000000001".U(9.W)) | ( quotient_raw(15,12)=== "b0001".U(4.W)) | ( quotient_raw(15,13)=== "b001".U(3.W)) |
+      ( quotient_raw(15,14)=== "b01".U(2.W)) | ( quotient_raw(15)   === "b1".U),
 
-    ( quotient_raw(15,2) === "b00000000000001".U(14.U))| ( quotient_raw(15,3) === "b0000000000001".U(13.U)) | ( quotient_raw(15,6) === "b0000000001".U(10.U)) |
-        ( quotient_raw(15,7) === "b0000000_01".U(9.U)) | ( quotient_raw(15,10)=== "b000001".U(6.U)) | ( quotient_raw(15,11)=== "b00001".U(5.U)) |
-        ( quotient_raw(15,14)=== "b01".U(2.U)) | ( quotient_raw(15)   === "b1".U),
+    ( quotient_raw(15,2) === "b00000000000001".U(14.W))| ( quotient_raw(15,3) === "b0000000000001".U(13.W)) | ( quotient_raw(15,6) === "b0000000001".U(10.W)) |
+        ( quotient_raw(15,7) === "b000000001".U(9.W)) | ( quotient_raw(15,10)=== "b000001".U(6.W)) | ( quotient_raw(15,11)=== "b00001".U(5.W)) |
+        ( quotient_raw(15,14)=== "b01".U(2.W)) | ( quotient_raw(15)   === "b1".U),
 
-    ((quotient_raw(15)===1.U) | Mux1H((1 to 13 by 2).map(i=> (quotient_raw(15,i)=== Cat(Fill(15-i,0.U),1.U)).asBool -> 1.U))))
-
+    (Mux1H((1 to 13 by 2).map(i=> (quotient_raw(15,i)=== Cat(Fill(15-i,0.U),1.U)).asBool -> 1.U)) | (quotient_raw(15)===1.U) ))
   val twos_comp_in = Mux1H(Seq (
     twos_comp_q_sel                       -> q_ff,
     twos_comp_b_sel                     -> b_ff(31,0)
