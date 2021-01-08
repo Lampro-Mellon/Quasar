@@ -109,7 +109,7 @@ class  lsu_dccm_ctl extends Module with RequireAsyncReset with lib
   val picm_rd_data_r_32  = WireInit(UInt(32.W),0.U)
   val picm_rd_data_r     = WireInit(UInt(64.W),0.U)
   val lsu_ld_data_corr_m = WireInit(UInt(64.W),0.U)
-
+  io.lsu_ld_data_m := 0.U
 
   //Forwarding stbuf
   if (LOAD_TO_USE_PLUS1 == 1){
