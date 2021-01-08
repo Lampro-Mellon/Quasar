@@ -37,7 +37,7 @@ class lsu extends Module with RequireAsyncReset with param with lib {
     val lsu_store_stall_any               = Output(Bool())
     val lsu_fastint_stall_any             = Output(Bool())
     val lsu_idle_any                      = Output(Bool())
-    val lsu_active                      = Output(Bool())
+    val lsu_active                       = Output(Bool())
     val lsu_fir_addr                      = Output(UInt(31.W))
     val lsu_fir_error                     = Output(UInt(2.W))
     val lsu_single_ecc_error_incr         = Output(Bool())
@@ -59,8 +59,13 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   val lsu_raw_fwd_hi_r             = WireInit(0.U(1.W))
   val lsu_busm_clken               = WireInit(0.U(1.W))
   val lsu_bus_obuf_c1_clken        = WireInit(0.U(1.W))
-
-
+  val lsu_addr_d            = WireInit(0.U(32.W))
+  val lsu_addr_m            = WireInit(0.U(32.W))
+  val lsu_addr_r            = WireInit(0.U(32.W))
+  val end_addr_d            = WireInit(0.U(32.W))
+  val end_addr_m            = WireInit(0.U(32.W))
+  val end_addr_r            = WireInit(0.U(32.W))
+  val lsu_busreq_r          = WireInit(Bool(),false.B)
 
   val lsu_lsc_ctl    = Module(new lsu_lsc_ctl())
   io.lsu_result_m := lsu_lsc_ctl.io.lsu_result_m
@@ -107,9 +112,9 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   // Bus signals
   val lsu_busreq_m = lsu_lsc_ctl.io.lsu_pkt_m.valid & ((lsu_lsc_ctl.io.lsu_pkt_m.bits.load | lsu_lsc_ctl.io.lsu_pkt_m.bits.store) & lsu_lsc_ctl.io.addr_external_m) & !flush_m_up & !lsu_lsc_ctl.io.lsu_exc_m & !lsu_lsc_ctl.io.lsu_pkt_m.bits.fast_int
   // Dual signals
-  val ldst_dual_d  = lsu_lsc_ctl.io.lsu_addr_d(2) =/= lsu_lsc_ctl.io.end_addr_d(2)
-  val ldst_dual_m  = lsu_lsc_ctl.io.lsu_addr_m(2) =/= lsu_lsc_ctl.io.end_addr_m(2)
-  val ldst_dual_r  = lsu_lsc_ctl.io.lsu_addr_r(2) =/= lsu_lsc_ctl.io.end_addr_r(2)
+  val ldst_dual_d  = lsu_addr_d(2) =/= end_addr_d(2)
+  val ldst_dual_m  = lsu_addr_m(2) =/= end_addr_m(2)
+  val ldst_dual_r  = lsu_addr_r(2) =/= end_addr_r(2)
   // PMU signals
   io.lsu_pmu_misaligned_m := lsu_lsc_ctl.io.lsu_pkt_m.valid & ((lsu_lsc_ctl.io.lsu_pkt_m.bits.half & lsu_lsc_ctl.io.lsu_addr_m(0)) | (lsu_lsc_ctl.io.lsu_pkt_m.bits.word & lsu_lsc_ctl.io.lsu_addr_m(1,0).orR))
   io.lsu_tlu.lsu_pmu_load_external_m  := lsu_lsc_ctl.io.lsu_pkt_m.valid & lsu_lsc_ctl.io.lsu_pkt_m.bits.load & lsu_lsc_ctl.io.addr_external_m
@@ -141,11 +146,16 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   lsu_lsc_ctl.io.dec_lsu_offset_d            := io.dec_lsu_offset_d
   lsu_lsc_ctl.io.picm_mask_data_m            := dccm_ctl.io.picm_mask_data_m
   lsu_lsc_ctl.io.bus_read_data_m             := bus_intf.io.bus_read_data_m
-  lsu_lsc_ctl.io.dma_lsc_ctl         <> io.lsu_dma.dma_lsc_ctl
+  lsu_lsc_ctl.io.dma_lsc_ctl                 <> io.lsu_dma.dma_lsc_ctl
   lsu_lsc_ctl.io.dec_tlu_mrac_ff             := io.dec_tlu_mrac_ff
   lsu_lsc_ctl.io.scan_mode                   := io.scan_mode
   //Outputs
-
+  lsu_addr_d := lsu_lsc_ctl.io.lsu_addr_d
+  lsu_addr_m := lsu_lsc_ctl.io.lsu_addr_m
+  lsu_addr_r := lsu_lsc_ctl.io.lsu_addr_r
+  end_addr_d := lsu_lsc_ctl.io.lsu_addr_d
+  end_addr_m := lsu_lsc_ctl.io.lsu_addr_m
+  end_addr_r := lsu_lsc_ctl.io.lsu_addr_r
   io.lsu_single_ecc_error_incr                  := lsu_lsc_ctl.io.lsu_single_ecc_error_incr
   io.lsu_error_pkt_r                            <> lsu_lsc_ctl.io.lsu_error_pkt_r
   io.lsu_fir_addr                               <> lsu_lsc_ctl.io.lsu_fir_addr
@@ -172,12 +182,12 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   dccm_ctl.io.lsu_raw_fwd_lo_r               := lsu_raw_fwd_lo_r
   dccm_ctl.io.lsu_raw_fwd_hi_r               := lsu_raw_fwd_hi_r
   dccm_ctl.io.lsu_commit_r                   := lsu_lsc_ctl.io.lsu_commit_r
-  dccm_ctl.io.lsu_addr_d                     := lsu_lsc_ctl.io.lsu_addr_d
-  dccm_ctl.io.lsu_addr_m                     := lsu_lsc_ctl.io.lsu_addr_m
-  dccm_ctl.io.lsu_addr_r                     := lsu_lsc_ctl.io.lsu_addr_r
-  dccm_ctl.io.end_addr_d                     := lsu_lsc_ctl.io.end_addr_d
-  dccm_ctl.io.end_addr_m                     := lsu_lsc_ctl.io.end_addr_m
-  dccm_ctl.io.end_addr_r                     := lsu_lsc_ctl.io.end_addr_r
+  dccm_ctl.io.lsu_addr_d                     := lsu_addr_d
+  dccm_ctl.io.lsu_addr_m                     := lsu_addr_m(DCCM_BITS-1,0)
+  dccm_ctl.io.lsu_addr_r                     := lsu_addr_r
+  dccm_ctl.io.end_addr_d                     := end_addr_d(DCCM_BITS-1,0)
+  dccm_ctl.io.end_addr_m                     := end_addr_m(DCCM_BITS-1,0)
+  dccm_ctl.io.end_addr_r                     := end_addr_r(DCCM_BITS-1,0)
   dccm_ctl.io.stbuf_reqvld_any               := stbuf.io.stbuf_reqvld_any
   dccm_ctl.io.stbuf_addr_any                 := stbuf.io.stbuf_addr_any
   dccm_ctl.io.stbuf_data_any                 := stbuf.io.stbuf_data_any
@@ -228,10 +238,10 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   stbuf.io.store_datafn_hi_r                    := dccm_ctl.io.store_datafn_hi_r
   stbuf.io.store_datafn_lo_r	  	               := dccm_ctl.io.store_datafn_lo_r
   stbuf.io.lsu_stbuf_commit_any	  	           := dccm_ctl.io.lsu_stbuf_commit_any
-  stbuf.io.lsu_addr_d	   	  		               := lsu_lsc_ctl.io.lsu_addr_d
+  stbuf.io.lsu_addr_d	   	  		               := lsu_addr_d
   stbuf.io.lsu_addr_m	   	  		               := lsu_lsc_ctl.io.lsu_addr_m
   stbuf.io.lsu_addr_r	   	  		               := lsu_lsc_ctl.io.lsu_addr_r
-  stbuf.io.end_addr_d	   	  		               := lsu_lsc_ctl.io.end_addr_d
+  stbuf.io.end_addr_d	   	  		               := end_addr_d
   stbuf.io.end_addr_m	   	  		               := lsu_lsc_ctl.io.end_addr_m
   stbuf.io.end_addr_r	   	  		               := lsu_lsc_ctl.io.end_addr_r
   stbuf.io.addr_in_dccm_m                       := lsu_lsc_ctl.io.addr_in_dccm_m
@@ -249,10 +259,10 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   ecc.io.dec_tlu_core_ecc_disable                := io.dec_tlu_core_ecc_disable
   ecc.io.lsu_dccm_rden_r        	               := dccm_ctl.io.lsu_dccm_rden_r
   ecc.io.addr_in_dccm_r                          := lsu_lsc_ctl.io.addr_in_dccm_r
-  ecc.io.lsu_addr_r	   	                         := lsu_lsc_ctl.io.lsu_addr_r
-  ecc.io.end_addr_r	   	                         := lsu_lsc_ctl.io.end_addr_r
-  ecc.io.lsu_addr_m	   	                         := lsu_lsc_ctl.io.lsu_addr_m
-  ecc.io.end_addr_m	   	                         := lsu_lsc_ctl.io.end_addr_m
+  ecc.io.lsu_addr_r	   	                         := lsu_addr_r
+  ecc.io.end_addr_r	   	                         := end_addr_r
+  ecc.io.lsu_addr_m	   	                         := lsu_addr_m
+  ecc.io.end_addr_m	   	                         := end_addr_m
   ecc.io.dccm_rdata_hi_r   	                     := dccm_ctl.io.dccm_rdata_hi_r
   ecc.io.dccm_rdata_lo_r   	                     := dccm_ctl.io.dccm_rdata_lo_r
   ecc.io.dccm_rdata_hi_m   	                     := dccm_ctl.io.dccm_rdata_hi_m
@@ -319,11 +329,11 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   bus_intf.io.ldst_dual_d                       := ldst_dual_d
   bus_intf.io.ldst_dual_m                       := ldst_dual_m
   bus_intf.io.ldst_dual_r                       := ldst_dual_r
-  bus_intf.io.lsu_addr_m                        := lsu_lsc_ctl.io.lsu_addr_m
-  bus_intf.io.lsu_addr_r                        := lsu_lsc_ctl.io.lsu_addr_r
-  bus_intf.io.end_addr_m                        := lsu_lsc_ctl.io.end_addr_m
-  bus_intf.io.end_addr_r                        := lsu_lsc_ctl.io.end_addr_r
-  bus_intf.io.store_data_r                      := dccm_ctl.io.store_data_r
+  bus_intf.io.lsu_addr_m                        := lsu_addr_m & Fill(32,lsu_lsc_ctl.io.addr_external_m & lsu_lsc_ctl.io.lsu_pkt_m.valid)
+  bus_intf.io.lsu_addr_r                        := lsu_addr_r & Fill(32,lsu_busreq_r)
+  bus_intf.io.end_addr_m                        := end_addr_m & Fill(32,lsu_lsc_ctl.io.addr_external_m & lsu_lsc_ctl.io.lsu_pkt_m.valid)
+  bus_intf.io.end_addr_r                        := end_addr_r & Fill(32,lsu_busreq_r)
+  bus_intf.io.store_data_r                      := dccm_ctl.io.store_data_r &  Fill(32,lsu_busreq_r)
   bus_intf.io.lsu_pkt_m                         <> lsu_lsc_ctl.io.lsu_pkt_m
   bus_intf.io.lsu_pkt_r                         <> lsu_lsc_ctl.io.lsu_pkt_r
   bus_intf.io.dec_tlu_force_halt                := io.dec_tlu_force_halt
@@ -333,6 +343,7 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   bus_intf.io.flush_r                           := flush_r
   //Outputs
   io.lsu_dec.dctl_busbuff <> bus_intf.io.dctl_busbuff
+  lsu_busreq_r := bus_intf.io.lsu_busreq_r
   io.axi                                        <> bus_intf.io.axi
   bus_intf.io.lsu_bus_clk_en                    := io.lsu_bus_clk_en
 

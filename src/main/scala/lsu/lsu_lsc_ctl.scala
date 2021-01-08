@@ -1,10 +1,8 @@
 package lsu
-import include._
+import include.{lsu_error_pkt_t, _}
 import lib._
 import chisel3._
 import chisel3.util._
-
-
 import chisel3.experimental.chiselName
 @chiselName
 class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
@@ -77,7 +75,7 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
     val addr_in_pic_m     = Output(UInt(1.W))
     val addr_in_pic_r     = Output(UInt(1.W))
 
-    val addr_external_m   = Output(UInt(1.W))
+    val addr_external_m   = Output(Bool())
 
     // DMA slave
     val dma_lsc_ctl = new dma_lsc_ctl()
@@ -96,6 +94,7 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
   val lsu_pkt_m_in    = Wire(Valid(new lsu_pkt_t()))
   val lsu_pkt_r_in    = Wire(Valid(new lsu_pkt_t()))
   val lsu_error_pkt_m = Wire(Valid(new lsu_error_pkt_t()))
+  lsu_error_pkt_m  := 0.U.asTypeOf(lsu_error_pkt_m)
 
   val lsu_rs1_d       = Mux(io.dec_lsu_valid_raw_d.asBool,io.lsu_exu.exu_lsu_rs1_d,io.dma_lsc_ctl.dma_mem_addr)
   val lsu_offset_d    = io.dec_lsu_offset_d(11,0) & Fill(12,io.dec_lsu_valid_raw_d)
@@ -248,8 +247,8 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
 
   if (LOAD_TO_USE_PLUS1 == 1){
     //bus_read_data_r coming from bus interface, lsu_ld_data_r -> coming from dccm_ctl
-    lsu_ld_datafn_r       := Mux(addr_external_r.asBool, bus_read_data_r,io.lsu_ld_data_r)
-    lsu_ld_datafn_corr_r  := Mux(addr_external_r.asBool, bus_read_data_r,io.lsu_ld_data_corr_r)
+    lsu_ld_datafn_r       := Mux(addr_external_r, bus_read_data_r,io.lsu_ld_data_r)
+    lsu_ld_datafn_corr_r  := Mux(addr_external_r, bus_read_data_r,io.lsu_ld_data_corr_r)
     // this is really R stage but don't want to make all the changes to support M,R buses
     io.lsu_result_m       := ((Fill(32,io.lsu_pkt_r.bits.unsign  & io.lsu_pkt_r.bits.by))    & Cat(0.U(24.W),lsu_ld_datafn_r(7,0))) |
       ((Fill(32,io.lsu_pkt_r.bits.unsign  & io.lsu_pkt_r.bits.half))  & Cat(0.U(16.W),lsu_ld_datafn_r(15,0)))    |
@@ -265,7 +264,7 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
   }
 
   else  {
-    lsu_ld_datafn_m       := Mux(io.addr_external_m.asBool, io.bus_read_data_m,io.lsu_ld_data_m)
+    lsu_ld_datafn_m       := Mux(io.addr_external_m, io.bus_read_data_m,io.lsu_ld_data_m)
     lsu_ld_datafn_corr_r  := Mux(addr_external_r===1.U, bus_read_data_r,io.lsu_ld_data_corr_r)
     io.lsu_result_m       := ((Fill(32,io.lsu_pkt_m.bits.unsign  & io.lsu_pkt_m.bits.by))    & Cat(0.U(24.W),lsu_ld_datafn_m(7,0))) |
       ((Fill(32,io.lsu_pkt_m.bits.unsign  & io.lsu_pkt_m.bits.half))  & Cat(0.U(16.W),lsu_ld_datafn_m(15,0)))    |

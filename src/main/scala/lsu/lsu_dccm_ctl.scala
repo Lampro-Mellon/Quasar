@@ -118,7 +118,7 @@ class  lsu_dccm_ctl extends Module with RequireAsyncReset with lib
   val ld_single_ecc_error_lo_r_ff = WireInit(UInt(1.W),0.U)
   val ld_sec_addr_hi_r_ff = WireInit(UInt(DCCM_BITS.W),0.U)
   val ld_sec_addr_lo_r_ff = WireInit(UInt(DCCM_BITS.W),0.U)
-
+  io.lsu_ld_data_m :=0.U
   //Forwarding stbuf
   if (LOAD_TO_USE_PLUS1 == 1){
     io.dma_dccm_ctl.dccm_dma_rvalid    := io.lsu_pkt_r.valid & io.lsu_pkt_r.bits.load & io.lsu_pkt_r.bits.dma
