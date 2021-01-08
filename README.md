@@ -138,7 +138,11 @@ Snapshots are placed in `$BUILD_PATH` directory.
 ```
     make -f $RV_ROOT/tools/Makefile sbt
 ```
-This command will generate the Quasar wrapper in system verilog of Quasar chisel, in the `generated_rtl` directory and runs the script for reset to make it active-low. 
+This command will generate the Quasar wrapper in system verilog of Quasar chisel, in the `generated_rtl` directory and runs the `reset_script.py`
+*   In the reset_script we do a post verilog-generation changes, these changes are as follows:
+    
+    * Replace `posedge reset` with `negedge reset`
+    * Replace `if (reset)` with `if (~reset)`
 
 #### 4. Running a simple Hello World program (verilator)
 ```    
