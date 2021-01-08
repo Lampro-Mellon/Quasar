@@ -73,7 +73,7 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
     val addr_in_pic_m     = Output(UInt(1.W))
     val addr_in_pic_r     = Output(UInt(1.W))
 
-    val addr_external_m   = Output(UInt(1.W))
+    val addr_external_m   = Output(Bool())
 
     // DMA slave
     val dma_lsc_ctl = new dma_lsc_ctl()
@@ -91,6 +91,7 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
   val lsu_pkt_m_in    = Wire(Valid(new lsu_pkt_t()))
   val lsu_pkt_r_in    = Wire(Valid(new lsu_pkt_t()))
   val lsu_error_pkt_m = Wire(Valid(new lsu_error_pkt_t()))
+  lsu_error_pkt_m  := 0.U.asTypeOf(lsu_error_pkt_m)
 
   val lsu_rs1_d       = Mux(io.dec_lsu_valid_raw_d.asBool,io.lsu_exu.exu_lsu_rs1_d,io.dma_lsc_ctl.dma_mem_addr)
   val lsu_offset_d    = io.dec_lsu_offset_d(11,0) & Fill(12,io.dec_lsu_valid_raw_d)
