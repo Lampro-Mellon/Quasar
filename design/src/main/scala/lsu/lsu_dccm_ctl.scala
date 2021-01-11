@@ -116,21 +116,24 @@ class  lsu_dccm_ctl extends Module with RequireAsyncReset with lib
     io.dma_dccm_ctl.dccm_dma_rvalid    := io.lsu_pkt_r.valid & io.lsu_pkt_r.bits.load & io.lsu_pkt_r.bits.dma
     io.dma_dccm_ctl.dccm_dma_ecc_error := io.lsu_double_ecc_error_r //from ecc
     io.dma_dccm_ctl.dccm_dma_rdata     := lsu_rdata_corr_r
+    val dccm_data_ecc_m = Cat(io.dccm_data_ecc_hi_m,io.dccm_data_ecc_lo_m)
     //Registers
     io.dccm_rdata_hi_r    := rvdffe(io.dccm_rdata_hi_m,io.lsu_dccm_rden_m.asBool,clock,io.scan_mode.asBool)
     io.dccm_rdata_lo_r    := rvdffe(io.dccm_rdata_lo_m,io.lsu_dccm_rden_m.asBool,clock,io.scan_mode.asBool)
-    io.dccm_data_ecc_hi_r := rvdffe(io.dccm_data_ecc_hi_m,io.lsu_dccm_rden_m.asBool,clock,io.scan_mode.asBool)
-    io.dccm_data_ecc_lo_r := rvdffe(io.dccm_data_ecc_lo_m,io.lsu_dccm_rden_m.asBool,clock,io.scan_mode.asBool)
+    val dccm_data_ecc_r   = rvdffe(dccm_data_ecc_m,io.lsu_dccm_rden_m.asBool,clock,io.scan_mode.asBool)
+    io.dccm_data_ecc_hi_r := dccm_data_ecc_r(13,7)
+    io.dccm_data_ecc_lo_r := dccm_data_ecc_r(6,0)
     stbuf_fwdbyteen_r     := withClock(io.lsu_c2_r_clk){RegNext(Cat(io.stbuf_fwdbyteen_hi_m,io.stbuf_fwdbyteen_lo_m),0.U)}
     stbuf_fwddata_r       := withClock(io.lsu_c2_r_clk){RegNext(Cat(io.stbuf_fwddata_hi_m  ,io.stbuf_fwddata_lo_m  ),0.U)}
     picm_rd_data_r_32     := withClock(io.lsu_c2_r_clk){RegNext(picm_rd_data_m(31,0),0.U)}
     picm_rd_data_r        := Cat(picm_rd_data_r_32,picm_rd_data_r_32)
-    io.dma_dccm_ctl.dccm_dma_rtag      := withClock(io.lsu_c1_r_clk){RegNext(io.dma_mem_tag_m,0.U)}
-
+    io.dma_dccm_ctl.dccm_dma_rtag  := withClock(io.lsu_c1_r_clk){RegNext(io.dma_mem_tag_m,0.U)}
     lsu_rdata_corr_r      := Reverse(Cat(VecInit.tabulate(8)(i=> Reverse(Mux(stbuf_fwdbyteen_r(i).asBool,stbuf_fwddata_r((8*i)+7,8*i),Mux(io.addr_in_pic_r.asBool,picm_rd_data_r((8*i)+7,8*i),dccm_rdata_corr_r((8*i)+7,8*i)))))))
     lsu_rdata_r           := Reverse(Cat(VecInit.tabulate(8)(i=> Reverse(Mux(stbuf_fwdbyteen_r(i).asBool,stbuf_fwddata_r((8*i)+7,8*i),Mux(io.addr_in_pic_r.asBool,picm_rd_data_r((8*i)+7,8*i),dccm_rdata_r((8*i)+7,8*i)))))))
-    io.lsu_ld_data_r      := lsu_rdata_r>> 8.U*io.lsu_addr_r(1,0)
-    io.lsu_ld_data_corr_r := lsu_rdata_corr_r >> 8.U*io.lsu_addr_r(1,0)
+    val inter1            = lsu_rdata_r>> 8.U*io.lsu_addr_r(1,0)
+    io.lsu_ld_data_r      :=inter1(31,0)
+    val inter2            = lsu_rdata_corr_r >> 8.U*io.lsu_addr_r(1,0)
+    io.lsu_ld_data_corr_r := inter2(31,0)
   }
 
   else{
@@ -244,7 +247,7 @@ class  lsu_dccm_ctl extends Module with RequireAsyncReset with lib
     io.store_data_lo_r      := Reverse(Cat(VecInit.tabulate(4)(i=> Reverse(Mux(store_byteen_ext_r(i).asBool,  store_data_pre_lo_r((8*i)+7,8*i), Mux((dccm_wren_Q & dccm_wr_bypass_d_m_lo_Q).asBool, dccm_wr_data_Q((8*i)+7,8*i),io.sec_data_lo_r((8*i)+7,8*i)))))))
     io.store_data_hi_r      := Reverse(Cat(VecInit.tabulate(4)(i=> Reverse(Mux(store_byteen_ext_r(i+4).asBool,store_data_pre_hi_r((8*i)+7,8*i), Mux((dccm_wren_Q & dccm_wr_bypass_d_m_hi_Q).asBool, dccm_wr_data_Q((8*i)+7,8*i),io.sec_data_hi_r((8*i)+7,8*i)))))))
     io.store_datafn_lo_r    := Reverse(Cat(VecInit.tabulate(4)(i=> Reverse(Mux(store_byteen_ext_r(i).asBool,  store_data_pre_lo_r((8*i)+7,8*i), Mux((io.lsu_stbuf_commit_any & dccm_wr_bypass_d_r_lo).asBool,io.stbuf_data_any((8*i)+7,(8*i)),Mux((dccm_wren_Q & dccm_wr_bypass_d_m_lo_Q).asBool, dccm_wr_data_Q((8*i)+7,8*i),io.sec_data_lo_r((8*i)+7,8*i))))))))
-    io.store_datafn_hi_r    := Reverse(Cat(VecInit.tabulate(4)(i=> Reverse(Mux(store_byteen_ext_r(i+4).asBool,store_data_pre_hi_r((8*i)+7,8*i), Mux((io.lsu_stbuf_commit_any & dccm_wr_bypass_d_r_lo).asBool,io.stbuf_data_any((8*i)+7,(8*i)),Mux((dccm_wren_Q & dccm_wr_bypass_d_m_hi_Q).asBool, dccm_wr_data_Q((8*i)+7,8*i),io.sec_data_hi_r((8*i)+7,8*i))))))))
+    io.store_datafn_hi_r    := Reverse(Cat(VecInit.tabulate(4)(i=> Reverse(Mux(store_byteen_ext_r(i+4).asBool,store_data_pre_hi_r((8*i)+7,8*i), Mux((io.lsu_stbuf_commit_any & dccm_wr_bypass_d_r_hi).asBool,io.stbuf_data_any((8*i)+7,(8*i)),Mux((dccm_wren_Q & dccm_wr_bypass_d_m_hi_Q).asBool, dccm_wr_data_Q((8*i)+7,8*i),io.sec_data_hi_r((8*i)+7,8*i))))))))
     dccm_wren_Q             := withClock(io.lsu_free_c2_clk){RegNext(io.lsu_stbuf_commit_any,0.U)}
     dccm_wr_data_Q          := rvdffe(io.stbuf_data_any,io.lsu_stbuf_commit_any.asBool,clock,io.scan_mode.asBool)
     dccm_wr_bypass_d_m_lo_Q := withClock(io.lsu_free_c2_clk){RegNext(dccm_wr_bypass_d_m_lo,0.U)}
