@@ -152,7 +152,7 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
   io.lsu_single_ecc_error_incr := (io.lsu_single_ecc_error_r & !io.lsu_double_ecc_error_r) & (io.lsu_commit_r | io.lsu_pkt_r.bits.dma) & io.lsu_pkt_r.valid
 
   if (LOAD_TO_USE_PLUS1 == 1){
-    // Generate exception packet
+     // Generate exception packet
     io.lsu_error_pkt_r.valid := (access_fault_r | misaligned_fault_r | io.lsu_double_ecc_error_r) & io.lsu_pkt_r.valid & !io.lsu_pkt_r.bits.dma & !io.lsu_pkt_r.bits.fast_int  //TBD(lsu_pkt_r.fast_int)
     io.lsu_error_pkt_r.bits.single_ecc_error := io.lsu_single_ecc_error_r & !io.lsu_error_pkt_r.valid & !io.lsu_pkt_r.bits.dma
     io.lsu_error_pkt_r.bits.inst_type := io.lsu_pkt_r.bits.store
