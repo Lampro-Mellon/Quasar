@@ -206,12 +206,10 @@ class lsu_stbuf extends Module with lib with RequireAsyncReset {
   val stbuf_match_hi = (0 until LSU_STBUF_DEPTH).map(i=> ((stbuf_addr(i)(LSU_SB_BITS-1,log2Ceil(DCCM_BYTE_WIDTH)) === cmpaddr_hi_m(13,0)) & stbuf_vld(i) & !stbuf_dma_kill(i) & io.addr_in_dccm_m).asUInt).reverse.reduce(Cat(_,_))
   val stbuf_match_lo = (0 until LSU_STBUF_DEPTH).map(i=> ((stbuf_addr(i)(LSU_SB_BITS-1,log2Ceil(DCCM_BYTE_WIDTH)) === cmpaddr_lo_m(13,0)) & stbuf_vld(i) & !stbuf_dma_kill(i) & io.addr_in_dccm_m).asUInt).reverse.reduce(Cat(_,_))
   stbuf_dma_kill_en := (0 until LSU_STBUF_DEPTH).map(i=> ((stbuf_match_hi(i) | stbuf_match_lo(i)) & io.lsu_pkt_m.valid & io.lsu_pkt_m.bits.dma & io.lsu_pkt_m.bits.store).asUInt).reverse.reduce(Cat(_,_))
-
-
   val stbuf_fwdbyteenvec_hi = (0 until LSU_STBUF_DEPTH).map(i=>(0 until DCCM_BYTE_WIDTH).map(j=> stbuf_match_hi(i) & stbuf_byteen(i)(j) & stbuf_vld(i).asUInt()))
   val stbuf_fwdbyteenvec_lo = (0 until LSU_STBUF_DEPTH).map(i=>(0 until DCCM_BYTE_WIDTH).map(j=> stbuf_match_lo(i) & stbuf_byteen(i)(j) & stbuf_vld(i).asUInt()))
-  val stbuf_fwdbyteen_hi_pre_m = (0 until LSU_STBUF_DEPTH).map(j=>(0 until DCCM_BYTE_WIDTH).map(i=> stbuf_fwdbyteenvec_hi(i)(j).asUInt()).reduce(_|_))
-  val stbuf_fwdbyteen_lo_pre_m = (0 until LSU_STBUF_DEPTH).map(j=>(0 until DCCM_BYTE_WIDTH).map(i=> stbuf_fwdbyteenvec_lo(i)(j).asUInt()).reduce(_|_))
+  val stbuf_fwdbyteen_hi_pre_m = (0 until DCCM_BYTE_WIDTH).map(j=>(0 until LSU_STBUF_DEPTH).map(i=> stbuf_fwdbyteenvec_hi(i)(j).asUInt()).reduce(_|_))
+  val stbuf_fwdbyteen_lo_pre_m = (0 until DCCM_BYTE_WIDTH).map(j=>(0 until LSU_STBUF_DEPTH).map(i=> stbuf_fwdbyteenvec_lo(i)(j).asUInt()).reduce(_|_))
 
   val stbuf_fwddata_hi_pre_m = VecInit.tabulate(LSU_STBUF_DEPTH)(i=> Fill(32,stbuf_match_hi(i)) & stbuf_data(i)).reverse.reduce(_|_)
   val stbuf_fwddata_lo_pre_m = VecInit.tabulate(LSU_STBUF_DEPTH)(i=> Fill(32,stbuf_match_lo(i)) & stbuf_data(i)).reverse.reduce(_|_)
@@ -265,3 +263,4 @@ class lsu_stbuf extends Module with lib with RequireAsyncReset {
   val stbuf_fwdpipe4_hi = Mux(ld_byte_rhit_hi(3),ld_fwddata_rpipe_hi(31,24),stbuf_fwddata_hi_pre_m(31,24))
   io.stbuf_fwddata_hi_m := Cat(stbuf_fwdpipe4_hi,stbuf_fwdpipe3_hi,stbuf_fwdpipe2_hi,stbuf_fwdpipe1_hi)
 }
+
