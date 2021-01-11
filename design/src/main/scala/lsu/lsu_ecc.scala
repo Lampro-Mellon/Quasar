@@ -117,8 +117,7 @@ class lsu_ecc extends Module with lib with RequireAsyncReset {
     double_ecc_error_lo_r  := double_ecc_error_lo_any
     io.lsu_single_ecc_error_r := io.single_ecc_error_hi_r | io.single_ecc_error_lo_r;
     io.lsu_double_ecc_error_r := double_ecc_error_hi_r | double_ecc_error_lo_r
-  }
-    .otherwise {
+  }.otherwise {
       ldst_dual_m := io.lsu_addr_m(2) =/= io.end_addr_m(2)
       is_ldst_m := io.lsu_pkt_m.valid & (io.lsu_pkt_m.bits.load | io.lsu_pkt_m.bits.store) & io.addr_in_dccm_m & io.lsu_dccm_rden_m
       is_ldst_lo_m := is_ldst_m & !io.dec_tlu_core_ecc_disable
