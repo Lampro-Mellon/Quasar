@@ -103,6 +103,7 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   // Indicates non-idle if there is a instruction valid in d-r or read/write buffers are non-empty since they can come with error
   // Store buffer now have only non-dma dccm stores
   // stbuf_empty not needed since it has only dccm stores
+
   io.lsu_idle_any := !((lsu_lsc_ctl.io.lsu_pkt_m.valid & !lsu_lsc_ctl.io.lsu_pkt_m.bits.dma) | (lsu_lsc_ctl.io.lsu_pkt_r.valid & !lsu_lsc_ctl.io.lsu_pkt_r.bits.dma)) & bus_intf.io.lsu_bus_buffer_empty_any
   io.lsu_active := (lsu_lsc_ctl.io.lsu_pkt_m.valid | lsu_lsc_ctl.io.lsu_pkt_r.valid | dccm_ctl.io.ld_single_ecc_error_r_ff) | !bus_intf.io.lsu_bus_buffer_empty_any  // This includes DMA. Used for gating top clock
   // Instantiate the store buffer

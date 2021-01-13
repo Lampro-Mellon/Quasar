@@ -16,7 +16,7 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
       val sig = Flipped(new ahb_channel())
       val hsel = Input(Bool())
       val hreadyin = Input(Bool())}
-    })
+  })
   io.axi <> 0.U.asTypeOf(io.axi)
   val idle:: wr :: rd :: pend :: Nil = Enum(4)
   val master_wstrb        = WireInit(0.U(8.W))
@@ -38,9 +38,9 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
 
   // signals needed for the read data coming back from the core and to block any further commands as AHB is a blocking bus
   val buf_rdata_en        = WireInit(Bool(), false.B)
-  val ahb_bus_addr_clk_en = WireInit(Bool(), false.B)
+  val ahb_addr_clk_en = WireInit(Bool(), false.B)
   val buf_rdata_clk_en    = WireInit(Bool(), false.B)
-  val ahb_clk             = Wire(Clock())
+  val bus_clk             = Wire(Clock())
   val ahb_addr_clk        = Wire(Clock())
   val buf_rdata_clk       = Wire(Clock())
 
@@ -54,7 +54,6 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
   val cmdbuf_wstrb        = WireInit(0.U(8.W))
   val cmdbuf_addr         = WireInit(0.U(32.W))
   val cmdbuf_wdata        = WireInit(0.U(64.W))
-  val bus_clk             = Wire(Clock())
 
   // Address check  dccm
   val (ahb_addr_in_dccm_region_nc,ahb_addr_in_dccm) = rvrangecheck(DCCM_SADR,DCCM_SIZE,ahb_haddr_q)
@@ -92,7 +91,7 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
       buf_read_error_in := buf_state_en & io.axi.r.bits.resp(1, 0).orR // buffer error flag if return has Error ( ECC )
     }
   }
-  buf_state                   := withClock(ahb_clk){RegEnable(buf_nxtstate,0.U,buf_state_en.asBool())}
+  buf_state                   := rvdffs_fpga(buf_nxtstate,buf_state_en.asBool(),bus_clk,io.bus_clk_en,clock)
 
   master_wstrb                :=  (Fill(8,ahb_hsize_q(2,0) === 0.U)  & (1.U  << ahb_haddr_q(2,0)).asUInt()) |
     (Fill(8,ahb_hsize_q(2,0) === 1.U)  & (3.U  << ahb_haddr_q(2,0)).asUInt()) |
@@ -114,43 +113,42 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
     (ahb_hresp_q & !ahb_hready_q)
 
   // Buffer signals - needed for the read data and ECC error response
-  buf_rdata                   := withClock(buf_rdata_clk){RegNext(io.axi.r.bits.data,0.U)}
-  buf_read_error              := withClock(ahb_clk){RegNext(buf_read_error_in,0.U)}
+  buf_rdata                   := rvdff_fpga(io.axi.r.bits.data,buf_rdata_clk,buf_rdata_clk_en,clock)
+  buf_read_error              := rvdff_fpga(buf_read_error_in,bus_clk,io.bus_clk_en,clock)
 
   // All the Master signals are captured before presenting it to the command buffer. We check for Hresp before sending it to the cmd buffer.
-  ahb_hresp_q                 := withClock(ahb_clk){RegNext(io.ahb.sig.in.hresp,0.U)}
-  ahb_hready_q                := withClock(ahb_clk){RegNext(ahb_hready,0.U)}
-  ahb_htrans_q                := withClock(ahb_clk){RegNext(ahb_htrans_in,0.U)}
-  ahb_hsize_q                 := withClock(ahb_addr_clk){RegNext(io.ahb.sig.out.hsize,0.U)}
-  ahb_hwrite_q                := withClock(ahb_addr_clk){RegNext(io.ahb.sig.out.hwrite,0.U)}
-  ahb_haddr_q                 := withClock(ahb_addr_clk){RegNext(io.ahb.sig.out.haddr,0.U)}
+  ahb_hresp_q                 := rvdff_fpga (io.ahb.sig.in.hresp,bus_clk,io.bus_clk_en,clock)
+  ahb_hready_q                := rvdff_fpga (ahb_hready,bus_clk,io.bus_clk_en,clock)
+  ahb_htrans_q                := rvdff_fpga (ahb_htrans_in,bus_clk,io.bus_clk_en,clock)
+  ahb_hsize_q                 := rvdff_fpga (io.ahb.sig.out.hsize,ahb_addr_clk,ahb_addr_clk_en,clock)
+  ahb_hwrite_q                := rvdff_fpga (io.ahb.sig.out.hwrite,ahb_addr_clk,ahb_addr_clk_en,clock)
+  ahb_haddr_q                 := rvdff_fpga (io.ahb.sig.out.haddr,ahb_addr_clk,ahb_addr_clk_en,clock)
 
   // Clock header logic
-  ahb_bus_addr_clk_en         := io.bus_clk_en & (ahb_hready & io.ahb.sig.out.htrans(1))
-  buf_rdata_clk_en            := io.bus_clk_en & buf_rdata_en;
+  ahb_addr_clk_en         := io.bus_clk_en & (ahb_hready & io.ahb.sig.out.htrans(1))
+  buf_rdata_clk_en            := io.bus_clk_en & buf_rdata_en
 
-  ahb_clk                     := rvclkhdr(clock, io.bus_clk_en, io.scan_mode)
-  ahb_addr_clk                := rvclkhdr(clock, ahb_bus_addr_clk_en, io.scan_mode)
-  buf_rdata_clk               := rvclkhdr(clock, buf_rdata_clk_en, io.scan_mode)
-
+  if(RV_FPGA_OPTIMIZE){
+     bus_clk       := 0.B.asClock()
+     ahb_addr_clk  := 0.B.asClock()
+     buf_rdata_clk := 0.B.asClock()
+    }
+  else {
+    bus_clk := rvclkhdr(clock, io.bus_clk_en, io.scan_mode)
+    ahb_addr_clk := rvclkhdr(clock, ahb_addr_clk_en, io.scan_mode)
+    buf_rdata_clk := rvclkhdr(clock, buf_rdata_clk_en, io.scan_mode)
+  }
   cmdbuf_rst                  := (((io.axi.aw.valid & io.axi.aw.ready) | (io.axi.ar.valid & io.axi.ar.ready)) & !cmdbuf_wr_en) | (io.ahb.sig.in.hresp & !cmdbuf_write)
   cmdbuf_full                 := (cmdbuf_vld & !((io.axi.aw.valid & io.axi.aw.ready) | (io.axi.ar.valid & io.axi.ar.ready)))
   //rvdffsc
-  cmdbuf_vld                  := withClock(bus_clk) {RegNext((Mux(cmdbuf_wr_en.asBool(),"b1".U,cmdbuf_vld) & !cmdbuf_rst), 0.U)}
-
+  cmdbuf_vld                  := rvdffsc_fpga("b1".U,cmdbuf_wr_en.asBool(),cmdbuf_rst,bus_clk,io.bus_clk_en,clock)
   //dffs
-  cmdbuf_write                := withClock(bus_clk) {
-    RegEnable(ahb_hwrite_q, 0.U, cmdbuf_wr_en.asBool())}
-
-  cmdbuf_size                 := withClock(bus_clk) {
-    RegEnable(ahb_hsize_q, 0.U, cmdbuf_wr_en.asBool())}
-
-  cmdbuf_wstrb                := withClock(bus_clk) {
-    RegEnable(master_wstrb, 0.U, cmdbuf_wr_en.asBool())}
-
+  cmdbuf_write                := rvdffs_fpga(ahb_hwrite_q, cmdbuf_wr_en.asBool(),bus_clk,io.bus_clk_en,clock)
+  cmdbuf_size                 := rvdffs_fpga(ahb_hsize_q, cmdbuf_wr_en.asBool(),bus_clk,io.bus_clk_en,clock)
+  cmdbuf_wstrb                := rvdffs_fpga(master_wstrb, cmdbuf_wr_en.asBool(),bus_clk,io.bus_clk_en,clock)
   //rvdffe
-  cmdbuf_addr := rvdffe(ahb_haddr_q, cmdbuf_wr_en.asBool(),bus_clk,io.scan_mode)
-  cmdbuf_wdata := rvdffe(io.ahb.sig.out.hwdata, cmdbuf_wr_en.asBool(),bus_clk,io.scan_mode)
+  cmdbuf_addr := rvdffe(ahb_haddr_q, cmdbuf_wr_en.asBool()& io.bus_clk_en,clock,io.scan_mode)
+  cmdbuf_wdata := rvdffe(io.ahb.sig.out.hwdata, cmdbuf_wr_en.asBool()& io.bus_clk_en,clock,io.scan_mode)
 
   // AXI Write Command Channel
   io.axi.aw.valid          := cmdbuf_vld & cmdbuf_write
@@ -177,9 +175,8 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
   io.axi.ar.bits.burst          := "b01".U
   // AXI Read Response Channel - Always ready as AHB reads are blocking and the the buffer is available for the read coming back always.
   io.axi.r.ready           := true.B
-  bus_clk                 := rvclkhdr(clock, io.bus_clk_en, io.scan_mode)
 }
 
-//object ahb_to_axi4 extends App {
- // println((new chisel3.stage.ChiselStage).emitVerilog(new ahb_to_axi4(3)))
-//}
+object ahb_to_axi4 extends App {
+ println((new chisel3.stage.ChiselStage).emitVerilog(new ahb_to_axi4(1)))
+}

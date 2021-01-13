@@ -384,6 +384,15 @@ trait lib extends param{
       else withClock(clk) {RegEnable (din, 0.U,en)}
     }
   }
+  object rvdffsc_fpga {
+    def apply(din: UInt, en:Bool,clear: UInt, clk: Clock, clken: Bool,rawclk:Clock):UInt = {
+      val dout =Wire(UInt())
+      if (RV_FPGA_OPTIMIZE)
+        dout := withClock (rawclk) {RegEnable ((din & Fill(clear.getWidth,!clear)) , 0.U, ((en|clear)& clken))}
+      else dout := withClock(clk) {RegNext (Mux(en,din,dout) & !clear, 0.U)}
+      dout
+    }
+  }
   ////rvdffe ///////////////////////////////////////////////////////////////////////
   object rvdffe {
     def apply(din: UInt, en: Bool, clk: Clock, scan_mode: Bool): UInt = {

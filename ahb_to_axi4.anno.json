@@ -1,0 +1,34 @@
+[
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~ahb_to_axi4|ahb_to_axi4>io_ahb_sig_in_hready",
+    "sources":[
+      "~ahb_to_axi4|ahb_to_axi4>io_ahb_sig_in_hresp",
+      "~ahb_to_axi4|ahb_to_axi4>io_axi_aw_valid",
+      "~ahb_to_axi4|ahb_to_axi4>io_axi_aw_ready",
+      "~ahb_to_axi4|ahb_to_axi4>io_axi_ar_valid",
+      "~ahb_to_axi4|ahb_to_axi4>io_axi_ar_ready"
+    ]
+  },
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxResourceAnno",
+    "target":"ahb_to_axi4.gated_latch",
+    "resourceId":"/vsrc/gated_latch.sv"
+  },
+  {
+    "class":"firrtl.options.TargetDirAnnotation",
+    "directory":"."
+  },
+  {
+    "class":"firrtl.options.OutputAnnotationFileAnnotation",
+    "file":"ahb_to_axi4"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"."
+  }
+]

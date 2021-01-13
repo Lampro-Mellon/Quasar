@@ -132,7 +132,7 @@ trait param {
   val INST_ACCESS_MASK5      = 	0xFFFFFFFF
   val INST_ACCESS_MASK6      = 	0xFFFFFFFF
   val INST_ACCESS_MASK7      = 	0xFFFFFFFF
-  val LOAD_TO_USE_PLUS1      = 	0x1
+  val LOAD_TO_USE_PLUS1      = 	0x0
   val LSU2DMA                = 	0x0
   val LSU_BUS_ID             = 	0x1
   val LSU_BUS_PRTY           = 	0x2
