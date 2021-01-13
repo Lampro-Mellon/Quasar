@@ -157,7 +157,7 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
   io.axi.aw.bits.size           := Cat("b0".U, cmdbuf_size(1, 0))
   io.axi.aw.bits.prot           := Fill(3, 0.U)
   io.axi.aw.bits.len            := Fill(8, 0.U)
-  io.axi.aw.bits.burst          := "b01".U
+  io.axi.aw.bits.burst          := "b01".U(2.W)
   // AXI Write Data Channel - This is tied to the command channel as we only write the command buffer once we have the data.
   io.axi.w.valid           := cmdbuf_vld & cmdbuf_write
   io.axi.w.bits.data            := cmdbuf_wdata
@@ -172,7 +172,7 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
   io.axi.ar.bits.size           := Cat("b0".U, cmdbuf_size(1, 0))
   io.axi.ar.bits.prot           := Fill(3, 0.U)
   io.axi.ar.bits.len            := Fill(8, 0.U)
-  io.axi.ar.bits.burst          := "b01".U
+  io.axi.ar.bits.burst          := "b01".U(2.W)
   // AXI Read Response Channel - Always ready as AHB reads are blocking and the the buffer is available for the read coming back always.
   io.axi.r.ready           := true.B
 }

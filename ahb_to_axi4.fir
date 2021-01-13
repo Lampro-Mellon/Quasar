@@ -504,7 +504,7 @@ circuit ahb_to_axi4 :
     io.axi.aw.bits.prot <= _T_186 @[ahb_to_axi4.scala 158:33]
     node _T_187 = mux(UInt<1>("h00"), UInt<8>("h0ff"), UInt<8>("h00")) @[Bitwise.scala 72:12]
     io.axi.aw.bits.len <= _T_187 @[ahb_to_axi4.scala 159:33]
-    io.axi.aw.bits.burst <= UInt<1>("h01") @[ahb_to_axi4.scala 160:33]
+    io.axi.aw.bits.burst <= UInt<2>("h01") @[ahb_to_axi4.scala 160:33]
     node _T_188 = and(cmdbuf_vld, cmdbuf_write) @[ahb_to_axi4.scala 162:42]
     io.axi.w.valid <= _T_188 @[ahb_to_axi4.scala 162:28]
     io.axi.w.bits.data <= cmdbuf_wdata @[ahb_to_axi4.scala 163:33]
@@ -523,6 +523,6 @@ circuit ahb_to_axi4 :
     io.axi.ar.bits.prot <= _T_193 @[ahb_to_axi4.scala 173:33]
     node _T_194 = mux(UInt<1>("h00"), UInt<8>("h0ff"), UInt<8>("h00")) @[Bitwise.scala 72:12]
     io.axi.ar.bits.len <= _T_194 @[ahb_to_axi4.scala 174:33]
-    io.axi.ar.bits.burst <= UInt<1>("h01") @[ahb_to_axi4.scala 175:33]
+    io.axi.ar.bits.burst <= UInt<2>("h01") @[ahb_to_axi4.scala 175:33]
     io.axi.r.ready <= UInt<1>("h01") @[ahb_to_axi4.scala 177:28]
     
