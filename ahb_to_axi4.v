@@ -219,13 +219,12 @@ module ahb_to_axi4(
   wire  _T_164 = cmdbuf_wr_en | cmdbuf_rst; // @[lib.scala 391:95]
   wire  _T_165 = _T_164 & io_bus_clk_en; // @[lib.scala 391:102]
   wire  _T_169 = io_bus_clk_en & cmdbuf_wr_en; // @[lib.scala 383:57]
-  reg [2:0] _T_173; // @[Reg.scala 27:20]
+  reg [1:0] cmdbuf_size; // @[Reg.scala 27:20]
   reg [7:0] cmdbuf_wstrb; // @[Reg.scala 27:20]
   wire [7:0] master_wstrb = _T_74[7:0]; // @[ahb_to_axi4.scala 96:31]
-  wire  _T_178 = cmdbuf_wr_en & io_bus_clk_en; // @[ahb_to_axi4.scala 150:59]
+  wire  _T_179 = cmdbuf_wr_en & io_bus_clk_en; // @[ahb_to_axi4.scala 150:59]
   reg [31:0] cmdbuf_addr; // @[Reg.scala 27:20]
   reg [63:0] cmdbuf_wdata; // @[Reg.scala 27:20]
-  wire [1:0] cmdbuf_size = _T_173[1:0]; // @[ahb_to_axi4.scala 147:31]
   rvclkhdr rvclkhdr ( // @[lib.scala 399:23]
     .io_clk(rvclkhdr_io_clk),
     .io_en(rvclkhdr_io_en)
@@ -327,7 +326,7 @@ initial begin
   _RAND_10 = {1{`RANDOM}};
   ahb_hwrite_q = _RAND_10[0:0];
   _RAND_11 = {1{`RANDOM}};
-  _T_173 = _RAND_11[2:0];
+  cmdbuf_size = _RAND_11[1:0];
   _RAND_12 = {1{`RANDOM}};
   cmdbuf_wstrb = _RAND_12[7:0];
   _RAND_13 = {1{`RANDOM}};
@@ -369,7 +368,7 @@ initial begin
     ahb_hwrite_q = 1'h0;
   end
   if (reset) begin
-    _T_173 = 3'h0;
+    cmdbuf_size = 2'h0;
   end
   if (reset) begin
     cmdbuf_wstrb = 8'h0;
@@ -495,9 +494,9 @@ end // initial
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
-      _T_173 <= 3'h0;
+      cmdbuf_size <= 2'h0;
     end else if (_T_169) begin
-      _T_173 <= ahb_hsize_q;
+      cmdbuf_size <= ahb_hsize_q[1:0];
     end
   end
   always @(posedge clock or posedge reset) begin
@@ -510,14 +509,14 @@ end // initial
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       cmdbuf_addr <= 32'h0;
-    end else if (_T_178) begin
+    end else if (_T_179) begin
       cmdbuf_addr <= ahb_haddr_q;
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       cmdbuf_wdata <= 64'h0;
-    end else if (_T_178) begin
+    end else if (_T_179) begin
       cmdbuf_wdata <= io_ahb_sig_out_hwdata;
     end
   end

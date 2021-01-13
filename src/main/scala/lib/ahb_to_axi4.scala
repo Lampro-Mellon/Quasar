@@ -144,7 +144,7 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
   cmdbuf_vld                  := rvdffsc_fpga("b1".U,cmdbuf_wr_en.asBool(),cmdbuf_rst,bus_clk,io.bus_clk_en,clock)
   //dffs
   cmdbuf_write                := rvdffs_fpga(ahb_hwrite_q, cmdbuf_wr_en.asBool(),bus_clk,io.bus_clk_en,clock)
-  cmdbuf_size                 := rvdffs_fpga(ahb_hsize_q, cmdbuf_wr_en.asBool(),bus_clk,io.bus_clk_en,clock)
+  cmdbuf_size                 := rvdffs_fpga(ahb_hsize_q(1,0), cmdbuf_wr_en.asBool(),bus_clk,io.bus_clk_en,clock)
   cmdbuf_wstrb                := rvdffs_fpga(master_wstrb, cmdbuf_wr_en.asBool(),bus_clk,io.bus_clk_en,clock)
   //rvdffe
   cmdbuf_addr := rvdffe(ahb_haddr_q, cmdbuf_wr_en.asBool()& io.bus_clk_en,clock,io.scan_mode)
