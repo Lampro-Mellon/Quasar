@@ -388,7 +388,7 @@ trait lib extends param{
     def apply(din: UInt, en:Bool,clear: UInt, clk: Clock, clken: Bool,rawclk:Clock):UInt = {
       val dout =Wire(UInt())
       if (RV_FPGA_OPTIMIZE)
-        dout := withClock (rawclk) {RegEnable ((din & Fill(clear.getWidth,!clear)) , 0.U, ((en|clear)& clken))}
+        dout := withClock (rawclk) {RegEnable ((din & Fill(din.getWidth,!clear)), 0.U, ((en|clear)& clken))}
       else dout := withClock(clk) {RegNext (Mux(en,din,dout) & !clear, 0.U)}
       dout
     }
