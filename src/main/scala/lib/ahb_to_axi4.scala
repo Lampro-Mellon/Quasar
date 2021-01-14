@@ -111,7 +111,6 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
       ((ahb_hsize_q(2,0) === 3.U) & (ahb_haddr_q(2,0)).orR))) |                                                                        // DW size but unaligned
     buf_read_error |                                                                                                              // Read ECC error
     (ahb_hresp_q & !ahb_hready_q)
-
   // Buffer signals - needed for the read data and ECC error response
   buf_rdata                   := rvdff_fpga(io.axi.r.bits.data,buf_rdata_clk,buf_rdata_clk_en,clock)
   buf_read_error              := rvdff_fpga(buf_read_error_in,bus_clk,io.bus_clk_en,clock)
