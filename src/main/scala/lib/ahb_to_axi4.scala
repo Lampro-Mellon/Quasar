@@ -92,12 +92,12 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
     is(rd) { // Read command recieved last cycle.
       buf_nxtstate := Mux(io.ahb.sig.in.hresp, idle, pend) // If error go to idle, else wait for read data
       buf_state_en := (!cmdbuf_full | io.ahb.sig.in.hresp) // only when command can go, or if its an error
-      cmdbuf_wr_en := !io.ahb.sig.in.hresp & !cmdbuf_full // send command only when no error
+      cmdbuf_wr_en := !io.ahb.sig.in.hresp & !cmdbuf_full  // send command only when no error
     }
-    is(pend) { // Read Command has been sent. Waiting on Data.
-      buf_nxtstate := idle // go back for next command and present data next cycle
-      buf_state_en := io.axi.r.valid & !cmdbuf_write // read data is back
-      buf_rdata_en := buf_state_en // buffer the read data coming back from core
+    is(pend) {                                        // Read Command has been sent. Waiting on Data.
+      buf_nxtstate := idle                            // go back for next command and present data next cycle
+      buf_state_en := io.axi.r.valid & !cmdbuf_write  // read data is back
+      buf_rdata_en := buf_state_en                    // buffer the read data coming back from core
       buf_read_error_in := buf_state_en & io.axi.r.bits.resp(1, 0).orR // buffer error flag if return has Error ( ECC )
     }
   }
@@ -114,9 +114,9 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
   io.ahb.sig.in.hresp                := ((ahb_htrans_q(1,0) =/= 0.U) & (buf_state =/= idle)  &
     ((!(ahb_addr_in_dccm | ahb_addr_in_iccm)) |                                                                                   // request not for ICCM or DCCM
       ((ahb_addr_in_iccm | (ahb_addr_in_dccm &  ahb_hwrite_q)) & !((ahb_hsize_q(1,0) === 2.U) | (ahb_hsize_q(1,0) === 3.U))) |    // ICCM Rd/Wr OR DCCM Wr not the right size
-      ((ahb_hsize_q(2,0) === 1.U) & ahb_haddr_q(0))   |                                                                             // HW size but unaligned
-      ((ahb_hsize_q(2,0) === 2.U) & (ahb_haddr_q(1,0)).orR) |                                                                          // W size but unaligned
-      ((ahb_hsize_q(2,0) === 3.U) & (ahb_haddr_q(2,0)).orR))) |                                                                        // DW size but unaligned
+      ((ahb_hsize_q(2,0) === 1.U) & ahb_haddr_q(0))   |                                                                           // HW size but unaligned
+      ((ahb_hsize_q(2,0) === 2.U) & (ahb_haddr_q(1,0)).orR) |                                                                     // W size but unaligned
+      ((ahb_hsize_q(2,0) === 3.U) & (ahb_haddr_q(2,0)).orR))) |                                                                   // DW size but unaligned
     buf_read_error |                                                                                                              // Read ECC error
     (ahb_hresp_q & !ahb_hready_q)
 
@@ -146,7 +146,6 @@ class ahb_to_axi4(TAG : Int) extends Module with lib with RequireAsyncReset {
   // AXI Read Response Channel - Always ready as AHB reads are blocking and the the buffer is available for the read coming back always.
   io.axi.r.ready           := true.B
 }
-
-object ahb_to_axi4 extends App {
- println((new chisel3.stage.ChiselStage).emitVerilog(new ahb_to_axi4(1)))
-}
+//object ahb_to_axi4 extends App {
+// println((new chisel3.stage.ChiselStage).emitVerilog(new ahb_to_axi4(1)))
+//}
