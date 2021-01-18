@@ -158,5 +158,6 @@ trait param {
   val RV_FPGA_OPTIMIZE       =  0x1
   val DIV_NEW                =  0x1
   val DIV_BIT                =  0x4
+  val BTB_ENABLE             =  0x1
 
 }

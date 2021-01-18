@@ -9,8 +9,8 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
   val io = IO(new Bundle{
     val exu_flush_final = Input(Bool()) // Miss Prediction for EXU
     val exu_flush_path_final = Input(UInt(31.W)) // Replay PC
-    val free_clk = Input(Clock())
-    val active_clk = Input(Clock())
+    val free_l2clk = Input(Clock())
+   // val active_clk = Input(Clock())
     val scan_mode = Input(Bool())
     val ic_hit_f = Input(Bool())
     val ifu_ic_mb_empty = Input(Bool()) // Miss buffer of mem-ctl empty
@@ -60,21 +60,27 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
   val idle_E :: fetch_E :: stall_E :: wfm_E :: Nil = Enum(4)
 
   val dma_stall = io.ic_dma_active | dma_iccm_stall_any_f
-  dma_iccm_stall_any_f := withClock(io.free_clk) {RegNext(io.dma_ifc.dma_iccm_stall_any, init=0.U)}
 
-  miss_a := withClock(io.free_clk) {RegNext(miss_f, init=0.U)}
-
-  val sel_last_addr_bf = !io.exu_flush_final & (!io.ifc_fetch_req_f | !io.ic_hit_f)
-  val sel_btb_addr_bf  = !io.exu_flush_final & io.ifc_fetch_req_f &  io.ifu_bp_hit_taken_f & io.ic_hit_f
-  val sel_next_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f
-
-  // TODO: Make an assertion for the 1H-Mux under here
-  // Next PC calculation
-  io.ifc_fetch_addr_bf := Mux1H(Seq(io.exu_flush_final.asBool -> io.exu_flush_path_final,  // Replay PC
-        sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f,         // Hold the current PC
-        sel_btb_addr_bf.asBool -> io.ifu_bp_btb_target_f,       // Take the predicted PC
-        sel_next_addr_bf.asBool -> fetch_addr_next))            // PC+4
-
+  dma_iccm_stall_any_f := rvdffie(io.dma_ifc.dma_iccm_stall_any,io.free_l2clk,reset.asAsyncReset(),io.scan_mode)
+  miss_a := rvdffie(miss_f,io.free_l2clk,reset.asAsyncReset(),io.scan_mode)
+   if(BTB_ENABLE) {
+      val sel_last_addr_bf = !io.exu_flush_final & (!io.ifc_fetch_req_f | !io.ic_hit_f)
+      val sel_btb_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & io.ifu_bp_hit_taken_f & io.ic_hit_f
+      val sel_next_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f
+   // Next PC calculation
+   io.ifc_fetch_addr_bf := Mux1H(Seq(io.exu_flush_final.asBool -> io.exu_flush_path_final, // Replay PC
+     sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f, // Hold the current PC
+     sel_btb_addr_bf.asBool -> io.ifu_bp_btb_target_f, // Take the predicted PC
+     sel_next_addr_bf.asBool -> fetch_addr_next)) // PC+4
+ }
+  else{
+     val sel_last_addr_bf = !io.exu_flush_final & (!io.ifc_fetch_req_f | !io.ic_hit_f)
+     val sel_next_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & io.ic_hit_f
+   // Next PC calculation
+   io.ifc_fetch_addr_bf := Mux1H(Seq(io.exu_flush_final.asBool -> io.exu_flush_path_final, // Replay PC
+     sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f, // Hold the current PC
+     sel_next_addr_bf.asBool -> fetch_addr_next)) // PC+4
+  }
   val address_upper = io.ifc_fetch_addr_f(30,1)+1.U
   fetch_addr_next_0 := !(address_upper(ICACHE_TAG_INDEX_LO-2) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO-1)) & io.ifc_fetch_addr_f(0)
 
@@ -101,7 +107,7 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
 
   val next_state_0 = (!goto_idle & leave_idle) | (state(0) & !goto_idle)
 
-  state := withClock(io.active_clk) {RegNext(Cat(next_state_1, next_state_0), init = 0.U)}
+  state := rvdffie(Cat(next_state_1, next_state_0),io.free_l2clk,reset.asAsyncReset(),io.scan_mode)
 
   flush_fb := io.exu_flush_final
 
@@ -124,12 +130,11 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
   wfm := state === 3.U(2.W)
 
   fb_full_f_ns := fb_write_ns(3)
-  val fb_full_f = withClock(io.active_clk) {RegNext(fb_full_f_ns, init = 0.U)}
-  fb_write_f := withClock(io.active_clk) {RegNext(fb_write_ns, 0.U)}
+  val fb_full_f = rvdffie(fb_full_f_ns,io.free_l2clk,reset.asAsyncReset(),io.scan_mode)
+  fb_write_f   := rvdffie(fb_write_ns,io.free_l2clk,reset.asAsyncReset(),io.scan_mode)
 
   io.dec_ifc.ifu_pmu_fetch_stall := wfm | (io.ifc_fetch_req_bf_raw &
     ((fb_full_f & !(io.ifu_fb_consume2 | io.ifu_fb_consume1 | io.exu_flush_final)) | dma_stall))
-
   // Checking the next PC range and its region to access the ICCM or I$
   val (iccm_acc_in_region_bf, iccm_acc_in_range_bf) = if(ICCM_ENABLE)
     rvrangecheck(ICCM_SADR, ICCM_SIZE, Cat(io.ifc_fetch_addr_bf,0.U))
@@ -142,7 +147,10 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
   io.ifc_region_acc_fault_bf := !iccm_acc_in_range_bf & iccm_acc_in_region_bf
   io.ifc_fetch_uncacheable_bf := ~io.dec_ifc.dec_tlu_mrac_ff(Cat(io.ifc_fetch_addr_bf(30,27), 0.U))
 
-  io.ifc_fetch_req_f := withClock(io.active_clk){RegNext(io.ifc_fetch_req_bf, init=0.U)}
+  io.ifc_fetch_req_f := rvdffie(io.ifc_fetch_req_bf,io.free_l2clk,reset.asAsyncReset(),io.scan_mode)
 
-  io.ifc_fetch_addr_f := rvdffe(io.ifc_fetch_addr_bf, io.exu_flush_final|io.ifc_fetch_req_f, clock, io.scan_mode)
+  io.ifc_fetch_addr_f := rvdffpcie(io.ifc_fetch_addr_bf, io.exu_flush_final|io.ifc_fetch_req_f,reset.asAsyncReset(), clock, io.scan_mode)
+}
+object ifc extends App {
+  println((new chisel3.stage.ChiselStage).emitVerilog(new ifu_ifc_ctl()))
 }

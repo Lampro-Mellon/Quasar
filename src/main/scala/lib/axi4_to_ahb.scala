@@ -319,7 +319,7 @@ class axi4_to_ahb(val TAG : Int = 3) extends Module with lib with RequireAsyncRe
   ahb_hrdata_q      := rvdff_fpga(io.ahb.in.hrdata(63, 0), ahbm_data_clk, ahbm_data_clken, clock)
   buf_clken         := io.bus_clk_en & (buf_wr_en | slvbuf_wr_en | io.clk_override)
   ahbm_data_clken   := io.bus_clk_en & ((buf_state =/= idle) | io.clk_override)
- if (RV_FPGA_OPTIMIZE) {
+  if (RV_FPGA_OPTIMIZE) {
     bus_clk := 0.B.asClock()
     buf_clk := 0.B.asClock()
     ahbm_data_clk := 0.B.asClock()
