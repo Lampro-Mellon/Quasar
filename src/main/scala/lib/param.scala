@@ -159,5 +159,7 @@ trait param {
   val DIV_NEW                =  0x1
   val DIV_BIT                =  0x4
   val BTB_ENABLE             =  0x1
+  val BTB_TOFFSET_SIZE       =  0x00C
+  val BTB_FULLYA             =  0x00
 
 }

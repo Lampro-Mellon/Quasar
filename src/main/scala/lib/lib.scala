@@ -565,6 +565,11 @@ trait lib extends param{
     val LLSB = LMSB-LEFT+1
     val XMSB = LLSB-1
     val XLSB = LLSB-EXTRA
+    if(RV_FPGA_OPTIMIZE){
+      withClock(clk){
+        RegEnable(din,0.U.asTypeOf(din),en)
+      }
+    }else
     Cat(rvdffiee(din(LMSB,LLSB),clk,rst_l,en,scan_mode),rvdffe(din(XMSB,XLSB),en,clk,scan_mode))
 
   }

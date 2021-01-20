@@ -151,6 +151,3 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
 
   io.ifc_fetch_addr_f := rvdffpcie(io.ifc_fetch_addr_bf, io.exu_flush_final|io.ifc_fetch_req_f,reset.asAsyncReset(), clock, io.scan_mode)
 }
-object ifc extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new ifu_ifc_ctl()))
-}
