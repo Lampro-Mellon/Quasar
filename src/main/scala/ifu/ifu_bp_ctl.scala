@@ -255,7 +255,6 @@ if(!BTB_FULLYA) {
 //io.test := btb_lru_b0_ns
   // Checking if the end of line is near
   val eoc_near = io.ifc_fetch_addr_f(ICACHE_BEAT_ADDR_HI-1, 2).andR
-
   // Mask according to eoc-near and make the hit-final
   eoc_mask := !eoc_near | (~io.ifc_fetch_addr_f(1,0)).orR()
 
@@ -285,7 +284,7 @@ if(!BTB_FULLYA) {
   val bht_bank1_rd_data_f =WireInit(UInt(2.W), 0.U)
   val bht_bank0_rd_data_f =WireInit(UInt(2.W), 0.U)
   val bht_bank0_rd_data_p1_f =WireInit(UInt(2.W), 0.U)
-  
+
   // Depending on pc make the virtual bank as commented above
   val bht_vbank0_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool->bht_bank0_rd_data_f,
                                         io.ifc_fetch_addr_f(0).asBool->bht_bank1_rd_data_f))
@@ -357,7 +356,6 @@ if(!BTB_FULLYA) {
 
   val btb_fg_crossing_f = fetch_start_f(0) & btb_sel_f(0) & btb_rd_pc4_f
   val bp_total_branch_offset_f = bloc_f(1)^btb_rd_pc4_f
-
   val ifc_fetch_adder_prior = rvdfflie_UInt(io.ifc_fetch_addr_f(30,1), clock,reset.asAsyncReset,(io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f).asBool,io.scan_mode,WIDTH =30, LEFT =19 )
 
   io.ifu_bp_poffset_f := btb_rd_tgt_f
@@ -407,7 +405,6 @@ if(!BTB_FULLYA) {
 //    vwayhit_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool -> wayhit_f,
 //      io.ifc_fetch_addr_f(0).asBool -> Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
 //  }
-
   // Making the data to write into the BTB according the structure discribed above
   val btb_wr_data = Cat(btb_wr_tag, exu_mp_tgt, exu_mp_pc4, exu_mp_boffset, exu_mp_call | exu_mp_ja, exu_mp_ret | exu_mp_ja, btb_valid)
   val exu_mp_valid_write = exu_mp_valid & exu_mp_ataken & !io.exu_bp.exu_mp_pkt.valid
@@ -439,8 +436,10 @@ if(!BTB_FULLYA) {
 
   // Writing is always done from dec or exu check if the dec have a valid data
   val btb_wr_addr = Mux(dec_tlu_error_wb.asBool, btb_error_addr_wb, exu_mp_addr)
-  vwayhit_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool -> wayhit_f,
-    io.ifc_fetch_addr_f(0).asBool -> Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
+  vwayhit_f := Mux1H(Seq(
+    io.ifc_fetch_addr_f(0).asBool -> wayhit_f,
+    io.ifc_fetch_addr_f(1).asBool -> Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
+
   val btb_bank0_rd_data_way0_out = (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way0).asBool, clock, io.scan_mode))
   val btb_bank0_rd_data_way1_out = (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way1).asBool, clock, io.scan_mode))
 
