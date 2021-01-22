@@ -370,9 +370,7 @@ if(!BTB_FULLYA) {
   val rets_out = Wire(Vec(RET_STACK_SIZE, UInt(32.W)))
   rets_out := (0 until RET_STACK_SIZE).map(i=>0.U)
   // Final target if its a RET then pop else take the target pc
-
-  // mux in the return stack address here for a predicted return assuming the RS is valid, quite if no prediction
-   io.ifu_bp_btb_target_f := ((Fill(31,(btb_rd_ret_f & !btb_rd_call_f & rets_out(0)(0) & io.ifu_bp_hit_taken_f)) & rets_out(0)(31,1)) |
+  io.ifu_bp_btb_target_f := ((Fill(31,(btb_rd_ret_f & !btb_rd_call_f & rets_out(0)(0) & io.ifu_bp_hit_taken_f)) & rets_out(0)(31,1)) |
     (Fill(31,(!btb_rd_ret_f & !btb_rd_call_f & rets_out(0)(0) & io.ifu_bp_hit_taken_f)) & bp_btb_target_adder_f(31,1)))
 
   // Return stack
@@ -439,11 +437,10 @@ if(!BTB_FULLYA) {
   // Writing is always done from dec or exu check if the dec have a valid data
   val btb_wr_addr = Mux(dec_tlu_error_wb.asBool, btb_error_addr_wb, exu_mp_addr)
 
-  val vwayhit_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool->wayhit_f,
+   vwayhit_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool->wayhit_f,
     io.ifc_fetch_addr_f(0).asBool->Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
 
-
-  // vwayhit_f := (Fill(2,io.ifc_fetch_addr_f(0)) & wayhit_f(1,0)) | ((Fill(2,io.ifc_fetch_addr_f(1)) & Cat(wayhit_p1_f(0),wayhit_f(1))) & Cat(eoc_mask,1.U))
+ // vwayhit_f := (Fill(2,io.ifc_fetch_addr_f(0)) & wayhit_f(1,0)) | ((Fill(2,io.ifc_fetch_addr_f(1)) & Cat(wayhit_p1_f(0),wayhit_f(1))) & Cat(eoc_mask,1.U))
 
   val btb_bank0_rd_data_way0_out = (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way0).asBool, clock, io.scan_mode))
   val btb_bank0_rd_data_way1_out = (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way1).asBool, clock, io.scan_mode))
