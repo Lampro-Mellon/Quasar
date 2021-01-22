@@ -161,5 +161,4 @@ trait param {
   val BTB_ENABLE             =  0x1
   val BTB_TOFFSET_SIZE       =  0x00C
   val BTB_FULLYA             =  0x00
-
 }

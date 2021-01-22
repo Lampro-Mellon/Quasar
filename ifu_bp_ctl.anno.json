@@ -1,9 +1,25 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_hit_taken_f",
+    "sources":[
+      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_bpred_disable",
+      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_req_f",
+      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_hist1_f",
     "sources":[
       "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_valid_f",
+    "sources":[
+      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_bpred_disable"
     ]
   },
   {
@@ -13,13 +29,7 @@
       "~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_hit_taken_f",
       "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_bpred_disable",
       "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_req_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_flush_leak_one_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_tlu_flush_lower_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_way",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_start_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_exu_bp_exu_i0_br_index_r"
+      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f"
     ]
   },
   {
@@ -31,61 +41,19 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_poffset_f",
+    "sources":[
+      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_btb_target_f",
     "sources":[
       "~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_hit_taken_f",
       "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_bpred_disable",
       "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_req_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_flush_leak_one_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_tlu_flush_lower_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_way",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_start_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_exu_bp_exu_i0_br_index_r"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_pc4_f",
-    "sources":[
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_req_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_flush_leak_one_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_tlu_flush_lower_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_way",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_start_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_exu_bp_exu_i0_br_index_r"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_valid_f",
-    "sources":[
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_bpred_disable",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_req_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_flush_leak_one_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_tlu_flush_lower_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_way",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_start_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_exu_bp_exu_i0_br_index_r"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_ret_f",
-    "sources":[
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_req_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_flush_leak_one_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_tlu_flush_lower_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_way",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_start_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_exu_bp_exu_i0_br_index_r"
+      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f"
     ]
   },
   {
@@ -100,35 +68,6 @@
       "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_way",
       "~ifu_bp_ctl|ifu_bp_ctl>io_exu_bp_exu_mp_btag",
       "~ifu_bp_ctl|ifu_bp_ctl>io_exu_bp_exu_mp_pkt_bits_misp",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_start_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_exu_bp_exu_i0_br_index_r"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_poffset_f",
-    "sources":[
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_req_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_flush_leak_one_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_tlu_flush_lower_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_way",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_start_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_error",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_exu_bp_exu_i0_br_index_r"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~ifu_bp_ctl|ifu_bp_ctl>io_ifu_bp_hit_taken_f",
-    "sources":[
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_bpred_disable",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_req_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_ifc_fetch_addr_f",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_flush_leak_one_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_tlu_flush_lower_wb",
-      "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_way",
       "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_start_error",
       "~ifu_bp_ctl|ifu_bp_ctl>io_dec_bp_dec_tlu_br0_r_pkt_bits_br_error",
       "~ifu_bp_ctl|ifu_bp_ctl>io_exu_bp_exu_i0_br_index_r"
