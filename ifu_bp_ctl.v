@@ -54,7 +54,7 @@ module ifu_bp_ctl(
   input  [7:0]  io_exu_bp_exu_mp_fghr,
   input  [7:0]  io_exu_bp_exu_mp_index,
   input  [4:0]  io_exu_bp_exu_mp_btag,
-  input  [8:0]  io_dec_fa_error_index,
+  input  [3:0]  io_dec_fa_error_index,
   output        io_ifu_bp_hit_taken_f,
   output [30:0] io_ifu_bp_btb_target_f,
   output        io_ifu_bp_inst_mask_f,
@@ -66,8 +66,8 @@ module ifu_bp_ctl(
   output [1:0]  io_ifu_bp_pc4_f,
   output [1:0]  io_ifu_bp_valid_f,
   output [11:0] io_ifu_bp_poffset_f,
-  output [8:0]  io_ifu_bp_fa_index_f_0,
-  output [8:0]  io_ifu_bp_fa_index_f_1,
+  output [3:0]  io_ifu_bp_fa_index_f_0,
+  output [3:0]  io_ifu_bp_fa_index_f_1,
   input         io_scan_mode
 );
 `ifdef RANDOMIZE_REG_INIT
@@ -12784,8 +12784,8 @@ module ifu_bp_ctl(
   assign io_ifu_bp_pc4_f = 2'h0; // @[ifu_bp_ctl.scala 346:19]
   assign io_ifu_bp_valid_f = vwayhit_f & _T_351; // @[ifu_bp_ctl.scala 348:21]
   assign io_ifu_bp_poffset_f = 12'h0; // @[ifu_bp_ctl.scala 361:23]
-  assign io_ifu_bp_fa_index_f_0 = 9'h0; // @[ifu_bp_ctl.scala 35:24]
-  assign io_ifu_bp_fa_index_f_1 = 9'h0; // @[ifu_bp_ctl.scala 35:24]
+  assign io_ifu_bp_fa_index_f_0 = 4'h0; // @[ifu_bp_ctl.scala 35:24]
+  assign io_ifu_bp_fa_index_f_1 = 4'h0; // @[ifu_bp_ctl.scala 35:24]
   assign rvclkhdr_io_clk = clock; // @[lib.scala 401:18]
   assign rvclkhdr_io_en = io_ifc_fetch_req_f | exu_mp_valid; // @[lib.scala 402:17]
   assign rvclkhdr_1_io_clk = clock; // @[lib.scala 401:18]

@@ -7,7 +7,7 @@ trait param {
   val BHT_ARRAY_DEPTH        = 	0x100
   val BHT_GHR_HASH_1         = 	0x0
   val BHT_GHR_SIZE           = 	0x8
-  val BHT_SIZE               = 	0x200
+  val BHT_SIZE               = 	0x010
   val BTB_ADDR_HI            = 	0x09
   val BTB_ADDR_LO            = 	0x2
   val BTB_ARRAY_DEPTH        = 	0x100
@@ -20,7 +20,7 @@ trait param {
   val BTB_INDEX2_LO          = 	0x0A
   val BTB_INDEX3_HI          = 	0x19
   val BTB_INDEX3_LO          = 	0x12
-  val BTB_SIZE               = 	0x200
+  val BTB_SIZE               = 	0x010
   val BUILD_AHB_LITE         = 	0x0
   val BUILD_AXI4             = 	0x1
   val BUILD_AXI_NATIVE       = 	0x1
