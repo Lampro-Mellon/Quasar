@@ -186,9 +186,9 @@ if(!BTB_FULLYA) {
 
   // Making virtual banks, made from pc-bit(1) if it comes from a multiple of 4 we get the lower half of the bank
   // and the upper half of the bank-0 in vbank 1
-  val btb_vbank0_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> btb_bank0e_rd_data_f,
+  btb_vbank0_rd_data_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> btb_bank0e_rd_data_f,
     io.ifc_fetch_addr_f(0) -> btb_bank0o_rd_data_f))
-  val btb_vbank1_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> btb_bank0o_rd_data_f,
+  btb_vbank1_rd_data_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> btb_bank0o_rd_data_f,
     io.ifc_fetch_addr_f(0) -> btb_bank0e_rd_data_p1_f))
 
   way_raw := tag_match_vway1_expanded_f | (~vwayhit_f & btb_vlru_rd_f)
@@ -250,6 +250,7 @@ if(!BTB_FULLYA) {
 
   btb_lru_b0_f := rvdffe(btb_lru_b0_ns, (io.ifc_fetch_req_f|exu_mp_valid).asBool, clock, io.scan_mode)
 }
+
   io.ifu_bp_way_f := way_raw
   // update the lru
 //io.test := btb_lru_b0_ns
@@ -291,6 +292,7 @@ if(!BTB_FULLYA) {
 
   val bht_vbank1_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool->bht_bank1_rd_data_f,
                                         io.ifc_fetch_addr_f(0).asBool->bht_bank0_rd_data_p1_f))
+
 
   // Direction containing data of both banks direction
   bht_dir_f := Cat((bht_force_taken_f(1) | bht_vbank1_rd_data_f(1)) & bht_valid_f(1),
@@ -439,9 +441,6 @@ if(!BTB_FULLYA) {
 
    vwayhit_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool->wayhit_f,
     io.ifc_fetch_addr_f(0).asBool->Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
-
- // vwayhit_f := (Fill(2,io.ifc_fetch_addr_f(0)) & wayhit_f(1,0)) | ((Fill(2,io.ifc_fetch_addr_f(1)) & Cat(wayhit_p1_f(0),wayhit_f(1))) & Cat(eoc_mask,1.U))
-
   val btb_bank0_rd_data_way0_out = (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way0).asBool, clock, io.scan_mode))
   val btb_bank0_rd_data_way1_out = (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way1).asBool, clock, io.scan_mode))
 
