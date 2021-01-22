@@ -436,7 +436,8 @@ if(!BTB_FULLYA) {
 
   // Writing is always done from dec or exu check if the dec have a valid data
   val btb_wr_addr = Mux(dec_tlu_error_wb.asBool, btb_error_addr_wb, exu_mp_addr)
-  vwayhit_f := ((Fill(2,io.ifc_fetch_addr_f(0)) & wayhit_f(1,0)) | (Fill(2,io.ifc_fetch_addr_f(1)) & Cat(wayhit_p1_f(0),wayhit_f(1)))) & Cat(eoc_mask,1.U)
+
+  vwayhit_f := (Fill(2,io.ifc_fetch_addr_f(0)) & wayhit_f(1,0)) | ((Fill(2,io.ifc_fetch_addr_f(1)) & Cat(wayhit_p1_f(0),wayhit_f(1))) & Cat(eoc_mask,1.U))
 
   val btb_bank0_rd_data_way0_out = (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way0).asBool, clock, io.scan_mode))
   val btb_bank0_rd_data_way1_out = (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way1).asBool, clock, io.scan_mode))
