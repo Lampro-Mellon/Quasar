@@ -1008,53 +1008,53 @@ module ifu_bp_ctl(
   wire  _T_707 = _T_658 & btb_wr_en_way1; // @[ifu_bp_ctl.scala 443:107]
   wire  _T_967 = mp_hashed == 8'h0; // @[ifu_bp_ctl.scala 516:109]
   wire  _T_972 = br0_hashed_wb == 8'h0; // @[ifu_bp_ctl.scala 517:109]
-  wire  _T_990 = bht_wr_en2[0] & _T_972; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_998 = br0_hashed_wb == 8'h1; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_999 = bht_wr_en2[0] & _T_998; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1007 = br0_hashed_wb == 8'h2; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1008 = bht_wr_en2[0] & _T_1007; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1016 = br0_hashed_wb == 8'h3; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1017 = bht_wr_en2[0] & _T_1016; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1025 = br0_hashed_wb == 8'h4; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1026 = bht_wr_en2[0] & _T_1025; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1034 = br0_hashed_wb == 8'h5; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1035 = bht_wr_en2[0] & _T_1034; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1043 = br0_hashed_wb == 8'h6; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1044 = bht_wr_en2[0] & _T_1043; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1052 = br0_hashed_wb == 8'h7; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1053 = bht_wr_en2[0] & _T_1052; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1061 = br0_hashed_wb == 8'h8; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1062 = bht_wr_en2[0] & _T_1061; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1070 = br0_hashed_wb == 8'h9; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1071 = bht_wr_en2[0] & _T_1070; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1079 = br0_hashed_wb == 8'ha; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1080 = bht_wr_en2[0] & _T_1079; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1088 = br0_hashed_wb == 8'hb; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1089 = bht_wr_en2[0] & _T_1088; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1097 = br0_hashed_wb == 8'hc; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1098 = bht_wr_en2[0] & _T_1097; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1106 = br0_hashed_wb == 8'hd; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1107 = bht_wr_en2[0] & _T_1106; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1115 = br0_hashed_wb == 8'he; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1116 = bht_wr_en2[0] & _T_1115; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1124 = br0_hashed_wb == 8'hf; // @[ifu_bp_ctl.scala 522:74]
-  wire  _T_1125 = bht_wr_en2[0] & _T_1124; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1134 = bht_wr_en2[1] & _T_972; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1143 = bht_wr_en2[1] & _T_998; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1152 = bht_wr_en2[1] & _T_1007; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1161 = bht_wr_en2[1] & _T_1016; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1170 = bht_wr_en2[1] & _T_1025; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1179 = bht_wr_en2[1] & _T_1034; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1188 = bht_wr_en2[1] & _T_1043; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1197 = bht_wr_en2[1] & _T_1052; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1206 = bht_wr_en2[1] & _T_1061; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1215 = bht_wr_en2[1] & _T_1070; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1224 = bht_wr_en2[1] & _T_1079; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1233 = bht_wr_en2[1] & _T_1088; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1242 = bht_wr_en2[1] & _T_1097; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1251 = bht_wr_en2[1] & _T_1106; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1260 = bht_wr_en2[1] & _T_1115; // @[ifu_bp_ctl.scala 522:23]
-  wire  _T_1269 = bht_wr_en2[1] & _T_1124; // @[ifu_bp_ctl.scala 522:23]
+  wire  _T_990 = bht_wr_en2[0] & _T_972; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_998 = br0_hashed_wb == 8'h1; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_999 = bht_wr_en2[0] & _T_998; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1007 = br0_hashed_wb == 8'h2; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1008 = bht_wr_en2[0] & _T_1007; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1016 = br0_hashed_wb == 8'h3; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1017 = bht_wr_en2[0] & _T_1016; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1025 = br0_hashed_wb == 8'h4; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1026 = bht_wr_en2[0] & _T_1025; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1034 = br0_hashed_wb == 8'h5; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1035 = bht_wr_en2[0] & _T_1034; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1043 = br0_hashed_wb == 8'h6; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1044 = bht_wr_en2[0] & _T_1043; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1052 = br0_hashed_wb == 8'h7; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1053 = bht_wr_en2[0] & _T_1052; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1061 = br0_hashed_wb == 8'h8; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1062 = bht_wr_en2[0] & _T_1061; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1070 = br0_hashed_wb == 8'h9; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1071 = bht_wr_en2[0] & _T_1070; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1079 = br0_hashed_wb == 8'ha; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1080 = bht_wr_en2[0] & _T_1079; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1088 = br0_hashed_wb == 8'hb; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1089 = bht_wr_en2[0] & _T_1088; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1097 = br0_hashed_wb == 8'hc; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1098 = bht_wr_en2[0] & _T_1097; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1106 = br0_hashed_wb == 8'hd; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1107 = bht_wr_en2[0] & _T_1106; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1115 = br0_hashed_wb == 8'he; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1116 = bht_wr_en2[0] & _T_1115; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1124 = br0_hashed_wb == 8'hf; // @[ifu_bp_ctl.scala 521:74]
+  wire  _T_1125 = bht_wr_en2[0] & _T_1124; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1134 = bht_wr_en2[1] & _T_972; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1143 = bht_wr_en2[1] & _T_998; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1152 = bht_wr_en2[1] & _T_1007; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1161 = bht_wr_en2[1] & _T_1016; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1170 = bht_wr_en2[1] & _T_1025; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1179 = bht_wr_en2[1] & _T_1034; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1188 = bht_wr_en2[1] & _T_1043; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1197 = bht_wr_en2[1] & _T_1052; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1206 = bht_wr_en2[1] & _T_1061; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1215 = bht_wr_en2[1] & _T_1070; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1224 = bht_wr_en2[1] & _T_1079; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1233 = bht_wr_en2[1] & _T_1088; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1242 = bht_wr_en2[1] & _T_1097; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1251 = bht_wr_en2[1] & _T_1106; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1260 = bht_wr_en2[1] & _T_1115; // @[ifu_bp_ctl.scala 521:23]
+  wire  _T_1269 = bht_wr_en2[1] & _T_1124; // @[ifu_bp_ctl.scala 521:23]
   wire  _T_1278 = bht_wr_en0[0] & _T_967; // @[ifu_bp_ctl.scala 530:45]
   wire  bht_bank_sel_0_0_0 = _T_1278 | _T_990; // @[ifu_bp_ctl.scala 530:223]
   wire  _T_1294 = mp_hashed == 8'h1; // @[ifu_bp_ctl.scala 530:97]
@@ -2079,224 +2079,352 @@ end // initial
     if (reset) begin
       bht_bank_rd_data_out_1_0 <= 2'h0;
     end else if (bht_bank_sel_1_0_0) begin
-      bht_bank_rd_data_out_1_0 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1134) begin
+        bht_bank_rd_data_out_1_0 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_0 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_1 <= 2'h0;
     end else if (bht_bank_sel_1_0_1) begin
-      bht_bank_rd_data_out_1_1 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1143) begin
+        bht_bank_rd_data_out_1_1 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_1 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_2 <= 2'h0;
     end else if (bht_bank_sel_1_0_2) begin
-      bht_bank_rd_data_out_1_2 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1152) begin
+        bht_bank_rd_data_out_1_2 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_2 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_3 <= 2'h0;
     end else if (bht_bank_sel_1_0_3) begin
-      bht_bank_rd_data_out_1_3 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1161) begin
+        bht_bank_rd_data_out_1_3 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_3 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_4 <= 2'h0;
     end else if (bht_bank_sel_1_0_4) begin
-      bht_bank_rd_data_out_1_4 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1170) begin
+        bht_bank_rd_data_out_1_4 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_4 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_5 <= 2'h0;
     end else if (bht_bank_sel_1_0_5) begin
-      bht_bank_rd_data_out_1_5 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1179) begin
+        bht_bank_rd_data_out_1_5 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_5 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_6 <= 2'h0;
     end else if (bht_bank_sel_1_0_6) begin
-      bht_bank_rd_data_out_1_6 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1188) begin
+        bht_bank_rd_data_out_1_6 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_6 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_7 <= 2'h0;
     end else if (bht_bank_sel_1_0_7) begin
-      bht_bank_rd_data_out_1_7 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1197) begin
+        bht_bank_rd_data_out_1_7 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_7 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_8 <= 2'h0;
     end else if (bht_bank_sel_1_0_8) begin
-      bht_bank_rd_data_out_1_8 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1206) begin
+        bht_bank_rd_data_out_1_8 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_8 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_9 <= 2'h0;
     end else if (bht_bank_sel_1_0_9) begin
-      bht_bank_rd_data_out_1_9 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1215) begin
+        bht_bank_rd_data_out_1_9 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_9 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_10 <= 2'h0;
     end else if (bht_bank_sel_1_0_10) begin
-      bht_bank_rd_data_out_1_10 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1224) begin
+        bht_bank_rd_data_out_1_10 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_10 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_11 <= 2'h0;
     end else if (bht_bank_sel_1_0_11) begin
-      bht_bank_rd_data_out_1_11 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1233) begin
+        bht_bank_rd_data_out_1_11 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_11 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_12 <= 2'h0;
     end else if (bht_bank_sel_1_0_12) begin
-      bht_bank_rd_data_out_1_12 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1242) begin
+        bht_bank_rd_data_out_1_12 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_12 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_13 <= 2'h0;
     end else if (bht_bank_sel_1_0_13) begin
-      bht_bank_rd_data_out_1_13 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1251) begin
+        bht_bank_rd_data_out_1_13 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_13 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_14 <= 2'h0;
     end else if (bht_bank_sel_1_0_14) begin
-      bht_bank_rd_data_out_1_14 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1260) begin
+        bht_bank_rd_data_out_1_14 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_14 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_1_15 <= 2'h0;
     end else if (bht_bank_sel_1_0_15) begin
-      bht_bank_rd_data_out_1_15 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1269) begin
+        bht_bank_rd_data_out_1_15 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_1_15 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_0 <= 2'h0;
     end else if (bht_bank_sel_0_0_0) begin
-      bht_bank_rd_data_out_0_0 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_990) begin
+        bht_bank_rd_data_out_0_0 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_0 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_1 <= 2'h0;
     end else if (bht_bank_sel_0_0_1) begin
-      bht_bank_rd_data_out_0_1 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_999) begin
+        bht_bank_rd_data_out_0_1 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_1 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_2 <= 2'h0;
     end else if (bht_bank_sel_0_0_2) begin
-      bht_bank_rd_data_out_0_2 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1008) begin
+        bht_bank_rd_data_out_0_2 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_2 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_3 <= 2'h0;
     end else if (bht_bank_sel_0_0_3) begin
-      bht_bank_rd_data_out_0_3 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1017) begin
+        bht_bank_rd_data_out_0_3 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_3 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_4 <= 2'h0;
     end else if (bht_bank_sel_0_0_4) begin
-      bht_bank_rd_data_out_0_4 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1026) begin
+        bht_bank_rd_data_out_0_4 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_4 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_5 <= 2'h0;
     end else if (bht_bank_sel_0_0_5) begin
-      bht_bank_rd_data_out_0_5 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1035) begin
+        bht_bank_rd_data_out_0_5 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_5 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_6 <= 2'h0;
     end else if (bht_bank_sel_0_0_6) begin
-      bht_bank_rd_data_out_0_6 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1044) begin
+        bht_bank_rd_data_out_0_6 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_6 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_7 <= 2'h0;
     end else if (bht_bank_sel_0_0_7) begin
-      bht_bank_rd_data_out_0_7 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1053) begin
+        bht_bank_rd_data_out_0_7 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_7 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_8 <= 2'h0;
     end else if (bht_bank_sel_0_0_8) begin
-      bht_bank_rd_data_out_0_8 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1062) begin
+        bht_bank_rd_data_out_0_8 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_8 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_9 <= 2'h0;
     end else if (bht_bank_sel_0_0_9) begin
-      bht_bank_rd_data_out_0_9 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1071) begin
+        bht_bank_rd_data_out_0_9 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_9 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_10 <= 2'h0;
     end else if (bht_bank_sel_0_0_10) begin
-      bht_bank_rd_data_out_0_10 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1080) begin
+        bht_bank_rd_data_out_0_10 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_10 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_11 <= 2'h0;
     end else if (bht_bank_sel_0_0_11) begin
-      bht_bank_rd_data_out_0_11 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1089) begin
+        bht_bank_rd_data_out_0_11 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_11 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_12 <= 2'h0;
     end else if (bht_bank_sel_0_0_12) begin
-      bht_bank_rd_data_out_0_12 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1098) begin
+        bht_bank_rd_data_out_0_12 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_12 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_13 <= 2'h0;
     end else if (bht_bank_sel_0_0_13) begin
-      bht_bank_rd_data_out_0_13 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1107) begin
+        bht_bank_rd_data_out_0_13 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_13 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_14 <= 2'h0;
     end else if (bht_bank_sel_0_0_14) begin
-      bht_bank_rd_data_out_0_14 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1116) begin
+        bht_bank_rd_data_out_0_14 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_14 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       bht_bank_rd_data_out_0_15 <= 2'h0;
     end else if (bht_bank_sel_0_0_15) begin
-      bht_bank_rd_data_out_0_15 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      if (_T_1125) begin
+        bht_bank_rd_data_out_0_15 <= io_dec_bp_dec_tlu_br0_r_pkt_bits_hist;
+      end else begin
+        bht_bank_rd_data_out_0_15 <= io_exu_bp_exu_mp_pkt_bits_hist;
+      end
     end
   end
   always @(posedge clock or posedge reset) begin

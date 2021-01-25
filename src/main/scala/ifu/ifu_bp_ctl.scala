@@ -516,16 +516,16 @@ if(!BTB_FULLYA) {
     bht_bank_clken(i)(k) := (bht_wr_en0(i) & ((bht_wr_addr0(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B)) |
                             (bht_wr_en2(i) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B))
   }
-
   // Writing data into the BHT (DEC-side) or (EXU-side)
   val bht_bank_wr_data = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>(0 until NUM_BHT_LOOP).map(j=>
-    Mux((bht_wr_en2(i)&(bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.U)&(bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.U)|BHT_NO_ADDR_MATCH.B).asBool, bht_wr_data2, bht_wr_data0))))
+    Mux((bht_wr_en2(i)&(bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.U)&((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.U)|BHT_NO_ADDR_MATCH.B)).asBool, bht_wr_data2, bht_wr_data0))))
 
   val bht_bank_sel = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH/NUM_BHT_LOOP, Vec(NUM_BHT_LOOP, Bool()))))
 
   // We have a 2 way bht with BHT_ARRAY_DEPTH/NUM_BHT_LOOP blocks and NUM_BHT_LOOP->offset in each block
   // Make enables of each flop according to the address dividing the address in 2-blocks upper block for BHT-Block and
     // the lower block for the offset and run this on both of the ways
+
   for(i<-0 until 2; k<-0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP; j<- 0 until NUM_BHT_LOOP){
     bht_bank_sel(i)(k)(j) := (bht_wr_en0(i) & (bht_wr_addr0(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & ((bht_wr_addr0(BHT_ADDR_HI-BHT_ADDR_LO, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt) | BHT_NO_ADDR_MATCH.B)) |
       (bht_wr_en2(i) & (bht_wr_addr2(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt) | BHT_NO_ADDR_MATCH.B))
