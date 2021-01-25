@@ -395,16 +395,6 @@ if(!BTB_FULLYA) {
   val btb_valid = exu_mp_valid & (!dec_tlu_error_wb)
   val btb_wr_tag = io.exu_bp.exu_mp_btag
 
-//  if(BTB_FULLYA) {
-//    // Enable for write on each way
-//    val btb_wr_en_way0 = ((!exu_mp_way) & exu_mp_valid_write & (!dec_tlu_error_wb)) | ((!dec_tlu_way_wb) & dec_tlu_error_wb)
-//    val btb_wr_en_way1 = (exu_mp_way & exu_mp_valid_write & (!dec_tlu_error_wb)) | (dec_tlu_way_wb & dec_tlu_error_wb)
-//
-//    // Writing is always done from dec or exu check if the dec have a valid data
-//    val btb_wr_addr = Mux(dec_tlu_error_wb.asBool, btb_error_addr_wb, exu_mp_addr)
-//    vwayhit_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool -> wayhit_f,
-//      io.ifc_fetch_addr_f(0).asBool -> Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
-//  }
   // Making the data to write into the BTB according the structure discribed above
   val btb_wr_data = Cat(btb_wr_tag, exu_mp_tgt, exu_mp_pc4, exu_mp_boffset, exu_mp_call | exu_mp_ja, exu_mp_ret | exu_mp_ja, btb_valid)
   val exu_mp_valid_write = exu_mp_valid & exu_mp_ataken & !io.exu_bp.exu_mp_pkt.valid
