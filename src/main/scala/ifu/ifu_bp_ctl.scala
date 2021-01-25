@@ -359,7 +359,6 @@ if(!BTB_FULLYA) {
   val btb_fg_crossing_f = fetch_start_f(0) & btb_sel_f(0) & btb_rd_pc4_f
   val bp_total_branch_offset_f = bloc_f(1)^btb_rd_pc4_f
   val ifc_fetch_adder_prior = rvdfflie_UInt(io.ifc_fetch_addr_f(30,1), clock,reset.asAsyncReset,(io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f).asBool,io.scan_mode,WIDTH =30, LEFT =19 )
-
   io.ifu_bp_poffset_f := btb_rd_tgt_f
 
   val adder_pc_in_f = Mux1H(Seq(use_fa_plus.asBool                      -> fetch_addr_p1_f,
@@ -373,8 +372,7 @@ if(!BTB_FULLYA) {
   rets_out := (0 until RET_STACK_SIZE).map(i=>0.U)
   // Final target if its a RET then pop else take the target pc
   io.ifu_bp_btb_target_f := ((Fill(31,(btb_rd_ret_f & !btb_rd_call_f & rets_out(0)(0) & io.ifu_bp_hit_taken_f)) & rets_out(0)(31,1)) |
-    (Fill(31,(!btb_rd_ret_f & !btb_rd_call_f & rets_out(0)(0) & io.ifu_bp_hit_taken_f)) & bp_btb_target_adder_f(31,1)))
-
+    (Fill(31,(!(btb_rd_ret_f & !btb_rd_call_f & rets_out(0)(0)) & io.ifu_bp_hit_taken_f)) & bp_btb_target_adder_f(31,1)))
   // Return stack
   val bp_rs_call_target_f = rvbradder(Cat(adder_pc_in_f(29,0),bp_total_branch_offset_f, 0.U), Cat(Fill(11, 0.U),~btb_rd_pc4_f, 0.U))
 
@@ -537,8 +535,7 @@ if(!BTB_FULLYA) {
   for(i<-0 until 2; k<-0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP; j<-0 until NUM_BHT_LOOP){
     bht_bank_rd_data_out(i)((16*k)+j) := rvdffs_fpga(bht_bank_wr_data(i)(k)(j), bht_bank_sel(i)(k)(j),bht_bank_clk(i)(k),bht_bank_sel(i)(k)(j),clock)}
 
-
-  // Make the final read mux
+    // Make the final read mux
   bht_bank0_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f===i.U).asBool->bht_bank_rd_data_out(0)(i)))
   bht_bank1_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f===i.U).asBool->bht_bank_rd_data_out(1)(i)))
   bht_bank0_rd_data_p1_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_p1_f===i.U).asBool->bht_bank_rd_data_out(0)(i)))
