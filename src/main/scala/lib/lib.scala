@@ -558,6 +558,44 @@ trait lib extends param{
       }
     }
   }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // special power flop for predict packet
+  // format: { LEFT, RIGHT==31 }
+  // LEFT # of bits will be done with rvdffe; RIGHT is enabled by LEFT[LSB] & en
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    def rvdffppe_UInt(din: UInt, clk: Clock, rst_l: AsyncReset, en : Bool, scan_mode: Bool, WIDTH: Int=32) = {
+    val RIGHT = 31
+    val LEFT = WIDTH - RIGHT
+    val LMSB = WIDTH-1
+    val LLSB = LMSB-LEFT+1
+    val RMSB = LLSB-1
+    val RLSB = LLSB-RIGHT
+    if(RV_FPGA_OPTIMIZE){
+      withClock(clk){
+        RegEnable(din,0.U.asTypeOf(din),en)
+      }
+    }else
+      Cat(rvdffe(din(LMSB,LLSB),en,clk,scan_mode),rvdffe(din(RMSB,RLSB),(en&din(LLSB)).asBool,clk,scan_mode))
+
+  }
+  object rvdffppe {
+    def apply(din: Bundle, clk: Clock, rst_l: AsyncReset, en : Bool, scan_mode: Bool, elements: Int,en_bit :Bool) = {
+      if(RV_FPGA_OPTIMIZE){
+        withClock(clk){
+          RegEnable(din,0.U.asTypeOf(din),en)
+        }
+      }
+      else{
+        val vec = MixedVecInit((0 until din.getElements.length).map(i=>
+          if(i<=elements) rvdffe(din.getElements(i).asUInt(),en,clk,scan_mode)
+          else rvdffe(din.getElements(i).asUInt(),(en& en_bit).asBool,clk,scan_mode)))
+
+        vec.asTypeOf(din)
+      }
+    }
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   def rvdfflie_UInt(din: UInt, clk: Clock, rst_l: AsyncReset, en : Bool, scan_mode: Bool, WIDTH: Int=16, LEFT: Int=8) = {
     val EXTRA = WIDTH-LEFT

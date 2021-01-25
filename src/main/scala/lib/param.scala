@@ -161,4 +161,12 @@ trait param {
   val BTB_ENABLE             =  0x1
   val BTB_TOFFSET_SIZE       =  0x00C
   val BTB_FULLYA             =  0x00
+  val BITMANIP_ZBA           = 0x00
+  val BITMANIP_ZBB           = 0x01
+  val BITMANIP_ZBC           = 0x00
+  val BITMANIP_ZBE           = 0x00
+  val BITMANIP_ZBF           = 0x00
+  val BITMANIP_ZBP           = 0x00
+  val BITMANIP_ZBR           = 0x00
+  val BITMANIP_ZBS           = 0x01
 }
