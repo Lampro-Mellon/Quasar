@@ -147,7 +147,7 @@ class exu extends Module with lib with RequireAsyncReset{
 
   val i_mul = Module(new exu_mul_ctl())
   i_mul.io.scan_mode	:= io.scan_mode
-  i_mul.io.mul_p := io.dec_exu.decode_exu.mul_p
+  i_mul.io.mul_p      := io.dec_exu.decode_exu.mul_p
   //i_mul.io.mul_p	:= VecInit.tabulate(io.dec_exu.decode_exu.mul_p.getElements.size-1)(i=>io.dec_exu.decode_exu.mul_p.getElements(i).asUInt & Fill(io.dec_exu.decode_exu.mul_p.getElements.size,io.dec_exu.decode_exu.mul_p.valid)).asTypeOf(io.dec_exu.decode_exu.mul_p) //& io.dec_exu.decode_exu.mul_p.valid
   i_mul.io.rs1_in			:= muldiv_rs1_d & Fill(32,io.dec_exu.decode_exu.mul_p.valid)
   i_mul.io.rs2_in			:=  i0_rs2_d & Fill(32,io.dec_exu.decode_exu.mul_p.valid)

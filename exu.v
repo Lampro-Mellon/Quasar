@@ -2675,10 +2675,10 @@ module exu(
   assign i_alu_io_pp_in_bits_prett = io_dec_exu_decode_exu_dec_i0_predict_p_d_bits_prett; // @[exu.scala 134:45]
   assign i_mul_clock = clock;
   assign i_mul_reset = reset;
-  assign i_mul_io_mul_p_valid = io_dec_exu_decode_exu_mul_p_valid; // @[exu.scala 150:18]
-  assign i_mul_io_mul_p_bits_rs1_sign = io_dec_exu_decode_exu_mul_p_bits_rs1_sign; // @[exu.scala 150:18]
-  assign i_mul_io_mul_p_bits_rs2_sign = io_dec_exu_decode_exu_mul_p_bits_rs2_sign; // @[exu.scala 150:18]
-  assign i_mul_io_mul_p_bits_low = io_dec_exu_decode_exu_mul_p_bits_low; // @[exu.scala 150:18]
+  assign i_mul_io_mul_p_valid = io_dec_exu_decode_exu_mul_p_valid; // @[exu.scala 150:23]
+  assign i_mul_io_mul_p_bits_rs1_sign = io_dec_exu_decode_exu_mul_p_bits_rs1_sign; // @[exu.scala 150:23]
+  assign i_mul_io_mul_p_bits_rs2_sign = io_dec_exu_decode_exu_mul_p_bits_rs2_sign; // @[exu.scala 150:23]
+  assign i_mul_io_mul_p_bits_low = io_dec_exu_decode_exu_mul_p_bits_low; // @[exu.scala 150:23]
   assign i_mul_io_rs1_in = muldiv_rs1_d & _T_161; // @[exu.scala 152:41]
   assign i_mul_io_rs2_in = i0_rs2_d & _T_161; // @[exu.scala 153:41]
   assign i_div_clock = clock;
