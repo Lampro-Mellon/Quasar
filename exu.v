@@ -1,5 +1,4 @@
 module rvclkhdr(
-  output  io_l1clk,
   input   io_clk,
   input   io_en
 );
@@ -13,7 +12,6 @@ module rvclkhdr(
     .EN(clkhdr_EN),
     .SE(clkhdr_SE)
   );
-  assign io_l1clk = clkhdr_Q; // @[lib.scala 335:14]
   assign clkhdr_CK = io_clk; // @[lib.scala 336:18]
   assign clkhdr_EN = io_en; // @[lib.scala 337:18]
   assign clkhdr_SE = 1'h0; // @[lib.scala 338:18]
@@ -105,9 +103,8 @@ module exu_alu_ctl(
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  wire  rvclkhdr_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_io_en; // @[lib.scala 399:23]
+  wire  rvclkhdr_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_io_en; // @[lib.scala 404:23]
   wire  _T_1 = io_b_in[4:0] == 5'h1f; // @[exu_alu_ctl.scala 87:55]
   wire  ap_rev = io_i0_ap_grev & _T_1; // @[exu_alu_ctl.scala 87:39]
   wire  _T_4 = io_b_in[4:0] == 5'h18; // @[exu_alu_ctl.scala 88:55]
@@ -480,8 +477,7 @@ module exu_alu_ctl(
   wire  _T_993 = _T_990 | _T_992; // @[exu_alu_ctl.scala 356:47]
   wire  _T_997 = _T_970 & _T_972; // @[exu_alu_ctl.scala 359:56]
   wire  _T_998 = cond_mispredict | target_mispredict; // @[exu_alu_ctl.scala 359:103]
-  rvclkhdr rvclkhdr ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_io_l1clk),
+  rvclkhdr rvclkhdr ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_io_clk),
     .io_en(rvclkhdr_io_en)
   );
@@ -504,8 +500,8 @@ module exu_alu_ctl(
   assign io_predict_p_out_bits_pja = io_pp_in_bits_pja; // @[exu_alu_ctl.scala 358:30]
   assign io_predict_p_out_bits_way = io_pp_in_bits_way; // @[exu_alu_ctl.scala 358:30]
   assign io_predict_p_out_bits_pret = io_pp_in_bits_pret; // @[exu_alu_ctl.scala 358:30]
-  assign rvclkhdr_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_io_en = io_enable & io_dec_alu_dec_i0_alu_decode_d; // @[lib.scala 402:17]
+  assign rvclkhdr_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_io_en = io_enable & io_dec_alu_dec_i0_alu_decode_d; // @[lib.scala 407:17]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -589,26 +585,23 @@ module exu_mul_ctl(
   reg [63:0] _RAND_1;
   reg [63:0] _RAND_2;
 `endif // RANDOMIZE_REG_INIT
-  wire  rvclkhdr_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_1_io_l1clk; // @[lib.scala 422:23]
-  wire  rvclkhdr_1_io_clk; // @[lib.scala 422:23]
-  wire  rvclkhdr_1_io_en; // @[lib.scala 422:23]
-  wire  rvclkhdr_2_io_l1clk; // @[lib.scala 422:23]
-  wire  rvclkhdr_2_io_clk; // @[lib.scala 422:23]
-  wire  rvclkhdr_2_io_en; // @[lib.scala 422:23]
-  wire  rvclkhdr_3_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_3_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_3_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_4_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_4_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_4_io_en; // @[lib.scala 399:23]
+  wire  rvclkhdr_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_1_io_clk; // @[lib.scala 431:23]
+  wire  rvclkhdr_1_io_en; // @[lib.scala 431:23]
+  wire  rvclkhdr_2_io_clk; // @[lib.scala 431:23]
+  wire  rvclkhdr_2_io_en; // @[lib.scala 431:23]
+  wire  rvclkhdr_3_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_3_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_4_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_4_io_en; // @[lib.scala 404:23]
   wire  _T_1 = io_mul_p_bits_rs1_sign & io_rs1_in[31]; // @[exu_mul_ctl.scala 123:44]
+  wire [32:0] rs1_ext_in = {_T_1,io_rs1_in}; // @[exu_mul_ctl.scala 123:71]
   wire  _T_5 = io_mul_p_bits_rs2_sign & io_rs2_in[31]; // @[exu_mul_ctl.scala 124:44]
+  wire [32:0] rs2_ext_in = {_T_5,io_rs2_in}; // @[exu_mul_ctl.scala 124:71]
   reg  low_x; // @[Reg.scala 27:20]
-  reg [32:0] rs1_x; // @[lib.scala 428:16]
-  reg [32:0] rs2_x; // @[lib.scala 428:16]
+  reg [32:0] rs1_x; // @[Reg.scala 27:20]
+  reg [32:0] rs2_x; // @[Reg.scala 27:20]
   wire [65:0] prod_x = $signed(rs1_x) * $signed(rs2_x); // @[exu_mul_ctl.scala 130:20]
   wire  _T_39758 = ~low_x; // @[exu_mul_ctl.scala 388:46]
   wire [7:0] _T_39762 = {_T_39758,_T_39758,_T_39758,_T_39758,_T_39758,_T_39758,_T_39758,_T_39758}; // @[Cat.scala 29:58]
@@ -619,42 +612,37 @@ module exu_mul_ctl(
   wire [15:0] _T_39772 = {low_x,low_x,low_x,low_x,low_x,low_x,low_x,low_x,_T_39771}; // @[Cat.scala 29:58]
   wire [31:0] _T_39773 = {low_x,low_x,low_x,low_x,low_x,low_x,low_x,low_x,_T_39771,_T_39772}; // @[Cat.scala 29:58]
   wire [31:0] _T_39775 = _T_39773 & prod_x[31:0]; // @[exu_mul_ctl.scala 389:40]
-  rvclkhdr rvclkhdr ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_io_l1clk),
+  rvclkhdr rvclkhdr ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_io_clk),
     .io_en(rvclkhdr_io_en)
   );
-  rvclkhdr rvclkhdr_1 ( // @[lib.scala 422:23]
-    .io_l1clk(rvclkhdr_1_io_l1clk),
+  rvclkhdr rvclkhdr_1 ( // @[lib.scala 431:23]
     .io_clk(rvclkhdr_1_io_clk),
     .io_en(rvclkhdr_1_io_en)
   );
-  rvclkhdr rvclkhdr_2 ( // @[lib.scala 422:23]
-    .io_l1clk(rvclkhdr_2_io_l1clk),
+  rvclkhdr rvclkhdr_2 ( // @[lib.scala 431:23]
     .io_clk(rvclkhdr_2_io_clk),
     .io_en(rvclkhdr_2_io_en)
   );
-  rvclkhdr rvclkhdr_3 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_3_io_l1clk),
+  rvclkhdr rvclkhdr_3 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_3_io_clk),
     .io_en(rvclkhdr_3_io_en)
   );
-  rvclkhdr rvclkhdr_4 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_4_io_l1clk),
+  rvclkhdr rvclkhdr_4 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_4_io_clk),
     .io_en(rvclkhdr_4_io_en)
   );
   assign io_result_x = _T_39766 | _T_39775; // @[exu_mul_ctl.scala 388:15]
-  assign rvclkhdr_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_io_en = io_mul_p_valid; // @[lib.scala 402:17]
-  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 424:18]
-  assign rvclkhdr_1_io_en = io_mul_p_valid; // @[lib.scala 425:17]
-  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 424:18]
-  assign rvclkhdr_2_io_en = io_mul_p_valid; // @[lib.scala 425:17]
-  assign rvclkhdr_3_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_3_io_en = io_mul_p_valid; // @[lib.scala 402:17]
-  assign rvclkhdr_4_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_4_io_en = io_mul_p_valid; // @[lib.scala 402:17]
+  assign rvclkhdr_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_io_en = io_mul_p_valid; // @[lib.scala 407:17]
+  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 433:18]
+  assign rvclkhdr_1_io_en = io_mul_p_valid; // @[lib.scala 434:17]
+  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 433:18]
+  assign rvclkhdr_2_io_en = io_mul_p_valid; // @[lib.scala 434:17]
+  assign rvclkhdr_3_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_3_io_en = io_mul_p_valid; // @[lib.scala 407:17]
+  assign rvclkhdr_4_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_4_io_en = io_mul_p_valid; // @[lib.scala 407:17]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -719,18 +707,18 @@ end // initial
       low_x <= io_mul_p_bits_low;
     end
   end
-  always @(posedge rvclkhdr_1_io_l1clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       rs1_x <= 33'sh0;
-    end else begin
-      rs1_x <= {_T_1,io_rs1_in};
+    end else if (io_mul_p_valid) begin
+      rs1_x <= rs1_ext_in;
     end
   end
-  always @(posedge rvclkhdr_2_io_l1clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       rs2_x <= 33'sh0;
-    end else begin
-      rs2_x <= {_T_5,io_rs2_in};
+    end else if (io_mul_p_valid) begin
+      rs2_x <= rs2_ext_in;
     end
   end
 endmodule
@@ -958,39 +946,28 @@ module exu_div_new_4bit_fullshortq(
   wire [4:0] a_enc_io_cls; // @[exu_div_ctl.scala 913:31]
   wire [32:0] b_enc_io_operand; // @[exu_div_ctl.scala 916:31]
   wire [4:0] b_enc_io_cls; // @[exu_div_ctl.scala 916:31]
-  wire  rvclkhdr_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_1_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_1_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_1_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_2_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_2_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_2_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_3_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_3_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_3_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_4_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_4_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_4_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_5_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_5_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_5_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_6_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_6_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_6_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_7_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_7_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_7_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_8_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_8_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_8_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_9_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_9_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_9_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_10_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_10_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_10_io_en; // @[lib.scala 399:23]
+  wire  rvclkhdr_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_1_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_1_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_2_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_2_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_3_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_3_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_4_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_4_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_5_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_5_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_6_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_6_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_7_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_7_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_8_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_8_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_9_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_9_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_10_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_10_io_en; // @[lib.scala 404:23]
   wire  _T = ~io_cancel; // @[exu_div_ctl.scala 776:44]
   wire  valid_ff_in = io_valid_in & _T; // @[exu_div_ctl.scala 776:42]
   wire  _T_1 = ~io_valid_in; // @[exu_div_ctl.scala 777:35]
@@ -1284,103 +1261,103 @@ module exu_div_new_4bit_fullshortq(
   wire [31:0] _T_607 = twos_comp_q_sel ? q_ff : 32'h0; // @[Mux.scala 27:72]
   wire [31:0] _T_608 = b_twos_comp ? b_ff[31:0] : 32'h0; // @[Mux.scala 27:72]
   wire [31:0] twos_comp_in = _T_607 | _T_608; // @[Mux.scala 27:72]
-  wire  _T_612 = |twos_comp_in[0]; // @[lib.scala 649:35]
-  wire  _T_614 = ~twos_comp_in[1]; // @[lib.scala 649:40]
-  wire  _T_616 = _T_612 ? _T_614 : twos_comp_in[1]; // @[lib.scala 649:23]
-  wire  _T_618 = |twos_comp_in[1:0]; // @[lib.scala 649:35]
-  wire  _T_620 = ~twos_comp_in[2]; // @[lib.scala 649:40]
-  wire  _T_622 = _T_618 ? _T_620 : twos_comp_in[2]; // @[lib.scala 649:23]
-  wire  _T_624 = |twos_comp_in[2:0]; // @[lib.scala 649:35]
-  wire  _T_626 = ~twos_comp_in[3]; // @[lib.scala 649:40]
-  wire  _T_628 = _T_624 ? _T_626 : twos_comp_in[3]; // @[lib.scala 649:23]
-  wire  _T_630 = |twos_comp_in[3:0]; // @[lib.scala 649:35]
-  wire  _T_632 = ~twos_comp_in[4]; // @[lib.scala 649:40]
-  wire  _T_634 = _T_630 ? _T_632 : twos_comp_in[4]; // @[lib.scala 649:23]
-  wire  _T_636 = |twos_comp_in[4:0]; // @[lib.scala 649:35]
-  wire  _T_638 = ~twos_comp_in[5]; // @[lib.scala 649:40]
-  wire  _T_640 = _T_636 ? _T_638 : twos_comp_in[5]; // @[lib.scala 649:23]
-  wire  _T_642 = |twos_comp_in[5:0]; // @[lib.scala 649:35]
-  wire  _T_644 = ~twos_comp_in[6]; // @[lib.scala 649:40]
-  wire  _T_646 = _T_642 ? _T_644 : twos_comp_in[6]; // @[lib.scala 649:23]
-  wire  _T_648 = |twos_comp_in[6:0]; // @[lib.scala 649:35]
-  wire  _T_650 = ~twos_comp_in[7]; // @[lib.scala 649:40]
-  wire  _T_652 = _T_648 ? _T_650 : twos_comp_in[7]; // @[lib.scala 649:23]
-  wire  _T_654 = |twos_comp_in[7:0]; // @[lib.scala 649:35]
-  wire  _T_656 = ~twos_comp_in[8]; // @[lib.scala 649:40]
-  wire  _T_658 = _T_654 ? _T_656 : twos_comp_in[8]; // @[lib.scala 649:23]
-  wire  _T_660 = |twos_comp_in[8:0]; // @[lib.scala 649:35]
-  wire  _T_662 = ~twos_comp_in[9]; // @[lib.scala 649:40]
-  wire  _T_664 = _T_660 ? _T_662 : twos_comp_in[9]; // @[lib.scala 649:23]
-  wire  _T_666 = |twos_comp_in[9:0]; // @[lib.scala 649:35]
-  wire  _T_668 = ~twos_comp_in[10]; // @[lib.scala 649:40]
-  wire  _T_670 = _T_666 ? _T_668 : twos_comp_in[10]; // @[lib.scala 649:23]
-  wire  _T_672 = |twos_comp_in[10:0]; // @[lib.scala 649:35]
-  wire  _T_674 = ~twos_comp_in[11]; // @[lib.scala 649:40]
-  wire  _T_676 = _T_672 ? _T_674 : twos_comp_in[11]; // @[lib.scala 649:23]
-  wire  _T_678 = |twos_comp_in[11:0]; // @[lib.scala 649:35]
-  wire  _T_680 = ~twos_comp_in[12]; // @[lib.scala 649:40]
-  wire  _T_682 = _T_678 ? _T_680 : twos_comp_in[12]; // @[lib.scala 649:23]
-  wire  _T_684 = |twos_comp_in[12:0]; // @[lib.scala 649:35]
-  wire  _T_686 = ~twos_comp_in[13]; // @[lib.scala 649:40]
-  wire  _T_688 = _T_684 ? _T_686 : twos_comp_in[13]; // @[lib.scala 649:23]
-  wire  _T_690 = |twos_comp_in[13:0]; // @[lib.scala 649:35]
-  wire  _T_692 = ~twos_comp_in[14]; // @[lib.scala 649:40]
-  wire  _T_694 = _T_690 ? _T_692 : twos_comp_in[14]; // @[lib.scala 649:23]
-  wire  _T_696 = |twos_comp_in[14:0]; // @[lib.scala 649:35]
-  wire  _T_698 = ~twos_comp_in[15]; // @[lib.scala 649:40]
-  wire  _T_700 = _T_696 ? _T_698 : twos_comp_in[15]; // @[lib.scala 649:23]
-  wire  _T_702 = |twos_comp_in[15:0]; // @[lib.scala 649:35]
-  wire  _T_704 = ~twos_comp_in[16]; // @[lib.scala 649:40]
-  wire  _T_706 = _T_702 ? _T_704 : twos_comp_in[16]; // @[lib.scala 649:23]
-  wire  _T_708 = |twos_comp_in[16:0]; // @[lib.scala 649:35]
-  wire  _T_710 = ~twos_comp_in[17]; // @[lib.scala 649:40]
-  wire  _T_712 = _T_708 ? _T_710 : twos_comp_in[17]; // @[lib.scala 649:23]
-  wire  _T_714 = |twos_comp_in[17:0]; // @[lib.scala 649:35]
-  wire  _T_716 = ~twos_comp_in[18]; // @[lib.scala 649:40]
-  wire  _T_718 = _T_714 ? _T_716 : twos_comp_in[18]; // @[lib.scala 649:23]
-  wire  _T_720 = |twos_comp_in[18:0]; // @[lib.scala 649:35]
-  wire  _T_722 = ~twos_comp_in[19]; // @[lib.scala 649:40]
-  wire  _T_724 = _T_720 ? _T_722 : twos_comp_in[19]; // @[lib.scala 649:23]
-  wire  _T_726 = |twos_comp_in[19:0]; // @[lib.scala 649:35]
-  wire  _T_728 = ~twos_comp_in[20]; // @[lib.scala 649:40]
-  wire  _T_730 = _T_726 ? _T_728 : twos_comp_in[20]; // @[lib.scala 649:23]
-  wire  _T_732 = |twos_comp_in[20:0]; // @[lib.scala 649:35]
-  wire  _T_734 = ~twos_comp_in[21]; // @[lib.scala 649:40]
-  wire  _T_736 = _T_732 ? _T_734 : twos_comp_in[21]; // @[lib.scala 649:23]
-  wire  _T_738 = |twos_comp_in[21:0]; // @[lib.scala 649:35]
-  wire  _T_740 = ~twos_comp_in[22]; // @[lib.scala 649:40]
-  wire  _T_742 = _T_738 ? _T_740 : twos_comp_in[22]; // @[lib.scala 649:23]
-  wire  _T_744 = |twos_comp_in[22:0]; // @[lib.scala 649:35]
-  wire  _T_746 = ~twos_comp_in[23]; // @[lib.scala 649:40]
-  wire  _T_748 = _T_744 ? _T_746 : twos_comp_in[23]; // @[lib.scala 649:23]
-  wire  _T_750 = |twos_comp_in[23:0]; // @[lib.scala 649:35]
-  wire  _T_752 = ~twos_comp_in[24]; // @[lib.scala 649:40]
-  wire  _T_754 = _T_750 ? _T_752 : twos_comp_in[24]; // @[lib.scala 649:23]
-  wire  _T_756 = |twos_comp_in[24:0]; // @[lib.scala 649:35]
-  wire  _T_758 = ~twos_comp_in[25]; // @[lib.scala 649:40]
-  wire  _T_760 = _T_756 ? _T_758 : twos_comp_in[25]; // @[lib.scala 649:23]
-  wire  _T_762 = |twos_comp_in[25:0]; // @[lib.scala 649:35]
-  wire  _T_764 = ~twos_comp_in[26]; // @[lib.scala 649:40]
-  wire  _T_766 = _T_762 ? _T_764 : twos_comp_in[26]; // @[lib.scala 649:23]
-  wire  _T_768 = |twos_comp_in[26:0]; // @[lib.scala 649:35]
-  wire  _T_770 = ~twos_comp_in[27]; // @[lib.scala 649:40]
-  wire  _T_772 = _T_768 ? _T_770 : twos_comp_in[27]; // @[lib.scala 649:23]
-  wire  _T_774 = |twos_comp_in[27:0]; // @[lib.scala 649:35]
-  wire  _T_776 = ~twos_comp_in[28]; // @[lib.scala 649:40]
-  wire  _T_778 = _T_774 ? _T_776 : twos_comp_in[28]; // @[lib.scala 649:23]
-  wire  _T_780 = |twos_comp_in[28:0]; // @[lib.scala 649:35]
-  wire  _T_782 = ~twos_comp_in[29]; // @[lib.scala 649:40]
-  wire  _T_784 = _T_780 ? _T_782 : twos_comp_in[29]; // @[lib.scala 649:23]
-  wire  _T_786 = |twos_comp_in[29:0]; // @[lib.scala 649:35]
-  wire  _T_788 = ~twos_comp_in[30]; // @[lib.scala 649:40]
-  wire  _T_790 = _T_786 ? _T_788 : twos_comp_in[30]; // @[lib.scala 649:23]
-  wire  _T_792 = |twos_comp_in[30:0]; // @[lib.scala 649:35]
-  wire  _T_794 = ~twos_comp_in[31]; // @[lib.scala 649:40]
-  wire  _T_796 = _T_792 ? _T_794 : twos_comp_in[31]; // @[lib.scala 649:23]
-  wire [6:0] _T_802 = {_T_652,_T_646,_T_640,_T_634,_T_628,_T_622,_T_616}; // @[lib.scala 651:14]
-  wire [14:0] _T_810 = {_T_700,_T_694,_T_688,_T_682,_T_676,_T_670,_T_664,_T_658,_T_802}; // @[lib.scala 651:14]
-  wire [7:0] _T_817 = {_T_748,_T_742,_T_736,_T_730,_T_724,_T_718,_T_712,_T_706}; // @[lib.scala 651:14]
-  wire [30:0] _T_826 = {_T_796,_T_790,_T_784,_T_778,_T_772,_T_766,_T_760,_T_754,_T_817,_T_810}; // @[lib.scala 651:14]
+  wire  _T_612 = |twos_comp_in[0]; // @[lib.scala 661:35]
+  wire  _T_614 = ~twos_comp_in[1]; // @[lib.scala 661:40]
+  wire  _T_616 = _T_612 ? _T_614 : twos_comp_in[1]; // @[lib.scala 661:23]
+  wire  _T_618 = |twos_comp_in[1:0]; // @[lib.scala 661:35]
+  wire  _T_620 = ~twos_comp_in[2]; // @[lib.scala 661:40]
+  wire  _T_622 = _T_618 ? _T_620 : twos_comp_in[2]; // @[lib.scala 661:23]
+  wire  _T_624 = |twos_comp_in[2:0]; // @[lib.scala 661:35]
+  wire  _T_626 = ~twos_comp_in[3]; // @[lib.scala 661:40]
+  wire  _T_628 = _T_624 ? _T_626 : twos_comp_in[3]; // @[lib.scala 661:23]
+  wire  _T_630 = |twos_comp_in[3:0]; // @[lib.scala 661:35]
+  wire  _T_632 = ~twos_comp_in[4]; // @[lib.scala 661:40]
+  wire  _T_634 = _T_630 ? _T_632 : twos_comp_in[4]; // @[lib.scala 661:23]
+  wire  _T_636 = |twos_comp_in[4:0]; // @[lib.scala 661:35]
+  wire  _T_638 = ~twos_comp_in[5]; // @[lib.scala 661:40]
+  wire  _T_640 = _T_636 ? _T_638 : twos_comp_in[5]; // @[lib.scala 661:23]
+  wire  _T_642 = |twos_comp_in[5:0]; // @[lib.scala 661:35]
+  wire  _T_644 = ~twos_comp_in[6]; // @[lib.scala 661:40]
+  wire  _T_646 = _T_642 ? _T_644 : twos_comp_in[6]; // @[lib.scala 661:23]
+  wire  _T_648 = |twos_comp_in[6:0]; // @[lib.scala 661:35]
+  wire  _T_650 = ~twos_comp_in[7]; // @[lib.scala 661:40]
+  wire  _T_652 = _T_648 ? _T_650 : twos_comp_in[7]; // @[lib.scala 661:23]
+  wire  _T_654 = |twos_comp_in[7:0]; // @[lib.scala 661:35]
+  wire  _T_656 = ~twos_comp_in[8]; // @[lib.scala 661:40]
+  wire  _T_658 = _T_654 ? _T_656 : twos_comp_in[8]; // @[lib.scala 661:23]
+  wire  _T_660 = |twos_comp_in[8:0]; // @[lib.scala 661:35]
+  wire  _T_662 = ~twos_comp_in[9]; // @[lib.scala 661:40]
+  wire  _T_664 = _T_660 ? _T_662 : twos_comp_in[9]; // @[lib.scala 661:23]
+  wire  _T_666 = |twos_comp_in[9:0]; // @[lib.scala 661:35]
+  wire  _T_668 = ~twos_comp_in[10]; // @[lib.scala 661:40]
+  wire  _T_670 = _T_666 ? _T_668 : twos_comp_in[10]; // @[lib.scala 661:23]
+  wire  _T_672 = |twos_comp_in[10:0]; // @[lib.scala 661:35]
+  wire  _T_674 = ~twos_comp_in[11]; // @[lib.scala 661:40]
+  wire  _T_676 = _T_672 ? _T_674 : twos_comp_in[11]; // @[lib.scala 661:23]
+  wire  _T_678 = |twos_comp_in[11:0]; // @[lib.scala 661:35]
+  wire  _T_680 = ~twos_comp_in[12]; // @[lib.scala 661:40]
+  wire  _T_682 = _T_678 ? _T_680 : twos_comp_in[12]; // @[lib.scala 661:23]
+  wire  _T_684 = |twos_comp_in[12:0]; // @[lib.scala 661:35]
+  wire  _T_686 = ~twos_comp_in[13]; // @[lib.scala 661:40]
+  wire  _T_688 = _T_684 ? _T_686 : twos_comp_in[13]; // @[lib.scala 661:23]
+  wire  _T_690 = |twos_comp_in[13:0]; // @[lib.scala 661:35]
+  wire  _T_692 = ~twos_comp_in[14]; // @[lib.scala 661:40]
+  wire  _T_694 = _T_690 ? _T_692 : twos_comp_in[14]; // @[lib.scala 661:23]
+  wire  _T_696 = |twos_comp_in[14:0]; // @[lib.scala 661:35]
+  wire  _T_698 = ~twos_comp_in[15]; // @[lib.scala 661:40]
+  wire  _T_700 = _T_696 ? _T_698 : twos_comp_in[15]; // @[lib.scala 661:23]
+  wire  _T_702 = |twos_comp_in[15:0]; // @[lib.scala 661:35]
+  wire  _T_704 = ~twos_comp_in[16]; // @[lib.scala 661:40]
+  wire  _T_706 = _T_702 ? _T_704 : twos_comp_in[16]; // @[lib.scala 661:23]
+  wire  _T_708 = |twos_comp_in[16:0]; // @[lib.scala 661:35]
+  wire  _T_710 = ~twos_comp_in[17]; // @[lib.scala 661:40]
+  wire  _T_712 = _T_708 ? _T_710 : twos_comp_in[17]; // @[lib.scala 661:23]
+  wire  _T_714 = |twos_comp_in[17:0]; // @[lib.scala 661:35]
+  wire  _T_716 = ~twos_comp_in[18]; // @[lib.scala 661:40]
+  wire  _T_718 = _T_714 ? _T_716 : twos_comp_in[18]; // @[lib.scala 661:23]
+  wire  _T_720 = |twos_comp_in[18:0]; // @[lib.scala 661:35]
+  wire  _T_722 = ~twos_comp_in[19]; // @[lib.scala 661:40]
+  wire  _T_724 = _T_720 ? _T_722 : twos_comp_in[19]; // @[lib.scala 661:23]
+  wire  _T_726 = |twos_comp_in[19:0]; // @[lib.scala 661:35]
+  wire  _T_728 = ~twos_comp_in[20]; // @[lib.scala 661:40]
+  wire  _T_730 = _T_726 ? _T_728 : twos_comp_in[20]; // @[lib.scala 661:23]
+  wire  _T_732 = |twos_comp_in[20:0]; // @[lib.scala 661:35]
+  wire  _T_734 = ~twos_comp_in[21]; // @[lib.scala 661:40]
+  wire  _T_736 = _T_732 ? _T_734 : twos_comp_in[21]; // @[lib.scala 661:23]
+  wire  _T_738 = |twos_comp_in[21:0]; // @[lib.scala 661:35]
+  wire  _T_740 = ~twos_comp_in[22]; // @[lib.scala 661:40]
+  wire  _T_742 = _T_738 ? _T_740 : twos_comp_in[22]; // @[lib.scala 661:23]
+  wire  _T_744 = |twos_comp_in[22:0]; // @[lib.scala 661:35]
+  wire  _T_746 = ~twos_comp_in[23]; // @[lib.scala 661:40]
+  wire  _T_748 = _T_744 ? _T_746 : twos_comp_in[23]; // @[lib.scala 661:23]
+  wire  _T_750 = |twos_comp_in[23:0]; // @[lib.scala 661:35]
+  wire  _T_752 = ~twos_comp_in[24]; // @[lib.scala 661:40]
+  wire  _T_754 = _T_750 ? _T_752 : twos_comp_in[24]; // @[lib.scala 661:23]
+  wire  _T_756 = |twos_comp_in[24:0]; // @[lib.scala 661:35]
+  wire  _T_758 = ~twos_comp_in[25]; // @[lib.scala 661:40]
+  wire  _T_760 = _T_756 ? _T_758 : twos_comp_in[25]; // @[lib.scala 661:23]
+  wire  _T_762 = |twos_comp_in[25:0]; // @[lib.scala 661:35]
+  wire  _T_764 = ~twos_comp_in[26]; // @[lib.scala 661:40]
+  wire  _T_766 = _T_762 ? _T_764 : twos_comp_in[26]; // @[lib.scala 661:23]
+  wire  _T_768 = |twos_comp_in[26:0]; // @[lib.scala 661:35]
+  wire  _T_770 = ~twos_comp_in[27]; // @[lib.scala 661:40]
+  wire  _T_772 = _T_768 ? _T_770 : twos_comp_in[27]; // @[lib.scala 661:23]
+  wire  _T_774 = |twos_comp_in[27:0]; // @[lib.scala 661:35]
+  wire  _T_776 = ~twos_comp_in[28]; // @[lib.scala 661:40]
+  wire  _T_778 = _T_774 ? _T_776 : twos_comp_in[28]; // @[lib.scala 661:23]
+  wire  _T_780 = |twos_comp_in[28:0]; // @[lib.scala 661:35]
+  wire  _T_782 = ~twos_comp_in[29]; // @[lib.scala 661:40]
+  wire  _T_784 = _T_780 ? _T_782 : twos_comp_in[29]; // @[lib.scala 661:23]
+  wire  _T_786 = |twos_comp_in[29:0]; // @[lib.scala 661:35]
+  wire  _T_788 = ~twos_comp_in[30]; // @[lib.scala 661:40]
+  wire  _T_790 = _T_786 ? _T_788 : twos_comp_in[30]; // @[lib.scala 661:23]
+  wire  _T_792 = |twos_comp_in[30:0]; // @[lib.scala 661:35]
+  wire  _T_794 = ~twos_comp_in[31]; // @[lib.scala 661:40]
+  wire  _T_796 = _T_792 ? _T_794 : twos_comp_in[31]; // @[lib.scala 661:23]
+  wire [6:0] _T_802 = {_T_652,_T_646,_T_640,_T_634,_T_628,_T_622,_T_616}; // @[lib.scala 663:14]
+  wire [14:0] _T_810 = {_T_700,_T_694,_T_688,_T_682,_T_676,_T_670,_T_664,_T_658,_T_802}; // @[lib.scala 663:14]
+  wire [7:0] _T_817 = {_T_748,_T_742,_T_736,_T_730,_T_724,_T_718,_T_712,_T_706}; // @[lib.scala 663:14]
+  wire [30:0] _T_826 = {_T_796,_T_790,_T_784,_T_778,_T_772,_T_766,_T_760,_T_754,_T_817,_T_810}; // @[lib.scala 663:14]
   wire [31:0] twos_comp_out = {_T_826,twos_comp_in[0]}; // @[Cat.scala 29:58]
   wire  _T_828 = ~a_shift; // @[exu_div_ctl.scala 847:6]
   wire  _T_830 = _T_828 & _T_66; // @[exu_div_ctl.scala 847:15]
@@ -1673,58 +1650,47 @@ module exu_div_new_4bit_fullshortq(
     .io_operand(b_enc_io_operand),
     .io_cls(b_enc_io_cls)
   );
-  rvclkhdr rvclkhdr ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_io_l1clk),
+  rvclkhdr rvclkhdr ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_io_clk),
     .io_en(rvclkhdr_io_en)
   );
-  rvclkhdr rvclkhdr_1 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_1_io_l1clk),
+  rvclkhdr rvclkhdr_1 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_1_io_clk),
     .io_en(rvclkhdr_1_io_en)
   );
-  rvclkhdr rvclkhdr_2 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_2_io_l1clk),
+  rvclkhdr rvclkhdr_2 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_2_io_clk),
     .io_en(rvclkhdr_2_io_en)
   );
-  rvclkhdr rvclkhdr_3 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_3_io_l1clk),
+  rvclkhdr rvclkhdr_3 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_3_io_clk),
     .io_en(rvclkhdr_3_io_en)
   );
-  rvclkhdr rvclkhdr_4 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_4_io_l1clk),
+  rvclkhdr rvclkhdr_4 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_4_io_clk),
     .io_en(rvclkhdr_4_io_en)
   );
-  rvclkhdr rvclkhdr_5 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_5_io_l1clk),
+  rvclkhdr rvclkhdr_5 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_5_io_clk),
     .io_en(rvclkhdr_5_io_en)
   );
-  rvclkhdr rvclkhdr_6 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_6_io_l1clk),
+  rvclkhdr rvclkhdr_6 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_6_io_clk),
     .io_en(rvclkhdr_6_io_en)
   );
-  rvclkhdr rvclkhdr_7 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_7_io_l1clk),
+  rvclkhdr rvclkhdr_7 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_7_io_clk),
     .io_en(rvclkhdr_7_io_en)
   );
-  rvclkhdr rvclkhdr_8 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_8_io_l1clk),
+  rvclkhdr rvclkhdr_8 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_8_io_clk),
     .io_en(rvclkhdr_8_io_en)
   );
-  rvclkhdr rvclkhdr_9 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_9_io_l1clk),
+  rvclkhdr rvclkhdr_9 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_9_io_clk),
     .io_en(rvclkhdr_9_io_en)
   );
-  rvclkhdr rvclkhdr_10 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_10_io_l1clk),
+  rvclkhdr rvclkhdr_10 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_10_io_clk),
     .io_en(rvclkhdr_10_io_en)
   );
@@ -1732,28 +1698,28 @@ module exu_div_new_4bit_fullshortq(
   assign io_valid_out = finish_ff & _T; // @[exu_div_ctl.scala 881:16]
   assign a_enc_io_operand = {control_ff[2],a_ff}; // @[exu_div_ctl.scala 914:23]
   assign b_enc_io_operand = b_ff[32:0]; // @[exu_div_ctl.scala 917:23]
-  assign rvclkhdr_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_io_en = _T_47 | finish_ff; // @[lib.scala 402:17]
-  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_1_io_en = _T_47 | finish_ff; // @[lib.scala 402:17]
-  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_2_io_en = _T_47 | finish_ff; // @[lib.scala 402:17]
-  assign rvclkhdr_3_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_3_io_en = _T_47 | finish_ff; // @[lib.scala 402:17]
-  assign rvclkhdr_4_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_4_io_en = _T_47 | finish_ff; // @[lib.scala 402:17]
-  assign rvclkhdr_5_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_5_io_en = _T_47 | finish_ff; // @[lib.scala 402:17]
-  assign rvclkhdr_6_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_6_io_en = _T_47 | finish_ff; // @[lib.scala 402:17]
-  assign rvclkhdr_7_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_7_io_en = io_valid_in | running_state; // @[lib.scala 402:17]
-  assign rvclkhdr_8_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_8_io_en = io_valid_in | b_twos_comp; // @[lib.scala 402:17]
-  assign rvclkhdr_9_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_9_io_en = _T_45 | running_state; // @[lib.scala 402:17]
-  assign rvclkhdr_10_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_10_io_en = _T_45 | running_state; // @[lib.scala 402:17]
+  assign rvclkhdr_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_io_en = _T_47 | finish_ff; // @[lib.scala 407:17]
+  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_1_io_en = _T_47 | finish_ff; // @[lib.scala 407:17]
+  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_2_io_en = _T_47 | finish_ff; // @[lib.scala 407:17]
+  assign rvclkhdr_3_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_3_io_en = _T_47 | finish_ff; // @[lib.scala 407:17]
+  assign rvclkhdr_4_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_4_io_en = _T_47 | finish_ff; // @[lib.scala 407:17]
+  assign rvclkhdr_5_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_5_io_en = _T_47 | finish_ff; // @[lib.scala 407:17]
+  assign rvclkhdr_6_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_6_io_en = _T_47 | finish_ff; // @[lib.scala 407:17]
+  assign rvclkhdr_7_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_7_io_en = io_valid_in | running_state; // @[lib.scala 407:17]
+  assign rvclkhdr_8_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_8_io_en = io_valid_in | b_twos_comp; // @[lib.scala 407:17]
+  assign rvclkhdr_9_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_9_io_en = _T_45 | running_state; // @[lib.scala 407:17]
+  assign rvclkhdr_10_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_10_io_en = _T_45 | running_state; // @[lib.scala 407:17]
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
 `endif
@@ -2178,30 +2144,22 @@ module exu(
   reg [31:0] _RAND_36;
   reg [31:0] _RAND_37;
 `endif // RANDOMIZE_REG_INIT
-  wire  rvclkhdr_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_1_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_1_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_1_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_2_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_2_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_2_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_3_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_3_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_3_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_4_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_4_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_4_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_5_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_5_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_5_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_6_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_6_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_6_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_7_io_l1clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_7_io_clk; // @[lib.scala 399:23]
-  wire  rvclkhdr_7_io_en; // @[lib.scala 399:23]
+  wire  rvclkhdr_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_1_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_1_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_2_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_2_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_3_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_3_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_4_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_4_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_5_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_5_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_6_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_6_io_en; // @[lib.scala 404:23]
+  wire  rvclkhdr_7_io_clk; // @[lib.scala 404:23]
+  wire  rvclkhdr_7_io_en; // @[lib.scala 404:23]
   wire  i_alu_clock; // @[exu.scala 129:19]
   wire  i_alu_reset; // @[exu.scala 129:19]
   wire  i_alu_io_dec_alu_dec_i0_alu_decode_d; // @[exu.scala 129:19]
@@ -2377,13 +2335,13 @@ module exu(
   wire [7:0] _T_230 = _T_227 | _T_228; // @[Mux.scala 27:72]
   wire [7:0] _T_229 = io_dec_exu_tlu_exu_dec_tlu_flush_lower_r ? ghr_x : 8'h0; // @[Mux.scala 27:72]
   wire [7:0] ghr_d_ns = _T_230 | _T_229; // @[Mux.scala 27:72]
-  wire [7:0] _T_33 = ghr_d_ns ^ ghr_d; // @[lib.scala 436:21]
-  wire  _T_34 = |_T_33; // @[lib.scala 436:29]
+  wire [7:0] _T_33 = ghr_d_ns ^ ghr_d; // @[lib.scala 448:21]
+  wire  _T_34 = |_T_33; // @[lib.scala 448:29]
   reg  mul_valid_x; // @[Reg.scala 27:20]
-  wire  _T_37 = io_dec_exu_decode_exu_mul_p_valid ^ mul_valid_x; // @[lib.scala 458:21]
-  wire  _T_38 = |_T_37; // @[lib.scala 458:29]
-  wire  _T_41 = io_dec_exu_decode_exu_dec_i0_branch_d ^ i0_branch_x; // @[lib.scala 436:21]
-  wire  _T_42 = |_T_41; // @[lib.scala 436:29]
+  wire  _T_37 = io_dec_exu_decode_exu_mul_p_valid ^ mul_valid_x; // @[lib.scala 470:21]
+  wire  _T_38 = |_T_37; // @[lib.scala 470:29]
+  wire  _T_41 = io_dec_exu_decode_exu_dec_i0_branch_d ^ i0_branch_x; // @[lib.scala 448:21]
+  wire  _T_42 = |_T_41; // @[lib.scala 448:29]
   wire  _T_46 = io_dec_exu_decode_exu_dec_i0_rs1_bypass_en_d[0] | io_dec_exu_decode_exu_dec_i0_rs1_bypass_en_d[1]; // @[exu.scala 82:84]
   wire  _T_48 = _T_46 | io_dec_exu_decode_exu_dec_i0_rs1_bypass_en_d[2]; // @[exu.scala 82:134]
   wire  i0_rs1_bypass_en_d = _T_48 | io_dec_exu_decode_exu_dec_i0_rs1_bypass_en_d[3]; // @[exu.scala 82:184]
@@ -2464,43 +2422,35 @@ module exu(
   wire [30:0] _T_261 = _T_258 ? i0_flush_path_d : 31'h0; // @[Mux.scala 27:72]
   wire [31:0] pred_correct_npc_r = {{1'd0}, _T_31}; // @[exu.scala 46:51 exu.scala 77:45]
   wire [31:0] _T_265 = i0_pred_correct_upper_r ? pred_correct_npc_r : {{1'd0}, i0_flush_path_upper_r}; // @[exu.scala 240:55]
-  rvclkhdr rvclkhdr ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_io_l1clk),
+  rvclkhdr rvclkhdr ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_io_clk),
     .io_en(rvclkhdr_io_en)
   );
-  rvclkhdr rvclkhdr_1 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_1_io_l1clk),
+  rvclkhdr rvclkhdr_1 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_1_io_clk),
     .io_en(rvclkhdr_1_io_en)
   );
-  rvclkhdr rvclkhdr_2 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_2_io_l1clk),
+  rvclkhdr rvclkhdr_2 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_2_io_clk),
     .io_en(rvclkhdr_2_io_en)
   );
-  rvclkhdr rvclkhdr_3 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_3_io_l1clk),
+  rvclkhdr rvclkhdr_3 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_3_io_clk),
     .io_en(rvclkhdr_3_io_en)
   );
-  rvclkhdr rvclkhdr_4 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_4_io_l1clk),
+  rvclkhdr rvclkhdr_4 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_4_io_clk),
     .io_en(rvclkhdr_4_io_en)
   );
-  rvclkhdr rvclkhdr_5 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_5_io_l1clk),
+  rvclkhdr rvclkhdr_5 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_5_io_clk),
     .io_en(rvclkhdr_5_io_en)
   );
-  rvclkhdr rvclkhdr_6 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_6_io_l1clk),
+  rvclkhdr rvclkhdr_6 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_6_io_clk),
     .io_en(rvclkhdr_6_io_en)
   );
-  rvclkhdr rvclkhdr_7 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_7_io_l1clk),
+  rvclkhdr rvclkhdr_7 ( // @[lib.scala 404:23]
     .io_clk(rvclkhdr_7_io_clk),
     .io_en(rvclkhdr_7_io_en)
   );
@@ -2651,22 +2601,22 @@ module exu(
   assign io_lsu_exu_exu_lsu_rs1_d = _T_135 | _T_134; // @[exu.scala 113:27]
   assign io_lsu_exu_exu_lsu_rs2_d = _T_148 | _T_149; // @[exu.scala 119:27]
   assign io_exu_flush_path_final = _T_260 | _T_261; // @[exu.scala 236:33]
-  assign rvclkhdr_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_io_en = x_data_en & io_dec_exu_decode_exu_dec_i0_branch_d; // @[lib.scala 402:17]
-  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_1_io_en = r_data_en & i0_branch_x; // @[lib.scala 402:17]
-  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_2_io_en = io_dec_exu_decode_exu_dec_ctl_en[1]; // @[lib.scala 402:17]
-  assign rvclkhdr_3_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_3_io_en = io_dec_exu_decode_exu_dec_ctl_en[1]; // @[lib.scala 402:17]
-  assign rvclkhdr_4_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_4_io_en = io_dec_exu_decode_exu_dec_ctl_en[1]; // @[lib.scala 402:17]
-  assign rvclkhdr_5_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_5_io_en = io_dec_exu_decode_exu_dec_ctl_en[1]; // @[lib.scala 402:17]
-  assign rvclkhdr_6_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_6_io_en = io_dec_exu_decode_exu_dec_ctl_en[1]; // @[lib.scala 402:17]
-  assign rvclkhdr_7_io_clk = clock; // @[lib.scala 401:18]
-  assign rvclkhdr_7_io_en = x_data_en & io_dec_exu_dec_alu_dec_csr_ren_d; // @[lib.scala 402:17]
+  assign rvclkhdr_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_io_en = x_data_en & io_dec_exu_decode_exu_dec_i0_branch_d; // @[lib.scala 407:17]
+  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_1_io_en = r_data_en & i0_branch_x; // @[lib.scala 407:17]
+  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_2_io_en = io_dec_exu_decode_exu_dec_ctl_en[1]; // @[lib.scala 407:17]
+  assign rvclkhdr_3_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_3_io_en = io_dec_exu_decode_exu_dec_ctl_en[1]; // @[lib.scala 407:17]
+  assign rvclkhdr_4_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_4_io_en = io_dec_exu_decode_exu_dec_ctl_en[1]; // @[lib.scala 407:17]
+  assign rvclkhdr_5_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_5_io_en = io_dec_exu_decode_exu_dec_ctl_en[1]; // @[lib.scala 407:17]
+  assign rvclkhdr_6_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_6_io_en = io_dec_exu_decode_exu_dec_ctl_en[1]; // @[lib.scala 407:17]
+  assign rvclkhdr_7_io_clk = clock; // @[lib.scala 406:18]
+  assign rvclkhdr_7_io_en = x_data_en & io_dec_exu_dec_alu_dec_csr_ren_d; // @[lib.scala 407:17]
   assign i_alu_clock = clock;
   assign i_alu_reset = reset;
   assign i_alu_io_dec_alu_dec_i0_alu_decode_d = io_dec_exu_dec_alu_dec_i0_alu_decode_d; // @[exu.scala 130:20]

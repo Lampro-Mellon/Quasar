@@ -349,11 +349,16 @@ trait lib extends param{
   }
   object rvoclkhdr {
     def apply(clk: Clock, en: Bool, scan_mode: Bool): Clock = {
-      val cg = Module(new rvclkhdr)
-      cg.io.clk := clk
-      cg.io.en := en
-      cg.io.scan_mode := 0.U
-      cg.io.l1clk
+      if(RV_FPGA_OPTIMIZE){
+        clk
+      }else{
+        val cg = Module(new rvclkhdr)
+        cg.io.clk := clk
+        cg.io.en := en
+        cg.io.scan_mode := 0.U
+        cg.io.l1clk
+      }
+
     }
   }
 
@@ -401,12 +406,12 @@ trait lib extends param{
       obj.io.clk := clk
       obj.io.en := en
       obj.io.scan_mode := 0.U
-        if(RV_FPGA_OPTIMIZE)
+      if(RV_FPGA_OPTIMIZE)
         withClock(clk){RegEnable(din,0.U,en)}
-        else
-      withClock(l1clk) {
-        RegNext(din, 0.U)
-      }
+      else
+        withClock(l1clk) {
+          RegNext(din, 0.U)
+        }
     }
     def apply(din: Bundle, en: Bool, clk: Clock, scan_mode: Bool) = {
       val obj = Module(new rvclkhdr())
@@ -414,9 +419,13 @@ trait lib extends param{
       obj.io.clk := clk
       obj.io.en := en
       obj.io.scan_mode := 0.U
-      withClock(l1clk) {
-        RegNext(din,0.U.asTypeOf(din.cloneType))
-      }
+      if(RV_FPGA_OPTIMIZE)
+        withClock(clk){RegEnable(din,0.U.asTypeOf(din),en)}
+      else
+        withClock(l1clk) {
+          RegNext(din, 0.U.asTypeOf(din))
+        }
+
     }
     def apply(din: SInt, en: Bool, clk: Clock, scan_mode: Bool): Bits with Num[_ >: SInt with UInt <: Bits with Num[_ >: SInt with UInt]] = {
       val obj = Module(new rvclkhdr())
@@ -424,9 +433,12 @@ trait lib extends param{
       obj.io.clk := clk
       obj.io.en := en
       obj.io.scan_mode := 0.U
-      withClock(l1clk) {
-        RegNext(din, 0.S)
-      }
+      if(RV_FPGA_OPTIMIZE)
+        withClock(clk){RegEnable(din,0.S,en)}
+      else
+        withClock(l1clk) {
+          RegNext(din, 0.S)
+        }
     }
   }
   ////////////////////////////////////////////////////////////////////////////////////

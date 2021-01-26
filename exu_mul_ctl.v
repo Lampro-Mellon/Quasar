@@ -1,5 +1,4 @@
 module rvclkhdr(
-  output  io_l1clk,
   input   io_clk,
   input   io_en
 );
@@ -13,7 +12,6 @@ module rvclkhdr(
     .EN(clkhdr_EN),
     .SE(clkhdr_SE)
   );
-  assign io_l1clk = clkhdr_Q; // @[lib.scala 335:14]
   assign clkhdr_CK = io_clk; // @[lib.scala 336:18]
   assign clkhdr_EN = io_en; // @[lib.scala 337:18]
   assign clkhdr_SE = 1'h0; // @[lib.scala 338:18]
@@ -51,26 +49,23 @@ module exu_mul_ctl(
   reg [63:0] _RAND_1;
   reg [63:0] _RAND_2;
 `endif // RANDOMIZE_REG_INIT
-  wire  rvclkhdr_io_l1clk; // @[lib.scala 399:23]
   wire  rvclkhdr_io_clk; // @[lib.scala 399:23]
   wire  rvclkhdr_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_1_io_l1clk; // @[lib.scala 422:23]
-  wire  rvclkhdr_1_io_clk; // @[lib.scala 422:23]
-  wire  rvclkhdr_1_io_en; // @[lib.scala 422:23]
-  wire  rvclkhdr_2_io_l1clk; // @[lib.scala 422:23]
-  wire  rvclkhdr_2_io_clk; // @[lib.scala 422:23]
-  wire  rvclkhdr_2_io_en; // @[lib.scala 422:23]
-  wire  rvclkhdr_3_io_l1clk; // @[lib.scala 399:23]
+  wire  rvclkhdr_1_io_clk; // @[lib.scala 426:23]
+  wire  rvclkhdr_1_io_en; // @[lib.scala 426:23]
+  wire  rvclkhdr_2_io_clk; // @[lib.scala 426:23]
+  wire  rvclkhdr_2_io_en; // @[lib.scala 426:23]
   wire  rvclkhdr_3_io_clk; // @[lib.scala 399:23]
   wire  rvclkhdr_3_io_en; // @[lib.scala 399:23]
-  wire  rvclkhdr_4_io_l1clk; // @[lib.scala 399:23]
   wire  rvclkhdr_4_io_clk; // @[lib.scala 399:23]
   wire  rvclkhdr_4_io_en; // @[lib.scala 399:23]
   wire  _T_1 = io_mul_p_bits_rs1_sign & io_rs1_in[31]; // @[exu_mul_ctl.scala 123:44]
+  wire [32:0] rs1_ext_in = {_T_1,io_rs1_in}; // @[exu_mul_ctl.scala 123:71]
   wire  _T_5 = io_mul_p_bits_rs2_sign & io_rs2_in[31]; // @[exu_mul_ctl.scala 124:44]
+  wire [32:0] rs2_ext_in = {_T_5,io_rs2_in}; // @[exu_mul_ctl.scala 124:71]
   reg  low_x; // @[Reg.scala 27:20]
-  reg [32:0] rs1_x; // @[lib.scala 428:16]
-  reg [32:0] rs2_x; // @[lib.scala 428:16]
+  reg [32:0] rs1_x; // @[Reg.scala 27:20]
+  reg [32:0] rs2_x; // @[Reg.scala 27:20]
   wire [65:0] prod_x = $signed(rs1_x) * $signed(rs2_x); // @[exu_mul_ctl.scala 130:20]
   wire  _T_39758 = ~low_x; // @[exu_mul_ctl.scala 388:46]
   wire [7:0] _T_39762 = {_T_39758,_T_39758,_T_39758,_T_39758,_T_39758,_T_39758,_T_39758,_T_39758}; // @[Cat.scala 29:58]
@@ -82,37 +77,32 @@ module exu_mul_ctl(
   wire [31:0] _T_39773 = {low_x,low_x,low_x,low_x,low_x,low_x,low_x,low_x,_T_39771,_T_39772}; // @[Cat.scala 29:58]
   wire [31:0] _T_39775 = _T_39773 & prod_x[31:0]; // @[exu_mul_ctl.scala 389:40]
   rvclkhdr rvclkhdr ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_io_l1clk),
     .io_clk(rvclkhdr_io_clk),
     .io_en(rvclkhdr_io_en)
   );
-  rvclkhdr rvclkhdr_1 ( // @[lib.scala 422:23]
-    .io_l1clk(rvclkhdr_1_io_l1clk),
+  rvclkhdr rvclkhdr_1 ( // @[lib.scala 426:23]
     .io_clk(rvclkhdr_1_io_clk),
     .io_en(rvclkhdr_1_io_en)
   );
-  rvclkhdr rvclkhdr_2 ( // @[lib.scala 422:23]
-    .io_l1clk(rvclkhdr_2_io_l1clk),
+  rvclkhdr rvclkhdr_2 ( // @[lib.scala 426:23]
     .io_clk(rvclkhdr_2_io_clk),
     .io_en(rvclkhdr_2_io_en)
   );
   rvclkhdr rvclkhdr_3 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_3_io_l1clk),
     .io_clk(rvclkhdr_3_io_clk),
     .io_en(rvclkhdr_3_io_en)
   );
   rvclkhdr rvclkhdr_4 ( // @[lib.scala 399:23]
-    .io_l1clk(rvclkhdr_4_io_l1clk),
     .io_clk(rvclkhdr_4_io_clk),
     .io_en(rvclkhdr_4_io_en)
   );
   assign io_result_x = _T_39766 | _T_39775; // @[exu_mul_ctl.scala 388:15]
   assign rvclkhdr_io_clk = clock; // @[lib.scala 401:18]
   assign rvclkhdr_io_en = io_mul_p_valid; // @[lib.scala 402:17]
-  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 424:18]
-  assign rvclkhdr_1_io_en = io_mul_p_valid; // @[lib.scala 425:17]
-  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 424:18]
-  assign rvclkhdr_2_io_en = io_mul_p_valid; // @[lib.scala 425:17]
+  assign rvclkhdr_1_io_clk = clock; // @[lib.scala 428:18]
+  assign rvclkhdr_1_io_en = io_mul_p_valid; // @[lib.scala 429:17]
+  assign rvclkhdr_2_io_clk = clock; // @[lib.scala 428:18]
+  assign rvclkhdr_2_io_en = io_mul_p_valid; // @[lib.scala 429:17]
   assign rvclkhdr_3_io_clk = clock; // @[lib.scala 401:18]
   assign rvclkhdr_3_io_en = io_mul_p_valid; // @[lib.scala 402:17]
   assign rvclkhdr_4_io_clk = clock; // @[lib.scala 401:18]
@@ -181,18 +171,18 @@ end // initial
       low_x <= io_mul_p_bits_low;
     end
   end
-  always @(posedge rvclkhdr_1_io_l1clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       rs1_x <= 33'sh0;
-    end else begin
-      rs1_x <= {_T_1,io_rs1_in};
+    end else if (io_mul_p_valid) begin
+      rs1_x <= rs1_ext_in;
     end
   end
-  always @(posedge rvclkhdr_2_io_l1clk or posedge reset) begin
+  always @(posedge clock or posedge reset) begin
     if (reset) begin
       rs2_x <= 33'sh0;
-    end else begin
-      rs2_x <= {_T_5,io_rs2_in};
+    end else if (io_mul_p_valid) begin
+      rs2_x <= rs2_ext_in;
     end
   end
 endmodule
