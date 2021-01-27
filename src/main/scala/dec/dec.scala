@@ -98,6 +98,8 @@ class dec_IO extends Bundle with lib {
   val dec_tlu_dccm_clk_override = Output(Bool())       // override DCCM clock domain gating
   val dec_tlu_icm_clk_override  = Output(Bool())       // override ICCM clock domain gating
 
+  val dec_i0_decode_d           =   Output(Bool())
+
   val scan_mode                 = Input(Bool())
   val ifu_dec = Flipped(new ifu_dec)
   val dec_exu = Flipped(new dec_exu)
@@ -143,7 +145,7 @@ class dec extends Module with param with RequireAsyncReset{
   val dec_i0_trigger_match_d = dec_trigger.io.dec_i0_trigger_match_d
   dontTouch(dec_i0_trigger_match_d)
   decode.io.dec_aln <> io.ifu_dec.dec_aln.aln_dec
-
+  io.dec_i0_decode_d := decode.io.dec_i0_decode_d
   decode.io.decode_exu<> io.dec_exu.decode_exu
   decode.io.dec_alu<> io.dec_exu.dec_alu
   decode.io.dec_div<> io.dec_exu.dec_div
@@ -257,7 +259,7 @@ class dec extends Module with param with RequireAsyncReset{
   tlu.io.dec_tlu_i0_pc_r                    :=  decode.io.dec_tlu_i0_pc_r
   tlu.io.dec_tlu_packet_r                   :=  decode.io.dec_tlu_packet_r
   tlu.io.dec_illegal_inst                   :=  decode.io.dec_illegal_inst
-  tlu.io.dec_i0_decode_d                    :=  decode.io.dec_aln.dec_i0_decode_d
+  tlu.io.dec_i0_decode_d                    :=  decode.io.dec_i0_decode_d
   tlu.io.exu_i0_br_way_r                    :=  io.exu_i0_br_way_r
   tlu.io.dbg_halt_req                       :=  io.dbg_halt_req
   tlu.io.dbg_resume_req                     :=  io.dbg_resume_req
@@ -300,7 +302,7 @@ class dec extends Module with param with RequireAsyncReset{
   io.dec_tlu_pic_clk_override      := tlu.io.dec_tlu_pic_clk_override
   io.dec_tlu_dccm_clk_override     := tlu.io.dec_tlu_dccm_clk_override
   io.dec_tlu_icm_clk_override      := tlu.io.dec_tlu_icm_clk_override
-  io.dec_tlu_picio_clk_override    := tlu.io.dec_tlu_icm_clk_override
+  io.dec_tlu_picio_clk_override    := tlu.io.dec_tlu_picio_clk_override
   io.dec_tlu_core_empty            := tlu.io.dec_tlu_core_empty
   io.dec_csr_rddata_d              := tlu.io.dec_csr_rddata_d
   io.dec_tlu_flush_lower_wb        := tlu.io.dec_tlu_flush_lower_wb

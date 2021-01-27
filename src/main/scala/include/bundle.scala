@@ -258,7 +258,7 @@ class aln_ib extends Bundle with lib{
   val i0_brp                  = Valid(new br_pkt_t)
 }
 class aln_dec extends Bundle{
-  val dec_i0_decode_d = Input(Bool()) // Dec
+  //val dec_i0_decode_d         = Input(Bool()) // Dec
   val ifu_i0_cinst            = Output(UInt(16.W)) // Dec
 }
 class dec_aln extends Bundle with lib {

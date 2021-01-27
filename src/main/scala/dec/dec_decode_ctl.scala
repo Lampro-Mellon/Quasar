@@ -112,6 +112,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
     val dec_pause_state_cg            =   Output(Bool())    // pause state for clock-gating
     val dec_div_active                =   Output(Bool())    // non-block divide is active
     val scan_mode                     =   Input(Bool())
+    val dec_i0_decode_d           =   Output(Bool())
   })
   //packets zero initialization
   io.decode_exu.mul_p   := 0.U.asTypeOf(io.decode_exu.mul_p)
@@ -201,6 +202,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
   val fa_error_index_ns     = WireInit(Bool(),0.B)
   val btb_error_found       = WireInit(Bool(),0.B)
   val div_active_in          = WireInit(Bool(),0.B)
+
   //////////////////////////////////////////////////////////////////////
 
   leak1_i1_stall                  := rvdffie(leak1_i1_stall_in, io.free_l2clk, reset.asAsyncReset(), io.scan_mode)
@@ -444,7 +446,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
   // can't make this clock active_clock
   leak1_i1_stall_in := (io.dec_tlu_flush_leak_one_r | (leak1_i1_stall & !io.dec_tlu_flush_lower_r))
   leak1_mode := leak1_i1_stall
-  leak1_i0_stall_in := ((io.dec_aln.dec_i0_decode_d & leak1_i1_stall) | (leak1_i0_stall & !io.dec_tlu_flush_lower_r))
+  leak1_i0_stall_in := ((io.dec_i0_decode_d & leak1_i1_stall) | (leak1_i0_stall & !io.dec_tlu_flush_lower_r))
 
   // 12b jal's can be predicted - these are calls
 
@@ -591,7 +593,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
   val i0_inst_d      = Mux(io.dec_i0_pc4_d,i0,Cat(repl(16,0.U), io.dec_aln.ifu_i0_cinst))
   // illegal inst handling
 
-  val shift_illegal      = io.dec_aln.dec_i0_decode_d & !i0_legal//lm: valid but not legal
+  val shift_illegal      = io.dec_i0_decode_d & !i0_legal//lm: valid but not legal
   val illegal_inst_en    = shift_illegal & !illegal_lockout
   io.dec_illegal_inst := rvdffe(i0_inst_d,illegal_inst_en,clock,io.scan_mode)
   illegal_lockout_in := (shift_illegal | illegal_lockout) & !flush_final_r
@@ -608,13 +610,13 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
   val i0_exublock_d = i0_block_raw_d
 
   //decode valid
-  io.dec_aln.dec_i0_decode_d := io.dec_ib0_valid_d & !i0_block_d    & !io.dec_tlu_flush_lower_r & !flush_final_r
+  io.dec_i0_decode_d := io.dec_ib0_valid_d & !i0_block_d    & !io.dec_tlu_flush_lower_r & !flush_final_r
   val i0_exudecode_d  = io.dec_ib0_valid_d & !i0_exublock_d & !io.dec_tlu_flush_lower_r & !flush_final_r
   val i0_exulegal_decode_d = i0_exudecode_d  & i0_legal
 
   // performance monitor signals
-  io.dec_pmu_instr_decoded := io.dec_aln.dec_i0_decode_d
-  io.dec_pmu_decode_stall := io.dec_ib0_valid_d & !io.dec_aln.dec_i0_decode_d
+  io.dec_pmu_instr_decoded := io.dec_i0_decode_d
+  io.dec_pmu_decode_stall := io.dec_ib0_valid_d & !io.dec_i0_decode_d
   io.dec_pmu_postsync_stall := postsync_stall.asBool & io.dec_ib0_valid_d
   io.dec_pmu_presync_stall  := presync_stall.asBool & io.dec_ib0_valid_d
 
@@ -625,7 +627,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
 
   presync_stall      := (i0_presync & prior_inflight_eff)
   // illegals will postsync
-  ps_stall_in :=  (io.dec_aln.dec_i0_decode_d & (i0_postsync | !i0_legal) ) | ( postsync_stall & prior_inflight_x)
+  ps_stall_in :=  (io.dec_i0_decode_d & (i0_postsync | !i0_legal) ) | ( postsync_stall & prior_inflight_x)
 
   io.dec_alu.dec_i0_alu_decode_d := i0_exulegal_decode_d & i0_dp.alu
   io.decode_exu.dec_i0_branch_d     := i0_dp.condbr | i0_dp.jal | i0_br_error_all
@@ -649,7 +651,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
   d_t.pmu_divide         :=  0.U(1.W)
   d_t.pmu_lsu_misaligned :=  0.U(1.W)
 
-  d_t.i0trigger          :=  io.dec_i0_trigger_match_d & repl(4,io.dec_aln.dec_i0_decode_d)
+  d_t.i0trigger          :=  io.dec_i0_trigger_match_d & repl(4,io.dec_i0_decode_d)
 
 
   x_t := rvdfflie(d_t,clock,reset.asAsyncReset,i0_x_ctl_en.asBool,io.scan_mode, elements = 3)
@@ -671,7 +673,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
   // end tlu stuff
 
 
-  io.dec_aln.dec_i0_decode_d := io.dec_ib0_valid_d & !i0_block_d & !io.dec_tlu_flush_lower_r & !flush_final_r
+  io.dec_i0_decode_d := io.dec_ib0_valid_d & !i0_block_d & !io.dec_tlu_flush_lower_r & !flush_final_r
 
   i0r.rs1 := i0(19,15) //H: ing reg packets the instructions bits
   i0r.rs2 := i0(24,20)
@@ -753,7 +755,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
     bitmanip_zbb_zbp_legal  := !(i0_dp.zbb & i0_dp.zbp)
 
   bitmanip_legal :=  bitmanip_zbb_legal & bitmanip_zbs_legal & bitmanip_zbe_legal & bitmanip_zbc_legal & bitmanip_zbp_legal & bitmanip_zbr_legal & bitmanip_zbf_legal & bitmanip_zba_legal & bitmanip_zbb_zbp_legal
-  i0_legal_decode_d    := io.dec_aln.dec_i0_decode_d & i0_legal
+  i0_legal_decode_d    := io.dec_i0_decode_d & i0_legal
 
   i0_d_c.mul                :=  i0_dp.mul  & i0_legal_decode_d
   i0_d_c.load               :=  i0_dp.load & i0_legal_decode_d
@@ -761,7 +763,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
 
   val i0_x_c = withClock(io.active_clk){RegEnable(i0_d_c,0.U.asTypeOf(i0_d_c), i0_x_ctl_en.asBool)}
   val i0_r_c = withClock(io.active_clk){RegEnable(i0_x_c,0.U.asTypeOf(i0_x_c), i0_r_ctl_en.asBool)}
-  i0_pipe_en := Cat(io.dec_aln.dec_i0_decode_d,withClock(io.active_clk){RegNext(i0_pipe_en(3,1), init=0.U)})
+  i0_pipe_en := Cat(io.dec_i0_decode_d,withClock(io.active_clk){RegNext(i0_pipe_en(3,1), init=0.U)})
 
   i0_x_ctl_en               := (i0_pipe_en(3,2).orR | io.clk_override)
   i0_r_ctl_en               := (i0_pipe_en(2,1).orR | io.clk_override)
@@ -775,14 +777,14 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
 
   d_d.bits.i0rd                  :=  i0r.rd
   d_d.bits.i0v                   :=  i0_rd_en_d  & i0_legal_decode_d
-  d_d.valid               :=  io.dec_aln.dec_i0_decode_d  // has flush_final_r
+  d_d.valid                       :=  io.dec_i0_decode_d  // has flush_final_r
 
   d_d.bits.i0load                :=  i0_dp.load  & i0_legal_decode_d
   d_d.bits.i0store               :=  i0_dp.store & i0_legal_decode_d
   d_d.bits.i0div                 :=  i0_dp.div   & i0_legal_decode_d
 
   d_d.bits.csrwen                :=  io.dec_csr_wen_unq_d   & i0_legal_decode_d
-  d_d.bits.csrwonly              :=  i0_csr_write_only_d & io.dec_aln.dec_i0_decode_d
+  d_d.bits.csrwonly              :=  i0_csr_write_only_d & io.dec_i0_decode_d
   d_d.bits.csrwaddr              :=  Mux(d_d.bits.csrwen, i0(31,20), 0.U)
 
   x_d := rvdfflie(d_d,clock,reset.asAsyncReset(), i0_x_ctl_en.asBool,io.scan_mode,elements = 4)
