@@ -21,12 +21,11 @@ class exu extends Module with lib with RequireAsyncReset{
     val		exu_div_wren			    = Output(UInt(1.W))                          // Divide write enable to GPR
     //debug
     val  	dbg_cmd_wrdata			  = Input(UInt(32.W))                          // Debug data   to primary I0 RS1
+    val  	dec_csr_rddata_d			  = Input(UInt(32.W))
     //lsu
     val lsu_exu                 = Flipped(new lsu_exu())
     //ifu_ifc
     val		exu_flush_path_final	= Output(UInt(31.W))                         // Target for the oldest flush source
-    val dec_qual_lsu_d = Input(Bool())
-
   })
 
   val PREDPIPESIZE 			        = BTB_ADDR_HI - BTB_ADDR_LO + BHT_GHR_SIZE + BTB_BTAG_SIZE +1
@@ -112,14 +111,14 @@ class exu extends Module with lib with RequireAsyncReset{
   dontTouch(i0_rs2_d)
 
   io.lsu_exu.exu_lsu_rs1_d:=Mux1H(Seq(
-    (!i0_rs1_bypass_en_d & !io.dec_exu.decode_exu.dec_extint_stall & io.dec_exu.decode_exu.dec_i0_rs1_en_d & io.dec_qual_lsu_d).asBool	 	-> io.dec_exu.gpr_exu.gpr_i0_rs1_d,
-    (i0_rs1_bypass_en_d & !io.dec_exu.decode_exu.dec_extint_stall & io.dec_qual_lsu_d).asBool		-> i0_rs1_bypass_data_d,
-    (io.dec_exu.decode_exu.dec_extint_stall & io.dec_qual_lsu_d).asBool													-> Cat(io.dec_exu.tlu_exu.dec_tlu_meihap,0.U(2.W))
+    (!i0_rs1_bypass_en_d & !io.dec_exu.decode_exu.dec_extint_stall & io.dec_exu.decode_exu.dec_i0_rs1_en_d & io.dec_exu.decode_exu.dec_qual_lsu_d).asBool	 	-> io.dec_exu.gpr_exu.gpr_i0_rs1_d,
+    (i0_rs1_bypass_en_d & !io.dec_exu.decode_exu.dec_extint_stall & io.dec_exu.decode_exu.dec_qual_lsu_d).asBool		-> i0_rs1_bypass_data_d,
+    (io.dec_exu.decode_exu.dec_extint_stall & io.dec_exu.decode_exu.dec_qual_lsu_d).asBool													-> Cat(io.dec_exu.tlu_exu.dec_tlu_meihap,0.U(2.W))
   ))
 
   io.lsu_exu.exu_lsu_rs2_d:=Mux1H(Seq(
-    (!i0_rs2_bypass_en_d & !io.dec_exu.decode_exu.dec_extint_stall & io.dec_exu.decode_exu.dec_i0_rs2_en_d & io.dec_qual_lsu_d).asBool 	-> io.dec_exu.gpr_exu.gpr_i0_rs2_d,
-    (i0_rs2_bypass_en_d & !io.dec_exu.decode_exu.dec_extint_stall & io.dec_qual_lsu_d).asBool							-> i0_rs2_bypass_data_d
+    (!i0_rs2_bypass_en_d & !io.dec_exu.decode_exu.dec_extint_stall & io.dec_exu.decode_exu.dec_i0_rs2_en_d & io.dec_exu.decode_exu.dec_qual_lsu_d).asBool 	-> io.dec_exu.gpr_exu.gpr_i0_rs2_d,
+    (i0_rs2_bypass_en_d & !io.dec_exu.decode_exu.dec_extint_stall & io.dec_exu.decode_exu.dec_qual_lsu_d).asBool							-> i0_rs2_bypass_data_d
   ))
 
   val muldiv_rs1_d=Mux1H(Seq(
@@ -129,10 +128,12 @@ class exu extends Module with lib with RequireAsyncReset{
 
   val i_alu=Module(new exu_alu_ctl())
   i_alu.io.dec_alu <> io.dec_exu.dec_alu
+
   i_alu.io.scan_mode		  :=io.scan_mode
   i_alu.io.enable			    :=x_data_en
   i_alu.io.pp_in			    :=i0_predict_newp_d
   i_alu.io.flush_upper_x	:=i0_flush_upper_x
+  i_alu.io.csr_rddata_in	:=io.dec_csr_rddata_d
   i_alu.io.dec_tlu_flush_lower_r	:=io.dec_exu.tlu_exu.dec_tlu_flush_lower_r
   i_alu.io.a_in			      :=i0_rs1_d.asSInt
   i_alu.io.b_in			      :=i0_rs2_d

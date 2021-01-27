@@ -343,7 +343,7 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
 
   val icaf_eff = alignicaf(1) | aligndbecc(1)
 
-  io.dec_aln.aln_ib.ifu_i0_icaf_f1 := first4B & icaf_eff & alignfromf1
+  io.dec_aln.aln_ib.ifu_i0_icaf_second := first4B & icaf_eff & alignfromf1
 
   io.dec_aln.aln_ib.ifu_i0_dbecc := Mux1H(Seq(first4B.asBool->aligndbecc.orR, first2B.asBool->aligndbecc(0)))
 

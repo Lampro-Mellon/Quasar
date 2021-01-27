@@ -205,7 +205,6 @@ class dctl_busbuff extends Bundle with lib{
   val lsu_nonblock_load_data_valid      = Output(Bool())
   val lsu_nonblock_load_data_error      = Output(Bool())
   val lsu_nonblock_load_data_tag        = Output(UInt(LSU_NUM_NBLOAD_WIDTH.W))
-  val lsu_nonblock_load_data            = Output(UInt(32.W))
 }
 class lsu_tlu extends Bundle {
   val lsu_pmu_load_external_m           = Output(Bool())
@@ -247,7 +246,7 @@ class ic_mem extends Bundle with lib {
 class aln_ib extends Bundle with lib{
   val ifu_i0_icaf             = Output(Bool())
   val ifu_i0_icaf_type        = Output(UInt(2.W))
-  val ifu_i0_icaf_f1          = Output(Bool())
+  val ifu_i0_icaf_second          = Output(Bool())
   val ifu_i0_dbecc            = Output(Bool())
   val ifu_i0_bp_index         = Output(UInt((BTB_ADDR_HI-BTB_ADDR_LO+1).W))
   val ifu_i0_bp_fghr          = Output(UInt(BHT_GHR_SIZE.W))
@@ -298,12 +297,12 @@ class dma_ifc extends  Bundle{
 }
 
 class trace_pkt_t extends Bundle{
-  val rv_i_valid_ip      = Output(UInt(2.W)  )
+  val rv_i_valid_ip      = Output(UInt(1.W)  )
   val rv_i_insn_ip       = Output(UInt(32.W) )
   val rv_i_address_ip    = Output(UInt(32.W) )
-  val rv_i_exception_ip  = Output(UInt(2.W)  )
+  val rv_i_exception_ip  = Output(UInt(1.W)  )
   val rv_i_ecause_ip     = Output(UInt(5.W)  )
-  val rv_i_interrupt_ip  = Output(UInt(2.W)  )
+  val rv_i_interrupt_ip  = Output(UInt(1.W)  )
   val rv_i_tval_ip       = Output(UInt(32.W) )
 }
 
@@ -326,7 +325,7 @@ class dbg_dctl extends Bundle{
 class dec_alu extends Bundle {
   val                  dec_i0_alu_decode_d          = Input(UInt(1.W))          // Valid
   val                  dec_csr_ren_d                = Input(Bool())          // extra decode
-  val                  dec_csr_rddata_d             = Input(UInt(32.W))
+ // val                  dec_csr_rddata_d             = Input(UInt(32.W))
   val                  dec_i0_br_immed_d            = Input(UInt(12.W))         // Branch offset
   val                  exu_i0_pc_x                  = Output(UInt(31.W))        // flopped PC
 }
@@ -372,6 +371,7 @@ class decode_exu extends Bundle with lib{
   val		dec_i0_rs2_en_d			  =Input(UInt(1.W))                           // Qualify GPR RS2 data
   val		dec_i0_immed_d			  =Input(UInt(32.W))                          // DEC data immediate
   val		dec_i0_result_r       =Input(UInt(32.W))                          // DEC result in R-stage
+  val   dec_qual_lsu_d        = Input(Bool())
   val		dec_i0_select_pc_d		=Input(UInt(1.W))                           // PC select to RS1
   val		dec_i0_rs1_bypass_en_d	=Input(UInt(4.W))                       	// DEC bypass select  1 - X-stage, 0 - dec bypass data
   val		dec_i0_rs2_bypass_en_d	=Input(UInt(4.W))                        	// DEC bypass select  1 - X-stage, 0 - dec bypass data
@@ -469,7 +469,7 @@ class predict_pkt_t extends Bundle {
 class trap_pkt_t extends Bundle {
   val legal     = UInt(1.W)
   val icaf      = UInt(1.W)
-  val icaf_f1   = UInt(1.W)
+  val icaf_second   = UInt(1.W)
   val icaf_type = UInt(2.W)
   val fence_i   = UInt(1.W)
   val i0trigger = UInt(4.W)
@@ -478,7 +478,6 @@ class trap_pkt_t extends Bundle {
   val pmu_divide         = UInt(1.W)
   val pmu_lsu_misaligned = UInt(1.W)
 }
-
 class dest_pkt_t extends Bundle {
   val i0rd      = UInt(5.W)
   val i0load    = UInt(1.W)
@@ -819,9 +818,9 @@ class dec_tlu_csr_pkt extends Bundle{
   val csr_mitcnt0 			=UInt(1.W)
   val csr_mitcnt1 			=UInt(1.W)
   val csr_mpmc 				=UInt(1.W)
-  val csr_mcpc 				=UInt(1.W)
+  //  val csr_mcpc 				=UInt(1.W)
   val csr_meicpct 			=UInt(1.W)
-  val csr_mdeau 				=UInt(1.W)
+  //  val csr_mdeau 				=UInt(1.W)
   val csr_micect 				=UInt(1.W)
   val csr_miccmect 			=UInt(1.W)
   val csr_mdccmect 			=UInt(1.W)

@@ -1,0 +1,37 @@
+[
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~dec_gpr_ctl|dec_gpr_ctl>io_gpr_exu_gpr_i0_rs1_d",
+    "sources":[
+      "~dec_gpr_ctl|dec_gpr_ctl>io_raddr0"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~dec_gpr_ctl|dec_gpr_ctl>io_gpr_exu_gpr_i0_rs2_d",
+    "sources":[
+      "~dec_gpr_ctl|dec_gpr_ctl>io_raddr1"
+    ]
+  },
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxResourceAnno",
+    "target":"dec_gpr_ctl.gated_latch",
+    "resourceId":"/vsrc/gated_latch.sv"
+  },
+  {
+    "class":"firrtl.options.TargetDirAnnotation",
+    "directory":"."
+  },
+  {
+    "class":"firrtl.options.OutputAnnotationFileAnnotation",
+    "file":"dec_gpr_ctl"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"."
+  }
+]

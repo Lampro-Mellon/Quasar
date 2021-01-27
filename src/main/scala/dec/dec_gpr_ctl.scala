@@ -47,20 +47,20 @@ class dec_gpr_ctl extends Module with lib with RequireAsyncReset{
 	gpr_in(0):=0.U
 	io.gpr_exu.gpr_i0_rs1_d:=0.U
 	io.gpr_exu.gpr_i0_rs2_d:=0.U
-	   // GPR Write logic
-     for (j <-1 until 32){
-         w0v(j)     := io.wen0  & (io.waddr0===j.asUInt)
-         w1v(j)     := io.wen1  & (io.waddr1===j.asUInt)
-         w2v(j)     := io.wen2  & (io.waddr2===j.asUInt)       
-         gpr_in(j)  :=  (Fill(32,w0v(j)) & io.wd0) | (Fill(32,w1v(j)) & io.wd1) | (Fill(32,w2v(j)) & io.wd2)
-		}
+	// GPR Write logic
+	for (j <-1 until 32){
+		w0v(j)     := io.wen0  & (io.waddr0===j.asUInt)
+		w1v(j)     := io.wen1  & (io.waddr1===j.asUInt)
+		w2v(j)     := io.wen2  & (io.waddr2===j.asUInt)
+		gpr_in(j)  :=  (Fill(32,w0v(j)) & io.wd0) | (Fill(32,w1v(j)) & io.wd1) | (Fill(32,w2v(j)) & io.wd2)
+	}
 	gpr_wr_en:= (w0v.reverse).reduceRight(Cat(_,_)) | (w1v.reverse).reduceRight(Cat(_,_)) | (w2v.reverse).reduceRight(Cat(_,_))
 
 	// GPR Write Enables for power savings
-    for (j <-1 until 32){
- 	  gpr_out(j):=rvdffe(gpr_in(j),gpr_wr_en(j),clock,io.scan_mode)
-    }
-      // GPR Read logic
+	for (j <-1 until 32){
+		gpr_out(j):=rvdffe(gpr_in(j),gpr_wr_en(j),clock,io.scan_mode)
+	}
+	// GPR Read logic
 	io.gpr_exu.gpr_i0_rs1_d:=Mux1H((1 until 32).map(i => (io.raddr0===i.U).asBool -> gpr_out(i)))
 	io.gpr_exu.gpr_i0_rs2_d:=Mux1H((1 until 32).map(i => (io.raddr1===i.U).asBool -> gpr_out(i)))
 }

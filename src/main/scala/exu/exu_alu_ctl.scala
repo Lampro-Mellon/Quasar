@@ -9,7 +9,7 @@ class exu_alu_ctl extends Module with lib with RequireAsyncReset{
   val io = IO(new Bundle{
     val dec_alu = new dec_alu()
 
-    //val                  csr_rddata_in                = Input(UInt(32.W))     // CSR data
+    val                  csr_rddata_in                = Input(UInt(32.W))     // CSR data
     val                  dec_i0_pc_d                  = Input(UInt(31.W))              // for pc=pc+2,4 calculations
     val                  scan_mode                    = Input(UInt(1.W))  // Scan control
     val                  flush_upper_x                = Input(UInt(1.W))  // Branch flush from previous cycle
@@ -156,7 +156,7 @@ class exu_alu_ctl extends Module with lib with RequireAsyncReset{
 
 
   val lout        = Mux1H(Seq(
-    io.dec_alu.dec_csr_ren_d            ->  io.dec_alu.dec_csr_rddata_d.asSInt      ,
+    io.dec_alu.dec_csr_ren_d            ->  io.csr_rddata_in.asSInt      ,
     (io.i0_ap.land & !ap_zbb).asBool    -> (Cat(0.U(1.W),io.a_in).asSInt &  io.b_in.asSInt) ,
     (io.i0_ap.lor  & !ap_zbb).asBool    -> (Cat(0.U(1.W),io.a_in).asSInt |  io.b_in.asSInt) ,
     (io.i0_ap.lxor & !ap_zbb).asBool    -> (Cat(0.U(1.W),io.a_in).asSInt ^  io.b_in.asSInt) ,
