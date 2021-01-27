@@ -86,7 +86,7 @@ class dec_IO extends Bundle with lib {
   val dec_tlu_perfcnt3          = Output(Bool())      // toggles when slot0 perf counter 3 has an event inc
   val dec_tlu_flush_lower_wb       = Output(Bool())
   val dec_lsu_valid_raw_d       = Output(Bool())
-  val trace_rv_trace_pkt              = (new trace_pkt_t)        // trace packet
+  val trace_rv_trace_pkt        = Output(new trace_pkt_t)        // trace packet
 
   // clock gating overrides from mcgc
   val dec_tlu_misc_clk_override = Output(Bool())       // override misc clock domain gating
