@@ -24,6 +24,7 @@ module dec_ib_ctl(
   input         io_dbg_ib_dbg_cmd_write,
   input  [1:0]  io_dbg_ib_dbg_cmd_type,
   input  [31:0] io_dbg_ib_dbg_cmd_addr,
+  output        io_dec_debug_valid_d,
   output        io_dec_ib0_valid_d,
   output [1:0]  io_dec_i0_icaf_type_d,
   output [31:0] io_dec_i0_instr_d,
@@ -71,6 +72,7 @@ module dec_ib_ctl(
   wire  _T_25 = dcsr == 12'h7c4; // @[dec_ib_ctl.scala 81:51]
   assign io_ib_exu_dec_i0_pc_d = io_ifu_ib_ifu_i0_pc; // @[dec_ib_ctl.scala 37:31]
   assign io_ib_exu_dec_debug_wdata_rs1_d = debug_write_gpr | debug_write_csr; // @[dec_ib_ctl.scala 78:35]
+  assign io_dec_debug_valid_d = io_dbg_ib_dbg_cmd_valid & _T; // @[dec_ib_ctl.scala 61:24]
   assign io_dec_ib0_valid_d = io_ifu_ib_ifu_i0_valid | debug_valid; // @[dec_ib_ctl.scala 83:22]
   assign io_dec_i0_icaf_type_d = io_ifu_ib_ifu_i0_icaf_type; // @[dec_ib_ctl.scala 39:31]
   assign io_dec_i0_instr_d = debug_valid ? ib0_debug_in : io_ifu_ib_ifu_i0_instr; // @[dec_ib_ctl.scala 84:22]
@@ -15190,6 +15192,7 @@ module dec(
   wire  instbuff_io_dbg_ib_dbg_cmd_write; // @[dec.scala 130:24]
   wire [1:0] instbuff_io_dbg_ib_dbg_cmd_type; // @[dec.scala 130:24]
   wire [31:0] instbuff_io_dbg_ib_dbg_cmd_addr; // @[dec.scala 130:24]
+  wire  instbuff_io_dec_debug_valid_d; // @[dec.scala 130:24]
   wire  instbuff_io_dec_ib0_valid_d; // @[dec.scala 130:24]
   wire [1:0] instbuff_io_dec_i0_icaf_type_d; // @[dec.scala 130:24]
   wire [31:0] instbuff_io_dec_i0_instr_d; // @[dec.scala 130:24]
@@ -15686,6 +15689,7 @@ module dec(
     .io_dbg_ib_dbg_cmd_write(instbuff_io_dbg_ib_dbg_cmd_write),
     .io_dbg_ib_dbg_cmd_type(instbuff_io_dbg_ib_dbg_cmd_type),
     .io_dbg_ib_dbg_cmd_addr(instbuff_io_dbg_ib_dbg_cmd_addr),
+    .io_dec_debug_valid_d(instbuff_io_dec_debug_valid_d),
     .io_dec_ib0_valid_d(instbuff_io_dec_ib0_valid_d),
     .io_dec_i0_icaf_type_d(instbuff_io_dec_i0_icaf_type_d),
     .io_dec_i0_instr_d(instbuff_io_dec_i0_instr_d),
@@ -16420,7 +16424,7 @@ module dec(
   assign decode_io_dec_aln_ifu_i0_cinst = io_ifu_dec_dec_aln_aln_dec_ifu_i0_cinst; // @[dec.scala 147:21]
   assign decode_io_dbg_dctl_dbg_cmd_wrdata = io_dec_dbg_dbg_dctl_dbg_cmd_wrdata; // @[dec.scala 167:22]
   assign decode_io_dec_tlu_trace_disable = tlu_io_dec_tlu_trace_disable; // @[dec.scala 153:48]
-  assign decode_io_dec_debug_valid_d = instbuff_io_dec_debug_fence_d; // @[dec.scala 154:48]
+  assign decode_io_dec_debug_valid_d = instbuff_io_dec_debug_valid_d; // @[dec.scala 154:48]
   assign decode_io_dec_tlu_flush_extint = tlu_io_dec_tlu_flush_extint; // @[dec.scala 155:48]
   assign decode_io_dec_tlu_force_halt = tlu_io_tlu_mem_dec_tlu_force_halt; // @[dec.scala 156:48]
   assign decode_io_dec_i0_trigger_match_d = dec_trigger_io_dec_i0_trigger_match_d; // @[dec.scala 158:48]

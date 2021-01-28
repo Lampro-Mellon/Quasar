@@ -21435,7 +21435,7 @@ circuit dec :
     io.dec_exu.dec_div.div_p.valid <= decode.io.dec_div.div_p.valid @[dec.scala 151:20]
     decode.io.dctl_dma.dma_dccm_stall_any <= io.dec_dma.dctl_dma.dma_dccm_stall_any @[dec.scala 152:22]
     decode.io.dec_tlu_trace_disable <= tlu.io.dec_tlu_trace_disable @[dec.scala 153:48]
-    decode.io.dec_debug_valid_d <= instbuff.io.dec_debug_fence_d @[dec.scala 154:48]
+    decode.io.dec_debug_valid_d <= instbuff.io.dec_debug_valid_d @[dec.scala 154:48]
     decode.io.dec_tlu_flush_extint <= tlu.io.dec_tlu_flush_extint @[dec.scala 155:48]
     decode.io.dec_tlu_force_halt <= tlu.io.tlu_mem.dec_tlu_force_halt @[dec.scala 156:48]
     decode.io.dctl_busbuff.lsu_nonblock_load_data_tag <= io.lsu_dec.dctl_busbuff.lsu_nonblock_load_data_tag @[dec.scala 157:26]

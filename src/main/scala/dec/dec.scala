@@ -151,7 +151,7 @@ class dec extends Module with param with RequireAsyncReset{
   decode.io.dec_div<> io.dec_exu.dec_div
   decode.io.dctl_dma <> io.dec_dma.dctl_dma
   decode.io.dec_tlu_trace_disable              := tlu.io.dec_tlu_trace_disable
-  decode.io.dec_debug_valid_d                  := instbuff.io.dec_debug_fence_d
+  decode.io.dec_debug_valid_d                  := instbuff.io.dec_debug_valid_d
   decode.io.dec_tlu_flush_extint               :=  tlu.io.dec_tlu_flush_extint
   decode.io.dec_tlu_force_halt                 :=  tlu.io.tlu_mem.dec_tlu_force_halt
   decode.io.dctl_busbuff <> io.lsu_dec.dctl_busbuff
