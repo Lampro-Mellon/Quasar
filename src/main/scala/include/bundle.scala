@@ -176,8 +176,7 @@ class lsu_exu extends Bundle{
   val exu_lsu_rs1_d                     = Input(UInt(32.W))
   val exu_lsu_rs2_d                     = Input(UInt(32.W))
   val lsu_result_m                      = Output(UInt(32.W))
-  val lsu_nonblock_load_data            = Output(UInt(32.W))
-
+  //val lsu_nonblock_load_data            = Output(UInt(32.W))
 }
 class lsu_dec extends Bundle {
   val tlu_busbuff = new tlu_busbuff

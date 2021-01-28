@@ -22,6 +22,7 @@ class exu extends Module with lib with RequireAsyncReset{
     //debug
     val  	dbg_cmd_wrdata			  = Input(UInt(32.W))                          // Debug data   to primary I0 RS1
     val  	dec_csr_rddata_d			  = Input(UInt(32.W))
+    val  	lsu_nonblock_load_data	= Input(UInt(32.W))
     //lsu
     val lsu_exu                 = Flipped(new lsu_exu())
     //ifu_ifc
@@ -86,13 +87,13 @@ class exu extends Module with lib with RequireAsyncReset{
     io.dec_exu.decode_exu.dec_i0_rs1_bypass_en_d(0).asBool						-> io.dec_exu.decode_exu.dec_i0_result_r,
     io.dec_exu.decode_exu.dec_i0_rs1_bypass_en_d(1).asBool 						-> io.lsu_exu.lsu_result_m,
     io.dec_exu.decode_exu.dec_i0_rs1_bypass_en_d(2).asBool						-> io.dec_exu.decode_exu.exu_i0_result_x,
-    io.dec_exu.decode_exu.dec_i0_rs1_bypass_en_d(3).asBool 						-> io.lsu_exu.lsu_nonblock_load_data
+    io.dec_exu.decode_exu.dec_i0_rs1_bypass_en_d(3).asBool 						-> io.lsu_nonblock_load_data
   ))
   val i0_rs2_bypass_data_d =	Mux1H(Seq(
     io.dec_exu.decode_exu.dec_i0_rs2_bypass_en_d(0).asBool						-> io.dec_exu.decode_exu.dec_i0_result_r,
     io.dec_exu.decode_exu.dec_i0_rs2_bypass_en_d(1).asBool 						-> io.lsu_exu.lsu_result_m,
     io.dec_exu.decode_exu.dec_i0_rs2_bypass_en_d(2).asBool						-> io.dec_exu.decode_exu.exu_i0_result_x,
-    io.dec_exu.decode_exu.dec_i0_rs2_bypass_en_d(3).asBool 						-> io.lsu_exu.lsu_nonblock_load_data
+    io.dec_exu.decode_exu.dec_i0_rs2_bypass_en_d(3).asBool 						-> io.lsu_nonblock_load_data
   ))
 
   val i0_rs1_d = Mux1H(Seq(

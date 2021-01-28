@@ -11,7 +11,7 @@
     "sink":"~exu|exu>io_lsu_exu_exu_lsu_rs2_d",
     "sources":[
       "~exu|exu>io_dec_exu_gpr_exu_gpr_i0_rs2_d",
-      "~exu|exu>io_dec_qual_lsu_d",
+      "~exu|exu>io_dec_exu_decode_exu_dec_qual_lsu_d",
       "~exu|exu>io_dec_exu_decode_exu_dec_i0_rs2_en_d",
       "~exu|exu>io_lsu_exu_lsu_nonblock_load_data",
       "~exu|exu>io_dec_exu_decode_exu_dec_extint_stall",
@@ -68,22 +68,6 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~exu|exu>io_lsu_exu_exu_lsu_rs1_d",
-    "sources":[
-      "~exu|exu>io_dec_exu_gpr_exu_gpr_i0_rs1_d",
-      "~exu|exu>io_dec_exu_tlu_exu_dec_tlu_meihap",
-      "~exu|exu>io_dec_exu_decode_exu_dec_extint_stall",
-      "~exu|exu>io_dec_qual_lsu_d",
-      "~exu|exu>io_dec_exu_decode_exu_dec_i0_rs1_en_d",
-      "~exu|exu>io_lsu_exu_lsu_nonblock_load_data",
-      "~exu|exu>io_dec_exu_decode_exu_exu_i0_result_x",
-      "~exu|exu>io_dec_exu_decode_exu_dec_i0_rs1_bypass_en_d",
-      "~exu|exu>io_dec_exu_decode_exu_dec_i0_result_r",
-      "~exu|exu>io_lsu_exu_lsu_result_m"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~exu|exu>io_exu_flush_final",
     "sources":[
       "~exu|exu>io_dec_exu_tlu_exu_dec_tlu_flush_lower_r",
@@ -130,6 +114,22 @@
     "sink":"~exu|exu>io_exu_div_wren",
     "sources":[
       "~exu|exu>io_dec_exu_dec_div_dec_div_cancel"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~exu|exu>io_lsu_exu_exu_lsu_rs1_d",
+    "sources":[
+      "~exu|exu>io_dec_exu_gpr_exu_gpr_i0_rs1_d",
+      "~exu|exu>io_dec_exu_tlu_exu_dec_tlu_meihap",
+      "~exu|exu>io_dec_exu_decode_exu_dec_extint_stall",
+      "~exu|exu>io_dec_exu_decode_exu_dec_qual_lsu_d",
+      "~exu|exu>io_dec_exu_decode_exu_dec_i0_rs1_en_d",
+      "~exu|exu>io_lsu_exu_lsu_nonblock_load_data",
+      "~exu|exu>io_dec_exu_decode_exu_exu_i0_result_x",
+      "~exu|exu>io_dec_exu_decode_exu_dec_i0_rs1_bypass_en_d",
+      "~exu|exu>io_dec_exu_decode_exu_dec_i0_result_r",
+      "~exu|exu>io_lsu_exu_lsu_result_m"
     ]
   },
   {
