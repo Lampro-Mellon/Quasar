@@ -1754,14 +1754,14 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 	mcgc_int := rvdffe(mcgc_ns,wr_mcgc_r.asBool,clock,io.scan_mode)
 	val mcgc = Cat(~mcgc_int(9), mcgc_int(8,0))
 	io.dec_tlu_picio_clk_override := mcgc(9)
-	io.dec_tlu_misc_clk_override := mcgc(8)
-	io.dec_tlu_dec_clk_override  := mcgc(7)
-	io.dec_tlu_ifu_clk_override  := mcgc(5)
-	io.dec_tlu_lsu_clk_override  := mcgc(4)
-	io.dec_tlu_bus_clk_override  := mcgc(3)
-	io.dec_tlu_pic_clk_override  := mcgc(2)
-	io.dec_tlu_dccm_clk_override := mcgc(1)
-	io.dec_tlu_icm_clk_override  := mcgc(0)
+	io.dec_tlu_misc_clk_override  := mcgc(8)
+	io.dec_tlu_dec_clk_override   := mcgc(7)
+	io.dec_tlu_ifu_clk_override   := mcgc(5)
+	io.dec_tlu_lsu_clk_override   := mcgc(4)
+	io.dec_tlu_bus_clk_override   := mcgc(3)
+	io.dec_tlu_pic_clk_override   := mcgc(2)
+	io.dec_tlu_dccm_clk_override  := mcgc(1)
+	io.dec_tlu_icm_clk_override   := mcgc(0)
 
 	// ----------------------------------------------------------------------
 	// MFDC (RW) Feature Disable Control

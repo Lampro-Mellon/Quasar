@@ -586,10 +586,8 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
 
   // some CSR writes need to be postsync'd
   val i0_postsync = i0_dp.postsync | io.dec_tlu_postsync_d | debug_fence_i | (i0_csr_write_only_d & (i0(31,20) === "h7c2".U))
-
-
-
-  val i0_legal       =  i0_dp.legal & (!any_csr_d | io.dec_csr_legal_d)
+  val bitmanip_legal         = WireInit(Bool(),0.B)
+  val i0_legal       =  i0_dp.legal & (!any_csr_d | io.dec_csr_legal_d) & bitmanip_legal
   val i0_inst_d      = Mux(io.dec_i0_pc4_d,i0,Cat(repl(16,0.U), io.dec_aln.ifu_i0_cinst))
   // illegal inst handling
 
@@ -708,7 +706,7 @@ class dec_decode_ctl extends Module with lib with RequireAsyncReset{
   val bitmanip_zbf_legal     = WireInit(Bool(),0.B)
   val bitmanip_zba_legal     = WireInit(Bool(),0.B)
   val bitmanip_zbb_zbp_legal = WireInit(Bool(),0.B)
-  val bitmanip_legal         = WireInit(Bool(),0.B)
+
   if       (BITMANIP_ZBB == 1)
     bitmanip_zbb_legal      :=  1.B
   else

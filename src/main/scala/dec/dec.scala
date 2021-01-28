@@ -84,7 +84,7 @@ class dec_IO extends Bundle with lib {
   val dec_tlu_perfcnt1          = Output(Bool())      // toggles when slot0 perf counter 1 has an event inc
   val dec_tlu_perfcnt2          = Output(Bool())      // toggles when slot0 perf counter 2 has an event inc
   val dec_tlu_perfcnt3          = Output(Bool())      // toggles when slot0 perf counter 3 has an event inc
-  val dec_tlu_flush_lower_wb       = Output(Bool())
+  val dec_tlu_flush_lower_wb    = Output(Bool())
   val dec_lsu_valid_raw_d       = Output(Bool())
   val trace_rv_trace_pkt        = Output(new trace_pkt_t)        // trace packet
 
