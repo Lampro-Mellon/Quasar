@@ -180,6 +180,7 @@
     "sink":"~lsu|lsu>io_lsu_store_stall_any",
     "sources":[
       "~lsu|lsu>io_dec_lsu_valid_raw_d",
+      "~lsu|lsu>io_dec_tlu_flush_lower_r",
       "~lsu|lsu>io_lsu_exu_exu_lsu_rs1_d",
       "~lsu|lsu>io_lsu_dma_dma_lsc_ctl_dma_mem_addr",
       "~lsu|lsu>io_dec_lsu_offset_d",
@@ -188,7 +189,6 @@
       "~lsu|lsu>io_lsu_p_bits_half",
       "~lsu|lsu>io_lsu_p_bits_word",
       "~lsu|lsu>io_lsu_dma_dma_lsc_ctl_dma_mem_sz",
-      "~lsu|lsu>io_dec_tlu_flush_lower_r",
       "~lsu|lsu>io_dec_tlu_force_halt",
       "~lsu|lsu>io_lsu_pic_picm_rd_data",
       "~lsu|lsu>io_dccm_rd_data_hi",
@@ -380,6 +380,7 @@
     "sink":"~lsu|lsu>io_lsu_load_stall_any",
     "sources":[
       "~lsu|lsu>io_dec_lsu_valid_raw_d",
+      "~lsu|lsu>io_dec_tlu_flush_lower_r",
       "~lsu|lsu>io_lsu_exu_exu_lsu_rs1_d",
       "~lsu|lsu>io_lsu_dma_dma_lsc_ctl_dma_mem_addr",
       "~lsu|lsu>io_dec_lsu_offset_d",
@@ -388,7 +389,6 @@
       "~lsu|lsu>io_lsu_p_bits_half",
       "~lsu|lsu>io_lsu_p_bits_word",
       "~lsu|lsu>io_lsu_dma_dma_lsc_ctl_dma_mem_sz",
-      "~lsu|lsu>io_dec_tlu_flush_lower_r",
       "~lsu|lsu>io_dec_tlu_force_halt",
       "~lsu|lsu>io_lsu_pic_picm_rd_data",
       "~lsu|lsu>io_dccm_rd_data_hi",

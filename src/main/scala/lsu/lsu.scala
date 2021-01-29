@@ -1,7 +1,7 @@
 package lsu
 
 import lib._
-import chisel3._
+import chisel3.{withClock, _}
 import chisel3.util._
 import include._
 import mem._
@@ -65,9 +65,9 @@ class lsu extends Module with RequireAsyncReset with param with lib {
 //  val end_addr_m                   = WireInit(0.U(32.W))
 //  val end_addr_r                   = WireInit(0.U(32.W))
   val lsu_busreq_r                 = WireInit(Bool(),false.B)
-//  val ldst_dual_d = WireInit(Bool(),false.B)
-//  val ldst_dual_m = WireInit(Bool(),false.B)
-//  val ldst_dual_r = WireInit(Bool(),false.B)
+  val ldst_dual_d = WireInit(Bool(),false.B)
+  val ldst_dual_m = WireInit(Bool(),false.B)
+  val ldst_dual_r = WireInit(Bool(),false.B)
 
   val lsu_lsc_ctl    = Module(new lsu_lsc_ctl())
  // io.lsu_exu.lsu_result_m := lsu_lsc_ctl.io.lsu_result_m
@@ -138,9 +138,9 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   lsu_lsc_ctl.io.lsu_double_ecc_error_m      := ecc.io.lsu_double_ecc_error_m
   lsu_lsc_ctl.io.flush_m_up                  := flush_m_up
   lsu_lsc_ctl.io.flush_r                     := flush_r
-  lsu_lsc_ctl.io.ldst_dual_d                 := lsu_lsc_ctl.io.lsu_addr_d(2) =/= lsu_lsc_ctl.io.end_addr_d(2)
-  lsu_lsc_ctl.io.ldst_dual_m                 := lsu_lsc_ctl.io.lsu_addr_m(2) =/= lsu_lsc_ctl.io.end_addr_m(2)
-  lsu_lsc_ctl.io.ldst_dual_r                 := lsu_lsc_ctl.io.lsu_addr_r(2) =/= lsu_lsc_ctl.io.end_addr_r(2)
+  lsu_lsc_ctl.io.ldst_dual_d                 := ldst_dual_d
+  lsu_lsc_ctl.io.ldst_dual_m                 := ldst_dual_m
+  lsu_lsc_ctl.io.ldst_dual_r                 := ldst_dual_r
   lsu_lsc_ctl.io.lsu_exu                     <> io.lsu_exu
   lsu_lsc_ctl.io.lsu_p                       <> io.lsu_p
   lsu_lsc_ctl.io.dec_lsu_valid_raw_d         := io.dec_lsu_valid_raw_d
@@ -153,9 +153,9 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   //Outputs
 
 
-//  ldst_dual_d  := lsu_lsc_ctl.io.lsu_addr_d(2) =/= lsu_lsc_ctl.io.end_addr_d(2)
-//  ldst_dual_m  := lsu_lsc_ctl.io.lsu_addr_m(2) =/= lsu_lsc_ctl.io.end_addr_m(2)
-//  ldst_dual_r  := lsu_lsc_ctl.io.lsu_addr_r(2) =/= lsu_lsc_ctl.io.end_addr_r(2)
+  ldst_dual_d  := lsu_lsc_ctl.io.lsu_addr_d(2) =/= lsu_lsc_ctl.io.end_addr_d(2)
+  ldst_dual_m  := lsu_lsc_ctl.io.lsu_addr_m(2) =/= withClock(clkdomain.io.lsu_c1_m_clk){RegNext(lsu_lsc_ctl.io.end_addr_d(2),0.U)}//=/= lsu_lsc_ctl.io.end_addr_m(2)
+  ldst_dual_r  := lsu_lsc_ctl.io.lsu_addr_r(2) =/= withClock(clkdomain.io.lsu_c1_r_clk){RegNext(lsu_lsc_ctl.io.end_addr_m(2),0.U)}//=/= lsu_lsc_ctl.io.end_addr_r(2)
 
   io.lsu_single_ecc_error_incr                  := lsu_lsc_ctl.io.lsu_single_ecc_error_incr
   io.lsu_error_pkt_r                            <> lsu_lsc_ctl.io.lsu_error_pkt_r
@@ -164,8 +164,8 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   // DCCM Control
   //Inputs
   dccm_ctl.io.clk_override                   := io.clk_override
-  dccm_ctl.io.ldst_dual_m                    := lsu_lsc_ctl.io.lsu_addr_m(2) =/= lsu_lsc_ctl.io.end_addr_m(2)
-  dccm_ctl.io.ldst_dual_r                    := lsu_lsc_ctl.io.lsu_addr_r(2) =/= lsu_lsc_ctl.io.end_addr_r(2)
+  dccm_ctl.io.ldst_dual_m                    := ldst_dual_m
+  dccm_ctl.io.ldst_dual_r                    := ldst_dual_r
   dccm_ctl.io.lsu_c2_m_clk                   := clkdomain.io.lsu_c2_m_clk
   dccm_ctl.io.lsu_c2_r_clk                   := clkdomain.io.lsu_c2_r_clk
   dccm_ctl.io.lsu_free_c2_clk                := clkdomain.io.lsu_free_c2_clk
@@ -224,9 +224,9 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   io.lsu_pic <> dccm_ctl.io.lsu_pic
   //Store Buffer
   //Inputs
-  stbuf.io.ldst_dual_d                           := lsu_lsc_ctl.io.lsu_addr_d(2) =/= lsu_lsc_ctl.io.end_addr_d(2)
-  stbuf.io.ldst_dual_m                           := lsu_lsc_ctl.io.lsu_addr_m(2) =/= lsu_lsc_ctl.io.end_addr_m(2)
-  stbuf.io.ldst_dual_r                           := lsu_lsc_ctl.io.lsu_addr_r(2) =/= lsu_lsc_ctl.io.end_addr_r(2)
+  stbuf.io.ldst_dual_d                           := ldst_dual_d
+  stbuf.io.ldst_dual_m                           := ldst_dual_m
+  stbuf.io.ldst_dual_r                           := ldst_dual_r
   stbuf.io.lsu_stbuf_c1_clk       	             := clkdomain.io.lsu_stbuf_c1_clk
   stbuf.io.lsu_free_c2_clk        	             := clkdomain.io.lsu_free_c2_clk
   stbuf.io.lsu_pkt_m           	                 <> lsu_lsc_ctl.io.lsu_pkt_m
@@ -327,9 +327,9 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   bus_intf.io.lsu_busm_clk                      := clkdomain.io.lsu_busm_clk
   bus_intf.io.dec_lsu_valid_raw_d               := io.dec_lsu_valid_raw_d
   bus_intf.io.lsu_busreq_m                      := lsu_busreq_m
-  bus_intf.io.ldst_dual_d                       := lsu_lsc_ctl.io.lsu_addr_d(2) =/= lsu_lsc_ctl.io.end_addr_d(2)
-  bus_intf.io.ldst_dual_m                       := lsu_lsc_ctl.io.lsu_addr_m(2) =/= lsu_lsc_ctl.io.end_addr_m(2)
-  bus_intf.io.ldst_dual_r                       := lsu_lsc_ctl.io.lsu_addr_r(2) =/= lsu_lsc_ctl.io.end_addr_r(2)
+  bus_intf.io.ldst_dual_d                       := ldst_dual_d
+  bus_intf.io.ldst_dual_m                       := ldst_dual_m
+  bus_intf.io.ldst_dual_r                       := ldst_dual_r
   bus_intf.io.lsu_addr_m                        := lsu_lsc_ctl.io.lsu_addr_m & Fill(32,lsu_lsc_ctl.io.addr_external_m & lsu_lsc_ctl.io.lsu_pkt_m.valid)
   bus_intf.io.lsu_addr_r                        := lsu_lsc_ctl.io.lsu_addr_r & Fill(32,lsu_busreq_r)
   bus_intf.io.end_addr_m                        := lsu_lsc_ctl.io.end_addr_m & Fill(32,lsu_lsc_ctl.io.addr_external_m & lsu_lsc_ctl.io.lsu_pkt_m.valid)

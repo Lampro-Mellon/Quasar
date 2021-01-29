@@ -26,9 +26,9 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
 
     val flush_m_up = Input(UInt(1.W))
     val flush_r    = Input(UInt(1.W))
-    val ldst_dual_d    = Input(Bool())
-    val ldst_dual_m    = Input(Bool())
-    val ldst_dual_r    = Input(Bool())
+    val ldst_dual_d    = Input(UInt(1.W))
+    val ldst_dual_m    = Input(UInt(1.W))
+    val ldst_dual_r    = Input(UInt(1.W))
 
     val lsu_exu = new lsu_exu()
 
@@ -221,15 +221,14 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
   val dma_mem_wdata_shifted = io.dma_lsc_ctl.dma_mem_wdata(63,0) >> Cat(io.dma_lsc_ctl.dma_mem_addr(2,0), 0.U(3.W))   // Shift the dma data to lower bits to make it consistent to lsu stores
   val store_data_d          = Mux(io.dma_lsc_ctl.dma_dccm_req.asBool,dma_mem_wdata_shifted(31,0),io.lsu_exu.exu_lsu_rs2_d(31,0))  // Write to PIC still happens in r stage
   val store_data_m_in       = Mux(io.lsu_pkt_d.bits.store_data_bypass_d.asBool,io.lsu_exu.lsu_result_m(31,0),store_data_d(31,0))
-  val int  = withClock(io.lsu_c1_m_clk){RegNext(io.lsu_addr_d(2),0.U)} =/= withClock(io.lsu_c1_m_clk){RegNext(io.end_addr_d(2),0.U)}
-  val int1 = withClock(io.lsu_c1_r_clk){RegNext(io.lsu_addr_m(2),0.U)} =/= withClock(io.lsu_c1_r_clk){RegNext(io.end_addr_m(2),0.U)}
+
   val store_data_pre_m      =  withClock(io.lsu_store_c1_m_clk){RegNext(store_data_m_in,0.U)}
   io.lsu_addr_m        :=  withClock(io.lsu_c1_m_clk){RegNext(io.lsu_addr_d,0.U)}
   io.lsu_addr_r        :=  withClock(io.lsu_c1_r_clk){RegNext(io.lsu_addr_m,0.U)}
-  io.end_addr_m := Cat(Mux(int,end_addr_pre_m,io.lsu_addr_m(31,3)), withClock(io.lsu_c1_m_clk){RegNext(io.end_addr_d(2,0),0.U)})
-  io.end_addr_r := Cat(Mux(int1,end_addr_pre_r,io.lsu_addr_r(31,3)), withClock(io.lsu_c1_r_clk){RegNext(io.end_addr_m(2,0),0.U)})
+  io.end_addr_m := Cat(Mux(io.ldst_dual_m,end_addr_pre_m,io.lsu_addr_m(31,3)), withClock(io.lsu_c1_m_clk){RegNext(io.end_addr_d(2,0),0.U)})
+  io.end_addr_r := Cat(Mux(io.ldst_dual_r,end_addr_pre_r,io.lsu_addr_r(31,3)), withClock(io.lsu_c1_r_clk){RegNext(io.end_addr_m(2,0),0.U)})
   end_addr_pre_m := rvdffe(io.end_addr_d(31,3),((io.lsu_pkt_d.valid & io.ldst_dual_d) | io.clk_override),clock,io.scan_mode)
-  end_addr_pre_r := rvdffe(io.end_addr_m(31,3),((io.lsu_pkt_m.valid & int) | io.clk_override),clock,io.scan_mode)
+  end_addr_pre_r := rvdffe(io.end_addr_m(31,3),((io.lsu_pkt_m.valid & io.ldst_dual_m) | io.clk_override),clock,io.scan_mode)
   io.addr_in_dccm_m    :=  withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_dccm_d,0.U)}
   io.addr_in_dccm_r    :=  withClock(io.lsu_c1_r_clk){RegNext(io.addr_in_dccm_m,0.U)}
   io.addr_in_pic_m     :=  withClock(io.lsu_c1_m_clk){RegNext(io.addr_in_pic_d,0.U)}
