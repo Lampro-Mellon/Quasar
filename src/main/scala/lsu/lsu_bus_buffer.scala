@@ -362,7 +362,7 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   val obuf_byteen = rvdffs_fpga (obuf_byteen_in,obuf_wr_en,io.lsu_bus_obuf_c1_clk,io.lsu_bus_obuf_c1_clken,clock)
   obuf_addr := rvdffe(obuf_addr_in, obuf_wr_en, clock, io.scan_mode)
   val obuf_data = rvdffe(obuf_data_in, obuf_wr_en, clock, io.scan_mode)
-  obuf_wr_timer := rvdff_fpga (obuf_data_done_in,io.lsu_busm_clk,obuf_wr_en,clock)
+  obuf_wr_timer := rvdff_fpga (obuf_wr_timer_in,io.lsu_busm_clk,obuf_wr_en,clock)
   val WrPtr0_m = WireInit(UInt(DEPTH_LOG2.W), 0.U)
 
 

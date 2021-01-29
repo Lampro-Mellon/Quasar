@@ -84,20 +84,20 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   val lsu_raw_fwd_hi_m = stbuf.io.stbuf_fwdbyteen_hi_m.orR
 
   // block stores in decode  - for either bus or stbuf reasons
-  io.lsu_store_stall_any := stbuf.io.lsu_stbuf_full_any | bus_intf.io.lsu_bus_buffer_full_any | dccm_ctl.io.ld_single_ecc_error_r_ff
-  io.lsu_load_stall_any := bus_intf.io.lsu_bus_buffer_full_any | dccm_ctl.io.ld_single_ecc_error_r_ff
-  io.lsu_fastint_stall_any := dccm_ctl.io.ld_single_ecc_error_r  // Stall the fastint in decode-1 stage
+  io.lsu_store_stall_any    := stbuf.io.lsu_stbuf_full_any | bus_intf.io.lsu_bus_buffer_full_any | dccm_ctl.io.ld_single_ecc_error_r_ff
+  io.lsu_load_stall_any     := bus_intf.io.lsu_bus_buffer_full_any | dccm_ctl.io.ld_single_ecc_error_r_ff
+  io.lsu_fastint_stall_any  := dccm_ctl.io.ld_single_ecc_error_r  // Stall the fastint in decode-1 stage
 
   // Ready to accept dma trxns
   // There can't be any inpipe forwarding from non-dma packet to dma packet since they can be flushed so we can't have st in r when dma is in m
-  val dma_mem_tag_d  = io.lsu_dma.dma_mem_tag
-  val ldst_nodma_mtor = lsu_lsc_ctl.io.lsu_pkt_m.valid & !lsu_lsc_ctl.io.lsu_pkt_m.bits.dma & (lsu_lsc_ctl.io.addr_in_dccm_m | lsu_lsc_ctl.io.addr_in_pic_m) & lsu_lsc_ctl.io.lsu_pkt_m.bits.store
-  io.lsu_dma.dccm_ready := !(io.dec_lsu_valid_raw_d | ldst_nodma_mtor | dccm_ctl.io.ld_single_ecc_error_r_ff)
-  val dma_dccm_wen = io.lsu_dma.dma_lsc_ctl.dma_dccm_req & io.lsu_dma.dma_lsc_ctl.dma_mem_write & lsu_lsc_ctl.io.addr_in_dccm_d & io.lsu_dma.dma_lsc_ctl.dma_mem_sz(1)
-  val dma_pic_wen  = io.lsu_dma.dma_lsc_ctl.dma_dccm_req & io.lsu_dma.dma_lsc_ctl.dma_mem_write & lsu_lsc_ctl.io.addr_in_pic_d
-  dma_dccm_wdata := io.lsu_dma.dma_lsc_ctl.dma_mem_wdata >> Cat(io.lsu_dma.dma_lsc_ctl.dma_mem_addr(2,0), 0.U(3.W)) // Shift the dma data to lower bits to make it consistent to lsu stores
-  dma_dccm_wdata_hi := dma_dccm_wdata(63,32)
-  dma_dccm_wdata_lo := dma_dccm_wdata(31,0)
+  val dma_mem_tag_d       = io.lsu_dma.dma_mem_tag
+  val ldst_nodma_mtor     = lsu_lsc_ctl.io.lsu_pkt_m.valid & !lsu_lsc_ctl.io.lsu_pkt_m.bits.dma & (lsu_lsc_ctl.io.addr_in_dccm_m | lsu_lsc_ctl.io.addr_in_pic_m) & lsu_lsc_ctl.io.lsu_pkt_m.bits.store
+  io.lsu_dma.dccm_ready   := !(io.dec_lsu_valid_raw_d | ldst_nodma_mtor | dccm_ctl.io.ld_single_ecc_error_r_ff)
+  val dma_dccm_wen        = io.lsu_dma.dma_lsc_ctl.dma_dccm_req & io.lsu_dma.dma_lsc_ctl.dma_mem_write & lsu_lsc_ctl.io.addr_in_dccm_d & io.lsu_dma.dma_lsc_ctl.dma_mem_sz(1)
+  val dma_pic_wen         = io.lsu_dma.dma_lsc_ctl.dma_dccm_req & io.lsu_dma.dma_lsc_ctl.dma_mem_write & lsu_lsc_ctl.io.addr_in_pic_d
+  dma_dccm_wdata          := io.lsu_dma.dma_lsc_ctl.dma_mem_wdata >> Cat(io.lsu_dma.dma_lsc_ctl.dma_mem_addr(2,0), 0.U(3.W)) // Shift the dma data to lower bits to make it consistent to lsu stores
+  dma_dccm_wdata_hi       := dma_dccm_wdata(63,32)
+  dma_dccm_wdata_lo       := dma_dccm_wdata(31,0)
 
   val flush_m_up = io.dec_tlu_flush_lower_r
   val flush_r    = io.dec_tlu_i0_kill_writeb_r
@@ -107,17 +107,17 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   // Store buffer now have only non-dma dccm stores
   // stbuf_empty not needed since it has only dccm stores
   io.lsu_idle_any := !((lsu_lsc_ctl.io.lsu_pkt_m.valid & !lsu_lsc_ctl.io.lsu_pkt_m.bits.dma) | (lsu_lsc_ctl.io.lsu_pkt_r.valid & !lsu_lsc_ctl.io.lsu_pkt_r.bits.dma)) & bus_intf.io.lsu_bus_buffer_empty_any
-   io.lsu_active := (lsu_lsc_ctl.io.lsu_pkt_m.valid | lsu_lsc_ctl.io.lsu_pkt_r.valid | dccm_ctl.io.ld_single_ecc_error_r_ff) | !bus_intf.io.lsu_bus_buffer_empty_any  // This includes DMA. Used for gating top clock
+   io.lsu_active  := (lsu_lsc_ctl.io.lsu_pkt_m.valid | lsu_lsc_ctl.io.lsu_pkt_r.valid | dccm_ctl.io.ld_single_ecc_error_r_ff) | !bus_intf.io.lsu_bus_buffer_empty_any  // This includes DMA. Used for gating top clock
   // Instantiate the store buffer
   val store_stbuf_reqvld_r = lsu_lsc_ctl.io.lsu_pkt_r.valid & lsu_lsc_ctl.io.lsu_pkt_r.bits.store & lsu_lsc_ctl.io.addr_in_dccm_r & !flush_r & (!lsu_lsc_ctl.io.lsu_pkt_r.bits.dma | ((lsu_lsc_ctl.io.lsu_pkt_r.bits.by | lsu_lsc_ctl.io.lsu_pkt_r.bits.half) & !ecc.io.lsu_double_ecc_error_r))
  // Disable Forwarding for now
-  val lsu_cmpen_m = lsu_lsc_ctl.io.lsu_pkt_m.valid & (lsu_lsc_ctl.io.lsu_pkt_m.bits.load | lsu_lsc_ctl.io.lsu_pkt_m.bits.store) & (lsu_lsc_ctl.io.addr_in_dccm_m | lsu_lsc_ctl.io.addr_in_pic_m)
+  val lsu_cmpen_m   = lsu_lsc_ctl.io.lsu_pkt_m.valid & (lsu_lsc_ctl.io.lsu_pkt_m.bits.load | lsu_lsc_ctl.io.lsu_pkt_m.bits.store) & (lsu_lsc_ctl.io.addr_in_dccm_m | lsu_lsc_ctl.io.addr_in_pic_m)
   // Bus signals
-  val lsu_busreq_m = lsu_lsc_ctl.io.lsu_pkt_m.valid & ((lsu_lsc_ctl.io.lsu_pkt_m.bits.load | lsu_lsc_ctl.io.lsu_pkt_m.bits.store) & lsu_lsc_ctl.io.addr_external_m) & !flush_m_up & !lsu_lsc_ctl.io.lsu_exc_m & !lsu_lsc_ctl.io.lsu_pkt_m.bits.fast_int
+  val lsu_busreq_m  = lsu_lsc_ctl.io.lsu_pkt_m.valid & ((lsu_lsc_ctl.io.lsu_pkt_m.bits.load | lsu_lsc_ctl.io.lsu_pkt_m.bits.store) & lsu_lsc_ctl.io.addr_external_m) & !flush_m_up & !lsu_lsc_ctl.io.lsu_exc_m & !lsu_lsc_ctl.io.lsu_pkt_m.bits.fast_int
   // Dual signals
 
   // PMU signals
-  io.lsu_pmu_misaligned_m := lsu_lsc_ctl.io.lsu_pkt_m.valid & ((lsu_lsc_ctl.io.lsu_pkt_m.bits.half & lsu_lsc_ctl.io.lsu_addr_m(0)) | (lsu_lsc_ctl.io.lsu_pkt_m.bits.word & lsu_lsc_ctl.io.lsu_addr_m(1,0).orR))
+  io.lsu_pmu_misaligned_m             := lsu_lsc_ctl.io.lsu_pkt_m.valid & ((lsu_lsc_ctl.io.lsu_pkt_m.bits.half & lsu_lsc_ctl.io.lsu_addr_m(0)) | (lsu_lsc_ctl.io.lsu_pkt_m.bits.word & lsu_lsc_ctl.io.lsu_addr_m(1,0).orR))
   io.lsu_tlu.lsu_pmu_load_external_m  := lsu_lsc_ctl.io.lsu_pkt_m.valid & lsu_lsc_ctl.io.lsu_pkt_m.bits.load & lsu_lsc_ctl.io.addr_external_m
   io.lsu_tlu.lsu_pmu_store_external_m := lsu_lsc_ctl.io.lsu_pkt_m.valid & lsu_lsc_ctl.io.lsu_pkt_m.bits.store & lsu_lsc_ctl.io.addr_external_m
 
@@ -229,26 +229,26 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   stbuf.io.ldst_dual_r                           := lsu_lsc_ctl.io.lsu_addr_r(2) =/= lsu_lsc_ctl.io.end_addr_r(2)
   stbuf.io.lsu_stbuf_c1_clk       	             := clkdomain.io.lsu_stbuf_c1_clk
   stbuf.io.lsu_free_c2_clk        	             := clkdomain.io.lsu_free_c2_clk
-  stbuf.io.lsu_pkt_m           	               <> lsu_lsc_ctl.io.lsu_pkt_m
-  stbuf.io.lsu_pkt_r           	               <> lsu_lsc_ctl.io.lsu_pkt_r
-  stbuf.io.store_stbuf_reqvld_r	               := store_stbuf_reqvld_r
-  stbuf.io.lsu_commit_r                         := lsu_lsc_ctl.io.lsu_commit_r
-  stbuf.io.dec_lsu_valid_raw_d                  := io.dec_lsu_valid_raw_d
+  stbuf.io.lsu_pkt_m           	                 <> lsu_lsc_ctl.io.lsu_pkt_m
+  stbuf.io.lsu_pkt_r           	                 <> lsu_lsc_ctl.io.lsu_pkt_r
+  stbuf.io.store_stbuf_reqvld_r	                 := store_stbuf_reqvld_r
+  stbuf.io.lsu_commit_r                          := lsu_lsc_ctl.io.lsu_commit_r
+  stbuf.io.dec_lsu_valid_raw_d                   := io.dec_lsu_valid_raw_d
   stbuf.io.store_data_hi_r	   	  	             := dccm_ctl.io.store_data_hi_r
   stbuf.io.store_data_lo_r	   	  	             := dccm_ctl.io.store_data_lo_r
-  stbuf.io.store_datafn_hi_r                    := dccm_ctl.io.store_datafn_hi_r
+  stbuf.io.store_datafn_hi_r                     := dccm_ctl.io.store_datafn_hi_r
   stbuf.io.store_datafn_lo_r	  	               := dccm_ctl.io.store_datafn_lo_r
-  stbuf.io.lsu_stbuf_commit_any	  	           := dccm_ctl.io.lsu_stbuf_commit_any
-  stbuf.io.lsu_addr_d	   	  		               := lsu_lsc_ctl.io.lsu_addr_d
-  stbuf.io.lsu_addr_m	   	  		               := lsu_lsc_ctl.io.lsu_addr_m
-  stbuf.io.lsu_addr_r	   	  		               := lsu_lsc_ctl.io.lsu_addr_r
-  stbuf.io.end_addr_d	   	  		               := lsu_lsc_ctl.io.end_addr_d
-  stbuf.io.end_addr_m	   	  		               := lsu_lsc_ctl.io.end_addr_m
-  stbuf.io.end_addr_r	   	  		               := lsu_lsc_ctl.io.end_addr_r
-  stbuf.io.addr_in_dccm_m                       := lsu_lsc_ctl.io.addr_in_dccm_m
+  stbuf.io.lsu_stbuf_commit_any	  	             := dccm_ctl.io.lsu_stbuf_commit_any
+  stbuf.io.lsu_addr_d	   	  		                 := lsu_lsc_ctl.io.lsu_addr_d
+  stbuf.io.lsu_addr_m	   	  		                 := lsu_lsc_ctl.io.lsu_addr_m
+  stbuf.io.lsu_addr_r	   	  		                 := lsu_lsc_ctl.io.lsu_addr_r
+  stbuf.io.end_addr_d	   	  		                 := lsu_lsc_ctl.io.end_addr_d
+  stbuf.io.end_addr_m	   	  		                 := lsu_lsc_ctl.io.end_addr_m
+  stbuf.io.end_addr_r	   	  		                 := lsu_lsc_ctl.io.end_addr_r
+  stbuf.io.addr_in_dccm_m                        := lsu_lsc_ctl.io.addr_in_dccm_m
   stbuf.io.addr_in_dccm_r   	  	               := lsu_lsc_ctl.io.addr_in_dccm_r
-  stbuf.io.lsu_cmpen_m   	                     := lsu_cmpen_m
-  stbuf.io.scan_mode                            := io.scan_mode
+  stbuf.io.lsu_cmpen_m   	                       := lsu_cmpen_m
+  stbuf.io.scan_mode                             := io.scan_mode
 
   // ECC
   //Inputs
@@ -313,7 +313,7 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   //Bus Interface
   //Inputs
   bus_intf.io.scan_mode                         := io.scan_mode
-  io.lsu_dec.tlu_busbuff <> bus_intf.io.tlu_busbuff
+  io.lsu_dec.tlu_busbuff                        <> bus_intf.io.tlu_busbuff
   bus_intf.io.clk_override                      := io.clk_override
   bus_intf.io.lsu_c1_r_clk                      := clkdomain.io.lsu_c1_r_clk
   bus_intf.io.lsu_c2_r_clk                      := clkdomain.io.lsu_c2_r_clk
@@ -343,11 +343,11 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   bus_intf.io.flush_m_up                        := flush_m_up
   bus_intf.io.flush_r                           := flush_r
   //Outputs
-  io.lsu_dec.dctl_busbuff <> bus_intf.io.dctl_busbuff
-  io.lsu_nonblock_load_data := bus_intf.io.lsu_nonblock_load_data
-  lsu_busreq_r := bus_intf.io.lsu_busreq_r
-  io.axi                                        <> bus_intf.io.axi
-  bus_intf.io.lsu_bus_clk_en                    := io.lsu_bus_clk_en
+  io.lsu_dec.dctl_busbuff     <> bus_intf.io.dctl_busbuff
+  io.lsu_nonblock_load_data   := bus_intf.io.lsu_nonblock_load_data
+  lsu_busreq_r                := bus_intf.io.lsu_busreq_r
+  io.axi                      <> bus_intf.io.axi
+  bus_intf.io.lsu_bus_clk_en  := io.lsu_bus_clk_en
 
   withClock(clkdomain.io.lsu_c1_m_clk){dma_mem_tag_m    := RegNext(dma_mem_tag_d,0.U)}
   withClock(clkdomain.io.lsu_c2_r_clk){lsu_raw_fwd_hi_r := RegNext(lsu_raw_fwd_hi_m,0.U)}

@@ -118,19 +118,19 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
   bus_buffer.io.lsu_pkt_r <> io.lsu_pkt_r
   //
 
-  bus_buffer.io.lsu_addr_m                        := io.lsu_addr_m
-  bus_buffer.io.end_addr_m                        := io.end_addr_m
-  bus_buffer.io.lsu_addr_r                        := io.lsu_addr_r
-  bus_buffer.io.end_addr_r                        := io.end_addr_r
-  bus_buffer.io.store_data_r                      := io.store_data_r
+  bus_buffer.io.lsu_addr_m           := io.lsu_addr_m
+  bus_buffer.io.end_addr_m           := io.end_addr_m
+  bus_buffer.io.lsu_addr_r           := io.lsu_addr_r
+  bus_buffer.io.end_addr_r           := io.end_addr_r
+  bus_buffer.io.store_data_r         := io.store_data_r
 
-  bus_buffer.io.lsu_busreq_m                      := io.lsu_busreq_m
-  bus_buffer.io.flush_m_up                        := io.flush_m_up
-  bus_buffer.io.flush_r                           := io.flush_r
-  bus_buffer.io.lsu_commit_r                      := io.lsu_commit_r
-  bus_buffer.io.lsu_axi                           <> io.axi
-  bus_buffer.io.lsu_bus_clk_en                    := io.lsu_bus_clk_en
-  io.lsu_nonblock_load_data := bus_buffer.io.lsu_nonblock_load_data
+  bus_buffer.io.lsu_busreq_m         := io.lsu_busreq_m
+  bus_buffer.io.flush_m_up           := io.flush_m_up
+  bus_buffer.io.flush_r              := io.flush_r
+  bus_buffer.io.lsu_commit_r         := io.lsu_commit_r
+  bus_buffer.io.lsu_axi              <> io.axi
+  bus_buffer.io.lsu_bus_clk_en       := io.lsu_bus_clk_en
+  io.lsu_nonblock_load_data          := bus_buffer.io.lsu_nonblock_load_data
   io.lsu_busreq_r                    := bus_buffer.io.lsu_busreq_r
   io.lsu_bus_buffer_pend_any         := bus_buffer.io.lsu_bus_buffer_pend_any
   io.lsu_bus_buffer_full_any         := bus_buffer.io.lsu_bus_buffer_full_any
