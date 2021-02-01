@@ -1,6 +1,6 @@
 # Quasar RISC-V Core 1.0 from Lampro Mellon
 
-This repository contains the Quasar Core design in CHISEL.
+This repository contains the SweRV-EL2 Core written in CHISEL named "Quasar".
 
 ## License
 
