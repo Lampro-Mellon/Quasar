@@ -189,7 +189,7 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
   dma_pkt_d.bits.unsign   := 0.U
   dma_pkt_d.bits.stack   := 0.U
   dma_pkt_d.bits.fast_int := 0.U
-  dma_pkt_d.valid    := io.dma_lsc_ctl.dma_dccm_req
+  dma_pkt_d.valid         := io.dma_lsc_ctl.dma_dccm_req
   dma_pkt_d.bits.dma      := 1.U
   dma_pkt_d.bits.store    := io.dma_lsc_ctl.dma_mem_write
   dma_pkt_d.bits.load     := ~io.dma_lsc_ctl.dma_mem_write

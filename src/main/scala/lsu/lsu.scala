@@ -109,7 +109,7 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   io.lsu_idle_any := !((lsu_lsc_ctl.io.lsu_pkt_m.valid & !lsu_lsc_ctl.io.lsu_pkt_m.bits.dma) | (lsu_lsc_ctl.io.lsu_pkt_r.valid & !lsu_lsc_ctl.io.lsu_pkt_r.bits.dma)) & bus_intf.io.lsu_bus_buffer_empty_any
    io.lsu_active  := (lsu_lsc_ctl.io.lsu_pkt_m.valid | lsu_lsc_ctl.io.lsu_pkt_r.valid | dccm_ctl.io.ld_single_ecc_error_r_ff) | !bus_intf.io.lsu_bus_buffer_empty_any  // This includes DMA. Used for gating top clock
   // Instantiate the store buffer
-  val store_stbuf_reqvld_r = lsu_lsc_ctl.io.lsu_pkt_r.valid & lsu_lsc_ctl.io.lsu_pkt_r.bits.store & lsu_lsc_ctl.io.addr_in_dccm_r & !flush_r & (!lsu_lsc_ctl.io.lsu_pkt_r.bits.dma | ((lsu_lsc_ctl.io.lsu_pkt_r.bits.by | lsu_lsc_ctl.io.lsu_pkt_r.bits.half) & !ecc.io.lsu_double_ecc_error_r))
+ val store_stbuf_reqvld_r = lsu_lsc_ctl.io.lsu_pkt_r.valid & lsu_lsc_ctl.io.lsu_pkt_r.bits.store & lsu_lsc_ctl.io.addr_in_dccm_r & !flush_r & (!lsu_lsc_ctl.io.lsu_pkt_r.bits.dma | ((lsu_lsc_ctl.io.lsu_pkt_r.bits.by | lsu_lsc_ctl.io.lsu_pkt_r.bits.half) & !ecc.io.lsu_double_ecc_error_r))
  // Disable Forwarding for now
   val lsu_cmpen_m   = lsu_lsc_ctl.io.lsu_pkt_m.valid & (lsu_lsc_ctl.io.lsu_pkt_m.bits.load | lsu_lsc_ctl.io.lsu_pkt_m.bits.store) & (lsu_lsc_ctl.io.addr_in_dccm_m | lsu_lsc_ctl.io.addr_in_pic_m)
   // Bus signals
@@ -151,8 +151,6 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   lsu_lsc_ctl.io.dec_tlu_mrac_ff             := io.dec_tlu_mrac_ff
   lsu_lsc_ctl.io.scan_mode                   := io.scan_mode
   //Outputs
-
-
   ldst_dual_d  := lsu_lsc_ctl.io.lsu_addr_d(2) =/= lsu_lsc_ctl.io.end_addr_d(2)
   ldst_dual_m  := lsu_lsc_ctl.io.lsu_addr_m(2) =/= withClock(clkdomain.io.lsu_c1_m_clk){RegNext(lsu_lsc_ctl.io.end_addr_d(2),0.U)}//=/= lsu_lsc_ctl.io.end_addr_m(2)
   ldst_dual_r  := lsu_lsc_ctl.io.lsu_addr_r(2) =/= withClock(clkdomain.io.lsu_c1_r_clk){RegNext(lsu_lsc_ctl.io.end_addr_m(2),0.U)}//=/= lsu_lsc_ctl.io.end_addr_r(2)
