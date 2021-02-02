@@ -15400,8 +15400,6 @@ circuit lsu :
     lsu_raw_fwd_lo_r <= UInt<1>("h00")
     wire lsu_raw_fwd_hi_r : UInt<1>
     lsu_raw_fwd_hi_r <= UInt<1>("h00")
-    wire lsu_busm_clken : UInt<1>
-    lsu_busm_clken <= UInt<1>("h00")
     wire lsu_bus_obuf_c1_clken : UInt<1>
     lsu_bus_obuf_c1_clken <= UInt<1>("h00")
     wire lsu_busreq_r : UInt<1>
@@ -15940,8 +15938,8 @@ circuit lsu :
     bus_intf.io.clk_override <= io.clk_override @[lsu.scala 315:49]
     bus_intf.io.lsu_c1_r_clk <= clkdomain.io.lsu_c1_r_clk @[lsu.scala 316:49]
     bus_intf.io.lsu_c2_r_clk <= clkdomain.io.lsu_c2_r_clk @[lsu.scala 317:49]
-    bus_intf.io.lsu_busm_clken <= lsu_busm_clken @[lsu.scala 318:49]
-    bus_intf.io.lsu_bus_obuf_c1_clken <= lsu_bus_obuf_c1_clken @[lsu.scala 319:49]
+    bus_intf.io.lsu_busm_clken <= clkdomain.io.lsu_busm_clken @[lsu.scala 318:49]
+    bus_intf.io.lsu_bus_obuf_c1_clken <= clkdomain.io.lsu_bus_obuf_c1_clken @[lsu.scala 319:49]
     bus_intf.io.lsu_bus_ibuf_c1_clk <= clkdomain.io.lsu_bus_ibuf_c1_clk @[lsu.scala 320:49]
     bus_intf.io.lsu_bus_obuf_c1_clk <= clkdomain.io.lsu_bus_obuf_c1_clk @[lsu.scala 321:49]
     bus_intf.io.lsu_bus_buf_c1_clk <= clkdomain.io.lsu_bus_buf_c1_clk @[lsu.scala 322:49]

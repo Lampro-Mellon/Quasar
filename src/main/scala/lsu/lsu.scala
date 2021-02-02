@@ -56,7 +56,7 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   val dma_mem_tag_m                = WireInit(0.U(3.W))
   val lsu_raw_fwd_lo_r             = WireInit(0.U(1.W))
   val lsu_raw_fwd_hi_r             = WireInit(0.U(1.W))
-  val lsu_busm_clken               = WireInit(0.U(1.W))
+//  val lsu_busm_clken               = WireInit(0.U(1.W))
   val lsu_bus_obuf_c1_clken        = WireInit(0.U(1.W))
 //  val lsu_addr_d                   = WireInit(0.U(32.W))
 //  val lsu_addr_m                   = WireInit(0.U(32.W))
@@ -315,8 +315,8 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   bus_intf.io.clk_override                      := io.clk_override
   bus_intf.io.lsu_c1_r_clk                      := clkdomain.io.lsu_c1_r_clk
   bus_intf.io.lsu_c2_r_clk                      := clkdomain.io.lsu_c2_r_clk
-  bus_intf.io.lsu_busm_clken                    := lsu_busm_clken
-  bus_intf.io.lsu_bus_obuf_c1_clken             := lsu_bus_obuf_c1_clken
+  bus_intf.io.lsu_busm_clken                    := clkdomain.io.lsu_busm_clken
+  bus_intf.io.lsu_bus_obuf_c1_clken             := clkdomain.io.lsu_bus_obuf_c1_clken
   bus_intf.io.lsu_bus_ibuf_c1_clk               := clkdomain.io.lsu_bus_ibuf_c1_clk
   bus_intf.io.lsu_bus_obuf_c1_clk               := clkdomain.io.lsu_bus_obuf_c1_clk
   bus_intf.io.lsu_bus_buf_c1_clk                := clkdomain.io.lsu_bus_buf_c1_clk

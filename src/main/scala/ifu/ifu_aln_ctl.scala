@@ -404,6 +404,3 @@ class ifu_aln_ctl extends Module with lib with RequireAsyncReset {
   f1_shift_2B :=  f0val(0) & !f0val(1) & shift_4B
 
 }
-object aln_main extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new ifu_aln_ctl()))
-}
