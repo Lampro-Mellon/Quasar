@@ -169,5 +169,13 @@ trait param {
   val BITMANIP_ZBP           =  0x00
   val BITMANIP_ZBR           =  0x00
   val BITMANIP_ZBS           =  0x01
+  val ICACHE_BYPASS_ENABLE   =  0x01
+  val ICACHE_NUM_BYPASS      =  0x02
+  val ICACHE_NUM_BYPASS_WIDTH     =  0x02
+  val ICACHE_TAG_BYPASS_ENABLE    =  0x01
+  val ICACHE_TAG_NUM_BYPASS       =  0x02
+  val ICACHE_TAG_NUM_BYPASS_WIDTH =  0x02
+
+
 
 }
