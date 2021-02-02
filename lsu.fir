@@ -10798,7 +10798,7 @@ circuit lsu :
       obuf_data <= obuf_data_in @[Reg.scala 28:23]
       skip @[Reg.scala 28:19]
     reg _T_1791 : UInt, clock with : (reset => (reset, UInt<1>("h00"))) @[Reg.scala 27:20]
-    when obuf_wr_en : @[Reg.scala 28:19]
+    when io.lsu_busm_clken : @[Reg.scala 28:19]
       _T_1791 <= obuf_wr_timer_in @[Reg.scala 28:23]
       skip @[Reg.scala 28:19]
     obuf_wr_timer <= _T_1791 @[lsu_bus_buffer.scala 367:17]

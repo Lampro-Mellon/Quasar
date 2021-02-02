@@ -8929,7 +8929,7 @@ end // initial
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       obuf_wr_timer <= 3'h0;
-    end else if (obuf_wr_en) begin
+    end else if (io_lsu_busm_clken) begin
       if (obuf_wr_en) begin
         obuf_wr_timer <= 3'h0;
       end else if (_T_1058) begin
