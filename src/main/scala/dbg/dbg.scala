@@ -4,6 +4,14 @@
 //import chisel3.util._
 //import lib._
 //
+//
+//class dbg_dma extends Bundle {
+//  val dbg_dma_bubble        = Input(Bool())     // Debug needs a bubble to send a valid
+//  val dma_dbg_ready         = Output(Bool())    // DMA is ready to accept debug request
+//
+//}
+//
+//
 //object state_t {
 //  val idle            = 0.U(4.W)
 //  val halting         = 1.U(4.W)
@@ -30,7 +38,7 @@
 //  val done            = 9.U(4.W)
 //}
 //
-//class dbg extends Module with el2_lib with RequireAsyncReset {
+//class dbg extends Module with lib with RequireAsyncReset {
 //  val io = IO(new Bundle {
 //    val dbg_cmd_addr              = Output(UInt(32.W))
 //    val dbg_cmd_wrdata            = Output(UInt(32.W))
@@ -42,8 +50,11 @@
 //    val core_dbg_rddata           = Input(UInt(32.W))
 //    val core_dbg_cmd_done         = Input(Bool())
 //    val core_dbg_cmd_fail         = Input(Bool())
-//    val dbg_dma_bubble            = Output(Bool())
-//    val dma_dbg_ready             = Input(Bool())
+//    val dbg_dma = Flipped(new dbg_dma)
+//    val sb_axi = new axi_channels(SB_BUS_TAG)
+//    val dbg_dec_dma = Flipped(new dec_dbg)
+//   // val dbg_dma_bubble            = Output(Bool())
+//   // val dma_dbg_ready             = Input(Bool())
 //    val dbg_halt_req              = Output(Bool())
 //    val dbg_resume_req            = Output(Bool())
 //    val dec_tlu_debug_mode        = Input(Bool())

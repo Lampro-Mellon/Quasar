@@ -416,7 +416,8 @@ if(!BTB_FULLYA) {
   val bht_wr_addr2 = br0_hashed_wb
   val bht_rd_addr_f = bht_rd_addr_hashed_f
   val bht_rd_addr_p1_f = bht_rd_addr_hashed_p1_f
-
+  val btb_bank0_rd_data_way0_out = Wire(Vec(LRU_SIZE,UInt(BTB_DWIDTH.W)))
+  val btb_bank0_rd_data_way1_out = Wire(Vec(LRU_SIZE,UInt(BTB_DWIDTH.W)))
   // BTB
   // Entry -> Tag[BTB-BTAG-SIZE], toffset[12], pc4, boffset, call, ret, valid
 if(!BTB_FULLYA) {
@@ -429,20 +430,14 @@ if(!BTB_FULLYA) {
 
    vwayhit_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool->wayhit_f,
     io.ifc_fetch_addr_f(0).asBool->Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
-  val btb_bank0_rd_data_way0_out = (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way0).asBool, clock, io.scan_mode))
-  val btb_bank0_rd_data_way1_out = (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way1).asBool, clock, io.scan_mode))
 
+  btb_bank0_rd_data_way0_out := (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way0).asBool, clock, io.scan_mode))
+  btb_bank0_rd_data_way1_out := (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way1).asBool, clock, io.scan_mode))
   btb_bank0_rd_data_way0_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_f === i.U).asBool -> btb_bank0_rd_data_way0_out(i)))
-  dontTouch(btb_bank0_rd_data_way0_f)
-
   btb_bank0_rd_data_way1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_f === i.U).asBool -> btb_bank0_rd_data_way1_out(i)))
-  dontTouch(btb_bank0_rd_data_way1_f)
   // BTB read muxing
   btb_bank0_rd_data_way0_p1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_p1_f === i.U).asBool -> btb_bank0_rd_data_way0_out(i)))
-  dontTouch(btb_bank0_rd_data_way0_p1_f)
-
   btb_bank0_rd_data_way1_p1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_p1_f === i.U).asBool -> btb_bank0_rd_data_way1_out(i)))
-  dontTouch(btb_bank0_rd_data_way1_p1_f)
 }
 //  if(BTB_FULLYA){
 //    val fetch_mp_collision_f = WireInit(Bool(),init = false.B)

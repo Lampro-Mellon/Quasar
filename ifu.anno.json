@@ -360,22 +360,6 @@
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~ifu|ifu_bp_ctl>btb_bank0_rd_data_way1_p1_f"
-  },
-  {
-    "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~ifu|ifu_bp_ctl>btb_bank0_rd_data_way0_p1_f"
-  },
-  {
-    "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~ifu|ifu_bp_ctl>btb_bank0_rd_data_way1_f"
-  },
-  {
-    "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~ifu|ifu_bp_ctl>btb_bank0_rd_data_way0_f"
-  },
-  {
-    "class":"firrtl.transforms.DontTouchAnnotation",
     "target":"~ifu|ifu_mem_ctl>ifc_region_acc_okay"
   },
   {

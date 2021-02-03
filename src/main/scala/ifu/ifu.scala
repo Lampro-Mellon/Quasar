@@ -109,6 +109,13 @@ class ifu extends Module with lib with RequireAsyncReset {
   bp_ctl.io.exu_flush_final := io.exu_flush_final
   bp_ctl.io.dec_tlu_flush_lower_wb := io.dec_tlu_flush_lower_wb
   bp_ctl.io.dec_fa_error_index :=   io.dec_fa_error_index
+//  bp_ctl.btb_bank0_rd_data_way1_out.suggestName("bp_ctl.btb_bank0_rd_data_way1_out")
+  // for(i <- 0 until BTB_ARRAY_DEPTH) {dontTouch(bp_ctl.btb_bank0_rd_data_way0_out(i))}
+ // dontTouch(bp_ctl.btb_bank0_rd_data_way1_out(0))
+//  dontTouch(bp_ctl.btb_bank0_rd_data_way0_f)
+//  dontTouch(bp_ctl.btb_bank0_rd_data_way1_f)
+//  dontTouch(bp_ctl.btb_bank0_rd_data_way0_p1_f)
+//  dontTouch(bp_ctl.btb_bank0_rd_data_way1_p1_f)
 
   // mem-ctl Inputs
   mem_ctl.io.free_l2clk := io.free_l2clk
