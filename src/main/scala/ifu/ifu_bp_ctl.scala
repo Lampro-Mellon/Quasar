@@ -433,11 +433,16 @@ if(!BTB_FULLYA) {
   val btb_bank0_rd_data_way1_out = (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way1).asBool, clock, io.scan_mode))
 
   btb_bank0_rd_data_way0_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_f === i.U).asBool -> btb_bank0_rd_data_way0_out(i)))
-  btb_bank0_rd_data_way1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_f === i.U).asBool -> btb_bank0_rd_data_way1_out(i)))
+  dontTouch(btb_bank0_rd_data_way0_f)
 
+  btb_bank0_rd_data_way1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_f === i.U).asBool -> btb_bank0_rd_data_way1_out(i)))
+  dontTouch(btb_bank0_rd_data_way1_f)
   // BTB read muxing
   btb_bank0_rd_data_way0_p1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_p1_f === i.U).asBool -> btb_bank0_rd_data_way0_out(i)))
+  dontTouch(btb_bank0_rd_data_way0_p1_f)
+
   btb_bank0_rd_data_way1_p1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_p1_f === i.U).asBool -> btb_bank0_rd_data_way1_out(i)))
+  dontTouch(btb_bank0_rd_data_way1_p1_f)
 }
 //  if(BTB_FULLYA){
 //    val fetch_mp_collision_f = WireInit(Bool(),init = false.B)
@@ -500,6 +505,7 @@ if(!BTB_FULLYA) {
   if(RV_FPGA_OPTIMIZE) {
   for(i<-0 until 2; k<- 0 until (BHT_ARRAY_DEPTH/NUM_BHT_LOOP)) bht_bank_clk(i)(k) := rvclkhdr(clock, bht_bank_clken(i)(k), io.scan_mode)
 //    (0 until 2).map(i=>(0 until (BHT_ARRAY_DEPTH/NUM_BHT_LOOP)).map(k=>rvclkhdr(clock, bht_bank_clken(i)(k), io.scan_mode)))
+
   }
   for(i<-0 until 2; k<- 0 until (BHT_ARRAY_DEPTH/NUM_BHT_LOOP)){
   // Checking if there is a write enable with address for the BHT

@@ -381,6 +381,11 @@ trait lib extends param{
     withClock(rawclk) {RegEnable (din, 0.U, clken)}
     else withClock(clk) {RegNext (din, 0.U)}
   }
+   def apply(din: Bool, clk: Clock, clken: Bool,rawclk:Clock) = {
+     if (RV_FPGA_OPTIMIZE)
+       withClock(rawclk) {RegEnable (din, 0.B, clken)}
+     else withClock(clk) {RegNext (din, 0.B)}
+   }
 }
   object rvdffs_fpga {
     def apply(din: UInt, en:Bool,clk: Clock, clken: Bool,rawclk:Clock) = {
