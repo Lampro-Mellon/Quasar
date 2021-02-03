@@ -183,6 +183,11 @@ class lsu_dec extends Bundle {
   val dctl_busbuff = new dctl_busbuff
 
 }
+class dbg_dma extends Bundle {
+  val dbg_dma_bubble        = Input(Bool())     // Debug needs a bubble to send a valid
+  val dma_dbg_ready         = Output(Bool())    // DMA is ready to accept debug request
+
+}
 class tlu_busbuff extends Bundle {
   val lsu_pmu_bus_trxn                  = Output(Bool())
   val lsu_pmu_bus_misaligned            = Output(Bool())
