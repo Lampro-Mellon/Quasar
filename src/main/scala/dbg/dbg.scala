@@ -115,8 +115,8 @@ class dbg extends Module with lib with RequireAsyncReset {
     io.dec_tlu_mpc_halted_only | io.dec_tlu_debug_mode | io.dbg_halt_req | io.clk_override
   val sb_free_clken   = io.dmi_reg_en | execute_command | sb_state_en | (sb_state =/= sb_state_t.sbidle) | io.clk_override;
 
-  val dbg_free_clk = rvclkhdr(clock, dbg_free_clken, io.scan_mode) // dbg_free_cgc
-  val sb_free_clk  = rvclkhdr(clock, sb_free_clken, io.scan_mode) // sb_free_cgc
+  val dbg_free_clk = rvoclkhdr(clock, dbg_free_clken, io.scan_mode) // dbg_free_cgc
+  val sb_free_clk  = rvoclkhdr(clock, sb_free_clken, io.scan_mode) // sb_free_cgc
 
   val dbg_dm_rst_l          = (io.dbg_rst_l.asBool() & (dmcontrol_reg(0) | io.scan_mode)).asAsyncReset()
   io.dbg_core_rst_l        := (!dmcontrol_reg(1)).asBool() | io.scan_mode
