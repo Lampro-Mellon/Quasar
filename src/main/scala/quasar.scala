@@ -232,8 +232,8 @@ class quasar extends Module with RequireAsyncReset with lib {
   pic_ctrl_inst.clock := io.free_l2clk
   pic_ctrl_inst.reset := io.core_rst_l
   pic_ctrl_inst.io.free_clk := free_clk
-  pic_ctrl_inst.io.active_clk := active_clk
-  pic_ctrl_inst.io.clk_override := dec.io.dec_tlu_picio_clk_override
+  pic_ctrl_inst.io.io_clk_override := dec.io.dec_tlu_picio_clk_override
+  pic_ctrl_inst.io.clk_override := dec.io.dec_tlu_pic_clk_override
   pic_ctrl_inst.io.extintsrc_req := Cat(io.extintsrc_req,0.U)
   pic_ctrl_inst.io.lsu_pic <> lsu.io.lsu_pic
   pic_ctrl_inst.io.dec_pic <> dec.io.dec_pic

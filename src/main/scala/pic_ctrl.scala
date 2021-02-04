@@ -10,7 +10,7 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
   val io = IO (new Bundle {
     val scan_mode              = Input(Bool())
     val free_clk               = Input(Clock () )
-    val active_clk             = Input(Clock () )
+    val io_clk_override        = Input(Bool () )
     val clk_override           = Input(Bool () )
     val extintsrc_req          = Input(UInt (PIC_TOTAL_INT_PLUS1.W))
     val lsu_pic = Flipped(new lsu_pic())
@@ -101,9 +101,9 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
 
   withClock(pic_raddr_c1_clk) {picm_raddr_ff := RegNext(io.lsu_pic.picm_rdaddr,0.U)}
   withClock(pic_data_c1_clk)  {picm_waddr_ff := RegNext (io.lsu_pic.picm_wraddr,0.U)}
-  withClock(io.active_clk)    {picm_wren_ff := RegNext(io.lsu_pic.picm_wren,0.U)}
-  withClock(io.active_clk)    {picm_rden_ff := RegNext(io.lsu_pic.picm_rden,0.U)}
-  withClock(io.active_clk)    {picm_mken_ff := RegNext(io.lsu_pic.picm_mken,0.U)}
+  withClock(io.free_clk)    {picm_wren_ff := RegNext(io.lsu_pic.picm_wren,0.U)}
+  withClock(io.free_clk)    {picm_rden_ff := RegNext(io.lsu_pic.picm_rden,0.U)}
+  withClock(io.free_clk)    {picm_mken_ff := RegNext(io.lsu_pic.picm_mken,0.U)}
   withClock(pic_data_c1_clk)  {picm_wr_data_ff := RegNext(io.lsu_pic.picm_wr_data,0.U)}
 
   val temp_raddr_intenable_base_match =   ~(picm_raddr_ff ^ INTENABLE_BASE_ADDR.asUInt)
@@ -134,7 +134,7 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
   pic_data_c1_clk   := rvclkhdr(clock,pic_data_c1_clken,io.scan_mode)
   pic_pri_c1_clk    := rvclkhdr(clock,pic_pri_c1_clken.asBool,io.scan_mode)
   pic_int_c1_clk    := rvclkhdr(clock,pic_int_c1_clken.asBool,io.scan_mode)
-  gw_config_c1_clk  := rvclkhdr(clock,gw_config_c1_clken.asBool,io.scan_mode)
+  gw_config_c1_clk  := rvclkhdr(clock,(gw_config_c1_clken | io.io_clk_override).asBool,io.scan_mode)
 
   // ------ end clock gating section ------------------------
   val extintsrc_req_sync  = Cat(rvsyncss(io.extintsrc_req(PIC_TOTAL_INT_PLUS1-1,1),io.free_clk),io.extintsrc_req(0))
