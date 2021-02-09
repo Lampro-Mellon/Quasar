@@ -1,34 +1,6 @@
 [
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_iccm_wr_data",
-    "sources":[
-      "~quasar|quasar>io_iccm_rd_data_ecc",
-      "~quasar|quasar>io_ic_rd_hit",
-      "~quasar|quasar>io_ic_rd_data",
-      "~quasar|quasar>io_ifu_axi_r_bits_id",
-      "~quasar|quasar>io_ifu_axi_r_valid",
-      "~quasar|quasar>io_ifu_bus_clk_en",
-      "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_rst_vec",
-      "~quasar|quasar>io_nmi_vec",
-      "~quasar|quasar>io_extintsrc_req"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_dccm_rd_addr_lo",
-    "sources":[
-      "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_extintsrc_req"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
     "sink":"~quasar|quasar>io_iccm_wren",
     "sources":[
       "~quasar|quasar>io_iccm_rd_data_ecc",
@@ -41,86 +13,7 @@
       "~quasar|quasar>io_dccm_rd_data_hi",
       "~quasar|quasar>io_dccm_rd_data_lo",
       "~quasar|quasar>io_rst_vec",
-      "~quasar|quasar>io_nmi_vec",
-      "~quasar|quasar>io_extintsrc_req"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_dccm_rd_addr_hi",
-    "sources":[
-      "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_extintsrc_req"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_ic_rw_addr",
-    "sources":[
-      "~quasar|quasar>io_ic_rd_hit",
-      "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_rst_vec",
-      "~quasar|quasar>io_nmi_vec",
-      "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_extintsrc_req"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_dccm_wren",
-    "sources":[
-      "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_extintsrc_req"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_dccm_wr_addr_lo",
-    "sources":[
-      "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_extintsrc_req"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_iccm_wr_size",
-    "sources":[
-      "~quasar|quasar>io_iccm_rd_data_ecc",
-      "~quasar|quasar>io_ic_rd_hit",
-      "~quasar|quasar>io_ic_rd_data",
-      "~quasar|quasar>io_ifu_axi_r_bits_id",
-      "~quasar|quasar>io_ifu_axi_r_valid",
-      "~quasar|quasar>io_ifu_bus_clk_en",
-      "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_rst_vec",
-      "~quasar|quasar>io_nmi_vec",
-      "~quasar|quasar>io_extintsrc_req"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_active_l2clk",
-    "sources":[
-      "~quasar|quasar>clock"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_dccm_rden",
-    "sources":[
-      "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_extintsrc_req"
+      "~quasar|quasar>io_nmi_vec"
     ]
   },
   {
@@ -137,23 +30,16 @@
       "~quasar|quasar>io_rst_vec",
       "~quasar|quasar>io_nmi_vec",
       "~quasar|quasar>io_dccm_rd_data_hi",
+      "~quasar|quasar>io_dccm_rd_data_lo"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~quasar|quasar>io_dccm_wr_addr_lo",
+    "sources":[
+      "~quasar|quasar>io_dccm_rd_data_hi",
       "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_extintsrc_req"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_core_rst_l",
-    "sources":[
-      "~quasar|quasar>reset",
-      "~quasar|quasar>io_scan_mode"
-    ]
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_free_l2clk",
-    "sources":[
-      "~quasar|quasar>clock"
+      "~quasar|quasar>io_mpc_reset_run_req"
     ]
   },
   {
@@ -162,8 +48,34 @@
     "sources":[
       "~quasar|quasar>io_dccm_rd_data_hi",
       "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_extintsrc_req"
+      "~quasar|quasar>io_mpc_reset_run_req"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~quasar|quasar>io_dccm_rd_addr_hi",
+    "sources":[
+      "~quasar|quasar>io_dccm_rd_data_hi",
+      "~quasar|quasar>io_dccm_rd_data_lo",
+      "~quasar|quasar>io_mpc_reset_run_req"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~quasar|quasar>io_dccm_rden",
+    "sources":[
+      "~quasar|quasar>io_dccm_rd_data_hi",
+      "~quasar|quasar>io_dccm_rd_data_lo",
+      "~quasar|quasar>io_mpc_reset_run_req"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~quasar|quasar>io_dccm_wren",
+    "sources":[
+      "~quasar|quasar>io_dccm_rd_data_hi",
+      "~quasar|quasar>io_dccm_rd_data_lo",
+      "~quasar|quasar>io_mpc_reset_run_req"
     ]
   },
   {
@@ -177,25 +89,78 @@
       "~quasar|quasar>io_ifu_bus_clk_en",
       "~quasar|quasar>io_mpc_reset_run_req",
       "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_extintsrc_req"
+      "~quasar|quasar>io_dccm_rd_data_lo"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_ic_rd_en",
+    "sink":"~quasar|quasar>io_dccm_rd_addr_lo",
     "sources":[
+      "~quasar|quasar>io_dccm_rd_data_hi",
+      "~quasar|quasar>io_dccm_rd_data_lo",
+      "~quasar|quasar>io_mpc_reset_run_req"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~quasar|quasar>io_dccm_wr_data_lo",
+    "sources":[
+      "~quasar|quasar>io_dccm_rd_data_hi",
+      "~quasar|quasar>io_dccm_rd_data_lo",
+      "~quasar|quasar>io_mpc_reset_run_req"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~quasar|quasar>io_dccm_wr_data_hi",
+    "sources":[
+      "~quasar|quasar>io_dccm_rd_data_hi",
+      "~quasar|quasar>io_dccm_rd_data_lo",
+      "~quasar|quasar>io_mpc_reset_run_req"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~quasar|quasar>io_active_l2clk",
+    "sources":[
+      "~quasar|quasar>clock"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~quasar|quasar>io_ic_rw_addr",
+    "sources":[
+      "~quasar|quasar>io_ic_rd_hit",
+      "~quasar|quasar>io_mpc_reset_run_req",
+      "~quasar|quasar>io_rst_vec",
+      "~quasar|quasar>io_nmi_vec",
+      "~quasar|quasar>io_dccm_rd_data_hi",
+      "~quasar|quasar>io_dccm_rd_data_lo"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~quasar|quasar>io_iccm_wr_size",
+    "sources":[
+      "~quasar|quasar>io_iccm_rd_data_ecc",
       "~quasar|quasar>io_ic_rd_hit",
       "~quasar|quasar>io_ic_rd_data",
       "~quasar|quasar>io_ifu_axi_r_bits_id",
       "~quasar|quasar>io_ifu_axi_r_valid",
       "~quasar|quasar>io_ifu_bus_clk_en",
       "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_rst_vec",
-      "~quasar|quasar>io_nmi_vec",
       "~quasar|quasar>io_dccm_rd_data_hi",
       "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_extintsrc_req"
+      "~quasar|quasar>io_rst_vec",
+      "~quasar|quasar>io_nmi_vec"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~quasar|quasar>io_core_rst_l",
+    "sources":[
+      "~quasar|quasar>reset",
+      "~quasar|quasar>io_scan_mode"
     ]
   },
   {
@@ -208,8 +173,7 @@
       "~quasar|quasar>io_ifu_bus_clk_en",
       "~quasar|quasar>io_mpc_reset_run_req",
       "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_extintsrc_req"
+      "~quasar|quasar>io_dccm_rd_data_lo"
     ]
   },
   {
@@ -226,28 +190,47 @@
       "~quasar|quasar>io_rst_vec",
       "~quasar|quasar>io_nmi_vec",
       "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_extintsrc_req"
+      "~quasar|quasar>io_dccm_rd_data_lo"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_dccm_wr_data_hi",
+    "sink":"~quasar|quasar>io_free_l2clk",
     "sources":[
-      "~quasar|quasar>io_dccm_rd_data_hi",
-      "~quasar|quasar>io_dccm_rd_data_lo",
-      "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_extintsrc_req"
+      "~quasar|quasar>clock"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~quasar|quasar>io_dccm_wr_data_lo",
+    "sink":"~quasar|quasar>io_iccm_wr_data",
     "sources":[
+      "~quasar|quasar>io_iccm_rd_data_ecc",
+      "~quasar|quasar>io_ic_rd_hit",
+      "~quasar|quasar>io_ic_rd_data",
+      "~quasar|quasar>io_ifu_axi_r_bits_id",
+      "~quasar|quasar>io_ifu_axi_r_valid",
+      "~quasar|quasar>io_ifu_bus_clk_en",
+      "~quasar|quasar>io_mpc_reset_run_req",
       "~quasar|quasar>io_dccm_rd_data_hi",
       "~quasar|quasar>io_dccm_rd_data_lo",
+      "~quasar|quasar>io_rst_vec",
+      "~quasar|quasar>io_nmi_vec"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~quasar|quasar>io_ic_rd_en",
+    "sources":[
+      "~quasar|quasar>io_ic_rd_hit",
+      "~quasar|quasar>io_ic_rd_data",
+      "~quasar|quasar>io_ifu_axi_r_bits_id",
+      "~quasar|quasar>io_ifu_axi_r_valid",
+      "~quasar|quasar>io_ifu_bus_clk_en",
       "~quasar|quasar>io_mpc_reset_run_req",
-      "~quasar|quasar>io_extintsrc_req"
+      "~quasar|quasar>io_rst_vec",
+      "~quasar|quasar>io_nmi_vec",
+      "~quasar|quasar>io_dccm_rd_data_hi",
+      "~quasar|quasar>io_dccm_rd_data_lo"
     ]
   },
   {

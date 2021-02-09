@@ -11,11 +11,11 @@ class ifu extends Module with lib with RequireAsyncReset {
   val io = IO(new Bundle{
     val ifu_i0_fa_index         = Output(UInt(log2Ceil(BTB_SIZE).W))
     val dec_i0_decode_d         = Input(Bool()) // Dec
-    val dec_fa_error_index = Input(UInt(log2Ceil(BTB_SIZE).W))// Fully associative btb error index
+    val dec_fa_error_index      = Input(UInt(log2Ceil(BTB_SIZE).W))// Fully associative btb error index
 
 
-    val exu_flush_final       = Input(Bool())
-    val exu_flush_path_final  = Input(UInt(31.W))
+    val exu_flush_final         = Input(Bool())
+    val exu_flush_path_final    = Input(UInt(31.W))
     val free_l2clk              = Input(Clock())
     val active_clk            = Input(Clock())
     val ifu_dec               = new ifu_dec() // IFU and DEC interconnects
@@ -76,7 +76,21 @@ class ifu extends Module with lib with RequireAsyncReset {
   aln_ctl.io.ifu_bp_ret_f := bp_ctl.io.ifu_bp_ret_f
   aln_ctl.io.exu_flush_final := io.exu_flush_final
   aln_ctl.io.dec_aln <> io.ifu_dec.dec_aln
-  io.ifu_i0_fa_index         := aln_ctl.io.ifu_i0_fa_index
+  //  io.ifu_dec.dec_aln.aln_dec.ifu_i0_cinst              := aln_ctl.io.ifu_i0_cinst
+  //  io.ifu_dec.dec_aln.aln_ib.ifu_i0_icaf               := aln_ctl.io.ifu_i0_icaf
+  //  io.ifu_dec.dec_aln.aln_ib.ifu_i0_icaf_type          := aln_ctl.io.ifu_i0_icaf_type
+  //  io.ifu_dec.dec_aln.aln_ib.ifu_i0_icaf_second        := aln_ctl.io.ifu_i0_icaf_second
+  //  io.ifu_dec.dec_aln.aln_ib.ifu_i0_dbecc              := aln_ctl.io.ifu_i0_dbecc
+  //  io.ifu_dec.dec_aln.aln_ib.ifu_i0_bp_index           := aln_ctl.io.ifu_i0_bp_index
+  io.ifu_i0_fa_index                                   := aln_ctl.io.ifu_i0_fa_index
+  //  io.ifu_dec.dec_aln.aln_ib.ifu_i0_bp_fghr            := aln_ctl.io.ifu_i0_bp_fghr
+  //  io.ifu_dec.dec_aln.aln_ib.ifu_i0_bp_btag            := aln_ctl.io.ifu_i0_bp_btag
+  //  io.ifu_dec.dec_aln.aln_ib.ifu_i0_valid              := aln_ctl.io.ifu_i0_valid
+  //  io.ifu_dec.dec_aln.aln_ib.ifu_i0_instr              := aln_ctl.io.ifu_i0_instr
+  //  io.ifu_dec.dec_aln.aln_ib.ifu_i0_pc                 := aln_ctl.io.ifu_i0_pc
+  //  io.ifu_dec.dec_aln.aln_ib.ifu_i0_pc4                := aln_ctl.io.ifu_i0_pc4
+  //  io.ifu_dec.dec_aln.ifu_pmu_instr_aligned     := aln_ctl.io.ifu_pmu_instr_aligned
+  // aln_ctl.io.i0_brp <> io.ifu_dec.dec_aln.aln_ib.i0_brp
   aln_ctl.io.dec_i0_decode_d :=  io.dec_i0_decode_d
   aln_ctl.io.ifu_bp_fa_index_f := bp_ctl.io.ifu_bp_fa_index_f
 
@@ -86,6 +100,7 @@ class ifu extends Module with lib with RequireAsyncReset {
 
   // BP wiring Inputs
   bp_ctl.io.scan_mode := io.scan_mode
+  //  bp_ctl.io.active_clk := io.active_clk
   bp_ctl.io.ic_hit_f := mem_ctl.io.ic_hit_f
   bp_ctl.io.ifc_fetch_addr_f := ifc_ctl.io.ifc_fetch_addr_f
   bp_ctl.io.ifc_fetch_req_f := ifc_ctl.io.ifc_fetch_req_f

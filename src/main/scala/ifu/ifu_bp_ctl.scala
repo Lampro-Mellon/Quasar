@@ -132,127 +132,127 @@ class ifu_bp_ctl extends Module with lib with RequireAsyncReset {
 
   // If there is a flush from the lower pipe wait until the flush gets deasserted from the (decode) side
   leak_one_f := (io.dec_bp.dec_tlu_flush_leak_one_wb & io.dec_tlu_flush_lower_wb) | (leak_one_f_d1 & !io.dec_tlu_flush_lower_wb)
-if(!BTB_FULLYA) {
-  val fetch_rd_tag_f = if (BTB_BTAG_FOLD) btb_tag_hash_fold(io.ifc_fetch_addr_f) else btb_tag_hash(io.ifc_fetch_addr_f)
-  val fetch_rd_tag_p1_f = if (BTB_BTAG_FOLD) btb_tag_hash_fold(Cat(fetch_addr_p1_f, 0.U)) else btb_tag_hash(Cat(fetch_addr_p1_f, 0.U))
-  // There is a misprediction and the exu is writing back
-  val fetch_mp_collision_f = (io.exu_bp.exu_mp_btag === fetch_rd_tag_f) & exu_mp_valid & io.ifc_fetch_req_f & (exu_mp_addr === btb_rd_addr_f)
-  val fetch_mp_collision_p1_f = (io.exu_bp.exu_mp_btag === fetch_rd_tag_p1_f) & exu_mp_valid & io.ifc_fetch_req_f & (exu_mp_addr === btb_rd_addr_p1_f)
-  // For a tag to match the branch should be valid tag should match and a fetch request should be generated
-  // Also there should be no bank conflict or leak-one
-  val tag_match_way0_f = btb_bank0_rd_data_way0_f(BV) & (btb_bank0_rd_data_way0_f(TAG_START, 17) === fetch_rd_tag_f) &
-    !(dec_tlu_way_wb & branch_error_bank_conflict_f) & io.ifc_fetch_req_f & !leak_one_f
+  if(!BTB_FULLYA) {
+    val fetch_rd_tag_f = if (BTB_BTAG_FOLD) btb_tag_hash_fold(io.ifc_fetch_addr_f) else btb_tag_hash(io.ifc_fetch_addr_f)
+    val fetch_rd_tag_p1_f = if (BTB_BTAG_FOLD) btb_tag_hash_fold(Cat(fetch_addr_p1_f, 0.U)) else btb_tag_hash(Cat(fetch_addr_p1_f, 0.U))
+    // There is a misprediction and the exu is writing back
+    val fetch_mp_collision_f = (io.exu_bp.exu_mp_btag === fetch_rd_tag_f) & exu_mp_valid & io.ifc_fetch_req_f & (exu_mp_addr === btb_rd_addr_f)
+    val fetch_mp_collision_p1_f = (io.exu_bp.exu_mp_btag === fetch_rd_tag_p1_f) & exu_mp_valid & io.ifc_fetch_req_f & (exu_mp_addr === btb_rd_addr_p1_f)
+    // For a tag to match the branch should be valid tag should match and a fetch request should be generated
+    // Also there should be no bank conflict or leak-one
+    val tag_match_way0_f = btb_bank0_rd_data_way0_f(BV) & (btb_bank0_rd_data_way0_f(TAG_START, 17) === fetch_rd_tag_f) &
+      !(dec_tlu_way_wb & branch_error_bank_conflict_f) & io.ifc_fetch_req_f & !leak_one_f
 
-  // Similar to the way-0 -> way-1
-  val tag_match_way1_f = btb_bank0_rd_data_way1_f(BV) & (btb_bank0_rd_data_way1_f(TAG_START, 17) === fetch_rd_tag_f) &
-    !(dec_tlu_way_wb & branch_error_bank_conflict_f) & io.ifc_fetch_req_f & !leak_one_f
+    // Similar to the way-0 -> way-1
+    val tag_match_way1_f = btb_bank0_rd_data_way1_f(BV) & (btb_bank0_rd_data_way1_f(TAG_START, 17) === fetch_rd_tag_f) &
+      !(dec_tlu_way_wb & branch_error_bank_conflict_f) & io.ifc_fetch_req_f & !leak_one_f
 
-  // Similar to above matches
-  val tag_match_way0_p1_f = btb_bank0_rd_data_way0_p1_f(BV) & (btb_bank0_rd_data_way0_p1_f(TAG_START, 17) === fetch_rd_tag_p1_f) &
-    !(dec_tlu_way_wb & branch_error_bank_conflict_p1_f) & io.ifc_fetch_req_f & !leak_one_f
-  // Similar to above matches
-  val tag_match_way1_p1_f = btb_bank0_rd_data_way1_p1_f(BV) & (btb_bank0_rd_data_way1_p1_f(TAG_START, 17) === fetch_rd_tag_p1_f) &
-    !(dec_tlu_way_wb & branch_error_bank_conflict_p1_f) & io.ifc_fetch_req_f & !leak_one_f
+    // Similar to above matches
+    val tag_match_way0_p1_f = btb_bank0_rd_data_way0_p1_f(BV) & (btb_bank0_rd_data_way0_p1_f(TAG_START, 17) === fetch_rd_tag_p1_f) &
+      !(dec_tlu_way_wb & branch_error_bank_conflict_p1_f) & io.ifc_fetch_req_f & !leak_one_f
+    // Similar to above matches
+    val tag_match_way1_p1_f = btb_bank0_rd_data_way1_p1_f(BV) & (btb_bank0_rd_data_way1_p1_f(TAG_START, 17) === fetch_rd_tag_p1_f) &
+      !(dec_tlu_way_wb & branch_error_bank_conflict_p1_f) & io.ifc_fetch_req_f & !leak_one_f
 
-  // Reordering to avoid multiple hit
-  val tag_match_way0_expanded_f = Cat(tag_match_way0_f & (btb_bank0_rd_data_way0_f(BOFF) ^ btb_bank0_rd_data_way0_f(PC4)),
-    tag_match_way0_f & !(btb_bank0_rd_data_way0_f(BOFF) ^ btb_bank0_rd_data_way0_f(PC4)))
+    // Reordering to avoid multiple hit
+    val tag_match_way0_expanded_f = Cat(tag_match_way0_f & (btb_bank0_rd_data_way0_f(BOFF) ^ btb_bank0_rd_data_way0_f(PC4)),
+      tag_match_way0_f & !(btb_bank0_rd_data_way0_f(BOFF) ^ btb_bank0_rd_data_way0_f(PC4)))
 
-  val tag_match_way1_expanded_f = Cat(tag_match_way1_f & (btb_bank0_rd_data_way1_f(BOFF) ^ btb_bank0_rd_data_way1_f(PC4)),
-    tag_match_way1_f & !(btb_bank0_rd_data_way1_f(BOFF) ^ btb_bank0_rd_data_way1_f(PC4)))
+    val tag_match_way1_expanded_f = Cat(tag_match_way1_f & (btb_bank0_rd_data_way1_f(BOFF) ^ btb_bank0_rd_data_way1_f(PC4)),
+      tag_match_way1_f & !(btb_bank0_rd_data_way1_f(BOFF) ^ btb_bank0_rd_data_way1_f(PC4)))
 
-  val tag_match_way0_expanded_p1_f = Cat(tag_match_way0_p1_f & (btb_bank0_rd_data_way0_p1_f(BOFF) ^ btb_bank0_rd_data_way0_p1_f(PC4)),
-    tag_match_way0_p1_f & !(btb_bank0_rd_data_way0_p1_f(BOFF) ^ btb_bank0_rd_data_way0_p1_f(PC4)))
+    val tag_match_way0_expanded_p1_f = Cat(tag_match_way0_p1_f & (btb_bank0_rd_data_way0_p1_f(BOFF) ^ btb_bank0_rd_data_way0_p1_f(PC4)),
+      tag_match_way0_p1_f & !(btb_bank0_rd_data_way0_p1_f(BOFF) ^ btb_bank0_rd_data_way0_p1_f(PC4)))
 
-  val tag_match_way1_expanded_p1_f = Cat(tag_match_way1_p1_f & (btb_bank0_rd_data_way1_p1_f(BOFF) ^ btb_bank0_rd_data_way1_p1_f(PC4)),
-    tag_match_way1_p1_f & !(btb_bank0_rd_data_way1_p1_f(BOFF) ^ btb_bank0_rd_data_way1_p1_f(PC4)))
+    val tag_match_way1_expanded_p1_f = Cat(tag_match_way1_p1_f & (btb_bank0_rd_data_way1_p1_f(BOFF) ^ btb_bank0_rd_data_way1_p1_f(PC4)),
+      tag_match_way1_p1_f & !(btb_bank0_rd_data_way1_p1_f(BOFF) ^ btb_bank0_rd_data_way1_p1_f(PC4)))
 
-  // Final hit calculation
-  wayhit_f := tag_match_way0_expanded_f | tag_match_way1_expanded_f
+    // Final hit calculation
+    wayhit_f := tag_match_way0_expanded_f | tag_match_way1_expanded_f
 
-  wayhit_p1_f := tag_match_way0_expanded_p1_f | tag_match_way1_expanded_p1_f
+    wayhit_p1_f := tag_match_way0_expanded_p1_f | tag_match_way1_expanded_p1_f
 
-  // Chopping off the ways that had a hit btb_vbank0_rd_data_f
-  // e-> Lower half o-> Upper half
-  val btb_bank0e_rd_data_f = Mux1H(Seq(tag_match_way0_expanded_f(0).asBool -> btb_bank0_rd_data_way0_f,
-    tag_match_way1_expanded_f(0).asBool -> btb_bank0_rd_data_way1_f))
+    // Chopping off the ways that had a hit btb_vbank0_rd_data_f
+    // e-> Lower half o-> Upper half
+    val btb_bank0e_rd_data_f = Mux1H(Seq(tag_match_way0_expanded_f(0).asBool -> btb_bank0_rd_data_way0_f,
+      tag_match_way1_expanded_f(0).asBool -> btb_bank0_rd_data_way1_f))
 
-  val btb_bank0o_rd_data_f = Mux1H(Seq(tag_match_way0_expanded_f(1).asBool -> btb_bank0_rd_data_way0_f,
-    tag_match_way1_expanded_f(1).asBool -> btb_bank0_rd_data_way1_f))
+    val btb_bank0o_rd_data_f = Mux1H(Seq(tag_match_way0_expanded_f(1).asBool -> btb_bank0_rd_data_way0_f,
+      tag_match_way1_expanded_f(1).asBool -> btb_bank0_rd_data_way1_f))
 
-  val btb_bank0e_rd_data_p1_f = Mux1H(Seq(tag_match_way0_expanded_p1_f(0).asBool -> btb_bank0_rd_data_way0_p1_f,
-    tag_match_way1_expanded_p1_f(0).asBool -> btb_bank0_rd_data_way1_p1_f))
+    val btb_bank0e_rd_data_p1_f = Mux1H(Seq(tag_match_way0_expanded_p1_f(0).asBool -> btb_bank0_rd_data_way0_p1_f,
+      tag_match_way1_expanded_p1_f(0).asBool -> btb_bank0_rd_data_way1_p1_f))
 
-  // Making virtual banks, made from pc-bit(1) if it comes from a multiple of 4 we get the lower half of the bank
-  // and the upper half of the bank-0 in vbank 1
-  btb_vbank0_rd_data_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> btb_bank0e_rd_data_f,
-    io.ifc_fetch_addr_f(0) -> btb_bank0o_rd_data_f))
-  btb_vbank1_rd_data_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> btb_bank0o_rd_data_f,
-    io.ifc_fetch_addr_f(0) -> btb_bank0e_rd_data_p1_f))
+    // Making virtual banks, made from pc-bit(1) if it comes from a multiple of 4 we get the lower half of the bank
+    // and the upper half of the bank-0 in vbank 1
+    btb_vbank0_rd_data_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> btb_bank0e_rd_data_f,
+      io.ifc_fetch_addr_f(0) -> btb_bank0o_rd_data_f))
+    btb_vbank1_rd_data_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> btb_bank0o_rd_data_f,
+      io.ifc_fetch_addr_f(0) -> btb_bank0e_rd_data_p1_f))
 
-  way_raw := tag_match_vway1_expanded_f | (~vwayhit_f & btb_vlru_rd_f)
+    way_raw := tag_match_vway1_expanded_f | (~vwayhit_f & btb_vlru_rd_f)
 
-  // Branch prediction info is sent with the 2byte lane associated with the end of the branch.
-  // Cases
-  //       BANK1         BANK0
-  // -------------------------------
-  // |      :       |      :       |
-  // -------------------------------
-  //         <------------>                   : PC4 branch, offset, should be in B1 (indicated on [2])
-  //                <------------>            : PC4 branch, no offset, indicate PC4, VALID, HIST on [1]
-  //                       <------------>     : PC4 branch, offset, indicate PC4, VALID, HIST on [0]
-  //                <------>                  : PC2 branch, offset, indicate VALID, HIST on [1]
-  //                       <------>           : PC2 branch, no offset, indicate VALID, HIST on [0]
-
-
-  // Make an LRU value with execution mis-prediction
-  val mp_wrindex_dec = 1.U << exu_mp_addr
-
-  // Make an LRU value with current read pc
-  val fetch_wrindex_dec = 1.U << btb_rd_addr_f
-
-  // Make an LRU value with current read pc + 4
-  val fetch_wrindex_p1_dec = 1.U << btb_rd_addr_p1_f
-
-  // Checking if the mis-prediction was valid or not and make a new LRU value
-  val mp_wrlru_b0 = mp_wrindex_dec & Fill(LRU_SIZE, exu_mp_valid)
-
-  // Is the update of the lru valid or not
-  val lru_update_valid_f = (vwayhit_f(0) | vwayhit_f(1)) & io.ifc_fetch_req_f & !leak_one_f
-
-  val fetch_wrlru_b0 = fetch_wrindex_dec & Fill(LRU_SIZE, lru_update_valid_f)
-  val fetch_wrlru_p1_b0 = fetch_wrindex_p1_dec & Fill(LRU_SIZE, lru_update_valid_f)
-
-  val btb_lru_b0_hold = ~mp_wrlru_b0 & ~fetch_wrlru_b0
-
-  // If there is a collision the use the mis-predicted value as output and update accordingly
-  val use_mp_way = fetch_mp_collision_f
-  val use_mp_way_p1 = fetch_mp_collision_p1_f
-
-  // Calculate the lru next value and flop it
-  val btb_lru_b0_ns: UInt = Mux1H(Seq(!exu_mp_way.asBool -> mp_wrlru_b0,
-    tag_match_way0_f.asBool -> fetch_wrlru_b0,
-    tag_match_way0_p1_f.asBool -> fetch_wrlru_p1_b0)) | btb_lru_b0_hold & btb_lru_b0_f
+    // Branch prediction info is sent with the 2byte lane associated with the end of the branch.
+    // Cases
+    //       BANK1         BANK0
+    // -------------------------------
+    // |      :       |      :       |
+    // -------------------------------
+    //         <------------>                   : PC4 branch, offset, should be in B1 (indicated on [2])
+    //                <------------>            : PC4 branch, no offset, indicate PC4, VALID, HIST on [1]
+    //                       <------------>     : PC4 branch, offset, indicate PC4, VALID, HIST on [0]
+    //                <------>                  : PC2 branch, offset, indicate VALID, HIST on [1]
+    //                       <------>           : PC2 branch, no offset, indicate VALID, HIST on [0]
 
 
-  val btb_lru_rd_f = Mux(use_mp_way.asBool, exu_mp_way_f, (fetch_wrindex_dec & btb_lru_b0_f).orR)
+    // Make an LRU value with execution mis-prediction
+    val mp_wrindex_dec = 1.U << exu_mp_addr
 
-  val btb_lru_rd_p1_f = Mux(use_mp_way_p1.asBool, exu_mp_way_f, (fetch_wrindex_p1_dec & btb_lru_b0_f).orR)
+    // Make an LRU value with current read pc
+    val fetch_wrindex_dec = 1.U << btb_rd_addr_f
 
-  // Similar to the vbank make vlru
-  btb_vlru_rd_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> Cat(btb_lru_rd_f, btb_lru_rd_f),
-    io.ifc_fetch_addr_f(0).asBool -> Cat(btb_lru_rd_p1_f, btb_lru_rd_f)))
+    // Make an LRU value with current read pc + 4
+    val fetch_wrindex_p1_dec = 1.U << btb_rd_addr_p1_f
 
-  // virtual way depending on pc value
-  tag_match_vway1_expanded_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool -> tag_match_way1_expanded_f,
-    io.ifc_fetch_addr_f(0).asBool -> Cat(tag_match_way1_expanded_p1_f(0), tag_match_way1_expanded_f(1))))
+    // Checking if the mis-prediction was valid or not and make a new LRU value
+    val mp_wrlru_b0 = mp_wrindex_dec & Fill(LRU_SIZE, exu_mp_valid)
 
-  btb_lru_b0_f := rvdffe(btb_lru_b0_ns, (io.ifc_fetch_req_f|exu_mp_valid).asBool, clock, io.scan_mode)
-}
+    // Is the update of the lru valid or not
+    val lru_update_valid_f = (vwayhit_f(0) | vwayhit_f(1)) & io.ifc_fetch_req_f & !leak_one_f
+
+    val fetch_wrlru_b0 = fetch_wrindex_dec & Fill(LRU_SIZE, lru_update_valid_f)
+    val fetch_wrlru_p1_b0 = fetch_wrindex_p1_dec & Fill(LRU_SIZE, lru_update_valid_f)
+
+    val btb_lru_b0_hold = ~mp_wrlru_b0 & ~fetch_wrlru_b0
+
+    // If there is a collision the use the mis-predicted value as output and update accordingly
+    val use_mp_way = fetch_mp_collision_f
+    val use_mp_way_p1 = fetch_mp_collision_p1_f
+
+    // Calculate the lru next value and flop it
+    val btb_lru_b0_ns: UInt = Mux1H(Seq(!exu_mp_way.asBool -> mp_wrlru_b0,
+      tag_match_way0_f.asBool -> fetch_wrlru_b0,
+      tag_match_way0_p1_f.asBool -> fetch_wrlru_p1_b0)) | btb_lru_b0_hold & btb_lru_b0_f
+
+
+    val btb_lru_rd_f = Mux(use_mp_way.asBool, exu_mp_way_f, (fetch_wrindex_dec & btb_lru_b0_f).orR)
+
+    val btb_lru_rd_p1_f = Mux(use_mp_way_p1.asBool, exu_mp_way_f, (fetch_wrindex_p1_dec & btb_lru_b0_f).orR)
+
+    // Similar to the vbank make vlru
+    btb_vlru_rd_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0) -> Cat(btb_lru_rd_f, btb_lru_rd_f),
+      io.ifc_fetch_addr_f(0).asBool -> Cat(btb_lru_rd_p1_f, btb_lru_rd_f)))
+
+    // virtual way depending on pc value
+    tag_match_vway1_expanded_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool -> tag_match_way1_expanded_f,
+      io.ifc_fetch_addr_f(0).asBool -> Cat(tag_match_way1_expanded_p1_f(0), tag_match_way1_expanded_f(1))))
+
+    btb_lru_b0_f := rvdffe(btb_lru_b0_ns, (io.ifc_fetch_req_f|exu_mp_valid).asBool, clock, io.scan_mode)
+  }
 
   io.ifu_bp_way_f := way_raw
   // update the lru
-//io.test := btb_lru_b0_ns
+  //io.test := btb_lru_b0_ns
   // Checking if the end of line is near
   val eoc_near = io.ifc_fetch_addr_f(ICACHE_BEAT_ADDR_HI-1, 2).andR
   // Mask according to eoc-near and make the hit-final
@@ -270,14 +270,14 @@ if(!BTB_FULLYA) {
 
   // This is 1-index shifted to that of the btb-data-read so we have 1-bit shifted
   btb_sel_data_f := Mux1H(Seq(btb_sel_f(1).asBool-> btb_vbank1_rd_data_f(16,1),
-                              btb_sel_f(0).asBool-> btb_vbank0_rd_data_f(16,1)))
+    btb_sel_f(0).asBool-> btb_vbank0_rd_data_f(16,1)))
 
   // No lower flush or bp-disabple and a fetch request is generated with virtual way hit
   io.ifu_bp_hit_taken_f := (vwayhit_f & hist1_raw).orR & io.ifc_fetch_req_f & !leak_one_f_d1 & !io.dec_bp.dec_tlu_bpred_disable
 
   // If the prediction is a call or ret btb entry then do not check the bht just force a taken with data from the RAS
   val bht_force_taken_f = Cat( btb_vbank1_rd_data_f(CALL) | btb_vbank1_rd_data_f(RET) ,
-                               btb_vbank0_rd_data_f(CALL) | btb_vbank0_rd_data_f(RET))
+    btb_vbank0_rd_data_f(CALL) | btb_vbank0_rd_data_f(RET))
 
   val bht_valid_f = vwayhit_f
 
@@ -287,15 +287,15 @@ if(!BTB_FULLYA) {
 
   // Depending on pc make the virtual bank as commented above
   val bht_vbank0_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool->bht_bank0_rd_data_f,
-                                        io.ifc_fetch_addr_f(0).asBool->bht_bank1_rd_data_f))
+    io.ifc_fetch_addr_f(0).asBool->bht_bank1_rd_data_f))
 
   val bht_vbank1_rd_data_f = Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool->bht_bank1_rd_data_f,
-                                        io.ifc_fetch_addr_f(0).asBool->bht_bank0_rd_data_p1_f))
+    io.ifc_fetch_addr_f(0).asBool->bht_bank0_rd_data_p1_f))
 
 
   // Direction containing data of both banks direction
   bht_dir_f := Cat((bht_force_taken_f(1) | bht_vbank1_rd_data_f(1)) & bht_valid_f(1),
-                      (bht_force_taken_f(0) | bht_vbank0_rd_data_f(1)) & bht_valid_f(0))
+    (bht_force_taken_f(0) | bht_vbank0_rd_data_f(1)) & bht_valid_f(0))
 
   // If the branch is taken then pass btb sel else 0
   io.ifu_bp_inst_mask_f := (io.ifu_bp_hit_taken_f & btb_sel_f(1)) | !io.ifu_bp_hit_taken_f
@@ -308,11 +308,11 @@ if(!BTB_FULLYA) {
 
   // pc4: if the branch is pc+4
   val pc4_raw = Cat(vwayhit_f(1) & btb_vbank1_rd_data_f(PC4),
-                    vwayhit_f(0) & btb_vbank0_rd_data_f(PC4))
+    vwayhit_f(0) & btb_vbank0_rd_data_f(PC4))
 
   // Its a call call or ret branch
   val pret_raw = Cat(vwayhit_f(1) & !btb_vbank1_rd_data_f(CALL) & btb_vbank1_rd_data_f(RET),
-                     vwayhit_f(0) & !btb_vbank0_rd_data_f(CALL) & btb_vbank0_rd_data_f(RET))
+    vwayhit_f(0) & !btb_vbank0_rd_data_f(CALL) & btb_vbank0_rd_data_f(RET))
 
   // count number of 1's in bht_valid
   val num_valids = bht_valid_f(1) +& bht_valid_f(0)
@@ -323,8 +323,8 @@ if(!BTB_FULLYA) {
   val fghr = WireInit(UInt(BHT_GHR_SIZE.W), 0.U)
 
   val merged_ghr = Mux1H(Seq((num_valids===2.U).asBool->Cat(fghr(BHT_GHR_SIZE-3,0), 0.U, final_h),
-                             (num_valids===1.U).asBool->Cat(fghr(BHT_GHR_SIZE-2,0), final_h),
-                             (num_valids===0.U).asBool->Cat(fghr(BHT_GHR_SIZE-1,0))))
+    (num_valids===1.U).asBool->Cat(fghr(BHT_GHR_SIZE-2,0), final_h),
+    (num_valids===0.U).asBool->Cat(fghr(BHT_GHR_SIZE-1,0))))
 
   val exu_flush_ghr = io.exu_bp.exu_mp_fghr
   val fghr_ns = Wire(UInt(BHT_GHR_SIZE.W))
@@ -333,8 +333,8 @@ if(!BTB_FULLYA) {
   // If there is a hit and a fetch then use the merged-ghr
   // If there is no hit or fetch then hold value
   fghr_ns := Mux1H(Seq(exu_flush_final_d1.asBool->exu_flush_ghr,
-                         (!exu_flush_final_d1 &   io.ifc_fetch_req_f & io.ic_hit_f & !leak_one_f_d1).asBool  -> merged_ghr,
-                         (!exu_flush_final_d1 & !(io.ifc_fetch_req_f & io.ic_hit_f & !leak_one_f_d1)).asBool -> fghr))
+    (!exu_flush_final_d1 &   io.ifc_fetch_req_f & io.ic_hit_f & !leak_one_f_d1).asBool  -> merged_ghr,
+    (!exu_flush_final_d1 & !(io.ifc_fetch_req_f & io.ic_hit_f & !leak_one_f_d1)).asBool -> fghr))
   leak_one_f_d1 := rvdffie(leak_one_f,clock,reset.asAsyncReset(),io.scan_mode)
   //val dec_tlu_way_wb_f = withClock(io.active_clk) {RegNext(dec_tlu_way_wb, init = 0.U)
   exu_mp_way_f := rvdffie(exu_mp_way,clock,reset.asAsyncReset(),io.scan_mode)
@@ -351,7 +351,7 @@ if(!BTB_FULLYA) {
 
   // block fetch to calculate if there is a hit with fetch request and a taken branch then compute the branch offset
   val bloc_f = Cat((bht_dir_f(0) & !fetch_start_f(0)) | (!bht_dir_f(0) & fetch_start_f(0)),
-                   (bht_dir_f(0) & fetch_start_f(0)) | (!bht_dir_f(0) & !fetch_start_f(0)))
+    (bht_dir_f(0) & fetch_start_f(0)) | (!bht_dir_f(0) & !fetch_start_f(0)))
 
   val use_fa_plus = !bht_dir_f(0) & io.ifc_fetch_addr_f(0) & !btb_rd_pc4_f
 
@@ -361,8 +361,8 @@ if(!BTB_FULLYA) {
   io.ifu_bp_poffset_f := btb_rd_tgt_f
 
   val adder_pc_in_f = Mux1H(Seq(use_fa_plus.asBool                      -> fetch_addr_p1_f,
-                                btb_fg_crossing_f.asBool                -> ifc_fetch_adder_prior,
-                              (!btb_fg_crossing_f & !use_fa_plus).asBool-> io.ifc_fetch_addr_f(30,1)))
+    btb_fg_crossing_f.asBool                -> ifc_fetch_adder_prior,
+    (!btb_fg_crossing_f & !use_fa_plus).asBool-> io.ifc_fetch_addr_f(30,1)))
 
   // Calculate the branch target by adding the offset
   val bp_btb_target_adder_f = rvbradder(Cat(adder_pc_in_f(29,0),bp_total_branch_offset_f, 0.U), Cat(btb_rd_tgt_f,0.U))
@@ -383,10 +383,10 @@ if(!BTB_FULLYA) {
   // Make the input of the RAS
   val rets_in = (0 until RET_STACK_SIZE).map(i=> if(i==0)
     Mux1H(Seq(rs_push.asBool -> Cat(bp_rs_call_target_f(31,1),1.U),
-              rs_pop.asBool  -> rets_out(1)))
-    else if(i==RET_STACK_SIZE-1) rets_out(i-1)
-    else Mux1H(Seq(rs_push.asBool->rets_out(i-1),
-                   rs_pop.asBool ->rets_out(i+1))))
+      rs_pop.asBool  -> rets_out(1)))
+  else if(i==RET_STACK_SIZE-1) rets_out(i-1)
+  else Mux1H(Seq(rs_push.asBool->rets_out(i-1),
+    rs_pop.asBool ->rets_out(i+1))))
 
   // Make flops for poping the data
   rets_out := (0 until RET_STACK_SIZE).map(i=>rvdffe(rets_in(i), rsenable(i).asBool, clock, io.scan_mode))
@@ -419,92 +419,92 @@ if(!BTB_FULLYA) {
   val btb_bank0_rd_data_way1_out = Wire(Vec(LRU_SIZE,UInt(BTB_DWIDTH.W)))
   // BTB
   // Entry -> Tag[BTB-BTAG-SIZE], toffset[12], pc4, boffset, call, ret, valid
-if(!BTB_FULLYA) {
-  // Enable for write on each way
-  val btb_wr_en_way0 = ((!exu_mp_way) & exu_mp_valid_write & (!dec_tlu_error_wb)) | ((!dec_tlu_way_wb) & dec_tlu_error_wb)
-  val btb_wr_en_way1 = (exu_mp_way & exu_mp_valid_write & (!dec_tlu_error_wb)) | (dec_tlu_way_wb & dec_tlu_error_wb)
+  if(!BTB_FULLYA) {
+    // Enable for write on each way
+    val btb_wr_en_way0 = ((!exu_mp_way) & exu_mp_valid_write & (!dec_tlu_error_wb)) | ((!dec_tlu_way_wb) & dec_tlu_error_wb)
+    val btb_wr_en_way1 = (exu_mp_way & exu_mp_valid_write & (!dec_tlu_error_wb)) | (dec_tlu_way_wb & dec_tlu_error_wb)
 
-  // Writing is always done from dec or exu check if the dec have a valid data
-  val btb_wr_addr = Mux(dec_tlu_error_wb.asBool, btb_error_addr_wb, exu_mp_addr)
+    // Writing is always done from dec or exu check if the dec have a valid data
+    val btb_wr_addr = Mux(dec_tlu_error_wb.asBool, btb_error_addr_wb, exu_mp_addr)
 
-   vwayhit_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool->wayhit_f,
-    io.ifc_fetch_addr_f(0).asBool->Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
+    vwayhit_f := Mux1H(Seq(!io.ifc_fetch_addr_f(0).asBool->wayhit_f,
+      io.ifc_fetch_addr_f(0).asBool->Cat(wayhit_p1_f(0), wayhit_f(1)))) & Cat(eoc_mask, 1.U(1.W))
 
-  btb_bank0_rd_data_way0_out := (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way0).asBool, clock, io.scan_mode))
-  btb_bank0_rd_data_way1_out := (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way1).asBool, clock, io.scan_mode))
-  btb_bank0_rd_data_way0_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_f === i.U).asBool -> btb_bank0_rd_data_way0_out(i)))
-  btb_bank0_rd_data_way1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_f === i.U).asBool -> btb_bank0_rd_data_way1_out(i)))
-  // BTB read muxing
-  btb_bank0_rd_data_way0_p1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_p1_f === i.U).asBool -> btb_bank0_rd_data_way0_out(i)))
-  btb_bank0_rd_data_way1_p1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_p1_f === i.U).asBool -> btb_bank0_rd_data_way1_out(i)))
-}
-//  if(BTB_FULLYA){
-//    val fetch_mp_collision_f = WireInit(Bool(),init = false.B)
-//    val fetch_mp_collision_p1_f = WireInit(Bool() ,init = false.B)
-//
-//    // Fully Associative tag hash uses bits 31:3. Bits 2:1 are the offset bits used for the 4 tag comp banks
-//    // Full tag used to speed up lookup. There is one 31:3 cmp per entry, and 4 2:1 cmps per entry.
-//    val ifc_fetch_addr_p1_f = io.ifc_fetch_addr_f(FA_CMP_LOWER-1,1) + 1.U
-//
-//
-//    // val fetch_mp_collision_f = ((io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === io.ifc_fetch_addr_f) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
-// //   val fetch_mp_collision_p1_f = ( (io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === Cat(io.ifc_fetch_addr_f(30,FA_CMP_LOWER), ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1))) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
-// //   val btb_upper_hit = Wire(Vec(BTB_SIZE,Bool()))
-//    val btb_offset_0 = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
-//    val btb_used = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
-//    val btb_offset_1 = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
-//    val wr0_en       = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
-//    val btbdata = Wire(Vec(BTB_SIZE,UInt(BTB_DWIDTH.W)))
-//    btbdata := btbdata.map(i=> 0.U)
-//    val hit0 = WireInit(UInt(1.W) ,init = 0.U)
-//    val hit1 = WireInit(UInt(1.W) ,init = 0.U)
-//
-//  //  btb_upper_hit :=  (0 until BTB_SIZE).map(i=> ((btbdata(i)(BTB_DWIDTH_TOP,FA_TAG_END_UPPER) === io.ifc_fetch_addr_f(30,FA_CMP_LOWER)) & btbdata(i)(0) & ~wr0_en(i)))
-//  //  val btb_offset_0  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === io.ifc_fetch_addr_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
-// //   val btb_offset_1  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
-//
-//    // hit unless we are also writing this entry at the same time
-//    val hit0_index = MuxCase(1.U, (0 until BTB_SIZE).map(i=> btb_offset_0(i) -> i.U))
-//    val hit1_index = MuxCase(1.U, (0 until BTB_SIZE).map(i=> btb_offset_1(i) -> i.U))
-//    // Mux out the 2 potential branches
-//   btb_vbank0_rd_data_f := (0 until BTB_SIZE ).map(i=> if(btb_offset_1(i) == 1) Mux(fetch_mp_collision_f,btb_wr_data,btbdata(i)) else 0.U ).reverse.reduce(Cat(_,_))
-//   btb_vbank1_rd_data_f :=(0 until BTB_SIZE).map(i=> if(btb_offset_1(i) == 1) Mux(fetch_mp_collision_p1_f,btb_wr_data,btbdata(i)) else 0.U).reverse.reduce(Cat(_,_))
-//    val btb_fa_wr_addr0 = MuxCase(1.U, (0 until BTB_SIZE).map(i=> !btb_used(i) -> i.U))
-//
-//    vwayhit_f := Cat(hit1,hit0) & Cat(eoc_mask,1.U)
-//    way_raw := vwayhit_f | Cat(fetch_mp_collision_p1_f, fetch_mp_collision_f)
-//    wr0_en := (0 until BTB_SIZE).map(i=> ((btb_fa_wr_addr0(BTB_FA_INDEX,0) === i.asUInt()) & (exu_mp_valid_write & ~io.exu_bp.exu_mp_pkt.bits.way)) |
-//    ((io.dec_fa_error_index === i.asUInt()) & dec_tlu_error_wb)).reverse.reduce(Cat(_,_))
-//    btbdata := (0 until BTB_SIZE).map(i=> rvdffe(btb_wr_data,wr0_en(i),clock,io.scan_mode))
-//
-//    io.ifu_bp_fa_index_f(1) := Mux(hit1,hit1_index,0.U)
-//    io.ifu_bp_fa_index_f(0) := Mux(hit0,hit0_index,0.U)
-//
-//    val btb_used_reset = btb_used.andR()
-//    val btb_used_ns = Mux1H(Seq(
-//      vwayhit_f(1).asBool -> (1.U(32.W) << hit1_index(BTB_FA_INDEX,0)),
-//      vwayhit_f(0).asBool() -> (1.U(32.W) << hit0_index(BTB_FA_INDEX,0)),
-//      (exu_mp_valid_write & !io.exu_bp.exu_mp_pkt.bits.way & !dec_tlu_error_wb).asBool() -> (1.U(32.W) << btb_fa_wr_addr0(BTB_FA_INDEX,0)),
-//      btb_used_reset.asBool -> Fill(BTB_SIZE,0.U),
-//      (!btb_used_reset & dec_tlu_error_wb ).asBool  -> (btb_used & ~(1.U(32.W) << io.dec_fa_error_index(BTB_FA_INDEX,0))),
-//      !(btb_used_reset | dec_tlu_error_wb ).asBool() -> btb_used
-//    ))
-//    val write_used = btb_used_reset | io.ifu_bp_hit_taken_f | exu_mp_valid_write | dec_tlu_error_wb
-//     btb_used := rvdffe(btb_used_ns,write_used.asBool(),clock,io.scan_mode)
-//  }
+    btb_bank0_rd_data_way0_out := (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way0).asBool, clock, io.scan_mode))
+    btb_bank0_rd_data_way1_out := (0 until LRU_SIZE).map(i => rvdffe(btb_wr_data, ((btb_wr_addr === i.U) & btb_wr_en_way1).asBool, clock, io.scan_mode))
+    btb_bank0_rd_data_way0_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_f === i.U).asBool -> btb_bank0_rd_data_way0_out(i)))
+    btb_bank0_rd_data_way1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_f === i.U).asBool -> btb_bank0_rd_data_way1_out(i)))
+    // BTB read muxing
+    btb_bank0_rd_data_way0_p1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_p1_f === i.U).asBool -> btb_bank0_rd_data_way0_out(i)))
+    btb_bank0_rd_data_way1_p1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_p1_f === i.U).asBool -> btb_bank0_rd_data_way1_out(i)))
+  }
+  //  if(BTB_FULLYA){
+  //    val fetch_mp_collision_f = WireInit(Bool(),init = false.B)
+  //    val fetch_mp_collision_p1_f = WireInit(Bool() ,init = false.B)
+  //
+  //    // Fully Associative tag hash uses bits 31:3. Bits 2:1 are the offset bits used for the 4 tag comp banks
+  //    // Full tag used to speed up lookup. There is one 31:3 cmp per entry, and 4 2:1 cmps per entry.
+  //    val ifc_fetch_addr_p1_f = io.ifc_fetch_addr_f(FA_CMP_LOWER-1,1) + 1.U
+  //
+  //
+  //    // val fetch_mp_collision_f = ((io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === io.ifc_fetch_addr_f) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
+  // //   val fetch_mp_collision_p1_f = ( (io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === Cat(io.ifc_fetch_addr_f(30,FA_CMP_LOWER), ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1))) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
+  // //   val btb_upper_hit = Wire(Vec(BTB_SIZE,Bool()))
+  //    val btb_offset_0 = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
+  //    val btb_used = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
+  //    val btb_offset_1 = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
+  //    val wr0_en       = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
+  //    val btbdata = Wire(Vec(BTB_SIZE,UInt(BTB_DWIDTH.W)))
+  //    btbdata := btbdata.map(i=> 0.U)
+  //    val hit0 = WireInit(UInt(1.W) ,init = 0.U)
+  //    val hit1 = WireInit(UInt(1.W) ,init = 0.U)
+  //
+  //  //  btb_upper_hit :=  (0 until BTB_SIZE).map(i=> ((btbdata(i)(BTB_DWIDTH_TOP,FA_TAG_END_UPPER) === io.ifc_fetch_addr_f(30,FA_CMP_LOWER)) & btbdata(i)(0) & ~wr0_en(i)))
+  //  //  val btb_offset_0  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === io.ifc_fetch_addr_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
+  // //   val btb_offset_1  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
+  //
+  //    // hit unless we are also writing this entry at the same time
+  //    val hit0_index = MuxCase(1.U, (0 until BTB_SIZE).map(i=> btb_offset_0(i) -> i.U))
+  //    val hit1_index = MuxCase(1.U, (0 until BTB_SIZE).map(i=> btb_offset_1(i) -> i.U))
+  //    // Mux out the 2 potential branches
+  //   btb_vbank0_rd_data_f := (0 until BTB_SIZE ).map(i=> if(btb_offset_1(i) == 1) Mux(fetch_mp_collision_f,btb_wr_data,btbdata(i)) else 0.U ).reverse.reduce(Cat(_,_))
+  //   btb_vbank1_rd_data_f :=(0 until BTB_SIZE).map(i=> if(btb_offset_1(i) == 1) Mux(fetch_mp_collision_p1_f,btb_wr_data,btbdata(i)) else 0.U).reverse.reduce(Cat(_,_))
+  //    val btb_fa_wr_addr0 = MuxCase(1.U, (0 until BTB_SIZE).map(i=> !btb_used(i) -> i.U))
+  //
+  //    vwayhit_f := Cat(hit1,hit0) & Cat(eoc_mask,1.U)
+  //    way_raw := vwayhit_f | Cat(fetch_mp_collision_p1_f, fetch_mp_collision_f)
+  //    wr0_en := (0 until BTB_SIZE).map(i=> ((btb_fa_wr_addr0(BTB_FA_INDEX,0) === i.asUInt()) & (exu_mp_valid_write & ~io.exu_bp.exu_mp_pkt.bits.way)) |
+  //    ((io.dec_fa_error_index === i.asUInt()) & dec_tlu_error_wb)).reverse.reduce(Cat(_,_))
+  //    btbdata := (0 until BTB_SIZE).map(i=> rvdffe(btb_wr_data,wr0_en(i),clock,io.scan_mode))
+  //
+  //    io.ifu_bp_fa_index_f(1) := Mux(hit1,hit1_index,0.U)
+  //    io.ifu_bp_fa_index_f(0) := Mux(hit0,hit0_index,0.U)
+  //
+  //    val btb_used_reset = btb_used.andR()
+  //    val btb_used_ns = Mux1H(Seq(
+  //      vwayhit_f(1).asBool -> (1.U(32.W) << hit1_index(BTB_FA_INDEX,0)),
+  //      vwayhit_f(0).asBool() -> (1.U(32.W) << hit0_index(BTB_FA_INDEX,0)),
+  //      (exu_mp_valid_write & !io.exu_bp.exu_mp_pkt.bits.way & !dec_tlu_error_wb).asBool() -> (1.U(32.W) << btb_fa_wr_addr0(BTB_FA_INDEX,0)),
+  //      btb_used_reset.asBool -> Fill(BTB_SIZE,0.U),
+  //      (!btb_used_reset & dec_tlu_error_wb ).asBool  -> (btb_used & ~(1.U(32.W) << io.dec_fa_error_index(BTB_FA_INDEX,0))),
+  //      !(btb_used_reset | dec_tlu_error_wb ).asBool() -> btb_used
+  //    ))
+  //    val write_used = btb_used_reset | io.ifu_bp_hit_taken_f | exu_mp_valid_write | dec_tlu_error_wb
+  //     btb_used := rvdffe(btb_used_ns,write_used.asBool(),clock,io.scan_mode)
+  //  }
 
   val bht_bank_clken = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH/NUM_BHT_LOOP, Bool())))
 
   val bht_bank_clk = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH/NUM_BHT_LOOP, Clock())))
   if(RV_FPGA_OPTIMIZE) {
-  for(i<-0 until 2; k<- 0 until (BHT_ARRAY_DEPTH/NUM_BHT_LOOP)) bht_bank_clk(i)(k) := rvclkhdr(clock, bht_bank_clken(i)(k), io.scan_mode)
-//    (0 until 2).map(i=>(0 until (BHT_ARRAY_DEPTH/NUM_BHT_LOOP)).map(k=>rvclkhdr(clock, bht_bank_clken(i)(k), io.scan_mode)))
+    for(i<-0 until 2; k<- 0 until (BHT_ARRAY_DEPTH/NUM_BHT_LOOP)) bht_bank_clk(i)(k) := rvclkhdr(clock, bht_bank_clken(i)(k), io.scan_mode)
+    //    (0 until 2).map(i=>(0 until (BHT_ARRAY_DEPTH/NUM_BHT_LOOP)).map(k=>rvclkhdr(clock, bht_bank_clken(i)(k), io.scan_mode)))
 
   }
   for(i<-0 until 2; k<- 0 until (BHT_ARRAY_DEPTH/NUM_BHT_LOOP)){
-  // Checking if there is a write enable with address for the BHT
+    // Checking if there is a write enable with address for the BHT
     bht_bank_clken(i)(k) := (bht_wr_en0(i) & ((bht_wr_addr0(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B)) |
-                            (bht_wr_en2(i) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B))
+      (bht_wr_en2(i) & ((bht_wr_addr2(BHT_ADDR_HI-BHT_ADDR_LO,NUM_BHT_LOOP_OUTER_LO-2)===k.U) |  BHT_NO_ADDR_MATCH.B))
   }
   // Writing data into the BHT (DEC-side) or (EXU-side)
   val bht_bank_wr_data = (0 until 2).map(i=>(0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP).map(k=>(0 until NUM_BHT_LOOP).map(j=>
@@ -514,7 +514,7 @@ if(!BTB_FULLYA) {
 
   // We have a 2 way bht with BHT_ARRAY_DEPTH/NUM_BHT_LOOP blocks and NUM_BHT_LOOP->offset in each block
   // Make enables of each flop according to the address dividing the address in 2-blocks upper block for BHT-Block and
-    // the lower block for the offset and run this on both of the ways
+  // the lower block for the offset and run this on both of the ways
 
   for(i<-0 until 2; k<-0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP; j<- 0 until NUM_BHT_LOOP){
     bht_bank_sel(i)(k)(j) := (bht_wr_en0(i) & (bht_wr_addr0(NUM_BHT_LOOP_INNER_HI-BHT_ADDR_LO,0)===j.asUInt) & ((bht_wr_addr0(BHT_ADDR_HI-BHT_ADDR_LO, NUM_BHT_LOOP_OUTER_LO-BHT_ADDR_LO)===k.asUInt) | BHT_NO_ADDR_MATCH.B)) |
@@ -525,11 +525,11 @@ if(!BTB_FULLYA) {
   for(i<-0 until 2; k<-0 until BHT_ARRAY_DEPTH/NUM_BHT_LOOP; j<-0 until NUM_BHT_LOOP){
     bht_bank_rd_data_out(i)((16*k)+j) := rvdffs_fpga(bht_bank_wr_data(i)(k)(j), bht_bank_sel(i)(k)(j),bht_bank_clk(i)(k),bht_bank_sel(i)(k)(j),clock)}
 
-    // Make the final read mux
+  // Make the final read mux
   bht_bank0_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f===i.U).asBool->bht_bank_rd_data_out(0)(i)))
   bht_bank1_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f===i.U).asBool->bht_bank_rd_data_out(1)(i)))
   bht_bank0_rd_data_p1_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_p1_f===i.U).asBool->bht_bank_rd_data_out(0)(i)))
 }
-object bp_MAIN extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new ifu_bp_ctl()))
-}
+//object bp_MAIN extends App {
+//  println((new chisel3.stage.ChiselStage).emitVerilog(new ifu_bp_ctl()))
+//}

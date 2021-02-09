@@ -10,7 +10,7 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
     val exu_flush_final = Input(Bool()) // Miss Prediction for EXU
     val exu_flush_path_final = Input(UInt(31.W)) // Replay PC
     val free_l2clk = Input(Clock())
-   // val active_clk = Input(Clock())
+    // val active_clk = Input(Clock())
     val scan_mode = Input(Bool())
     val ic_hit_f = Input(Bool())
     val ifu_ic_mb_empty = Input(Bool()) // Miss buffer of mem-ctl empty
@@ -63,23 +63,23 @@ class ifu_ifc_ctl extends Module with lib with RequireAsyncReset {
 
   dma_iccm_stall_any_f := rvdffie(io.dma_ifc.dma_iccm_stall_any,io.free_l2clk,reset.asAsyncReset(),io.scan_mode)
   miss_a := rvdffie(miss_f,io.free_l2clk,reset.asAsyncReset(),io.scan_mode)
-   if(BTB_ENABLE) {
-      val sel_last_addr_bf = !io.exu_flush_final & (!io.ifc_fetch_req_f | !io.ic_hit_f)
-      val sel_btb_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & io.ifu_bp_hit_taken_f & io.ic_hit_f
-      val sel_next_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f
-   // Next PC calculation
-   io.ifc_fetch_addr_bf := Mux1H(Seq(io.exu_flush_final.asBool -> io.exu_flush_path_final, // Replay PC
-     sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f, // Hold the current PC
-     sel_btb_addr_bf.asBool -> io.ifu_bp_btb_target_f, // Take the predicted PC
-     sel_next_addr_bf.asBool -> fetch_addr_next)) // PC+4
- }
+  if(BTB_ENABLE) {
+    val sel_last_addr_bf = !io.exu_flush_final & (!io.ifc_fetch_req_f | !io.ic_hit_f)
+    val sel_btb_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & io.ifu_bp_hit_taken_f & io.ic_hit_f
+    val sel_next_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & !io.ifu_bp_hit_taken_f & io.ic_hit_f
+    // Next PC calculation
+    io.ifc_fetch_addr_bf := Mux1H(Seq(io.exu_flush_final.asBool -> io.exu_flush_path_final, // Replay PC
+      sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f, // Hold the current PC
+      sel_btb_addr_bf.asBool -> io.ifu_bp_btb_target_f, // Take the predicted PC
+      sel_next_addr_bf.asBool -> fetch_addr_next)) // PC+4
+  }
   else{
-     val sel_last_addr_bf = !io.exu_flush_final & (!io.ifc_fetch_req_f | !io.ic_hit_f)
-     val sel_next_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & io.ic_hit_f
-   // Next PC calculation
-   io.ifc_fetch_addr_bf := Mux1H(Seq(io.exu_flush_final.asBool -> io.exu_flush_path_final, // Replay PC
-     sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f, // Hold the current PC
-     sel_next_addr_bf.asBool -> fetch_addr_next)) // PC+4
+    val sel_last_addr_bf = !io.exu_flush_final & (!io.ifc_fetch_req_f | !io.ic_hit_f)
+    val sel_next_addr_bf = !io.exu_flush_final & io.ifc_fetch_req_f & io.ic_hit_f
+    // Next PC calculation
+    io.ifc_fetch_addr_bf := Mux1H(Seq(io.exu_flush_final.asBool -> io.exu_flush_path_final, // Replay PC
+      sel_last_addr_bf.asBool -> io.ifc_fetch_addr_f, // Hold the current PC
+      sel_next_addr_bf.asBool -> fetch_addr_next)) // PC+4
   }
   val address_upper = io.ifc_fetch_addr_f(30,1)+1.U
   fetch_addr_next_0 := !(address_upper(ICACHE_TAG_INDEX_LO-2) ^ io.ifc_fetch_addr_f(ICACHE_TAG_INDEX_LO-1)) & io.ifc_fetch_addr_f(0)

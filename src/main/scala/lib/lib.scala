@@ -36,6 +36,12 @@ trait lib extends param{
   object rvsyncss {
     def apply(din:UInt,clk:Clock) =withClock(clk){RegNext(withClock(clk){RegNext(din,0.U)},0.U)}
   }
+  object rvsyncss_fpga {
+    def apply(din:UInt, gw_clk:Clock, rawclk:Clock, clken:Bool) = {
+      val din_ff1 = rvdff_fpga(din,gw_clk,clken, rawclk)
+      rvdff_fpga(din_ff1,gw_clk,clken, rawclk)
+    }
+  }
 
   ///////////////////////////////////////////////////////////////////
   def btb_tag_hash(pc : UInt) =
@@ -106,11 +112,11 @@ trait lib extends param{
   }
 
   ///////////////////////////////////////////////////////////////////
-  def configurable_gw(clk : Clock, rst:AsyncReset, extintsrc_req_sync : Bool, meigwctrl_polarity: Bool, meigwctrl_type: Bool, meigwclr: Bool)  = {
-    val din = WireInit(Bool(), 0.U)
-    val dout = withClockAndReset(clk, rst){RegNext(din, false.B)}
-    din := (extintsrc_req_sync ^ meigwctrl_polarity) | (dout & !meigwclr)
-    Mux(meigwctrl_type, (extintsrc_req_sync ^  meigwctrl_polarity) | dout, extintsrc_req_sync ^ meigwctrl_polarity)
+  def configurable_gw(gw_clk : Clock, rawclk:Clock, clken:Bool, rst:AsyncReset, extintsrc_req_sync : Bool, meigwctrl_polarity: Bool, meigwctrl_type: Bool, meigwclr: Bool)  = {
+    val gw_int_pending = WireInit(UInt(1.W),0.U)
+    val gw_int_pending_in =  (extintsrc_req_sync ^ meigwctrl_polarity) | (gw_int_pending & !meigwclr)
+    gw_int_pending := rvdff_fpga(gw_int_pending_in,gw_clk,clken,rawclk)
+    Mux(meigwctrl_type.asBool(), ((extintsrc_req_sync ^  meigwctrl_polarity) | gw_int_pending), (extintsrc_req_sync ^  meigwctrl_polarity))
   }
 
   ///////////////////////////////////////////////////////////////////

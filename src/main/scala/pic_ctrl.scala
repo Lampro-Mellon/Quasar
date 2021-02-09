@@ -3,15 +3,14 @@ import chisel3.util._
 import include._
 import lib._
 import chisel3.experimental.chiselName
-import chisel3.stage.ChiselStage
 
 @chiselName
 class pic_ctrl extends Module with RequireAsyncReset with lib {
   val io = IO (new Bundle {
     val scan_mode              = Input(Bool())
     val free_clk               = Input(Clock () )
-    val io_clk_override        = Input(Bool () )
     val clk_override           = Input(Bool () )
+    val io_clk_override        = Input(Bool () )
     val extintsrc_req          = Input(UInt (PIC_TOTAL_INT_PLUS1.W))
     val lsu_pic = Flipped(new lsu_pic())
     val dec_pic = Flipped(new dec_pic)
@@ -27,12 +26,12 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
   def cmp_and_mux (a_id : UInt, a_priority : UInt, b_id : UInt, b_priority : UInt) =
     (Mux(a_priority<b_priority, b_id, a_id), Mux(a_priority<b_priority, b_priority, a_priority))
 
-  def configurable_gw (clk : Clock, extintsrc_req_sync : UInt, meigwctrl_polarity : UInt, meigwctrl_type : UInt, meigwclr : UInt) = {
-    val gw_int_pending = WireInit(UInt(1.W),0.U)
-    val gw_int_pending_in =  (extintsrc_req_sync ^ meigwctrl_polarity) | (gw_int_pending & !meigwclr)
-    gw_int_pending := withClock(clk){RegNext(gw_int_pending_in,0.U)}
-    Mux(meigwctrl_type.asBool(), ((extintsrc_req_sync ^  meigwctrl_polarity) | gw_int_pending), (extintsrc_req_sync ^  meigwctrl_polarity))
-  }
+  //  def configurable_gw (clk : Clock, extintsrc_req_sync : UInt, meigwctrl_polarity : UInt, meigwctrl_type : UInt, meigwclr : UInt) = {
+  //    val gw_int_pending = WireInit(UInt(1.W),0.U)
+  //    val gw_int_pending_in =  (extintsrc_req_sync ^ meigwctrl_polarity) | (gw_int_pending & !meigwclr)
+  //    gw_int_pending := withClock(clk){RegNext(gw_int_pending_in,0.U)}
+  //    Mux(meigwctrl_type.asBool(), ((extintsrc_req_sync ^  meigwctrl_polarity) | gw_int_pending), (extintsrc_req_sync ^  meigwctrl_polarity))
+  //  }
 
   // io.mexintpend    := 0.U
   // io.pic_claimid       := 0.U
@@ -57,7 +56,7 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
     case _            => 1024
 
   }
-
+  val INT_ENABLE_GRPS       =   (PIC_TOTAL_INT_PLUS1 - 1)  / 4
   val INT_GRPS = INTPEND_SIZE / 32
   val INTPRIORITY_BITS = 4
   val ID_BITS = 8
@@ -70,14 +69,14 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
   val selected_int_priority        = WireInit(0.U (INTPRIORITY_BITS.W))
   val intpend_w_prior_en           = Wire(Vec(PIC_TOTAL_INT_PLUS1,UInt(INTPRIORITY_BITS.W)))///////////////////
   val intpend_id                   = Wire(Vec(PIC_TOTAL_INT_PLUS1,UInt(ID_BITS.W)))
-  val levelx_intpend_w_prior_en    = Wire(Vec((NUM_LEVELS - NUM_LEVELS/2)+1 ,Vec ((PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2)+2).toInt,UInt(INTPRIORITY_BITS.W))))
+  val levelx_intpend_w_prior_en    = Wire(Vec((NUM_LEVELS - NUM_LEVELS/2)+1 ,Vec ((PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2).toInt)+2,UInt(INTPRIORITY_BITS.W))))
   for(i<- 0 until (NUM_LEVELS - NUM_LEVELS/2)+1; j<- 0 until (PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2).toInt)+2) levelx_intpend_w_prior_en(i)(j) := 0.U
   val levelx_intpend_id            = Wire(Vec((NUM_LEVELS - NUM_LEVELS/2)+1 ,Vec ((PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2).toInt)+2,UInt(ID_BITS.W))))
   for(i<- 0 until (NUM_LEVELS - NUM_LEVELS/2)+1; j<- 0 until (PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2).toInt)+2) levelx_intpend_id(i)(j) := 0.U
-  val l2_intpend_w_prior_en_ff     = Wire(Vec((PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2)+1).toInt,UInt(INTPRIORITY_BITS.W)))
-  for(i<- 0 until (PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2)+1).toInt) l2_intpend_w_prior_en_ff(i) := 0.U
-  val l2_intpend_id_ff             = Wire(Vec((PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2)+1).toInt,UInt(ID_BITS.W)))
-  for(i<- 0 until (PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2)+1).toInt) l2_intpend_id_ff(i) := 0.U
+  val l2_intpend_w_prior_en_ff     = Wire(Vec(PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2).toInt,UInt(INTPRIORITY_BITS.W)))
+  for(i<- 0 until (PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2).toInt)) l2_intpend_w_prior_en_ff(i) := 0.U
+  val l2_intpend_id_ff             = Wire(Vec(PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2).toInt,UInt(ID_BITS.W)))
+  for(i<- 0 until (PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2).toInt)) l2_intpend_id_ff(i) := 0.U
   val config_reg                   = WireInit(0.U(1.W))
   val intpriord                    = WireInit(0.U(1.W))
   val prithresh_reg_write          = WireInit(0.U(1.W))
@@ -106,6 +105,20 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
   withClock(io.free_clk)    {picm_mken_ff := RegNext(io.lsu_pic.picm_mken,0.U)}
   withClock(pic_data_c1_clk)  {picm_wr_data_ff := RegNext(io.lsu_pic.picm_wr_data,0.U)}
 
+  val intenable_clk_enable_grp = Wire(Vec(INT_ENABLE_GRPS+1,UInt(1.W)))
+  val intenable_clk_enable = WireInit(UInt(PIC_TOTAL_INT_PLUS1.W),0.U)
+  val gw_clk = Wire(Vec(INT_ENABLE_GRPS+1,Clock()))
+  for (p <- 0 to INT_ENABLE_GRPS) {
+    if (p==INT_ENABLE_GRPS) {
+      intenable_clk_enable_grp(p) := intenable_clk_enable(PIC_TOTAL_INT_PLUS1-1, p*4).orR | io.io_clk_override
+      gw_clk(p) := rvoclkhdr(clock,intenable_clk_enable_grp(p),io.scan_mode)
+    }else {
+      intenable_clk_enable_grp(p) := intenable_clk_enable(p*4+3 , p*4).orR | io.io_clk_override
+      gw_clk(p) := rvoclkhdr(clock,intenable_clk_enable_grp(p),io.scan_mode)
+    }
+  }
+
+
   val temp_raddr_intenable_base_match =   ~(picm_raddr_ff ^ INTENABLE_BASE_ADDR.asUInt)
   val raddr_intenable_base_match     = temp_raddr_intenable_base_match(31,NUM_LEVELS+2).andR////   (31,NUM_LEVELS+2)
 
@@ -130,14 +143,15 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
   val gw_config_c1_clken  = (waddr_config_gw_base_match   & picm_wren_ff)  | (raddr_config_gw_base_match   & picm_rden_ff) | io.clk_override
 
   // C1 - 1 clock pulse for data
-  pic_raddr_c1_clk  := rvclkhdr(clock,pic_raddr_c1_clken,io.scan_mode)
-  pic_data_c1_clk   := rvclkhdr(clock,pic_data_c1_clken,io.scan_mode)
-  pic_pri_c1_clk    := rvclkhdr(clock,pic_pri_c1_clken.asBool,io.scan_mode)
-  pic_int_c1_clk    := rvclkhdr(clock,pic_int_c1_clken.asBool,io.scan_mode)
-  gw_config_c1_clk  := rvclkhdr(clock,(gw_config_c1_clken | io.io_clk_override).asBool,io.scan_mode)
+  pic_raddr_c1_clk  := rvoclkhdr(clock,pic_raddr_c1_clken,io.scan_mode)
+  pic_data_c1_clk   := rvoclkhdr(clock,pic_data_c1_clken,io.scan_mode)
+  pic_pri_c1_clk    := rvoclkhdr(clock,pic_pri_c1_clken.asBool,io.scan_mode)
+  pic_int_c1_clk    := rvoclkhdr(clock,pic_int_c1_clken.asBool,io.scan_mode)
+  gw_config_c1_clk  := rvoclkhdr(clock,gw_config_c1_clken.asBool,io.scan_mode)
 
   // ------ end clock gating section ------------------------
-  val extintsrc_req_sync  = Cat(rvsyncss(io.extintsrc_req(PIC_TOTAL_INT_PLUS1-1,1),io.free_clk),io.extintsrc_req(0))
+  val extintsrc_req_sync  = Wire(Vec(PIC_TOTAL_INT_PLUS1,UInt(1.W)))
+  (0 until PIC_TOTAL_INT_PLUS1).map (i => if(i>0){ extintsrc_req_sync(i) := rvsyncss_fpga(io.extintsrc_req(i),gw_clk(i/4),clock, intenable_clk_enable_grp(i/4))} else extintsrc_req_sync(i) := 0.U)
 
   val intpriority_reg_we =  (0 until PIC_TOTAL_INT_PLUS1).map (i => if(i>0){waddr_intpriority_base_match & (picm_waddr_ff(NUM_LEVELS+1,2) === i.asUInt) & picm_wren_ff} else 0.U)
   val intpriority_reg_re =  (0 until PIC_TOTAL_INT_PLUS1).map (i => if(i>0){raddr_intpriority_base_match & (picm_raddr_ff(NUM_LEVELS+1,2) === i.asUInt) & picm_rden_ff} else 0.U)
@@ -153,8 +167,9 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
   val gw_config_reg      = Wire(Vec(PIC_TOTAL_INT_PLUS1,UInt(2.W)))
   (0 until PIC_TOTAL_INT_PLUS1).map (i => if(i>0){ gw_config_reg(i)  := withClock(gw_config_c1_clk){RegEnable(picm_wr_data_ff(1,0),0.U,gw_config_reg_we(i).asBool)}} else  gw_config_reg(i)  := 0.U(2.W))
 
+  intenable_clk_enable := (0 until PIC_TOTAL_INT_PLUS1).map (i => if(i>0){gw_config_reg(i)(1) | intenable_reg_we(i) | intenable_reg(i) | gw_clear_reg_we(i)} else 0.U).reverse.reduce(Cat(_,_))
   val extintsrc_req_gw =  (0 until PIC_TOTAL_INT_PLUS1).map(i=>if(i>0)
-    configurable_gw(io.free_clk, extintsrc_req_sync(i), gw_config_reg(i)(0), gw_config_reg(i)(1), gw_clear_reg_we(i).asBool())
+    configurable_gw(gw_clk(i/4), clock, intenable_clk_enable_grp(i/4),reset.asAsyncReset(), extintsrc_req_sync(i), gw_config_reg(i)(0), gw_config_reg(i)(1), gw_clear_reg_we(i).asBool())
   else 0.U)
 
   //val intpriord = WireInit(Bool(), false.B)
@@ -178,8 +193,8 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
     level_intpend_w_prior_en(0) := (0 until PIC_TOTAL_INT_PLUS1).map(i=> intpend_w_prior_en(i)) ++ IndexedSeq(0.U(4.W), 0.U(4.W), 0.U(4.W))
     level_intpend_id(0)         := (0 until PIC_TOTAL_INT_PLUS1).map(i=> intpend_id(i)) ++ IndexedSeq(0.U(8.W), 0.U(8.W), 0.U(8.W))
 
-    levelx_intpend_w_prior_en(NUM_LEVELS - NUM_LEVELS/2) :=  (0 to (PIC_TOTAL_INT_PLUS1/scala.math.pow(2,(NUM_LEVELS/2))).toInt).map(i=> l2_intpend_w_prior_en_ff(i)) ++ IndexedSeq(0.U(INTPRIORITY_BITS.W))
-    levelx_intpend_id(NUM_LEVELS - NUM_LEVELS/2)         :=  (0 to (PIC_TOTAL_INT_PLUS1/scala.math.pow(2,(NUM_LEVELS/2))).toInt).map(i=> l2_intpend_id_ff(i)) ++ IndexedSeq(1.U(ID_BITS.W))
+    levelx_intpend_w_prior_en(NUM_LEVELS/2) :=  (0 until (PIC_TOTAL_INT_PLUS1/scala.math.pow(2,(NUM_LEVELS/2))).toInt).map(i=> l2_intpend_w_prior_en_ff(i)) ++ IndexedSeq(0.U(INTPRIORITY_BITS.W))
+    levelx_intpend_id(NUM_LEVELS/2)         :=  (0 until (PIC_TOTAL_INT_PLUS1/scala.math.pow(2,(NUM_LEVELS/2))).toInt).map(i=> l2_intpend_id_ff(i)) ++ IndexedSeq(1.U(ID_BITS.W))
 
     ///  Do the prioritization of the interrupts here  ////////////
     for (l <-0 until NUM_LEVELS/2 ; m <- 0 to ((PIC_TOTAL_INT_PLUS1)/scala.math.pow(2,(l+1)).toInt)) {
@@ -196,18 +211,16 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
     (0 to PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2).toInt).map(i =>  l2_intpend_w_prior_en_ff(i) := withClock(io.free_clk){RegNext(level_intpend_w_prior_en(NUM_LEVELS/2)(i))})
     (0 to PIC_TOTAL_INT_PLUS1 / scala.math.pow(2,NUM_LEVELS/2).toInt).map(i =>  l2_intpend_id_ff(i) := withClock(io.free_clk){RegNext(level_intpend_id(NUM_LEVELS/2)(i))})
 
-    for (j <- 0 until (NUM_LEVELS - NUM_LEVELS/2) ) {
-      for(k <- 0 to ((PIC_TOTAL_INT_PLUS1)/scala.math.pow(2,(j+1+3)).toInt)) {
+    for (j <-NUM_LEVELS/2 until NUM_LEVELS ; k <- 0 to ((PIC_TOTAL_INT_PLUS1)/math.pow(2,(j+1)).toInt)) {
 
-        if ( k  == (PIC_TOTAL_INT_PLUS1)/scala.math.pow(2,(j+1)).toInt) {
-          levelx_intpend_w_prior_en(j + 1)(k + 1)  := 0.U
-          levelx_intpend_id(j + 1)(k + 1)          := 0.U
-        }else { val a = 0.U}
-        val (out_id1, out_priority1) = cmp_and_mux(level_intpend_id(j)(2*k), level_intpend_w_prior_en(j)(2*k), level_intpend_id(j)(2*k+1), level_intpend_w_prior_en(j)(2*k+1))
-        (levelx_intpend_id(j+1)(k))          :=   out_id1
-        (levelx_intpend_w_prior_en(j+1)(k))  :=   out_priority1
+      if ( k  == (PIC_TOTAL_INT_PLUS1)/scala.math.pow(2,(j+1)).toInt) {
+        levelx_intpend_w_prior_en(j + 1)(k + 1)  := 0.U
+        levelx_intpend_id(j + 1)(k + 1)          := 0.U
+      }else { val a = 0.U}
+      val (out_id1, out_priority1) = cmp_and_mux(level_intpend_id(j)(2*k), level_intpend_w_prior_en(j)(2*k), level_intpend_id(j)(2*k+1), level_intpend_w_prior_en(j)(2*k+1))
+      (levelx_intpend_id(j+1)(k))          :=   out_id1
+      (levelx_intpend_w_prior_en(j+1)(k))  :=   out_priority1
 
-      }
     }
     claimid_in              :=     levelx_intpend_id(NUM_LEVELS - NUM_LEVELS/2)(0)   // This is the last level output
     selected_int_priority   :=     levelx_intpend_w_prior_en(NUM_LEVELS - NUM_LEVELS/2)(0)
@@ -408,5 +421,7 @@ class pic_ctrl extends Module with RequireAsyncReset with lib {
   }
 
 }
+
 object pic extends App {
-  println((new ChiselStage).emitVerilog(new pic_ctrl))}
+  println((new chisel3.stage.ChiselStage).emitVerilog(new pic_ctrl()))
+}
