@@ -1,5 +1,7 @@
 [0m[[0m[0mdebug[0m] [0m[0mPackaging /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/quasar_2.12-3.3.0.jar ...[0m
 [0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	quasar_soc.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/quasar_soc.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	pic_ctrl$$anon$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/pic_ctrl$$anon$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	ifu[0m
@@ -28,6 +30,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/ifu/ifu_compress_ctl.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	ifu/ifu_bp_ctl.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/ifu/ifu_bp_ctl.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	soc$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/soc$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	quasar_wrapper.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/quasar_wrapper.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	quasar_bundle$$anon$1.class[0m
@@ -132,6 +136,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/lsu/lsu$$anon$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	pic_ctrl.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/pic_ctrl.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	soc.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/soc.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	wrapper$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/wrapper$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	quasar.class[0m
@@ -222,6 +228,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/lib/lib$rvclkhdr$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	quasar_wrapper$$anon$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/quasar_wrapper$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	soc$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/soc$delayedInit$body.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	dmi[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/Quasar/design/target/scala-2.12/classes/dmi[0m
 [0m[[0m[0mdebug[0m] [0m[0m	dmi/dmi_wrapper_module.class[0m
