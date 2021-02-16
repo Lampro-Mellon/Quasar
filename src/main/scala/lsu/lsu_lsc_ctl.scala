@@ -181,7 +181,7 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
     lsu_error_pkt_m.bits.mscause          := Mux(((io.lsu_double_ecc_error_m & !misaligned_fault_m & !access_fault_m)===1.U),1.U(4.W), exc_mscause_m(3,0))
     lsu_error_pkt_m.bits.addr             := io.lsu_addr_m(31,0)//lsu_addr_d->lsu_full_addr
     lsu_fir_error_m                  := Mux(fir_nondccm_access_error_m.asBool,3.U(2.W), Mux(fir_dccm_access_error_m.asBool,2.U(2.W), Mux((io.lsu_pkt_m.bits.fast_int & io.lsu_double_ecc_error_m).asBool,1.U(2.W),0.U(2.W))))
-    io.lsu_error_pkt_r -:= rvdffe(lsu_error_pkt_m,(lsu_error_pkt_m.valid | lsu_error_pkt_m.bits.single_ecc_error | io.clk_override),clock,io.scan_mode)
+    io.lsu_error_pkt_r := rvdffe(lsu_error_pkt_m,(lsu_error_pkt_m.valid | lsu_error_pkt_m.bits.single_ecc_error | io.clk_override),clock,io.scan_mode)
     io.lsu_error_pkt_r.bits.single_ecc_error := withClock(io.lsu_c2_r_clk){RegNext(lsu_error_pkt_m.bits.single_ecc_error, 0.U)}
     io.lsu_error_pkt_r.valid := withClock(io.lsu_c2_r_clk){RegNext(lsu_error_pkt_m.valid, 0.U)}
     io.lsu_fir_error                 := withClock(io.lsu_c2_r_clk){RegNext(lsu_fir_error_m,0.U)}
