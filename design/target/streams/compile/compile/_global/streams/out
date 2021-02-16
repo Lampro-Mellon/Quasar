@@ -2,5 +2,5 @@
 [0m[[0m[33mwarn[0m] [0m[0mIt would fail on the following inputs: (0, _), (1, _), (??, _), (_, 0), (_, 1), (_, ??), (_, _)[0m
 [0m[[0m[33mwarn[0m] [0m[0m    (ICACHE_WAYPACK, ICACHE_ECC) match{[0m
 [0m[[0m[33mwarn[0m] [0m[0m    ^[0m
-[0m[[0m[33mwarn[0m] [0m[0mthere were 3720 feature warnings; re-run with -feature for details[0m
+[0m[[0m[33mwarn[0m] [0m[0mthere were 3719 feature warnings; re-run with -feature for details[0m
 [0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m
