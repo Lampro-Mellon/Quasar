@@ -25,6 +25,11 @@ class Mem_bundle extends Bundle with lib {
   val icm_clk_override = Input(Bool())
   val dec_tlu_core_ecc_disable = Input(Bool())
   val dccm = new mem_lsu()
+  val dccm_ext_in_pkt = Input(new ext_in_pkt_t(DCCM_NUM_BANKS))
+  val iccm_ext_in_pkt = Input(new ext_in_pkt_t(ICCM_NUM_BANKS))
+  val ic_data_ext_in_pkt = Input(Vec(ICACHE_NUM_WAYS,new ext_in_pkt_t(ICACHE_NUM_WAYS)))
+  val ic_tag_ext_in_pkt = Input(new ext_in_pkt_t(ICACHE_NUM_WAYS))
+
   val iccm = Flipped(new iccm_mem())
   val ic = Flipped (new ic_mem())
   val scan_mode = Input(Bool())
@@ -45,20 +50,27 @@ object quasar extends lib {
     "ICACHE_BANK_LO" -> ICACHE_BANK_LO,
     "ICACHE_BANK_HI" -> ICACHE_BANK_HI,
     "ICACHE_WAYPACK" -> ICACHE_WAYPACK,
+    "ICACHE_NUM_BYPASS_WIDTH" -> ICACHE_NUM_BYPASS_WIDTH,
+    "ICACHE_BYPASS_ENABLE" -> ICACHE_BYPASS_ENABLE,
     "ICACHE_ECC" -> ICACHE_ECC,
     "ICACHE_DATA_DEPTH" -> ICACHE_DATA_DEPTH,
     "ICACHE_BANK_BITS" -> ICACHE_BANK_BITS,
     "ICACHE_BEAT_ADDR_HI" -> ICACHE_BEAT_ADDR_HI,
     "ICACHE_BEAT_BITS" -> ICACHE_BEAT_BITS,
     "ICACHE_TAG_DEPTH" -> ICACHE_TAG_DEPTH,
+    "ICACHE_TAG_NUM_BYPASS" -> ICACHE_TAG_NUM_BYPASS,
+    "ICACHE_TAG_NUM_BYPASS_WIDTH" -> ICACHE_TAG_NUM_BYPASS_WIDTH,
+    "ICACHE_TAG_BYPASS_ENABLE" -> ICACHE_TAG_BYPASS_ENABLE,
     "ICCM_BANK_INDEX_LO" -> ICCM_BANK_INDEX_LO,
     "ICCM_NUM_BANKS" -> ICCM_NUM_BANKS,
+    "ICACHE_LN_SZ" -> ICACHE_LN_SZ,
     "ICCM_BANK_HI" -> ICCM_BANK_HI,
     "ICCM_INDEX_BITS" -> ICCM_INDEX_BITS,
     "ICCM_BANK_BITS" -> ICCM_BANK_BITS,
     "DCCM_BYTE_WIDTH" -> DCCM_BYTE_WIDTH,
     "DCCM_BANK_BITS" -> DCCM_BANK_BITS,
     "DCCM_SIZE" -> DCCM_SIZE,
+    "DCCM_WIDTH_BITS" -> DCCM_WIDTH_BITS,
     "DCCM_NUM_BANKS" -> DCCM_NUM_BANKS)) with HasBlackBoxResource {
     val io = IO(new Mem_bundle)
     addResource("/vsrc/mem.sv")

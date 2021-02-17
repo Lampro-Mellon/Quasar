@@ -183,11 +183,6 @@ class lsu_dec extends Bundle {
   val dctl_busbuff = new dctl_busbuff
 
 }
-class dbg_dma extends Bundle {
-  val dbg_dma_bubble        = Input(Bool())     // Debug needs a bubble to send a valid
-  val dma_dbg_ready         = Output(Bool())    // DMA is ready to accept debug request
-
-}
 class tlu_busbuff extends Bundle {
   val lsu_pmu_bus_trxn                  = Output(Bool())
   val lsu_pmu_bus_misaligned            = Output(Bool())
@@ -225,6 +220,17 @@ class iccm_mem extends Bundle with lib {
   val rd_data = Input(UInt(64.W))
   val rd_data_ecc = Input(UInt(78.W))
 }
+class ext_in_pkt_t(val size :Int) extends  Bundle{
+  val TEST1           = UInt(size.W)
+  val RME             = UInt(size.W)
+  val RM              = Vec(size,UInt(4.W))
+  val LS              = UInt(size.W)
+  val DS              = UInt(size.W)
+  val SD              = UInt(size.W)
+  val TEST_RNM        = UInt(size.W)
+  val BC1             = UInt(size.W)
+  val BC2             = UInt(size.W)
+}
 class ic_mem extends Bundle with lib {
   val rw_addr = Output(UInt(31.W))
   val tag_valid = Output(UInt(ICACHE_NUM_WAYS.W))
@@ -246,6 +252,7 @@ class ic_mem extends Bundle with lib {
   val debug_way = Output(UInt(ICACHE_NUM_WAYS.W))
   val premux_data = Output(UInt(64.W))
   val sel_premux_data = Output(Bool())
+
 }
 class aln_ib extends Bundle with lib{
   val ifu_i0_icaf             = Output(Bool())
@@ -322,6 +329,12 @@ class dbg_ib extends Bundle{
   val dbg_cmd_addr            = Input(UInt(32.W))    // command address
 }
 
+class dbg_dma extends Bundle {
+  val dbg_dma_bubble        = Input(Bool())     // Debug needs a bubble to send a valid
+  val dma_dbg_ready         = Output(Bool())    // DMA is ready to accept debug request
+
+}
+
 class dbg_dctl extends Bundle{
   val dbg_cmd_wrdata          = Input(UInt(32.W))    // command write data, for fence/fence_i
 }
@@ -329,7 +342,7 @@ class dbg_dctl extends Bundle{
 class dec_alu extends Bundle {
   val                  dec_i0_alu_decode_d          = Input(UInt(1.W))          // Valid
   val                  dec_csr_ren_d                = Input(Bool())          // extra decode
- // val                  dec_csr_rddata_d             = Input(UInt(32.W))
+  // val                  dec_csr_rddata_d             = Input(UInt(32.W))
   val                  dec_i0_br_immed_d            = Input(UInt(12.W))         // Branch offset
   val                  exu_i0_pc_x                  = Output(UInt(31.W))        // flopped PC
 }

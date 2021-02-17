@@ -69,15 +69,15 @@ trait lib extends param{
   def rveven_paritygen(data_in : UInt) =
     data_in.xorR.asUInt
   ///////////////////////////////////////////////////////////////////
-//rvbradder(Cat(pc, 0.U), Cat(offset, 0.U))
+  //rvbradder(Cat(pc, 0.U), Cat(offset, 0.U))
   def rvbradder (pc:UInt, offset:UInt) = {
     val dout_lower = pc(12,1) +& offset(12,1)
     val pc_inc = pc(31,13)+1.U
     val pc_dec = pc(31,13)-1.U
     val sign = offset(12)
     Cat(Mux1H(Seq(( sign ^ !dout_lower(dout_lower.getWidth-1)).asBool -> pc(31,13),
-                  (!sign &  dout_lower(dout_lower.getWidth-1)).asBool -> pc_inc,
-                  ( sign & !dout_lower(dout_lower.getWidth-1)).asBool -> pc_dec)), dout_lower(11,0), 0.U)
+      (!sign &  dout_lower(dout_lower.getWidth-1)).asBool -> pc_inc,
+      ( sign & !dout_lower(dout_lower.getWidth-1)).asBool -> pc_dec)), dout_lower(11,0), 0.U)
   }
 
   ///////////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ trait lib extends param{
     val masken_or_fullmask = masken & ~mask.andR
     matchvec(0)  :=  masken_or_fullmask | (mask(0) === data(0)).asUInt
     for(i <- 1 to data.getWidth-1)
-    matchvec(i) := Mux(mask(i-1,0).andR & masken_or_fullmask,"b1".U,(mask(i) === data(i)).asUInt)
+      matchvec(i) := Mux(mask(i-1,0).andR & masken_or_fullmask,"b1".U,(mask(i) === data(i)).asUInt)
     matchvec.asUInt.andR()
   }
 
@@ -381,18 +381,18 @@ trait lib extends param{
       in_range := (addr(31,MASK_BITS) === start_addr(31,MASK_BITS)).asUInt
     (in_range,in_region)
   }
- object rvdff_fpga {
-  def apply(din: UInt, clk: Clock, clken: Bool,rawclk:Clock) = {
-    if (RV_FPGA_OPTIMIZE)
-    withClock(rawclk) {RegEnable (din, 0.U, clken)}
-    else withClock(clk) {RegNext (din, 0.U)}
+  object rvdff_fpga {
+    def apply(din: UInt, clk: Clock, clken: Bool,rawclk:Clock) = {
+      if (RV_FPGA_OPTIMIZE)
+        withClock(rawclk) {RegEnable (din, 0.U, clken)}
+      else withClock(clk) {RegNext (din, 0.U)}
+    }
+    def apply(din: Bool, clk: Clock, clken: Bool,rawclk:Clock) = {
+      if (RV_FPGA_OPTIMIZE)
+        withClock(rawclk) {RegEnable (din, 0.B, clken)}
+      else withClock(clk) {RegNext (din, 0.B)}
+    }
   }
-   def apply(din: Bool, clk: Clock, clken: Bool,rawclk:Clock) = {
-     if (RV_FPGA_OPTIMIZE)
-       withClock(rawclk) {RegEnable (din, 0.B, clken)}
-     else withClock(clk) {RegNext (din, 0.B)}
-   }
-}
   object rvdffs_fpga {
     def apply(din: UInt, en:Bool,clk: Clock, clken: Bool,rawclk:Clock) = {
       if (RV_FPGA_OPTIMIZE)
@@ -406,6 +406,13 @@ trait lib extends param{
       if (RV_FPGA_OPTIMIZE)
         dout := withClock (rawclk) {RegEnable ((din & Fill(din.getWidth,!clear)), 0.U, ((en|clear)& clken))}
       else dout := withClock(clk) {RegNext (Mux(en,din,dout) & !clear, 0.U)}
+      dout
+    }
+    def apply(din: Bool, en:Bool,clear: UInt, clk: Clock, clken: Bool,rawclk:Clock) = {
+      val dout =Wire(Bool())
+      if (RV_FPGA_OPTIMIZE)
+        dout := withClock (rawclk) {RegEnable ((din & Fill(din.getWidth,!clear)), 0.B, ((en|clear)& clken))}
+      else dout := withClock(clk) {RegNext (Mux(en,din,dout) & !clear, 0.B)}
       dout
     }
   }
@@ -587,7 +594,7 @@ trait lib extends param{
   // LEFT # of bits will be done with rvdffe; RIGHT is enabled by LEFT[LSB] & en
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    def rvdffppe_UInt(din: UInt, clk: Clock, rst_l: AsyncReset, en : Bool, scan_mode: Bool, WIDTH: Int=32) = {
+  def rvdffppe_UInt(din: UInt, clk: Clock, rst_l: AsyncReset, en : Bool, scan_mode: Bool, WIDTH: Int=32) = {
     val RIGHT = 31
     val LEFT = WIDTH - RIGHT
     val LMSB = WIDTH-1
@@ -631,7 +638,7 @@ trait lib extends param{
         RegEnable(din,0.U.asTypeOf(din),en)
       }
     }else
-    Cat(rvdffiee(din(LMSB,LLSB),clk,rst_l,en,scan_mode),rvdffe(din(XMSB,XLSB),en,clk,scan_mode))
+      Cat(rvdffiee(din(LMSB,LLSB),clk,rst_l,en,scan_mode),rvdffe(din(XMSB,XLSB),en,clk,scan_mode))
 
   }
   object rvdfflie {

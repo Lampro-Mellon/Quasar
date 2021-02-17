@@ -1,35 +1,21 @@
+//********************************************************************************
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2020 Western Digital Corporation or its affiliates.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//********************************************************************************
 
-module mem #(
-   parameter ICACHE_BEAT_BITS,
-   parameter ICCM_BITS,
-   parameter ICACHE_NUM_WAYS,
-   parameter DCCM_BYTE_WIDTH,
-   parameter ICCM_BANK_INDEX_LO,
-   parameter ICACHE_BANK_BITS,
-   parameter DCCM_BITS,
-   parameter ICACHE_BEAT_ADDR_HI,
-   parameter ICCM_INDEX_BITS,
-   parameter ICCM_BANK_HI,
-   parameter ICACHE_BANKS_WAY,
-   parameter ICACHE_INDEX_HI,
-   parameter DCCM_NUM_BANKS,
-   parameter ICACHE_BANK_HI,
-   parameter ICACHE_BANK_LO,
-   parameter DCCM_ENABLE= 'b1,
-   parameter ICACHE_TAG_LO,
-   parameter ICACHE_DATA_INDEX_LO,
-   parameter ICCM_NUM_BANKS,
-   parameter ICACHE_ECC,
-   parameter ICACHE_ENABLE= 'b1,
-   parameter DCCM_BANK_BITS,
-   parameter ICCM_ENABLE= 'b1,
-   parameter ICCM_BANK_BITS,
-   parameter ICACHE_TAG_DEPTH,
-   parameter ICACHE_WAYPACK,
-   parameter DCCM_SIZE,
-   parameter DCCM_FDATA_WIDTH,
-   parameter ICACHE_TAG_INDEX_LO,
-   parameter ICACHE_DATA_DEPTH)
+module mem
 (
    input logic         clk,
    input logic         rst_l,
@@ -52,10 +38,12 @@ module mem #(
    output logic [DCCM_FDATA_WIDTH-1:0]  dccm_rd_data_hi,
 
 //`ifdef DCCM_ENABLE
+   input dccm_ext_in_pkt_t  [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt,
 
 //`endif
 
    //ICCM ports
+   input ccm_ext_in_pkt_t   [ICCM_NUM_BANKS-1:0]  iccm_ext_in_pkt,
 
    input logic [ICCM_BITS-1:1]  iccm_rw_addr,
    input logic                                        iccm_buf_correct_ecc,                    // ICCM is doing a single bit error correct cycle
@@ -76,10 +64,11 @@ module mem #(
    input  logic         ic_rd_en,
    input  logic [63:0] ic_premux_data,      // Premux data to be muxed with each way of the Icache.
    input  logic         ic_sel_premux_data, // Premux data sel
+   input ic_data_ext_in_pkt_t   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt,
+   input ic_tag_ext_in_pkt_t    [ICACHE_NUM_WAYS-1:0]           ic_tag_ext_in_pkt,
 
-   input  logic [70:0]               ic_wr_data_0,         // Data to fill to the Icache. With ECC
-	input  logic [70:0]               ic_wr_data_1,
-	input  logic [70:0]               ic_debug_wr_data,   // Debug wr cache.
+   input  logic [ICACHE_BANKS_WAY-1:0][70:0]               ic_wr_data,         // Data to fill to the Icache. With ECC
+   input  logic [70:0]               ic_debug_wr_data,   // Debug wr cache.
    output logic [70:0]               ic_debug_rd_data ,  // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
    input  logic [ICACHE_INDEX_HI:3]               ic_debug_addr,      // Read/Write addresss to the Icache.
    input  logic                      ic_debug_rd_en,     // Icache debug rd
@@ -88,7 +77,7 @@ module mem #(
    input  logic [ICACHE_NUM_WAYS-1:0]                ic_debug_way,       // Debug way. Rd or Wr.
 
    output logic [63:0]              ic_rd_data ,        // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
-   output logic [25:0]               ic_tag_debug_rd_data,// Debug icache tag.
+   output logic [25:0]               ictag_debug_rd_data,// Debug icache tag.
 
 
    output logic [ICACHE_BANKS_WAY-1:0] ic_eccerr,    // ecc error per bank
@@ -101,18 +90,19 @@ module mem #(
 
 );
 
-	logic [ICACHE_BANKS_WAY-1:0][70:0]  ic_wr_data;
-assign ic_wr_data [0] = ic_wr_data_0;
-assign ic_wr_data [1] = ic_wr_data_1;
+   logic active_clk;
+   rvoclkhdr active_cg   ( .en(1'b1),         .l1clk(active_clk), .* );
+
    // DCCM Instantiation
    if (DCCM_ENABLE == 1) begin: Gen_dccm_enable
-      lsu_dccm_mem #(
+      lsu_dccm_mem dccm #(
    .DCCM_BYTE_WIDTH(DCCM_BYTE_WIDTH),
    .DCCM_BITS(DCCM_BITS),
    .DCCM_NUM_BANKS(DCCM_NUM_BANKS),
    .DCCM_BANK_BITS(DCCM_BANK_BITS),
    .DCCM_SIZE(DCCM_SIZE),
-   .DCCM_FDATA_WIDTH(DCCM_FDATA_WIDTH)) dccm (
+   .DCCM_FDATA_WIDTH(DCCM_FDATA_WIDTH),
+   .DCCM_WIDTH_BITS(DCCM_WIDTH_BITS))(
          .clk_override(dccm_clk_override),
          .*
       );
@@ -137,7 +127,13 @@ if ( ICACHE_ENABLE ) begin: icache
    .ICACHE_TAG_DEPTH(ICACHE_TAG_DEPTH),
    .ICACHE_WAYPACK(ICACHE_WAYPACK),
    .ICACHE_TAG_INDEX_LO(ICACHE_TAG_INDEX_LO),
-   .ICACHE_DATA_DEPTH(ICACHE_DATA_DEPTH)) icm  (
+   .ICACHE_DATA_DEPTH(ICACHE_DATA_DEPTH),
+.ICACHE_TAG_NUM_BYPASS(ICACHE_TAG_NUM_BYPASS),
+.ICACHE_TAG_NUM_BYPASS_WIDTH(ICACHE_TAG_NUM_BYPASS_WIDTH),
+.ICACHE_TAG_BYPASS_ENABLE(ICACHE_TAG_BYPASS_ENABLE),
+.ICACHE_NUM_BYPASS_WIDTH(ICACHE_NUM_BYPASS_WIDTH),
+.ICACHE_BYPASS_ENABLE(ICACHE_BYPASS_ENABLE),
+.ICACHE_LN_SZ(ICACHE_LN_SZ)) icm  (
       .clk_override(icm_clk_override),
       .*
    );
@@ -146,13 +142,13 @@ else  begin
    assign   ic_rd_hit[ICACHE_NUM_WAYS-1:0] = '0;
    assign   ic_tag_perr    = '0 ;
    assign   ic_rd_data  = '0 ;
-   assign   ic_tag_debug_rd_data  = '0 ;
+   assign   ictag_debug_rd_data  = '0 ;
 end // else: !if( ICACHE_ENABLE )
 
 
 
 if (ICCM_ENABLE) begin : iccm
-   ifu_iccm_mem  #(
+   ifu_iccm_mem #(
    .ICCM_BITS(ICCM_BITS),
    .ICCM_BANK_INDEX_LO(ICCM_BANK_INDEX_LO),
    .ICCM_INDEX_BITS(ICCM_INDEX_BITS),
@@ -171,3 +167,4 @@ end
 
 
 endmodule
+
