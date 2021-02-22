@@ -64,6 +64,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     val scan_mode = Input(Bool())
 
   })
+ // val core_rst_l = core.io.core_rst_l
   val mem = Module(new quasar.mem())
   val dmi_wrapper = Module(new dmi_wrapper())
   val core = Module(new quasar())
@@ -88,7 +89,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   mem.io.icm_clk_override := core.io.icm_clk_override
   mem.io.dec_tlu_core_ecc_disable := core.io.dec_tlu_core_ecc_disable
   mem.io.dccm <> core.io.dccm
-  mem.io.rst_l := reset
+  mem.io.rst_l := core.io.core_rst_l
   mem.io.clk := core.io.active_l2clk
   mem.io.scan_mode := io.scan_mode
   mem.io.dccm_ext_in_pkt := io.dccm_ext_in_pkt
@@ -150,7 +151,6 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
 
 
   // Outputs
-  val core_rst_l = core.io.core_rst_l
   io.rv_trace_pkt <> core.io.rv_trace_pkt
 
   // external halt/run interface
