@@ -2,7 +2,7 @@ package lib
 import chisel3._
 import chisel3.util._
 trait param {
-val BHT_ADDR_HI            = 0x09
+  val BHT_ADDR_HI            = 0x09
   val BHT_ADDR_LO            = 0x02
   val BHT_ARRAY_DEPTH        = 0x0100
   val BHT_GHR_HASH_1         = 0x00
@@ -75,7 +75,7 @@ val BHT_ADDR_HI            = 0x09
   val DCCM_WIDTH_BITS        = 0x02
   val DIV_BIT                = 0x04
   val DIV_NEW                = 0x01
-  val DMA_BUF_DEPTH          = 0x05a
+  val DMA_BUF_DEPTH          = 0x05
   val DMA_BUS_ID             = 0x001
   val DMA_BUS_PRTY           = 0x02
   val DMA_BUS_TAG            = 0x01
@@ -175,6 +175,5 @@ val BHT_ADDR_HI            = 0x09
   val SB_BUS_TAG             = 0x01
   val TIMER_LEGAL_EN         = 0x01
   val RV_FPGA_OPTIMIZE = 0x1
-
 
 }
