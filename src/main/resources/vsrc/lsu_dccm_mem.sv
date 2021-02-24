@@ -27,28 +27,25 @@
 // //********************************************************************************
 
 
-`define EL2_LOCAL_DCCM_RAM_TEST_PORTS    .TEST1(TEST1[i]),                      \
-                                     .RME(RME[i]),                      \
-                                     .RM(RM[i][3:0]),                        \
-                                     .LS(LS[i]),                        \
-                                     .DS(DS[i]),                        \
-                                     .SD(SD[i]),                        \
-                                     .TEST_RNM(TEST_RNM[i]),            \
-                                     .BC1(BC1[i]),                      \
-                                     .BC2(BC2[i]),                      \
+
+`define LOCAL_DCCM_RAM_TEST_PORTS    .TEST1(dccm_ext_in_pkt_TEST1[i]),                      \
+                                     .RME(dccm_ext_in_pkt_RME[i]),                      \
+                                     .RM_0(dccm_ext_in_pkt_RM_0[i]),                        \
+                                     .RM_1(dccm_ext_in_pkt_RM_1[i]),                        \
+                                     .RM_2(dccm_ext_in_pkt_RM_2[i]),                        \
+                                     .RM_3(dccm_ext_in_pkt_RM_3[i]),                        \
+                                     .LS(dccm_ext_in_pkt_LS[i]),                        \
+                                     .DS(dccm_ext_in_pkt_DS[i]),                        \
+                                     .SD(dccm_ext_in_pkt_SD[i]),                        \
+                                     .RNM(dccm_ext_in_pkt_RNM[i]),            \
+                                     .BC1(dccm_ext_in_pkt_BC1[i]),                      \
+                                     .BC2(dccm_ext_in_pkt_BC2[i]),                      \
 
 
 
-module el2_lsu_dccm_mem
-#(
-   parameter DCCM_BYTE_WIDTH,
-   parameter DCCM_BITS,
-   parameter DCCM_NUM_BANKS,
-   parameter DCCM_BANK_BITS,
-   parameter DCCM_SIZE,
-   parameter DCCM_FDATA_WIDTH,
-   parameter DCCM_WIDTH_BITS
- )(
+module lsu_dccm_mem
+`include "parameter.sv"
+ (
    input logic         clk,                                             // Clock only while core active.  Through one clock header.  For flops with    second clock header built in.  Connected to ACTIVE_L2CLK.
    input logic         active_clk,                                      // Clock only while core active.  Through two clock headers. For flops without second clock header built in.
    input logic         rst_l,                                           // reset, active low
@@ -62,16 +59,20 @@ module el2_lsu_dccm_mem
    input logic [DCCM_BITS-1:0]  dccm_rd_addr_hi,                     // read address for the upper bank in case of a misaligned access
    input logic [DCCM_FDATA_WIDTH-1:0]  dccm_wr_data_lo,              // write data
    input logic [DCCM_FDATA_WIDTH-1:0]  dccm_wr_data_hi,              // write data
-   
-   //input el2_dccm_ext_in_pkt_t  [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt,    // the dccm packet from the soc
-   input [ICCM_NUM_BANKS-1:0] dccm_TEST1,
-   input [ICCM_NUM_BANKS-1:0] RME,
-   input [ICCM_NUM_BANKS-1:0][3:0] RM,
-   input [ICCM_NUM_BANKS-1:0] LS,
-   input [ICCM_NUM_BANKS-1:0] DS,
-   input [ICCM_NUM_BANKS-1:0] TEST-RNM,
-   input [ICCM_NUM_BANKS-1:0] BC1,
-   input [ICCM_NUM_BANKS-1:0] BC2, 
+   //input dccm_ext_in_pkt_t  [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt,    // the dccm packet from the soc
+    input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_TEST1,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RME,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RM_0,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RM_1,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RM_2,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RM_3,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_LS,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_DS,
+      input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_SD,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RNM,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_BC1,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_BC2, 
+
    output logic [DCCM_FDATA_WIDTH-1:0] dccm_rd_data_lo,              // read data from the lo bank
    output logic [DCCM_FDATA_WIDTH-1:0] dccm_rd_data_hi,              // read data from the hi bank
 
@@ -79,43 +80,43 @@ module el2_lsu_dccm_mem
 );
 
 
-   localparam DCCM_WIDTH_BITS_INT = $clog2(DCCM_BYTE_WIDTH);
+   //localparam DCCM_WIDTH_BITS = $clog2(DCCM_BYTE_WIDTH);
    localparam DCCM_INDEX_BITS = (DCCM_BITS - DCCM_BANK_BITS - DCCM_WIDTH_BITS);
    localparam DCCM_INDEX_DEPTH = ((DCCM_SIZE)*1024)/((DCCM_BYTE_WIDTH)*(DCCM_NUM_BANKS));  // Depth of memory bank
 
    logic [DCCM_NUM_BANKS-1:0]                                        wren_bank;
    logic [DCCM_NUM_BANKS-1:0]                                        rden_bank;
    logic [DCCM_NUM_BANKS-1:0] [DCCM_BITS-1:(DCCM_BANK_BITS+2)] addr_bank;
-   logic [DCCM_BITS-1:(DCCM_BANK_BITS+DCCM_WIDTH_BITS_INT)]           rd_addr_even, rd_addr_odd;
+   logic [DCCM_BITS-1:(DCCM_BANK_BITS+DCCM_WIDTH_BITS)]           rd_addr_even, rd_addr_odd;
    logic                                                                rd_unaligned, wr_unaligned;
    logic [DCCM_NUM_BANKS-1:0] [DCCM_FDATA_WIDTH-1:0]              dccm_bank_dout;
    logic [DCCM_FDATA_WIDTH-1:0]                                      wrdata;
 
    logic [DCCM_NUM_BANKS-1:0][DCCM_FDATA_WIDTH-1:0]               wr_data_bank;
 
-   logic [(DCCM_WIDTH_BITS_INT+DCCM_BANK_BITS-1):DCCM_WIDTH_BITS_INT]        dccm_rd_addr_lo_q;
-   logic [(DCCM_WIDTH_BITS_INT+DCCM_BANK_BITS-1):DCCM_WIDTH_BITS_INT]        dccm_rd_addr_hi_q;
+   logic [(DCCM_WIDTH_BITS+DCCM_BANK_BITS-1):DCCM_WIDTH_BITS]        dccm_rd_addr_lo_q;
+   logic [(DCCM_WIDTH_BITS+DCCM_BANK_BITS-1):DCCM_WIDTH_BITS]        dccm_rd_addr_hi_q;
 
    logic [DCCM_NUM_BANKS-1:0]            dccm_clken;
 
-   assign rd_unaligned = (dccm_rd_addr_lo[DCCM_WIDTH_BITS_INT+:DCCM_BANK_BITS] != dccm_rd_addr_hi[DCCM_WIDTH_BITS_INT+:DCCM_BANK_BITS]);
-   assign wr_unaligned = (dccm_wr_addr_lo[DCCM_WIDTH_BITS_INT+:DCCM_BANK_BITS] != dccm_wr_addr_hi[DCCM_WIDTH_BITS_INT+:DCCM_BANK_BITS]);
+   assign rd_unaligned = (dccm_rd_addr_lo[DCCM_WIDTH_BITS+:DCCM_BANK_BITS] != dccm_rd_addr_hi[DCCM_WIDTH_BITS+:DCCM_BANK_BITS]);
+   assign wr_unaligned = (dccm_wr_addr_lo[DCCM_WIDTH_BITS+:DCCM_BANK_BITS] != dccm_wr_addr_hi[DCCM_WIDTH_BITS+:DCCM_BANK_BITS]);
 
    // Align the read data
    assign dccm_rd_data_lo[DCCM_FDATA_WIDTH-1:0]  = dccm_bank_dout[dccm_rd_addr_lo_q[DCCM_WIDTH_BITS+:DCCM_BANK_BITS]][DCCM_FDATA_WIDTH-1:0];
-   assign dccm_rd_data_hi[DCCM_FDATA_WIDTH-1:0]  = dccm_bank_dout[dccm_rd_addr_hi_q[DCCM_WIDTH_BITS_INT+:DCCM_BANK_BITS]][DCCM_FDATA_WIDTH-1:0];
+   assign dccm_rd_data_hi[DCCM_FDATA_WIDTH-1:0]  = dccm_bank_dout[dccm_rd_addr_hi_q[DCCM_WIDTH_BITS+:DCCM_BANK_BITS]][DCCM_FDATA_WIDTH-1:0];
 
 
    // 8 Banks, 16KB each (2048 x 72)
    for (genvar i=0; i<DCCM_NUM_BANKS; i++) begin: mem_bank
       assign  wren_bank[i]        = dccm_wren & ((dccm_wr_addr_hi[2+:DCCM_BANK_BITS] == i) | (dccm_wr_addr_lo[2+:DCCM_BANK_BITS] == i));
       assign  rden_bank[i]        = dccm_rden & ((dccm_rd_addr_hi[2+:DCCM_BANK_BITS] == i) | (dccm_rd_addr_lo[2+:DCCM_BANK_BITS] == i));
-      assign  addr_bank[i][(DCCM_BANK_BITS+DCCM_WIDTH_BITS_INT)+:DCCM_INDEX_BITS] = wren_bank[i] ? (((dccm_wr_addr_hi[2+:DCCM_BANK_BITS] == i) & wr_unaligned) ?
-                                                                                                        dccm_wr_addr_hi[(DCCM_BANK_BITS+DCCM_WIDTH_BITS_INT)+:DCCM_INDEX_BITS] :
-                                                                                                        dccm_wr_addr_lo[(DCCM_BANK_BITS+DCCM_WIDTH_BITS_INT)+:DCCM_INDEX_BITS])  :
+      assign  addr_bank[i][(DCCM_BANK_BITS+DCCM_WIDTH_BITS)+:DCCM_INDEX_BITS] = wren_bank[i] ? (((dccm_wr_addr_hi[2+:DCCM_BANK_BITS] == i) & wr_unaligned) ?
+                                                                                                        dccm_wr_addr_hi[(DCCM_BANK_BITS+DCCM_WIDTH_BITS)+:DCCM_INDEX_BITS] :
+                                                                                                        dccm_wr_addr_lo[(DCCM_BANK_BITS+DCCM_WIDTH_BITS)+:DCCM_INDEX_BITS])  :
                                                                                                   (((dccm_rd_addr_hi[2+:DCCM_BANK_BITS] == i) & rd_unaligned) ?
-                                                                                                        dccm_rd_addr_hi[(DCCM_BANK_BITS+DCCM_WIDTH_BITS_INT)+:DCCM_INDEX_BITS] :
-                                                                                                        dccm_rd_addr_lo[(DCCM_BANK_BITS+DCCM_WIDTH_BITS_INT)+:DCCM_INDEX_BITS]);
+                                                                                                        dccm_rd_addr_hi[(DCCM_BANK_BITS+DCCM_WIDTH_BITS)+:DCCM_INDEX_BITS] :
+                                                                                                        dccm_rd_addr_lo[(DCCM_BANK_BITS+DCCM_WIDTH_BITS)+:DCCM_INDEX_BITS]);
 
       assign wr_data_bank[i]     = ((dccm_wr_addr_hi[2+:DCCM_BANK_BITS] == i) & wr_unaligned) ? dccm_wr_data_hi[DCCM_FDATA_WIDTH-1:0] : dccm_wr_data_lo[DCCM_FDATA_WIDTH-1:0];
 
@@ -125,7 +126,7 @@ module el2_lsu_dccm_mem
 
 `ifdef VERILATOR
 
-        el2_ram #(DCCM_INDEX_DEPTH,39)  ram (
+        ram #(DCCM_INDEX_DEPTH,39)  ram (
                                   // Primary ports
                                   .ME(dccm_clken[i]),
                                   .CLK(clk),
@@ -135,7 +136,7 @@ module el2_lsu_dccm_mem
                                   .Q(dccm_bank_dout[i][DCCM_FDATA_WIDTH-1:0]),
                                   .ROP ( ),
                                   // These are used by SoC
-                                  `EL2_LOCAL_DCCM_RAM_TEST_PORTS
+                                   `LOCAL_DCCM_RAM_TEST_PORTS
                                   .*
                                   );
 `else
@@ -151,7 +152,20 @@ module el2_lsu_dccm_mem
                                   .Q(dccm_bank_dout[i][DCCM_FDATA_WIDTH-1:0]),
                                   .ROP ( ),
                                   // These are used by SoC
-                                  `EL2_LOCAL_DCCM_RAM_TEST_PORTS
+                                   `LOCAL_DCCM_RAM_TEST_PORTS
+                                 //   .TEST1(dccm_ext_in_pkt_TEST1[i]),                      
+                                 //     .RME(dccm_ext_in_pkt_RME[i]),                      
+                                 //     .RM_0(dccm_ext_in_pkt_RM_0[i]),                        
+                                 //     .RM_1(dccm_ext_in_pkt_RM_1[i]),                       
+                                 //     .RM_2(dccm_ext_in_pkt_RM_2[i]),                        
+                                 //     .RM_3(dccm_ext_in_pkt_RM_3[i]),                        
+                                 //     .LS(dccm_ext_in_pkt_LS[i]),                        
+                                 //     .DS(dccm_ext_in_pkt_DS[i]),                        
+                                 //     .SD(dccm_ext_in_pkt_SD[i]),                       
+                                 //     .RNM(dccm_ext_in_pkt_RNM[i]),         
+                                 //     .BC1(dccm_ext_in_pkt_BC1[i]),                  
+                                 //     .BC2(dccm_ext_in_pkt_BC2[i]),                     
+
                                   .*
                                   );
       end
@@ -166,7 +180,7 @@ module el2_lsu_dccm_mem
                                   .Q(dccm_bank_dout[i][DCCM_FDATA_WIDTH-1:0]),
                                   .ROP ( ),
                                   // These are used by SoC
-                                  `EL2_LOCAL_DCCM_RAM_TEST_PORTS
+                                   `LOCAL_DCCM_RAM_TEST_PORTS
                                   .*
                                   );
       end
@@ -181,7 +195,7 @@ module el2_lsu_dccm_mem
                                  .Q(dccm_bank_dout[i][DCCM_FDATA_WIDTH-1:0]),
                                  .ROP ( ),
                                  // These are used by SoC
-                                 `EL2_LOCAL_DCCM_RAM_TEST_PORTS
+                                  `LOCAL_DCCM_RAM_TEST_PORTS
                                  .*
                                  );
       end
@@ -196,7 +210,7 @@ module el2_lsu_dccm_mem
                                  .Q(dccm_bank_dout[i][DCCM_FDATA_WIDTH-1:0]),
                                  .ROP ( ),
                                  // These are used by SoC
-                                 `EL2_LOCAL_DCCM_RAM_TEST_PORTS
+                                  `LOCAL_DCCM_RAM_TEST_PORTS
                                  .*
                                  );
       end
@@ -211,7 +225,7 @@ module el2_lsu_dccm_mem
                                  .Q(dccm_bank_dout[i][DCCM_FDATA_WIDTH-1:0]),
                                  .ROP ( ),
                                  // These are used by SoC
-                                 `EL2_LOCAL_DCCM_RAM_TEST_PORTS
+                                  `LOCAL_DCCM_RAM_TEST_PORTS
                                  .*
                                  );
       end
@@ -226,7 +240,7 @@ module el2_lsu_dccm_mem
                                  .Q(dccm_bank_dout[i][DCCM_FDATA_WIDTH-1:0]),
                                  .ROP ( ),
                                  // These are used by SoC
-                                 `EL2_LOCAL_DCCM_RAM_TEST_PORTS
+                                  `LOCAL_DCCM_RAM_TEST_PORTS
                                  .*
                                  );
       end
@@ -241,7 +255,7 @@ module el2_lsu_dccm_mem
                                  .Q(dccm_bank_dout[i][DCCM_FDATA_WIDTH-1:0]),
                                  .ROP ( ),
                                  // These are used by SoC
-                                 `EL2_LOCAL_DCCM_RAM_TEST_PORTS
+                                  `LOCAL_DCCM_RAM_TEST_PORTS
                                  .*
                                  );
       end
@@ -256,7 +270,7 @@ module el2_lsu_dccm_mem
                                 .Q(dccm_bank_dout[i][DCCM_FDATA_WIDTH-1:0]),
                                 .ROP ( ),
                                 // These are used by SoC
-                                `EL2_LOCAL_DCCM_RAM_TEST_PORTS
+                                 `LOCAL_DCCM_RAM_TEST_PORTS
                                 .*
                                 );
       end
@@ -271,7 +285,7 @@ module el2_lsu_dccm_mem
                                 .Q(dccm_bank_dout[i][DCCM_FDATA_WIDTH-1:0]),
                                 .ROP ( ),
                                 // These are used by SoC
-                                `EL2_LOCAL_DCCM_RAM_TEST_PORTS
+                                 `LOCAL_DCCM_RAM_TEST_PORTS
                                 .*
                                 );
       end
@@ -286,7 +300,7 @@ module el2_lsu_dccm_mem
                                 .Q(dccm_bank_dout[i][DCCM_FDATA_WIDTH-1:0]),
                                 .ROP ( ),
                                 // These are used by SoC
-                                `EL2_LOCAL_DCCM_RAM_TEST_PORTS
+                                 `LOCAL_DCCM_RAM_TEST_PORTS
                                 .*
                                 );
       end
@@ -295,12 +309,11 @@ module el2_lsu_dccm_mem
    end : mem_bank
 
    // Flops
-   rvdff  #(DCCM_BANK_BITS) rd_addr_lo_ff (.*, .din(dccm_rd_addr_lo[DCCM_WIDTH_BITS_INT+:DCCM_BANK_BITS]), .dout(dccm_rd_addr_lo_q[DCCM_WIDTH_BITS_INT+:DCCM_BANK_BITS]), .clk(active_clk));
-   rvdff  #(DCCM_BANK_BITS) rd_addr_hi_ff (.*, .din(dccm_rd_addr_hi[DCCM_WIDTH_BITS_INT+:DCCM_BANK_BITS]), .dout(dccm_rd_addr_hi_q[DCCM_WIDTH_BITS_INT+:DCCM_BANK_BITS]), .clk(active_clk));
+   rvdff  #(DCCM_BANK_BITS) rd_addr_lo_ff (.*, .din(dccm_rd_addr_lo[DCCM_WIDTH_BITS+:DCCM_BANK_BITS]), .dout(dccm_rd_addr_lo_q[DCCM_WIDTH_BITS+:DCCM_BANK_BITS]), .clk(active_clk));
+   rvdff  #(DCCM_BANK_BITS) rd_addr_hi_ff (.*, .din(dccm_rd_addr_hi[DCCM_WIDTH_BITS+:DCCM_BANK_BITS]), .dout(dccm_rd_addr_hi_q[DCCM_WIDTH_BITS+:DCCM_BANK_BITS]), .clk(active_clk));
 
-`undef EL2_LOCAL_DCCM_RAM_TEST_PORTS
+ `undef LOCAL_DCCM_RAM_TEST_PORTS
 
-endmodule // el2_lsu_dccm_mem
-
+endmodule // lsu_dccm_mem
 
 

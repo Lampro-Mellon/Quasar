@@ -17,31 +17,11 @@
 ////////////////////////////////////////////////////
 //   ICACHE DATA & TAG MODULE WRAPPER              //
 /////////////////////////////////////////////////////
-module el2_ifu_ic_mem
- #(
-      parameter ICACHE_NUM_WAYS,
-      parameter ICACHE_BANKS_WAY,
-      parameter ICACHE_INDEX_HI,
-      parameter ICACHE_TAG_INDEX_LO,
-      parameter ICACHE_TAG_LO,
-      parameter ICACHE_DATA_INDEX_LO,
-      parameter ICACHE_NUM_BYPASS,
-      parameter ICACHE_LN_SZ,
-      parameter ICACHE_BANK_HI,
-      parameter ICACHE_BANK_LO,
-      parameter ICACHE_WAYPACK,
-      parameter ICACHE_NUM_BYPASS_WIDTH,
-      parameter ICACHE_BYPASS_ENABLE,
-      parameter ICACHE_ECC,
-      parameter ICACHE_DATA_DEPTH,
-      parameter ICACHE_BANK_BITS,
-      parameter ICACHE_BEAT_ADDR_HI,
-      parameter ICACHE_BEAT_BITS,
-      parameter ICACHE_TAG_NUM_BYPASS,
-      parameter ICACHE_TAG_NUM_BYPASS_WIDTH,
-      parameter ICACHE_TAG_BYPASS_ENABLE,
-      parameter ICACHE_TAG_DEPTH,
- )
+
+
+module ifu_ic_mem
+`include "parameter.sv"
+
   (
       input logic                                   clk,                // Clock only while core active.  Through one clock header.  For flops with    second clock header built in.  Connected to ACTIVE_L2CLK.
       input logic                                   active_clk,         // Clock only while core active.  Through two clock headers. For flops without second clock header built in.
@@ -60,36 +40,56 @@ module el2_ifu_ic_mem
       input logic [63:0]                            ic_premux_data,     // Premux data to be muxed with each way of the Icache.
       input logic                                   ic_sel_premux_data, // Select the pre_muxed data
 
-      input  logic [ICACHE_BANKS_WAY-1:0][70:0]  ic_wr_data,         // Data to fill to the Icache. With ECC
+      input  logic [70:0]  ic_wr_data_0,         // Data to fill to the Icache. With ECC
+        input  logic [70:0]  ic_wr_data_1,         // Data to fill to the Icache. With ECC
       output logic [63:0]                           ic_rd_data ,        // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
       output logic [70:0]                           ic_debug_rd_data ,  // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
-      output logic [25:0]                           ictag_debug_rd_data,// Debug icache tag.
+      output logic [25:0]                           ic_tag_debug_rd_data,// Debug icache tag.
       input logic  [70:0]                           ic_debug_wr_data,   // Debug wr cache.
 
       output logic [ICACHE_BANKS_WAY-1:0]        ic_eccerr,          // ecc error per bank
       output logic [ICACHE_BANKS_WAY-1:0]        ic_parerr,          // ecc error per bank
       input logic [ICACHE_NUM_WAYS-1:0]          ic_tag_valid,       // Valid from the I$ tag valid outside (in flops).
-      //input el2_ic_data_ext_in_pkt_t [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt,   // this is being driven by the top level for soc testing/etc
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] TEST1,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] RME,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0][3:0] RM,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] LS,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] DS,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] TEST-RNM,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] BC1,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] BC2, 
+     // input ic_data_ext_in_pkt_t [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt,   // this is being driven by the top level for soc testing/etc
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_TEST1,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RME,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RM_0,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RM_1,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RM_2,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RM_3,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_LS,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_DS,
+       input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_SD,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RNM,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_BC1,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_BC2, 
 
-      //input el2_ic_tag_ext_in_pkt_t  [ICACHE_NUM_WAYS-1:0]                          ic_tag_ext_in_pkt,    // this is being driven by the top level for soc testing/etc
-
-      input [ICACHE_NUM_WAYS-1:0] TEST1,
-      input [ICACHE_NUM_WAYS-1:0] RME,
-      input [ICACHE_NUM_WAYS-1:0][3:0] RM,
-      input [ICACHE_NUM_WAYS-1:0] LS,
-      input [ICACHE_NUM_WAYS-1:0] DS,
-      input [ICACHE_NUM_WAYS-1:0] TEST-RNM,
-      input [ICACHE_NUM_WAYS-1:0] BC1,
-      input [ICACHE_NUM_WAYS-1:0] BC2, 
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_TEST1,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RME,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_0,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_1,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_2,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_3,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_LS,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_DS,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RNM,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_BC1,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_BC2, 
       
+      //input ic_tag_ext_in_pkt_t  [ICACHE_NUM_WAYS-1:0]                          ic_tag_ext_in_pkt,    // this is being driven by the top level for soc testing/etc
+       input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_TEST1,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RME,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_0,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_1,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_2,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_3,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_LS,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_DS,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_SD,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RNM,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_BC1,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_BC2, 
+
       output logic [ICACHE_NUM_WAYS-1:0]         ic_rd_hit,          // ic_rd_hit[3:0]
       output logic                                  ic_tag_perr,        // Tag Parity error
       input  logic                                  scan_mode           // Flop scan mode control
@@ -98,7 +98,7 @@ module el2_ifu_ic_mem
 
 
 
-   EL2_IC_TAG #(.pt(pt)) ic_tag_inst
+   IC_TAG  ic_tag_inst
           (
            .*,
            .ic_wr_en     (ic_wr_en[ICACHE_NUM_WAYS-1:0]),
@@ -106,7 +106,7 @@ module el2_ifu_ic_mem
            .ic_rw_addr   (ic_rw_addr[31:3])
            ) ;
 
-   EL2_IC_DATA #(.pt(pt)) ic_data_inst
+   IC_DATA  ic_data_inst
           (
            .*,
            .ic_wr_en     (ic_wr_en[ICACHE_NUM_WAYS-1:0]),
@@ -120,10 +120,8 @@ module el2_ifu_ic_mem
 /////////////////////////////////////////////////
 ////// ICACHE DATA MODULE    ////////////////////
 /////////////////////////////////////////////////
-module EL2_IC_DATA
-#(
-`include "el2_param.vh"
- )
+module IC_DATA
+`include "parameter.sv"
      (
       input logic clk,
       input logic active_clk,
@@ -134,7 +132,9 @@ module EL2_IC_DATA
       input logic [ICACHE_NUM_WAYS-1:0]ic_wr_en,
       input logic                          ic_rd_en,           // Read enable
 
-      input  logic [ICACHE_BANKS_WAY-1:0][70:0]    ic_wr_data,         // Data to fill to the Icache. With ECC
+      // input  logic [ICACHE_BANKS_WAY-1:0][70:0]    ic_wr_data,         // Data to fill to the Icache. With ECC
+        input  logic [70:0]  ic_wr_data_0,         // Data to fill to the Icache. With ECC
+        input  logic [70:0]  ic_wr_data_1,         // Data to fill to the Icache. With ECC
       output logic [63:0]                             ic_rd_data ,                                 // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
       input  logic [70:0]                             ic_debug_wr_data,   // Debug wr cache.
       output logic [70:0]                             ic_debug_rd_data ,  // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
@@ -149,16 +149,31 @@ module EL2_IC_DATA
       input logic                            ic_sel_premux_data,  // Select the pre_muxed data
 
       input logic [ICACHE_NUM_WAYS-1:0]ic_rd_hit,
-      
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] TEST1,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] RME,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0][3:0] RM,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] LS,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] DS,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] TEST-RNM,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] BC1,
-      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] BC2,
-      
+      //input ic_data_ext_in_pkt_t  [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt,   // this is being driven by the top level for soc testing/etc
+       input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_TEST1,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RME,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RM_0,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RM_1,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RM_2,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RM_3,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_LS,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_DS,
+       input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_SD,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_RNM,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_BC1,
+      input [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_BC2, 
+
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_TEST1,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RME,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_0,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_1,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_2,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_3,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_LS,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_DS,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RNM,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_BC1,
+      // input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_BC2, 
       input  logic                         scan_mode
 
       ) ;
@@ -295,26 +310,30 @@ module EL2_IC_DATA
     logic [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]                                 any_bypass_up;
     logic [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]                                 any_addr_match_up;
 
-`define EL2_IC_DATA_SRAM(depth,width)                                                                               \
+                                                                        
+   `define IC_DATA_SRAM(depth,width)                                                                                 \
            ram_``depth``x``width ic_bank_sb_way_data (                                                               \
                                      .ME(ic_bank_way_clken_final_up[i][k]),                                          \
                                      .WE (ic_b_sb_wren[k][i]),                                                       \
                                      .D  (ic_sb_wr_data[k][``width-1:0]),                                            \
-                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),         \
+                                     .ADR(ic_rw_addr_bank_q[k][ICACHE_INDEX_HI:ICACHE_DATA_INDEX_LO]),               \
                                      .Q  (wb_dout_pre_up[i][k]),                                                     \
                                      .CLK (clk),                                                                     \
                                      .ROP ( ),                                                                       \
-                                     .TEST1(TEST1[i][k]),                                         \
-                                     .RME(RME[i][k]),                                             \
-                                     .RM(RM[i][k]),                                               \
+                                     .TEST1(ic_data_ext_in_pkt_TEST1[i][k]),                                         \
+                                     .RME(ic_data_ext_in_pkt_RME[i][k]),                                             \
+                                     .RM_0(ic_data_ext_in_pkt_RM_0[i][k]),                                           \
+                                     .RM_1(ic_data_ext_in_pkt_RM_1[i][k]),                                           \
+                                     .RM_2(ic_data_ext_in_pkt_RM_2[i][k]),                                           \
+                                     .RM_3(ic_data_ext_in_pkt_RM_3[i][k]),                                           \
                                                                                                                      \
-                                     .LS(LS[i][k]),                                               \
-                                     .DS(DS[i][k]),                                               \
-                                     .SD(SD[i][k]),                                               \
+                                     .LS(ic_data_ext_in_pkt_LS[i][k]),                                               \
+                                     .DS(ic_data_ext_in_pkt_DS[i][k]),                                               \
+                                     .SD(ic_data_ext_in_pkt_SD[i][k]),                                               \
                                                                                                                      \
-                                     .TEST_RNM(TEST_RNM[i][k]),                                   \
-                                     .BC1(BC1[i][k]),                                             \
-                                     .BC2(BC2[i][k])                                              \
+                                     .RNM(ic_data_ext_in_pkt_RNM[i][k]),                                             \
+                                     .BC1(ic_data_ext_in_pkt_BC1[i][k]),                                             \
+                                     .BC2(ic_data_ext_in_pkt_BC2[i][k])                                              \
                                     );  \
 if (ICACHE_BYPASS_ENABLE == 1) begin \
                  assign wrptr_in_up[i][k] = (wrptr_up[i][k] == (ICACHE_NUM_BYPASS-1)) ? '0 : (wrptr_up[i][k] + 1'd1);                                    \
@@ -372,28 +391,28 @@ if (ICACHE_BYPASS_ENABLE == 1) begin \
         logic [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] [ICACHE_NUM_BYPASS-1:0] [71-1:0]  wb_dout_hold_up;
 
         if ($clog2(ICACHE_DATA_DEPTH) == 13 )   begin : size_8192
-           `EL2_IC_DATA_SRAM(8192,71)
+           `IC_DATA_SRAM(8192,71)
         end
         else if ($clog2(ICACHE_DATA_DEPTH) == 12 )   begin : size_4096
-           `EL2_IC_DATA_SRAM(4096,71)
+           `IC_DATA_SRAM(4096,71)
         end
         else if ($clog2(ICACHE_DATA_DEPTH) == 11 ) begin : size_2048
-           `EL2_IC_DATA_SRAM(2048,71)
+           `IC_DATA_SRAM(2048,71)
         end
         else if ( $clog2(ICACHE_DATA_DEPTH) == 10 ) begin : size_1024
-           `EL2_IC_DATA_SRAM(1024,71)
+           `IC_DATA_SRAM(1024,71)
         end
         else if ( $clog2(ICACHE_DATA_DEPTH) == 9 ) begin : size_512
-           `EL2_IC_DATA_SRAM(512,71)
+           `IC_DATA_SRAM(512,71)
         end
          else if ( $clog2(ICACHE_DATA_DEPTH) == 8 ) begin : size_256
-           `EL2_IC_DATA_SRAM(256,71)
+           `IC_DATA_SRAM(256,71)
          end
          else if ( $clog2(ICACHE_DATA_DEPTH) == 7 ) begin : size_128
-           `EL2_IC_DATA_SRAM(128,71)
+           `IC_DATA_SRAM(128,71)
          end
          else  begin : size_64
-           `EL2_IC_DATA_SRAM(64,71)
+           `IC_DATA_SRAM(64,71)
          end
       end // if (ICACHE_ECC)
 
@@ -401,28 +420,28 @@ if (ICACHE_BYPASS_ENABLE == 1) begin \
         logic [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] [68-1:0]        wb_dout_pre_up;           // data and its bit enables
         logic [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0] [ICACHE_NUM_BYPASS-1:0] [68-1:0]  wb_dout_hold_up;
         if ($clog2(ICACHE_DATA_DEPTH) == 13 )   begin : size_8192
-           `EL2_IC_DATA_SRAM(8192,68)
+           `IC_DATA_SRAM(8192,68)
         end
         else if ($clog2(ICACHE_DATA_DEPTH) == 12 )   begin : size_4096
-           `EL2_IC_DATA_SRAM(4096,68)
+           `IC_DATA_SRAM(4096,68)
         end
         else if ($clog2(ICACHE_DATA_DEPTH) == 11 ) begin : size_2048
-           `EL2_IC_DATA_SRAM(2048,68)
+           `IC_DATA_SRAM(2048,68)
         end
         else if ( $clog2(ICACHE_DATA_DEPTH) == 10 ) begin : size_1024
-           `EL2_IC_DATA_SRAM(1024,68)
+           `IC_DATA_SRAM(1024,68)
         end
         else if ( $clog2(ICACHE_DATA_DEPTH) == 9 ) begin : size_512
-           `EL2_IC_DATA_SRAM(512,68)
+           `IC_DATA_SRAM(512,68)
         end
          else if ( $clog2(ICACHE_DATA_DEPTH) == 8 ) begin : size_256
-           `EL2_IC_DATA_SRAM(256,68)
+           `IC_DATA_SRAM(256,68)
          end
          else if ( $clog2(ICACHE_DATA_DEPTH) == 7 ) begin : size_128
-           `EL2_IC_DATA_SRAM(128,68)
+           `IC_DATA_SRAM(128,68)
          end
          else  begin : size_64
-           `EL2_IC_DATA_SRAM(64,68)
+           `IC_DATA_SRAM(64,68)
          end
       end // else: !if(ICACHE_ECC)
       end // block: BANKS_WAY
@@ -446,7 +465,7 @@ if (ICACHE_BYPASS_ENABLE == 1) begin \
 
 // SRAM macros
 
-`define EL2_PACKED_IC_DATA_SRAM(depth,width,waywidth)                                                                                                 \
+`define PACKED_IC_DATA_SRAM(depth,width,waywidth)                                                                                                 \
             ram_be_``depth``x``width  ic_bank_sb_way_data (                                                                                           \
                             .CLK   (clk),                                                                                                             \
                             .WE    (|ic_b_sb_wren[k]),                                                    // OR of all the ways in the bank           \
@@ -456,17 +475,20 @@ if (ICACHE_BYPASS_ENABLE == 1) begin \
                             .Q     (wb_packeddout_pre[k]),                                                                                            \
                             .ME    (|ic_bank_way_clken_final[k]),                                                                                     \
                             .ROP   ( ),                                                                                                               \
-                            .TEST1  (ic_data_ext_in_pkt[0][k].TEST1),                                                                                 \
-                            .RME   (ic_data_ext_in_pkt[0][k].RME),                                                                                    \
-                            .RM    (ic_data_ext_in_pkt[0][k].RM),                                                                                     \
+                            .TEST1  (ic_data_ext_in_pkt_TEST1[0][k]),                                                                                 \
+                            .RME   (ic_data_ext_in_pkt_RME[0][k]),                                                                                    \
+                            .RM_0    (ic_data_ext_in_pkt_RM_0[0][k]),  \
+                            .RM_1    (ic_data_ext_in_pkt_RM_1[0][k]),  \
+                            .RM_2    (ic_data_ext_in_pkt_RM_2[0][k]),  \
+                            .RM_3    (ic_data_ext_in_pkt_RM_3[0][k]),                                                                                     \
                                                                                                                                                       \
-                            .LS    (ic_data_ext_in_pkt[0][k].LS),                                                                                     \
-                            .DS    (ic_data_ext_in_pkt[0][k].DS),                                                                                     \
-                            .SD    (ic_data_ext_in_pkt[0][k].SD),                                                                                     \
+                            .LS    (ic_data_ext_in_pkt_LS[0][k]),                                                                                     \
+                            .DS    (ic_data_ext_in_pkt_DS[0][k]),                                                                                     \
+                            .SD    (ic_data_ext_in_pkt_SD[0][k]),                                                                                     \
                                                                                                                                                       \
-                            .TEST_RNM (ic_data_ext_in_pkt[0][k].TEST_RNM),                                                                            \
-                            .BC1      (ic_data_ext_in_pkt[0][k].BC1),                                                                                 \
-                            .BC2      (ic_data_ext_in_pkt[0][k].BC2)                                                                                  \
+                            .RNM (ic_data_ext_in_pkt_RNM[0][k]),                                                                            \
+                            .BC1      (ic_data_ext_in_pkt_BC1[0][k]),                                                                                 \
+                            .BC2      (ic_data_ext_in_pkt_BC2[0][k])                                                                                  \
                            );                                                                                                                         \
                                                                                                                                                       \
               if (ICACHE_BYPASS_ENABLE == 1) begin                                                                                                                                                 \
@@ -547,73 +569,73 @@ if (ICACHE_BYPASS_ENABLE == 1) begin \
         // SRAMS with ECC (single/double detect; no correct)
         if ($clog2(ICACHE_DATA_DEPTH) == 13 )   begin : size_8192
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(8192,284,71)    // 64b data + 7b ecc
+              `PACKED_IC_DATA_SRAM(8192,284,71)    // 64b data + 7b ecc
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(8192,142,71)
+              `PACKED_IC_DATA_SRAM(8192,142,71)
            end // block: WAYS
         end // block: size_8192
 
         else if ($clog2(ICACHE_DATA_DEPTH) == 12 )   begin : size_4096
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(4096,284,71)
+              `PACKED_IC_DATA_SRAM(4096,284,71)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(4096,142,71)
+              `PACKED_IC_DATA_SRAM(4096,142,71)
            end // block: WAYS
         end // block: size_4096
 
         else if ($clog2(ICACHE_DATA_DEPTH) == 11 ) begin : size_2048
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(2048,284,71)
+              `PACKED_IC_DATA_SRAM(2048,284,71)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(2048,142,71)
+              `PACKED_IC_DATA_SRAM(2048,142,71)
            end // block: WAYS
         end // block: size_2048
 
         else if ( $clog2(ICACHE_DATA_DEPTH) == 10 ) begin : size_1024
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(1024,284,71)
+              `PACKED_IC_DATA_SRAM(1024,284,71)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(1024,142,71)
+              `PACKED_IC_DATA_SRAM(1024,142,71)
            end // block: WAYS
         end // block: size_1024
 
         else if ( $clog2(ICACHE_DATA_DEPTH) == 9 ) begin : size_512
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(512,284,71)
+              `PACKED_IC_DATA_SRAM(512,284,71)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(512,142,71)
+              `PACKED_IC_DATA_SRAM(512,142,71)
            end // block: WAYS
         end // block: size_512
 
         else if ( $clog2(ICACHE_DATA_DEPTH) == 8 ) begin : size_256
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(256,284,71)
+              `PACKED_IC_DATA_SRAM(256,284,71)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(256,142,71)
+              `PACKED_IC_DATA_SRAM(256,142,71)
            end // block: WAYS
         end // block: size_256
 
         else if ( $clog2(ICACHE_DATA_DEPTH) == 7 ) begin : size_128
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(128,284,71)
+              `PACKED_IC_DATA_SRAM(128,284,71)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(128,142,71)
+              `PACKED_IC_DATA_SRAM(128,142,71)
            end // block: WAYS
         end // block: size_128
 
         else  begin : size_64
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(64,284,71)
+              `PACKED_IC_DATA_SRAM(64,284,71)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(64,142,71)
+              `PACKED_IC_DATA_SRAM(64,142,71)
            end // block: WAYS
         end // block: size_64
 
@@ -637,73 +659,73 @@ if (ICACHE_BYPASS_ENABLE == 1) begin \
         // SRAMs with parity
         if ($clog2(ICACHE_DATA_DEPTH) == 13 )   begin : size_8192
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(8192,272,68)    // 64b data + 4b parity
+              `PACKED_IC_DATA_SRAM(8192,272,68)    // 64b data + 4b parity
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(8192,136,68)
+              `PACKED_IC_DATA_SRAM(8192,136,68)
            end // block: WAYS
         end // block: size_8192
 
         else if ($clog2(ICACHE_DATA_DEPTH) == 12 )   begin : size_4096
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(4096,272,68)
+              `PACKED_IC_DATA_SRAM(4096,272,68)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(4096,136,68)
+              `PACKED_IC_DATA_SRAM(4096,136,68)
            end // block: WAYS
         end // block: size_4096
 
         else if ($clog2(ICACHE_DATA_DEPTH) == 11 ) begin : size_2048
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(2048,272,68)
+              `PACKED_IC_DATA_SRAM(2048,272,68)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(2048,136,68)
+              `PACKED_IC_DATA_SRAM(2048,136,68)
            end // block: WAYS
         end // block: size_2048
 
         else if ( $clog2(ICACHE_DATA_DEPTH) == 10 ) begin : size_1024
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(1024,272,68)
+              `PACKED_IC_DATA_SRAM(1024,272,68)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(1024,136,68)
+              `PACKED_IC_DATA_SRAM(1024,136,68)
            end // block: WAYS
         end // block: size_1024
 
         else if ( $clog2(ICACHE_DATA_DEPTH) == 9 ) begin : size_512
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(512,272,68)
+              `PACKED_IC_DATA_SRAM(512,272,68)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(512,136,68)
+              `PACKED_IC_DATA_SRAM(512,136,68)
            end // block: WAYS
         end // block: size_512
 
         else if ( $clog2(ICACHE_DATA_DEPTH) == 8 ) begin : size_256
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(256,272,68)
+              `PACKED_IC_DATA_SRAM(256,272,68)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(256,136,68)
+              `PACKED_IC_DATA_SRAM(256,136,68)
            end // block: WAYS
         end // block: size_256
 
         else if ( $clog2(ICACHE_DATA_DEPTH) == 7 ) begin : size_128
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(128,272,68)
+              `PACKED_IC_DATA_SRAM(128,272,68)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(128,136,68)
+              `PACKED_IC_DATA_SRAM(128,136,68)
            end // block: WAYS
         end // block: size_128
 
         else  begin : size_64
            if (ICACHE_NUM_WAYS == 4) begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(64,272,68)
+              `PACKED_IC_DATA_SRAM(64,272,68)
            end // block: WAYS
            else   begin : WAYS
-              `EL2_PACKED_IC_DATA_SRAM(64,136,68)
+              `PACKED_IC_DATA_SRAM(64,136,68)
            end // block: WAYS
         end // block: size_64
 
@@ -720,8 +742,8 @@ if (ICACHE_BYPASS_ENABLE == 1) begin \
 
  if ( ICACHE_ECC ) begin : ECC1_MUX
 
-   assign ic_bank_wr_data[1] = ic_wr_data[1][70:0];
-   assign ic_bank_wr_data[0] = ic_wr_data[0][70:0];
+   assign ic_bank_wr_data[1] = ic_wr_data_1[70:0];
+   assign ic_bank_wr_data[0] = ic_wr_data_0[70:0];
 
     always_comb begin : rd_mux
       wb_dout_way_pre[ICACHE_NUM_WAYS-1:0] = '0;
@@ -772,8 +794,8 @@ if (ICACHE_BYPASS_ENABLE == 1) begin \
 end // if ( ICACHE_ECC )
 
 else  begin : ECC0_MUX
-   assign ic_bank_wr_data[1] = ic_wr_data[1][70:0];
-   assign ic_bank_wr_data[0] = ic_wr_data[0][70:0];
+   assign ic_bank_wr_data[1] = ic_wr_data_1[70:0];
+   assign ic_bank_wr_data[0] = ic_wr_data_0[70:0];
 
    always_comb begin : rd_mux
       wb_dout_way_pre[ICACHE_NUM_WAYS-1:0] = '0;
@@ -830,7 +852,7 @@ else  begin : ECC0_MUX
 end // else: !if( ICACHE_ECC )
 
 
-endmodule // EL2_IC_DATA
+endmodule // IC_DATA
 
 //=============================================================================================================================================================
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ END OF IC DATA MODULE \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
@@ -840,10 +862,8 @@ endmodule // EL2_IC_DATA
 /////////////////////////////////////////////////
 ////// ICACHE TAG MODULE     ////////////////////
 /////////////////////////////////////////////////
-module EL2_IC_TAG
- #(
-`include "el2_param.vh"
- )
+module IC_TAG
+`include "parameter.sv"
      (
       input logic                                                   clk,
       input logic                                                   active_clk,
@@ -862,18 +882,20 @@ module EL2_IC_TAG
       input logic                                                  ic_debug_wr_en,       // Icache debug wr
       input logic                                                  ic_debug_tag_array,   // Debug tag array
       input logic [ICACHE_NUM_WAYS-1:0]                         ic_debug_way,         // Debug way. Rd or Wr.
-      input el2_ic_tag_ext_in_pkt_t   [ICACHE_NUM_WAYS-1:0]    ic_tag_ext_in_pkt,
-      
-      input [ICACHE_NUM_WAYS-1:0] TEST1,
-      input [ICACHE_NUM_WAYS-1:0] RME,
-      input [ICACHE_NUM_WAYS-1:0][3:0] RM,
-      input [ICACHE_NUM_WAYS-1:0] LS,
-      input [ICACHE_NUM_WAYS-1:0] DS,
-      input [ICACHE_NUM_WAYS-1:0] TEST-RNM,
-      input [ICACHE_NUM_WAYS-1:0] BC1,
-      input [ICACHE_NUM_WAYS-1:0] BC2,
-      
-      output logic [25:0]                                          ictag_debug_rd_data,
+     // input ic_tag_ext_in_pkt_t   [ICACHE_NUM_WAYS-1:0]    ic_tag_ext_in_pkt,
+       input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_TEST1,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RME,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_0,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_1,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_2,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_3,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_LS,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_DS,
+        input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_SD,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RNM,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_BC1,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_BC2,
+      output logic [25:0]                                          ic_tag_debug_rd_data,
       input  logic [70:0]                                          ic_debug_wr_data,     // Debug wr cache.
 
       output logic [ICACHE_NUM_WAYS-1:0]                        ic_rd_hit,
@@ -1012,7 +1034,7 @@ end // block: OTHERS
     logic [ICACHE_NUM_WAYS-1:0]        any_addr_match;
     logic [ICACHE_NUM_WAYS-1:0]        ic_tag_clken_final;
 
-      `define EL2_IC_TAG_SRAM(depth,width)                                                                                                      \
+      `define IC_TAG_SRAM(depth,width)                                                                                                      \
                                   ram_``depth``x``width  ic_way_tag (                                                                           \
                                 .ME(ic_tag_clken_final[i]),                                                                                     \
                                 .WE (ic_tag_wren_q[i]),                                                                                         \
@@ -1022,17 +1044,20 @@ end // block: OTHERS
                                 .CLK (clk),                                                                                                     \
                                 .ROP ( ),                                                                                                       \
                                                                                                                                                 \
-                                .TEST1(ic_tag_ext_in_pkt[i].TEST1[i]),                                                                             \
-                                .RME(ic_tag_ext_in_pkt[i].RME[i]),                                                                                 \
-                                .RM(ic_tag_ext_in_pkt[i].RM[i]),                                                                                   \
+                                .TEST1(ic_tag_ext_in_pkt_TEST1[i]),                                                                             \
+                                .RME(ic_tag_ext_in_pkt_RME[i]),                                                                                 \
+                                .RM_0(ic_tag_ext_in_pkt_RM_0[i]), \
+                                .RM_1(ic_tag_ext_in_pkt_RM_1[i]),\
+                                .RM_2(ic_tag_ext_in_pkt_RM_2[i]),\
+                                .RM_3(ic_tag_ext_in_pkt_RM_3[i]),                                                                                  \
                                                                                                                                                 \
-                                .LS(ic_tag_ext_in_pkt[i].LS[i]),                                                                                   \
-                                .DS(ic_tag_ext_in_pkt[i].DS[i]),                                                                                   \
-                                .SD(ic_tag_ext_in_pkt[i].SD[i]),                                                                                   \
+                                .LS(ic_tag_ext_in_pkt_LS[i]),                                                                                   \
+                                .DS(ic_tag_ext_in_pkt_DS[i]),                                                                                   \
+                                .SD(ic_tag_ext_in_pkt_SD[i]),                                                                                   \
                                                                                                                                                 \
-                                .TEST_RNM(ic_tag_ext_in_pkt[i].TEST_RNM[i]),                                                                       \
-                                .BC1(ic_tag_ext_in_pkt[i].BC1[i]),                                                                                 \
-                                .BC2(ic_tag_ext_in_pkt[i].BC2[i])                                                                                  \
+                                .RNM(ic_tag_ext_in_pkt_RNM[i]),                                                                       \
+                                .BC1(ic_tag_ext_in_pkt_BC1[i]),                                                                                 \
+                                .BC2(ic_tag_ext_in_pkt_BC2[i])                                                                                  \
                                                                                                                                                 \
                                );                                                                                                               \
                                                                                                                                                 \
@@ -1105,28 +1130,28 @@ end // block: OTHERS
       logic [ICACHE_NUM_WAYS-1:0] [ICACHE_TAG_NUM_BYPASS-1:0][25 :0] wb_dout_hold;
 
       if (ICACHE_TAG_DEPTH == 32)   begin : size_32
-                 `EL2_IC_TAG_SRAM(32,26)
+                 `IC_TAG_SRAM(32,26)
       end // if (ICACHE_TAG_DEPTH == 32)
       if (ICACHE_TAG_DEPTH == 64)   begin : size_64
-                 `EL2_IC_TAG_SRAM(64,26)
+                 `IC_TAG_SRAM(64,26)
       end // if (ICACHE_TAG_DEPTH == 64)
       if (ICACHE_TAG_DEPTH == 128)   begin : size_128
-                 `EL2_IC_TAG_SRAM(128,26)
+                 `IC_TAG_SRAM(128,26)
       end // if (ICACHE_TAG_DEPTH == 128)
        if (ICACHE_TAG_DEPTH == 256)   begin : size_256
-                 `EL2_IC_TAG_SRAM(256,26)
+                 `IC_TAG_SRAM(256,26)
        end // if (ICACHE_TAG_DEPTH == 256)
        if (ICACHE_TAG_DEPTH == 512)   begin : size_512
-                 `EL2_IC_TAG_SRAM(512,26)
+                 `IC_TAG_SRAM(512,26)
        end // if (ICACHE_TAG_DEPTH == 512)
        if (ICACHE_TAG_DEPTH == 1024)   begin : size_1024
-                 `EL2_IC_TAG_SRAM(1024,26)
+                 `IC_TAG_SRAM(1024,26)
        end // if (ICACHE_TAG_DEPTH == 1024)
        if (ICACHE_TAG_DEPTH == 2048)   begin : size_2048
-                 `EL2_IC_TAG_SRAM(2048,26)
+                 `IC_TAG_SRAM(2048,26)
        end // if (ICACHE_TAG_DEPTH == 2048)
        if (ICACHE_TAG_DEPTH == 4096)   begin  : size_4096
-                 `EL2_IC_TAG_SRAM(4096,26)
+                 `IC_TAG_SRAM(4096,26)
        end // if (ICACHE_TAG_DEPTH == 4096)
 
          assign w_tout[i][31:ICACHE_TAG_LO] = ic_tag_data_raw[i][31-ICACHE_TAG_LO:0] ;
@@ -1149,28 +1174,28 @@ end // block: OTHERS
       assign ic_tag_data_raw_pre[i][25:22] = '0 ;
 
       if (ICACHE_TAG_DEPTH == 32)   begin : size_32
-                 `EL2_IC_TAG_SRAM(32,22)
+                 `IC_TAG_SRAM(32,22)
       end // if (ICACHE_TAG_DEPTH == 32)
       if (ICACHE_TAG_DEPTH == 64)   begin : size_64
-                 `EL2_IC_TAG_SRAM(64,22)
+                 `IC_TAG_SRAM(64,22)
       end // if (ICACHE_TAG_DEPTH == 64)
       if (ICACHE_TAG_DEPTH == 128)   begin : size_128
-                 `EL2_IC_TAG_SRAM(128,22)
+                 `IC_TAG_SRAM(128,22)
       end // if (ICACHE_TAG_DEPTH == 128)
        if (ICACHE_TAG_DEPTH == 256)   begin : size_256
-                 `EL2_IC_TAG_SRAM(256,22)
+                 `IC_TAG_SRAM(256,22)
        end // if (ICACHE_TAG_DEPTH == 256)
        if (ICACHE_TAG_DEPTH == 512)   begin : size_512
-                 `EL2_IC_TAG_SRAM(512,22)
+                 `IC_TAG_SRAM(512,22)
        end // if (ICACHE_TAG_DEPTH == 512)
        if (ICACHE_TAG_DEPTH == 1024)   begin : size_1024
-                 `EL2_IC_TAG_SRAM(1024,22)
+                 `IC_TAG_SRAM(1024,22)
        end // if (ICACHE_TAG_DEPTH == 1024)
        if (ICACHE_TAG_DEPTH == 2048)   begin : size_2048
-                 `EL2_IC_TAG_SRAM(2048,22)
+                 `IC_TAG_SRAM(2048,22)
        end // if (ICACHE_TAG_DEPTH == 2048)
        if (ICACHE_TAG_DEPTH == 4096)   begin  : size_4096
-                 `EL2_IC_TAG_SRAM(4096,22)
+                 `IC_TAG_SRAM(4096,22)
        end // if (ICACHE_TAG_DEPTH == 4096)
 
          assign w_tout[i][31:ICACHE_TAG_LO] = ic_tag_data_raw[i][31-ICACHE_TAG_LO:0] ;
@@ -1214,7 +1239,7 @@ end // block: OTHERS
     logic                                any_addr_match;
     logic                                ic_tag_clken_final;
 
-`define EL2_IC_TAG_PACKED_SRAM(depth,width)                                                               \
+`define IC_TAG_PACKED_SRAM(depth,width)                                                               \
                   ram_be_``depth``x``width  ic_way_tag (                                                   \
                                 .ME  ( ic_tag_clken_final),                                                \
                                 .WE  (|ic_tag_wren_q[ICACHE_NUM_WAYS-1:0]),                             \
@@ -1226,17 +1251,20 @@ end // block: OTHERS
                                 .CLK (clk),                                                                \
                                 .ROP ( ),                                                                  \
                                                                                                            \
-                                .TEST1     (TEST1[0]),                                   \
-                                .RME      (RME[0]),                                      \
-                                .RM       (RM[0]),                                       \
+                                .TEST1     (ic_tag_ext_in_pkt_TEST1[0]),                                   \
+                                .RME      (ic_tag_ext_in_pkt_RME[0]),                                      \
+                                .RM_0       (ic_tag_ext_in_pkt_RM_0[0]),                                       \
+                                .RM_1       (ic_tag_ext_in_pkt_RM_1[0]),                                       \
+                                .RM_2       (ic_tag_ext_in_pkt_RM_2[0]),                                       \
+                                .RM_3       (ic_tag_ext_in_pkt_RM_3[0]),                                       \
+                                                                                                            \
+                                .LS       (ic_tag_ext_in_pkt_LS[0]),                                       \
+                                .DS       (ic_tag_ext_in_pkt_DS[0]),                                       \
+                                .SD       (ic_tag_ext_in_pkt_SD[0]),                                       \
                                                                                                            \
-                                .LS       (LS[0]),                                       \
-                                .DS       (DS[0]),                                       \
-                                .SD       (SD[0]),                                       \
-                                                                                                           \
-                                .TEST_RNM (TEST_RNM[0]),                                 \
-                                .BC1      (BC1[0]),                                      \
-                                .BC2      (BC2[0])                                       \
+                                .RNM      (ic_tag_ext_in_pkt_RNM[0]),                                 \
+                                .BC1      (ic_tag_ext_in_pkt_BC1[0]),                                      \
+                                .BC2      (ic_tag_ext_in_pkt_BC2[0])                                       \
                                                                                                            \
                                );                                                                          \
                                                                                                            \
@@ -1309,74 +1337,74 @@ end // block: OTHERS
      end
       if (ICACHE_TAG_DEPTH == 32)   begin : size_32
         if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(32,104)
+                 `IC_TAG_PACKED_SRAM(32,104)
         end // block: WAYS
       else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(32,52)
+                 `IC_TAG_PACKED_SRAM(32,52)
         end // block: WAYS
       end // if (ICACHE_TAG_DEPTH == 32
 
       if (ICACHE_TAG_DEPTH == 64)   begin : size_64
         if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(64,104)
+                 `IC_TAG_PACKED_SRAM(64,104)
         end // block: WAYS
       else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(64,52)
+                 `IC_TAG_PACKED_SRAM(64,52)
         end // block: WAYS
       end // block: size_64
 
       if (ICACHE_TAG_DEPTH == 128)   begin : size_128
        if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(128,104)
+                 `IC_TAG_PACKED_SRAM(128,104)
       end // block: WAYS
       else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(128,52)
+                 `IC_TAG_PACKED_SRAM(128,52)
       end // block: WAYS
 
       end // block: size_128
 
       if (ICACHE_TAG_DEPTH == 256)   begin : size_256
        if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(256,104)
+                 `IC_TAG_PACKED_SRAM(256,104)
         end // block: WAYS
        else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(256,52)
+                 `IC_TAG_PACKED_SRAM(256,52)
         end // block: WAYS
       end // block: size_256
 
       if (ICACHE_TAG_DEPTH == 512)   begin : size_512
        if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(512,104)
+                 `IC_TAG_PACKED_SRAM(512,104)
         end // block: WAYS
        else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(512,52)
+                 `IC_TAG_PACKED_SRAM(512,52)
         end // block: WAYS
       end // block: size_512
 
       if (ICACHE_TAG_DEPTH == 1024)   begin : size_1024
          if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(1024,104)
+                 `IC_TAG_PACKED_SRAM(1024,104)
         end // block: WAYS
        else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(1024,52)
+                 `IC_TAG_PACKED_SRAM(1024,52)
         end // block: WAYS
       end // block: size_1024
 
       if (ICACHE_TAG_DEPTH == 2048)   begin : size_2048
        if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(2048,104)
+                 `IC_TAG_PACKED_SRAM(2048,104)
         end // block: WAYS
        else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(2048,52)
+                 `IC_TAG_PACKED_SRAM(2048,52)
         end // block: WAYS
       end // block: size_2048
 
       if (ICACHE_TAG_DEPTH == 4096)   begin  : size_4096
        if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(4096,104)
+                 `IC_TAG_PACKED_SRAM(4096,104)
         end // block: WAYS
        else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(4096,52)
+                 `IC_TAG_PACKED_SRAM(4096,52)
         end // block: WAYS
       end // block: size_4096
 
@@ -1408,74 +1436,74 @@ end // block: OTHERS
      end
       if (ICACHE_TAG_DEPTH == 32)   begin : size_32
         if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(32,88)
+                 `IC_TAG_PACKED_SRAM(32,88)
         end // block: WAYS
       else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(32,44)
+                 `IC_TAG_PACKED_SRAM(32,44)
         end // block: WAYS
       end // if (ICACHE_TAG_DEPTH == 32
 
       if (ICACHE_TAG_DEPTH == 64)   begin : size_64
         if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(64,88)
+                 `IC_TAG_PACKED_SRAM(64,88)
         end // block: WAYS
       else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(64,44)
+                 `IC_TAG_PACKED_SRAM(64,44)
         end // block: WAYS
       end // block: size_64
 
       if (ICACHE_TAG_DEPTH == 128)   begin : size_128
        if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(128,88)
+                 `IC_TAG_PACKED_SRAM(128,88)
       end // block: WAYS
       else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(128,44)
+                 `IC_TAG_PACKED_SRAM(128,44)
       end // block: WAYS
 
       end // block: size_128
 
       if (ICACHE_TAG_DEPTH == 256)   begin : size_256
        if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(256,88)
+                 `IC_TAG_PACKED_SRAM(256,88)
         end // block: WAYS
        else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(256,44)
+                 `IC_TAG_PACKED_SRAM(256,44)
         end // block: WAYS
       end // block: size_256
 
       if (ICACHE_TAG_DEPTH == 512)   begin : size_512
        if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(512,88)
+                 `IC_TAG_PACKED_SRAM(512,88)
         end // block: WAYS
        else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(512,44)
+                 `IC_TAG_PACKED_SRAM(512,44)
         end // block: WAYS
       end // block: size_512
 
       if (ICACHE_TAG_DEPTH == 1024)   begin : size_1024
          if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(1024,88)
+                 `IC_TAG_PACKED_SRAM(1024,88)
         end // block: WAYS
        else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(1024,44)
+                 `IC_TAG_PACKED_SRAM(1024,44)
         end // block: WAYS
       end // block: size_1024
 
       if (ICACHE_TAG_DEPTH == 2048)   begin : size_2048
        if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(2048,88)
+                 `IC_TAG_PACKED_SRAM(2048,88)
         end // block: WAYS
        else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(2048,44)
+                 `IC_TAG_PACKED_SRAM(2048,44)
         end // block: WAYS
       end // block: size_2048
 
       if (ICACHE_TAG_DEPTH == 4096)   begin  : size_4096
        if (ICACHE_NUM_WAYS == 4) begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(4096,88)
+                 `IC_TAG_PACKED_SRAM(4096,88)
         end // block: WAYS
        else begin : WAYS
-                 `EL2_IC_TAG_PACKED_SRAM(4096,44)
+                 `IC_TAG_PACKED_SRAM(4096,44)
         end // block: WAYS
       end // block: size_4096
 
@@ -1497,9 +1525,9 @@ end // block: OTHERS
 
 
    always_comb begin : tag_rd_out
-      ictag_debug_rd_data[25:0] = '0;
+      ic_tag_debug_rd_data[25:0] = '0;
       for ( int j=0; j<ICACHE_NUM_WAYS; j++) begin: debug_rd_out
-         ictag_debug_rd_data[25:0] |=  ICACHE_ECC ? ({26{ic_debug_rd_way_en_ff[j]}} & ic_tag_data_raw[j] ) : {4'b0, ({22{ic_debug_rd_way_en_ff[j]}} & ic_tag_data_raw[j][21:0])};
+         ic_tag_debug_rd_data[25:0] |=  ICACHE_ECC ? ({26{ic_debug_rd_way_en_ff[j]}} & ic_tag_data_raw[j] ) : {4'b0, ({22{ic_debug_rd_way_en_ff[j]}} & ic_tag_data_raw[j][21:0])};
       end
    end
 
@@ -1509,5 +1537,4 @@ end // block: OTHERS
    end
 
    assign  ic_tag_perr  = | (ic_tag_way_perr[ICACHE_NUM_WAYS-1:0] & ic_tag_valid[ICACHE_NUM_WAYS-1:0] ) ;
-endmodule // EL2_IC_TAG
-
+endmodule // IC_TAG

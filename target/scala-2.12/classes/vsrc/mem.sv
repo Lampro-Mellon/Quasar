@@ -15,7 +15,11 @@
 // limitations under the License.
 //********************************************************************************
 
+`include "lsu_dccm_mem.sv"
+`include "ifu_ic_mem.sv"
+`include "ifu_iccm_mem.sv"
 module mem
+`include "parameter.sv"
 (
    input logic         clk,
    input logic         rst_l,
@@ -38,12 +42,36 @@ module mem
    output logic [DCCM_FDATA_WIDTH-1:0]  dccm_rd_data_hi,
 
 //`ifdef DCCM_ENABLE
-   input dccm_ext_in_pkt_t  [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt,
+   //input dccm_ext_in_pkt_t  [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_TEST1,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RME,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RM_0,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RM_1,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RM_2,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RM_3,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_LS,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_DS,
+    input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_SD,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RNM,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_BC1,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_BC2, 
 
 //`endif
 
    //ICCM ports
-   input ccm_ext_in_pkt_t   [ICCM_NUM_BANKS-1:0]  iccm_ext_in_pkt,
+   //input ccm_ext_in_pkt_t   [ICCM_NUM_BANKS-1:0]  iccm_ext_in_pkt,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_TEST1,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RME,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RM_0,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RM_1,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RM_2,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RM_3,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_LS,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_DS,
+      input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_SD,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RNM,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_BC1,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_BC2, 
 
    input logic [ICCM_BITS-1:1]  iccm_rw_addr,
    input logic                                        iccm_buf_correct_ecc,                    // ICCM is doing a single bit error correct cycle
@@ -64,10 +92,49 @@ module mem
    input  logic         ic_rd_en,
    input  logic [63:0] ic_premux_data,      // Premux data to be muxed with each way of the Icache.
    input  logic         ic_sel_premux_data, // Premux data sel
-   input ic_data_ext_in_pkt_t   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt,
-   input ic_tag_ext_in_pkt_t    [ICACHE_NUM_WAYS-1:0]           ic_tag_ext_in_pkt,
+  // input ic_data_ext_in_pkt_t   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt,
+     input [ICACHE_BANKS_WAY-1:0]  ic_data_ext_in_pkt_0_TEST1,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_0_RME,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_0_RM_0,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_0_RM_1,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_0_RM_2,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_0_RM_3,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_0_LS,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_0_DS,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_0_SD,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_0_RNM,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_0_BC1,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_0_BC2, 
 
-   input  logic [ICACHE_BANKS_WAY-1:0][70:0]               ic_wr_data,         // Data to fill to the Icache. With ECC
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_TEST1,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RME,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_0,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_1,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_2,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RM_3,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_LS,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_DS,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_SD,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_RNM,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_BC1,
+      input [ICACHE_BANKS_WAY-1:0] ic_data_ext_in_pkt_1_BC2, 
+   //input ic_tag_ext_in_pkt_t    [ICACHE_NUM_WAYS-1:0]           ic_tag_ext_in_pkt,
+   input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_TEST1,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RME,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_0,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_1,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_2,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RM_3,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_LS,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_DS,
+            input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_SD,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_RNM,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_BC1,
+      input [ICACHE_NUM_WAYS-1:0] ic_tag_ext_in_pkt_BC2, 
+
+   // input  logic [ICACHE_BANKS_WAY-1:0][70:0]               ic_wr_data,         // Data to fill to the Icache. With ECC
+     input  logic [70:0]  ic_wr_data_0,         // Data to fill to the Icache. With ECC
+        input  logic [70:0]  ic_wr_data_1,         // Data to fill to the Icache. With ECC
    input  logic [70:0]               ic_debug_wr_data,   // Debug wr cache.
    output logic [70:0]               ic_debug_rd_data ,  // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
    input  logic [ICACHE_INDEX_HI:3]               ic_debug_addr,      // Read/Write addresss to the Icache.
@@ -77,7 +144,7 @@ module mem
    input  logic [ICACHE_NUM_WAYS-1:0]                ic_debug_way,       // Debug way. Rd or Wr.
 
    output logic [63:0]              ic_rd_data ,        // Data read from Icache. 2x64bits + parity bits. F2 stage. With ECC
-   output logic [25:0]               ictag_debug_rd_data,// Debug icache tag.
+   output logic [25:0]               ic_tag_debug_rd_data,// Debug icache tag.
 
 
    output logic [ICACHE_BANKS_WAY-1:0] ic_eccerr,    // ecc error per bank
@@ -90,19 +157,58 @@ module mem
 
 );
 
-   logic active_clk;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_TEST1;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_RME;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_RM_0;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_RM_1;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_RM_2;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_RM_3;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_LS;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_DS;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_SD;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_RNM;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_BC1;
+logic   [ICACHE_NUM_WAYS-1:0][ICACHE_BANKS_WAY-1:0]         ic_data_ext_in_pkt_BC2;
+logic active_clk;
+
+assign ic_data_ext_in_pkt_TEST1[0]  = ic_data_ext_in_pkt_0_TEST1 ;
+assign ic_data_ext_in_pkt_RME[0]    = ic_data_ext_in_pkt_0_RME;
+assign ic_data_ext_in_pkt_RM_0[0]   = ic_data_ext_in_pkt_0_RM_0;
+assign ic_data_ext_in_pkt_RM_1[0]   = ic_data_ext_in_pkt_0_RM_1;
+assign ic_data_ext_in_pkt_RM_2[0]   = ic_data_ext_in_pkt_0_RM_2;
+assign ic_data_ext_in_pkt_RM_3[0]   = ic_data_ext_in_pkt_0_RM_3;
+assign ic_data_ext_in_pkt_LS[0]     = ic_data_ext_in_pkt_0_LS;
+assign ic_data_ext_in_pkt_DS[0]     = ic_data_ext_in_pkt_0_DS;
+assign ic_data_ext_in_pkt_SD[0]     = ic_data_ext_in_pkt_0_SD;
+assign ic_data_ext_in_pkt_RNM[0]    = ic_data_ext_in_pkt_0_RNM;
+assign ic_data_ext_in_pkt_BC1[0]    = ic_data_ext_in_pkt_0_BC1;
+assign ic_data_ext_in_pkt_BC2[0]    = ic_data_ext_in_pkt_0_BC2;
+
+assign ic_data_ext_in_pkt_TEST1[1]  = ic_data_ext_in_pkt_1_TEST1 ;
+assign ic_data_ext_in_pkt_RME[1]    = ic_data_ext_in_pkt_1_RME;
+assign ic_data_ext_in_pkt_RM_0[1]   = ic_data_ext_in_pkt_1_RM_0;
+assign ic_data_ext_in_pkt_RM_1[1]   = ic_data_ext_in_pkt_1_RM_1;
+assign ic_data_ext_in_pkt_RM_2[1]   = ic_data_ext_in_pkt_1_RM_2;
+assign ic_data_ext_in_pkt_RM_3[1]   = ic_data_ext_in_pkt_1_RM_3;
+assign ic_data_ext_in_pkt_LS[1]     = ic_data_ext_in_pkt_1_LS;
+assign ic_data_ext_in_pkt_DS[1]     = ic_data_ext_in_pkt_1_DS;
+assign ic_data_ext_in_pkt_SD[1]     = ic_data_ext_in_pkt_1_SD;
+assign ic_data_ext_in_pkt_RNM[1]    = ic_data_ext_in_pkt_1_RNM;
+assign ic_data_ext_in_pkt_BC1[1]    = ic_data_ext_in_pkt_1_BC1;
+assign ic_data_ext_in_pkt_BC2[1]    = ic_data_ext_in_pkt_1_BC2;
+
    rvoclkhdr active_cg   ( .en(1'b1),         .l1clk(active_clk), .* );
 
    // DCCM Instantiation
    if (DCCM_ENABLE == 1) begin: Gen_dccm_enable
-      lsu_dccm_mem dccm #(
+      lsu_dccm_mem #(
    .DCCM_BYTE_WIDTH(DCCM_BYTE_WIDTH),
    .DCCM_BITS(DCCM_BITS),
    .DCCM_NUM_BANKS(DCCM_NUM_BANKS),
    .DCCM_BANK_BITS(DCCM_BANK_BITS),
    .DCCM_SIZE(DCCM_SIZE),
    .DCCM_FDATA_WIDTH(DCCM_FDATA_WIDTH),
-   .DCCM_WIDTH_BITS(DCCM_WIDTH_BITS))(
+   .DCCM_WIDTH_BITS(DCCM_WIDTH_BITS)) dccm (
          .clk_override(dccm_clk_override),
          .*
       );
@@ -142,7 +248,7 @@ else  begin
    assign   ic_rd_hit[ICACHE_NUM_WAYS-1:0] = '0;
    assign   ic_tag_perr    = '0 ;
    assign   ic_rd_data  = '0 ;
-   assign   ictag_debug_rd_data  = '0 ;
+   assign   ic_tag_debug_rd_data  = '0 ;
 end // else: !if( ICACHE_ENABLE )
 
 
@@ -154,7 +260,7 @@ if (ICCM_ENABLE) begin : iccm
    .ICCM_INDEX_BITS(ICCM_INDEX_BITS),
    .ICCM_BANK_HI(ICCM_BANK_HI),
    .ICCM_NUM_BANKS(ICCM_NUM_BANKS),
-   .ICCM_BANK_BITS(ICCM_BANK_BITS)) iccm (.*,
+   .ICCM_BANK_BITS(ICCM_BANK_BITS))  iccm (.*,
                   .clk_override(icm_clk_override),
                   .iccm_rw_addr(iccm_rw_addr[ICCM_BITS-1:1]),
                   .iccm_rd_data(iccm_rd_data[63:0])
@@ -167,4 +273,3 @@ end
 
 
 endmodule
-

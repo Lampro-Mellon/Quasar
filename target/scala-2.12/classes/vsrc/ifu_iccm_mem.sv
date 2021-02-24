@@ -19,15 +19,10 @@
 // Icache closely coupled memory --- ICCM
 //********************************************************************************
 
-module el2_ifu_iccm_mem
-#(
-   parameter ICCM_BITS,
-   parameter ICCM_BANK_INDEX_LO,
-   parameter ICCM_INDEX_BITS,
-   parameter ICCM_BANK_HI,
-   parameter ICCM_NUM_BANKS,
-   parameter ICCM_BANK_BITS
- )(
+module ifu_iccm_mem
+`include "parameter.sv"
+
+ (
    input logic                                        clk,                                 // Clock only while core active.  Through one clock header.  For flops with    second clock header built in.  Connected to ACTIVE_L2CLK.
    input logic                                        active_clk,                          // Clock only while core active.  Through two clock headers. For flops without second clock header built in.
    input logic                                        rst_l,                               // reset, active low
@@ -41,15 +36,20 @@ module el2_ifu_iccm_mem
    input logic [2:0]                                  iccm_wr_size,                        // ICCM write size
    input logic [77:0]                                 iccm_wr_data,                        // ICCM write data
 
-   //input el2_ccm_ext_in_pkt_t [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt,                    // External packet
-   input [ICCM_NUM_BANKS-1:0] TEST1,
-   input [ICCM_NUM_BANKS-1:0] RME,
-   input [ICCM_NUM_BANKS-1:0][3:0] RM,
-   input [ICCM_NUM_BANKS-1:0] LS,
-   input [ICCM_NUM_BANKS-1:0] DS,
-   input [ICCM_NUM_BANKS-1:0] TEST-RNM,
-   input [ICCM_NUM_BANKS-1:0] BC1,
-   input [ICCM_NUM_BANKS-1:0] BC2, 
+   //input ccm_ext_in_pkt_t [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt,                    // External packet
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_TEST1,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RME,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RM_0,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RM_1,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RM_2,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RM_3,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_LS,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_DS,
+      input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_SD,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_RNM,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_BC1,
+   input [ICCM_NUM_BANKS-1:0] iccm_ext_in_pkt_BC2, 
+
    output logic [63:0]                                iccm_rd_data,                        // ICCM read data
    output logic [77:0]                                iccm_rd_data_ecc,                    // ICCM read ecc
    input  logic                                       scan_mode                            // Scan mode control
@@ -121,7 +121,7 @@ module el2_ifu_iccm_mem
                                                                                                     iccm_rw_addr[ICCM_BITS-1 : ICCM_BANK_INDEX_LO]);
  `ifdef VERILATOR
 
-    el2_ram #(.depth(1<<ICCM_INDEX_BITS), .width(39)) iccm_bank (
+    ram #(.depth(1<<ICCM_INDEX_BITS), .width(39)) iccm_bank (
                                      // Primary ports
                                      .ME(iccm_clken[i]),
                                      .CLK(clk),
@@ -131,15 +131,18 @@ module el2_ifu_iccm_mem
                                      .Q(iccm_bank_dout[i][38:0]),
                                      .ROP ( ),
                                      // These are used by SoC
-                                     .TEST1(TEST1[i]),
-                                     .RME(RME[i]),
-                                     .RM(RM[i][3:0]),
-                                     .LS(LS[i]),
-                                     .DS(DS[i]),
-                                     .SD(SD[i]) ,
-                                     .TEST_RNM(TEST_RNM[i]),
-                                     .BC1(BC1[i]),
-                                     .BC2(BC2[i])
+                                     .TEST1(iccm_ext_in_pkt_TEST1[i]),
+                                     .RME(iccm_ext_in_pkt_RME[i]),
+                                     .RM_0(iccm_ext_in_pkt_RM_0[i]),
+                                     .RM_1(iccm_ext_in_pkt_RM_1[i]),
+                                     .RM_2(iccm_ext_in_pkt_RM_2[i]),
+                                     .RM_3(iccm_ext_in_pkt_RM_3[i]),
+                                     .LS(iccm_ext_in_pkt_LS[i]),
+                                     .DS(iccm_ext_in_pkt_DS[i]),
+                                     .SD(iccm_ext_in_pkt_SD[i]) ,
+                                     .RNM(iccm_ext_in_pkt_RNM[i]),
+                                     .BC1(iccm_ext_in_pkt_BC1[i]),
+                                     .BC2(iccm_ext_in_pkt_BC2[i])
 
                                       );
  `else
@@ -155,15 +158,18 @@ module el2_ifu_iccm_mem
                                      .Q(iccm_bank_dout[i][38:0]),
                                      .ROP ( ),
                                      // These are used by SoC
-                                     .TEST1(TEST1[i]),
-                                     .RME(RME[i]),
-                                     .RM(RM[i][3:0]),
-                                     .LS(LS[i]),
-                                     .DS(DS[i]),
-                                     .SD(SD[i]) ,
-                                     .TEST_RNM(TEST_RNM[i]),
-                                     .BC1(BC1[i]),
-                                     .BC2(BC2[i])
+                                      .TEST1(iccm_ext_in_pkt_TEST1[i]),
+                                     .RME(iccm_ext_in_pkt_RME[i]),
+                                     .RM_0(iccm_ext_in_pkt_RM_0[i]),
+                                     .RM_1(iccm_ext_in_pkt_RM_1[i]),
+                                     .RM_2(iccm_ext_in_pkt_RM_2[i]),
+                                     .RM_3(iccm_ext_in_pkt_RM_3[i]),
+                                     .LS(iccm_ext_in_pkt_LS[i]),
+                                     .DS(iccm_ext_in_pkt_DS[i]),
+                                     .SD(iccm_ext_in_pkt_SD[i]) ,
+                                     .RNM(iccm_ext_in_pkt_RNM[i]),
+                                     .BC1(iccm_ext_in_pkt_BC1[i]),
+                                     .BC2(iccm_ext_in_pkt_BC2[i])
 
                                       );
      end // block: iccm
@@ -179,15 +185,18 @@ module el2_ifu_iccm_mem
                                      .Q(iccm_bank_dout[i][38:0]),
                                      .ROP ( ),
                                      // These are used by SoC
-                                     .TEST1(TEST1[i]),
-                                     .RME(RME[i]),
-                                     .RM(RM[i][3:0]),
-                                     .LS(LS[i]),
-                                     .DS(DS[i]),
-                                     .SD(SD[i]) ,
-                                     .TEST_RNM(TEST_RNM[i]),
-                                     .BC1(BC1[i]),
-                                     .BC2(BC2[i])
+                                      .TEST1(iccm_ext_in_pkt_TEST1[i]),
+                                     .RME(iccm_ext_in_pkt_RME[i]),
+                                     .RM_0(iccm_ext_in_pkt_RM_0[i]),
+                                     .RM_1(iccm_ext_in_pkt_RM_1[i]),
+                                     .RM_2(iccm_ext_in_pkt_RM_2[i]),
+                                     .RM_3(iccm_ext_in_pkt_RM_3[i]),
+                                     .LS(iccm_ext_in_pkt_LS[i]),
+                                     .DS(iccm_ext_in_pkt_DS[i]),
+                                     .SD(iccm_ext_in_pkt_SD[i]) ,
+                                     .RNM(iccm_ext_in_pkt_RNM[i]),
+                                     .BC1(iccm_ext_in_pkt_BC1[i]),
+                                     .BC2(iccm_ext_in_pkt_BC2[i])
 
                                       );
      end // block: iccm
@@ -203,15 +212,18 @@ module el2_ifu_iccm_mem
                                      .Q(iccm_bank_dout[i][38:0]),
                                      .ROP ( ),
                                      // These are used by SoC
-                                     .TEST1(TEST1[i]),
-                                     .RME(RME[i]),
-                                     .RM(RM[i][3:0]),
-                                     .LS(LS[i]),
-                                     .DS(DS[i]),
-                                     .SD(SD[i]) ,
-                                     .TEST_RNM(TEST_RNM[i]),
-                                     .BC1(BC1[i]),
-                                     .BC2(BC2[i])
+                                     .TEST1(iccm_ext_in_pkt_TEST1[i]),
+                                     .RME(iccm_ext_in_pkt_RME[i]),
+                                     .RM_0(iccm_ext_in_pkt_RM_0[i]),
+                                     .RM_1(iccm_ext_in_pkt_RM_1[i]),
+                                     .RM_2(iccm_ext_in_pkt_RM_2[i]),
+                                     .RM_3(iccm_ext_in_pkt_RM_3[i]),
+                                     .LS(iccm_ext_in_pkt_LS[i]),
+                                     .DS(iccm_ext_in_pkt_DS[i]),
+                                     .SD(iccm_ext_in_pkt_SD[i]) ,
+                                     .RNM(iccm_ext_in_pkt_RNM[i]),
+                                     .BC1(iccm_ext_in_pkt_BC1[i]),
+                                     .BC2(iccm_ext_in_pkt_BC2[i])
 
                                       );
      end // block: iccm
@@ -226,15 +238,18 @@ module el2_ifu_iccm_mem
                                      .Q(iccm_bank_dout[i][38:0]),
                                      .ROP ( ),
                                      // These are used by SoC
-                                     .TEST1(TEST1[i]),
-                                     .RME(RME[i]),
-                                     .RM(RM[i][3:0]),
-                                     .LS(LS[i]),
-                                     .DS(DS[i]),
-                                     .SD(SD[i]) ,
-                                     .TEST_RNM(TEST_RNM[i]),
-                                     .BC1(BC1[i]),
-                                     .BC2(BC2[i])
+                                      .TEST1(iccm_ext_in_pkt_TEST1[i]),
+                                     .RME(iccm_ext_in_pkt_RME[i]),
+                                     .RM_0(iccm_ext_in_pkt_RM_0[i]),
+                                     .RM_1(iccm_ext_in_pkt_RM_1[i]),
+                                     .RM_2(iccm_ext_in_pkt_RM_2[i]),
+                                     .RM_3(iccm_ext_in_pkt_RM_3[i]),
+                                     .LS(iccm_ext_in_pkt_LS[i]),
+                                     .DS(iccm_ext_in_pkt_DS[i]),
+                                     .SD(iccm_ext_in_pkt_SD[i]) ,
+                                     .RNM(iccm_ext_in_pkt_RNM[i]),
+                                     .BC1(iccm_ext_in_pkt_BC1[i]),
+                                     .BC2(iccm_ext_in_pkt_BC2[i])
 
                                       );
      end // block: iccm
@@ -249,15 +264,18 @@ module el2_ifu_iccm_mem
                                      .Q(iccm_bank_dout[i][38:0]),
                                      .ROP ( ),
                                      // These are used by SoC
-                                     .TEST1(TEST1[i]),
-                                     .RME(RME[i]),
-                                     .RM(RM[i][3:0]),
-                                     .LS(LS[i]),
-                                     .DS(DS[i]),
-                                     .SD(SD[i]) ,
-                                     .TEST_RNM(TEST_RNM[i]),
-                                     .BC1(BC1[i]),
-                                     .BC2(BC2[i])
+                                      .TEST1(iccm_ext_in_pkt_TEST1[i]),
+                                     .RME(iccm_ext_in_pkt_RME[i]),
+                                     .RM_0(iccm_ext_in_pkt_RM_0[i]),
+                                     .RM_1(iccm_ext_in_pkt_RM_1[i]),
+                                     .RM_2(iccm_ext_in_pkt_RM_2[i]),
+                                     .RM_3(iccm_ext_in_pkt_RM_3[i]),
+                                     .LS(iccm_ext_in_pkt_LS[i]),
+                                     .DS(iccm_ext_in_pkt_DS[i]),
+                                     .SD(iccm_ext_in_pkt_SD[i]) ,
+                                     .RNM(iccm_ext_in_pkt_RNM[i]),
+                                     .BC1(iccm_ext_in_pkt_BC1[i]),
+                                     .BC2(iccm_ext_in_pkt_BC2[i])
 
                                       );
      end // block: iccm
@@ -272,15 +290,18 @@ module el2_ifu_iccm_mem
                                      .Q(iccm_bank_dout[i][38:0]),
                                      .ROP ( ),
                                      // These are used by SoC
-                                     .TEST1(TEST1[i]),
-                                     .RME(RME[i]),
-                                     .RM(RM[i][3:0]),
-                                     .LS(LS[i]),
-                                     .DS(DS[i]),
-                                     .SD(SD[i]) ,
-                                     .TEST_RNM(TEST_RNM[i]),
-                                     .BC1(BC1[i]),
-                                     .BC2(BC2[i])
+                                   .TEST1(iccm_ext_in_pkt_TEST1[i]),
+                                     .RME(iccm_ext_in_pkt_RME[i]),
+                                     .RM_0(iccm_ext_in_pkt_RM_0[i]),
+                                     .RM_1(iccm_ext_in_pkt_RM_1[i]),
+                                     .RM_2(iccm_ext_in_pkt_RM_2[i]),
+                                     .RM_3(iccm_ext_in_pkt_RM_3[i]),
+                                     .LS(iccm_ext_in_pkt_LS[i]),
+                                     .DS(iccm_ext_in_pkt_DS[i]),
+                                     .SD(iccm_ext_in_pkt_SD[i]) ,
+                                     .RNM(iccm_ext_in_pkt_RNM[i]),
+                                     .BC1(iccm_ext_in_pkt_BC1[i]),
+                                     .BC2(iccm_ext_in_pkt_BC2[i])
 
                                       );
      end // block: iccm
@@ -295,15 +316,18 @@ module el2_ifu_iccm_mem
                                      .Q(iccm_bank_dout[i][38:0]),
                                      .ROP ( ),
                                      // These are used by SoC
-                                     .TEST1(TEST1[i]),
-                                     .RME(RME[i]),
-                                     .RM(RM[i][3:0]),
-                                     .LS(LS[i]),
-                                     .DS(DS[i]),
-                                     .SD(SD[i]) ,
-                                     .TEST_RNM(TEST_RNM[i]),
-                                     .BC1(BC1[i]),
-                                     .BC2(BC2[i])
+                                     .TEST1(iccm_ext_in_pkt_TEST1[i]),
+                                     .RME(iccm_ext_in_pkt_RME[i]),
+                                     .RM_0(iccm_ext_in_pkt_RM_0[i]),
+                                     .RM_1(iccm_ext_in_pkt_RM_1[i]),
+                                     .RM_2(iccm_ext_in_pkt_RM_2[i]),
+                                     .RM_3(iccm_ext_in_pkt_RM_3[i]),
+                                     .LS(iccm_ext_in_pkt_LS[i]),
+                                     .DS(iccm_ext_in_pkt_DS[i]),
+                                     .SD(iccm_ext_in_pkt_SD[i]) ,
+                                     .RNM(iccm_ext_in_pkt_RNM[i]),
+                                     .BC1(iccm_ext_in_pkt_BC1[i]),
+                                     .BC2(iccm_ext_in_pkt_BC2[i])
 
                                       );
      end // block: iccm
@@ -318,15 +342,18 @@ module el2_ifu_iccm_mem
                                      .Q(iccm_bank_dout[i][38:0]),
                                      .ROP ( ),
                                      // These are used by SoC
-                                     .TEST1(TEST1[i]),
-                                     .RME(RME[i]),
-                                     .RM(RM[i][3:0]),
-                                     .LS(LS[i]),
-                                     .DS(DS[i]),
-                                     .SD(SD[i]) ,
-                                     .TEST_RNM(TEST_RNM[i]),
-                                     .BC1(BC1[i]),
-                                     .BC2(BC2[i])
+                                     .TEST1(iccm_ext_in_pkt_TEST1[i]),
+                                     .RME(iccm_ext_in_pkt_RME[i]),
+                                     .RM_0(iccm_ext_in_pkt_RM_0[i]),
+                                     .RM_1(iccm_ext_in_pkt_RM_1[i]),
+                                     .RM_2(iccm_ext_in_pkt_RM_2[i]),
+                                     .RM_3(iccm_ext_in_pkt_RM_3[i]),
+                                     .LS(iccm_ext_in_pkt_LS[i]),
+                                     .DS(iccm_ext_in_pkt_DS[i]),
+                                     .SD(iccm_ext_in_pkt_SD[i]) ,
+                                     .RNM(iccm_ext_in_pkt_RNM[i]),
+                                     .BC1(iccm_ext_in_pkt_BC1[i]),
+                                     .BC2(iccm_ext_in_pkt_BC2[i])
 
                                       );
      end // block: iccm
@@ -341,15 +368,18 @@ module el2_ifu_iccm_mem
                                      .Q(iccm_bank_dout[i][38:0]),
                                      .ROP ( ),
                                      // These are used by SoC
-                                     .TEST1(TEST1[i]),
-                                     .RME(RME[i]),
-                                     .RM(RM[i][3:0]),
-                                     .LS(LS[i]),
-                                     .DS(DS[i]),
-                                     .SD(SD[i]) ,
-                                     .TEST_RNM(TEST_RNM[i]),
-                                     .BC1(BC1[i]),
-                                     .BC2(BC2[i])
+                                      .TEST1(iccm_ext_in_pkt_TEST1[i]),
+                                     .RME(iccm_ext_in_pkt_RME[i]),
+                                     .RM_0(iccm_ext_in_pkt_RM_0[i]),
+                                     .RM_1(iccm_ext_in_pkt_RM_1[i]),
+                                     .RM_2(iccm_ext_in_pkt_RM_2[i]),
+                                     .RM_3(iccm_ext_in_pkt_RM_3[i]),
+                                     .LS(iccm_ext_in_pkt_LS[i]),
+                                     .DS(iccm_ext_in_pkt_DS[i]),
+                                     .SD(iccm_ext_in_pkt_SD[i]) ,
+                                     .RNM(iccm_ext_in_pkt_RNM[i]),
+                                     .BC1(iccm_ext_in_pkt_BC1[i]),
+                                     .BC2(iccm_ext_in_pkt_BC2[i])
 
                                       );
      end // block: iccm
@@ -364,15 +394,18 @@ module el2_ifu_iccm_mem
                                      .Q(iccm_bank_dout[i][38:0]),
                                      .ROP ( ),
                                      // These are used by SoC
-                                     .TEST1(TEST1[i]),
-                                     .RME(RME[i]),
-                                     .RM(RM[i][3:0]),
-                                     .LS(LS[i]),
-                                     .DS(DS[i]),
-                                     .SD(SD[i]) ,
-                                     .TEST_RNM(TEST_RNM[i]),
-                                     .BC1(BC1[i]),
-                                     .BC2(BC2[i])
+                                      .TEST1(iccm_ext_in_pkt_TEST1[i]),
+                                     .RME(iccm_ext_in_pkt_RME[i]),
+                                     .RM_0(iccm_ext_in_pkt_RM_0[i]),
+                                     .RM_1(iccm_ext_in_pkt_RM_1[i]),
+                                     .RM_2(iccm_ext_in_pkt_RM_2[i]),
+                                     .RM_3(iccm_ext_in_pkt_RM_3[i]),
+                                     .LS(iccm_ext_in_pkt_LS[i]),
+                                     .DS(iccm_ext_in_pkt_DS[i]),
+                                     .SD(iccm_ext_in_pkt_SD[i]) ,
+                                     .RNM(iccm_ext_in_pkt_RNM[i]),
+                                     .BC1(iccm_ext_in_pkt_BC1[i]),
+                                     .BC2(iccm_ext_in_pkt_BC2[i])
 
                                       );
      end // block: iccm
@@ -477,5 +510,4 @@ module el2_ifu_iccm_mem
    assign iccm_rd_data[63:0]     = {iccm_data[63:0]};
    assign iccm_rd_data_ecc[77:0] = {iccm_bank_dout_fn[iccm_rd_addr_hi_q][38:0], iccm_bank_dout_fn[iccm_rd_addr_lo_q[ICCM_BANK_HI:2]][38:0]};
 
-endmodule // el2_ifu_iccm_mem
-
+endmodule // ifu_iccm_mem
