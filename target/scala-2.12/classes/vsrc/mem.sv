@@ -51,7 +51,7 @@ module mem
    input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RM_3,
    input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_LS,
    input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_DS,
-    input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_SD,
+   input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_SD,
    input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_RNM,
    input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_BC1,
    input [DCCM_NUM_BANKS-1:0] dccm_ext_in_pkt_BC2, 
