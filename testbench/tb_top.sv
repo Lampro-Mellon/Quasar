@@ -19,12 +19,10 @@ module tb_top ( input bit core_clk );
 module tb_top;
     bit                         core_clk;
 `endif
-/*
 initial begin
-	$fsdbDumpfile("testing.fsdb");
-	$fsdbDumpvars();
-	$fsdbDumpon();
-end*/
+         $dumpfile("test.vcd");
+         $dumpvars;
+  end
      logic                       rst_l;
     logic                       porst_l;
     logic                       nmi_int;
