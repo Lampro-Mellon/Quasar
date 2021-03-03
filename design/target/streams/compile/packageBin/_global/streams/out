@@ -414,8 +414,6 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/users/laraib.khan/Videos/Quasar/design/target/scala-2.12/classes/vsrc/fifo4.v[0m
 [0m[[0m[0mdebug[0m] [0m[0m	vsrc/raminfr.v[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/users/laraib.khan/Videos/Quasar/design/target/scala-2.12/classes/vsrc/raminfr.v[0m
-[0m[[0m[0mdebug[0m] [0m[0m	vsrc/pkt1.sv[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/users/laraib.khan/Videos/Quasar/design/target/scala-2.12/classes/vsrc/pkt1.sv[0m
 [0m[[0m[0mdebug[0m] [0m[0m	vsrc/dmi_wrapper.sv[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/users/laraib.khan/Videos/Quasar/design/target/scala-2.12/classes/vsrc/dmi_wrapper.sv[0m
 [0m[[0m[0mdebug[0m] [0m[0m	vsrc/uart_regs.v[0m
@@ -452,8 +450,6 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/users/laraib.khan/Videos/Quasar/design/target/scala-2.12/classes/vsrc/uart_tfifo.v[0m
 [0m[[0m[0mdebug[0m] [0m[0m	vsrc/uart_top.v[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/users/laraib.khan/Videos/Quasar/design/target/scala-2.12/classes/vsrc/uart_top.v[0m
-[0m[[0m[0mdebug[0m] [0m[0m	vsrc/QUASAR_wrapper_full_user_matches.txt[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/users/laraib.khan/Videos/Quasar/design/target/scala-2.12/classes/vsrc/QUASAR_wrapper_full_user_matches.txt[0m
 [0m[[0m[0mdebug[0m] [0m[0m	vsrc/swervolf_syscon.v[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/users/laraib.khan/Videos/Quasar/design/target/scala-2.12/classes/vsrc/swervolf_syscon.v[0m
 [0m[[0m[0mdebug[0m] [0m[0m	vsrc/beh_lib.sv[0m
