@@ -1,0 +1,160 @@
+0 
+41
++define+RV_OPENSOURCE
++error+500
++incdir+/home/users/laraib.khan/Videos/Quasar/design/snapshots/default
++itf+/eda_tools/vcs201809/linux64/lib/vcsdp_lite.tab
++libext+.v
++vcsd1
++vpi
+-Mamsrun=
+-Masflags=
+-Mcc=gcc
+-Mcfl= -pipe -fPIC -O -I/eda_tools/vcs201809/include
+-Mcplusplus=g++
+-Mcrt0=
+-Mcrtn=
+-Mcsrc=
+-Mexternalobj=
+-Mldflags= -Wl,--no-as-needed -rdynamic
+-Mobjects= /eda_tools/vcs201809/linux64/lib/libvirsim.so /eda_tools/vcs201809/linux64/lib/liberrorinf.so /eda_tools/vcs201809/linux64/lib/libsnpsmalloc.so /eda_tools/vcs201809/linux64/lib/libvfs.so
+-Mout=simv
+-Msaverestoreobj=/eda_tools/vcs201809/linux64/lib/vcs_save_restore_new.o
+-Msyslibs=/eda_tools/verdi201809/share/PLI/VCS/LINUX64/pli.a -ldl
+-Mvcsaceobjs=
+-Mxcflags= -pipe -fPIC -I/eda_tools/vcs201809/include
+-P
+-assert
+-debug_access
+-f /home/users/laraib.khan/Videos/Quasar/testbench/flist
+-fsdb
+-full64
+-gen_obj
+-l
+-picarchive
+-sverilog
+/eda_tools/vcs201809/linux64/bin/vcs1
+/eda_tools/verdi201809/share/PLI/VCS/LINUX64/verdi.tab
+/home/users/laraib.khan/Videos/Quasar/design/snapshots/default/common_defines.vh
+/home/users/laraib.khan/Videos/Quasar/design/snapshots/default/common_defines.vh
+/home/users/laraib.khan/Videos/Quasar/design/snapshots/default/pdef.vh
+/home/users/laraib.khan/Videos/Quasar/testbench/tb_top.sv
+/home/users/laraib.khan/Videos/Quasar/verif/sim/vcs.log
+svaext
+85
+install_root=/softwares/softwares_setups/verilator-4.032
+XDG_SESSION_ID=476
+XDG_RUNTIME_DIR=/run/user/1066
+XDG_MENU_PREFIX=xfce-
+XDG_DATA_DIRS=/home/users/laraib.khan/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop:/usr/share
+XDG_CURRENT_DESKTOP=XFCE
+XDG_CONFIG_DIRS=/etc/xdg
+VTE_VERSION=5202
+VNCDESKTOP=RakaPoshi:57 (laraib.khan)
+VMR_MODE_FLAG=64
+VERILATOR_ROOT=/softwares/softwares_setups/verilator-4.032
+VERDI_VCS_PLI=-P /eda_tools/verdi201809/share/PLI/VCS/LINUX64/novas.tab /eda_tools/verdi201809/share/PLI/VCS/LINUX64/pli.a
+VERDI_UVSIM_LIB=-L/eda_tools/verdi201809/share/PLI/IUS/LINUX64 -L/eda_tools/verdi201809/share/FsdbWriter/LINUX64
+VERDI_UVSIM_INCLUDE=-I/eda_tools/verdi201809/share/PLI/IUS/LINUX64
+VERDI_NCVERILOG_PLI=+loadpli1=/eda_tools/verdi201809/share/PLI/IUS/LINUX64/boot/debpli:novas_pli_boot
+VERDI_NCELAB_PLI=-LOADPLI1 /eda_tools/verdi201809/share/PLI/IUS/LINUX64/boot/debpli:novas_pli_boot
+VERDI_HOME=/eda_tools/verdi201809
+VERDI_FSDBSC=-L/eda_tools/verdi201809/share/PLI/IUS/LINUX64 -lfsdbSC -L/eda_tools/verdi201809/share/FsdbWriter/LINUX64 -lnffw -I/eda_tools/verdi201809/share/PLI/IUS/LINUX64
+VERDI=/eda_tools/verdi201809
+VCS_TARGET_ARCH=amd64
+VCS_MX_HOME_INTERNAL=1
+VCS_MODE_FLAG=64
+VCS_LOG_FILE=/home/users/laraib.khan/Videos/Quasar/verif/sim/vcs.log
+VCS_HOME=/eda_tools/vcs201809
+VCS_DEPTH=0
+VCS_ARG_ADDED_FOR_TMP=1
+VCS_ARCH_OVERRIDE=linux
+VCS_ARCH=linux64
+UNAME=/bin/uname
+TOOL_HOME=/eda_tools/vcs201809/linux64
+TERMINATOR_UUID=urn:uuid:67b89c3b-4ce7-4f56-9665-2acf132760ed
+TERMINATOR_DBUS_PATH=/net/tenshu/Terminator2
+TERMINATOR_DBUS_NAME=net.tenshu.Terminator20x759fefb189f69525
+S_COLORS=auto
+SYSTEMC_HOME=/usr/local/systemc-2.3.1/
+SYNOP_VCS=/eda_tools/vcs201809/bin
+SYNOP_PT=/eda_tools/pt201806
+SYNOP_FM=/eda_tools/formaility-201806sp5
+SSH_TTY=/dev/pts/14
+SSH_CONNECTION=192.168.20.32 52989 192.168.14.241 10139
+SSH_CLIENT=192.168.20.32 52989 10139
+SSH_AUTH_SOCK=/tmp/ssh-D8t8wLIA47hG/agent.24488
+SSH_AGENT_PID=24489
+SPYGLASS_HOME=/eda_tools/spyglass2018/spyglass_vO-2018.09/spyglass/SPYGLASS2018.09/SPYGLASS_HOME
+SNPS_VCS_INTERNAL_UBUNTU_PRE_LDFLAGS= -no-pie 
+SESSION_MANAGER=local/RakaPoshi:@/tmp/.ICE-unix/24481,unix/RakaPoshi:/tmp/.ICE-unix/24481
+SCRNAME=vcs
+SCRIPT_NAME=vcs
+RV_ROOT=/home/users/laraib.khan/Videos/Quasar
+RISCV_TOOLCHAIN=/cores/chipyard/riscv-tools-install
+RISCV_PATH=/cores/chipyard/riscv-tools-install
+RISCV_OBJDUMP=/cores/chipyard/riscv-tools-install/bin/riscv64-unknown-elf-objdump
+RISCV_OBJCOPY=/cores/chipyard/riscv-tools-install/bin/riscv64-unknown-elf-objcopy
+RISCV_LD=/cores/chipyard/riscv-tools-install/bin/riscv64-unknown-elf-ld
+RISCV_GCC=/cores/chipyard/riscv-tools-install/bin/riscv64-unknown-elf-gcc
+PLATFORM=LINUX64
+OVA_UUM=0
+NOVAS_VERDI=/eda_tools/verdi201809/bin
+NOVAS_HOME=/eda_tools/verdi201809
+MFLAGS=
+MAKE_TERMOUT=/dev/pts/70
+MAKE_TERMERR=/dev/pts/70
+MAKELEVEL=1
+MAKEFLAGS=
+LESSOPEN=| /usr/bin/lesspipe %s
+LESSCLOSE=/usr/bin/lesspipe %s %s
+LC_TIME=en_US.UTF-8
+LC_TELEPHONE=ur_PK
+LC_PAPER=ur_PK
+LC_NUMERIC=ur_PK
+LC_NAME=ur_PK
+LC_MONETARY=ur_PK
+LC_MEASUREMENT=ur_PK
+LC_IDENTIFICATION=ur_PK
+LC_ALL=C
+LC_ADDRESS=ur_PK
+GLADE_PIXMAP_PATH=:
+GLADE_MODULE_PATH=:
+GLADE_CATALOG_PATH=:
+DESKTOP_SESSION=xfce
+DEBUSSY_HOME=/eda_tools/verdi201809
+DCDIR=/eda_tools/dc2018/O-2018.06-SP5
+DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-UHsOlJEsBG,guid=e033b07cc261d020e53027345ffc04cb
+COLORTERM=truecolor
+ARCH=amd64
+0
+22
+1610541419 /home/users/laraib.khan/Videos/Quasar/design/src/main/resources/vsrc/beh_lib.sv
+1591249347 /eda_tools/vcs201809/etc/sva/rec_ltl_classes_package.svp
+1614166058 /home/users/laraib.khan/Videos/Quasar/testbench/tb_top.sv
+1614166058 /home/users/laraib.khan/Videos/Quasar/testbench/ahb_sif.sv
+1614166058 /home/users/laraib.khan/Videos/Quasar/testbench/axi_lsu_dma_bridge.sv
+1614167717 /home/users/laraib.khan/Videos/Quasar/design/src/main/resources/vsrc/mem_lib.sv
+1610541419 /home/users/laraib.khan/Videos/Quasar/design/src/main/resources/vsrc/beh_lib.sv
+1614167717 /home/users/laraib.khan/Videos/Quasar/design/src/main/resources/vsrc/gated_latch.sv
+1614167717 /home/users/laraib.khan/Videos/Quasar/design/src/main/resources/vsrc/rvjtag_tap.sv
+1614167717 /home/users/laraib.khan/Videos/Quasar/design/src/main/resources/vsrc/dmi_jtag_to_core_sync.sv
+1614167717 /home/users/laraib.khan/Videos/Quasar/design/src/main/resources/vsrc/dmi_wrapper.sv
+1614317074 /home/users/laraib.khan/Videos/Quasar/design/src/main/resources/vsrc/lsu_dccm_mem.sv
+1614318926 /home/users/laraib.khan/Videos/Quasar/design/src/main/resources/vsrc/ifu_iccm_mem.sv
+1614319689 /home/users/laraib.khan/Videos/Quasar/design/src/main/resources/vsrc/ifu_ic_mem.sv
+1614258172 /home/users/laraib.khan/Videos/Quasar/design/src/main/resources/vsrc/mem.sv
+1614663878 /home/users/laraib.khan/Videos/Quasar/generated_rtl/quasar_wrapper.sv
+1614663663 /home/users/laraib.khan/Videos/Quasar/design/snapshots/default/pdef.vh
+1614663663 /home/users/laraib.khan/Videos/Quasar/design/snapshots/default/common_defines.vh
+1614663663 /home/users/laraib.khan/Videos/Quasar/design/snapshots/default/common_defines.vh
+1614166058 /home/users/laraib.khan/Videos/Quasar/testbench/flist
+1591249361 /eda_tools/verdi201809/share/PLI/VCS/LINUX64/verdi.tab
+1591249347 /eda_tools/vcs201809/linux64/lib/vcsdp_lite.tab
+4
+1591249345 /eda_tools/vcs201809/linux64/lib/libvirsim.so
+1591249347 /eda_tools/vcs201809/linux64/lib/liberrorinf.so
+1591249345 /eda_tools/vcs201809/linux64/lib/libsnpsmalloc.so
+1591249346 /eda_tools/vcs201809/linux64/lib/libvfs.so
+1614663917 simv.daidir
+-1 partitionlib

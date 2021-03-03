@@ -1,0 +1,112 @@
+
+# Set Search Path for Golden/Implementation Design
+	set search_path "./verif/LEC ./verif/LEC/LEC_RTL/Golden_RTL ./verif/LEC/LEC_RTL/generated_rtl"
+
+# Set LEC_ROOT to presentt working directory
+	set LEC_ROOT [pwd]/verif/LEC
+
+# Set formality path to refference design
+	set fm_path_r $LEC_ROOT/LEC_RTL/Golden_RTL/
+
+# Synopsis Auto Setup
+	set synopsys_auto_setup true
+
+if {![file isdirectory $fm_path_r]} {
+   puts "ERROR: path is not valid"
+   exit
+} else {
+
+# Loading verilog reference file
+	read_sverilog -r  "        
+			$fm_path_r/design/lib/el2_lib.sv  
+			$fm_path_r/design/lib/beh_lib.sv  
+			$fm_path_r/design/lib/mem_lib.sv   
+			$fm_path_r/design/include/pkt.sv   
+			$fm_path_r/design/el2_swerv_wrapper.sv  
+			$fm_path_r/design/el2_mem.sv  
+			$fm_path_r/design/el2_pic_ctrl.sv 
+			$fm_path_r/design/el2_swerv.sv  
+			$fm_path_r/design/el2_dma_ctrl.sv  
+			$fm_path_r/design/ifu/el2_ifu_aln_ctl.sv  
+			$fm_path_r/design/ifu/el2_ifu_compress_ctl.sv  
+			$fm_path_r/design/ifu/el2_ifu_ifc_ctl.sv  
+			$fm_path_r/design/ifu/el2_ifu_bp_ctl.sv  
+			$fm_path_r/design/ifu/el2_ifu_ic_mem.sv  
+			$fm_path_r/design/ifu/el2_ifu_mem_ctl.sv  
+			$fm_path_r/design/ifu/el2_ifu_iccm_mem.sv  
+			$fm_path_r/design/ifu/el2_ifu.sv  
+			$fm_path_r/design/dec/el2_dec_decode_ctl.sv  
+			$fm_path_r/design/dec/el2_dec_gpr_ctl.sv  
+			$fm_path_r/design/dec/el2_dec_ib_ctl.sv  
+			$fm_path_r/design/dec/el2_dec_tlu_ctl.sv  
+			$fm_path_r/design/dec/el2_dec_trigger.sv  
+			$fm_path_r/design/dec/el2_dec.sv  
+			$fm_path_r/design/exu/el2_exu_alu_ctl.sv  
+			$fm_path_r/design/exu/el2_exu_mul_ctl.sv  
+			$fm_path_r/design/exu/el2_exu_div_ctl.sv  
+			$fm_path_r/design/exu/el2_exu.sv  
+			$fm_path_r/design/lsu/el2_lsu.sv  
+			$fm_path_r/design/lsu/el2_lsu_clkdomain.sv  
+			$fm_path_r/design/lsu/el2_lsu_addrcheck.sv  
+			$fm_path_r/design/lsu/el2_lsu_lsc_ctl.sv  
+			$fm_path_r/design/lsu/el2_lsu_stbuf.sv  
+			$fm_path_r/design/lsu/el2_lsu_bus_buffer.sv  
+			$fm_path_r/design/lsu/el2_lsu_bus_intf.sv  
+			$fm_path_r/design/lsu/el2_lsu_ecc.sv  
+			$fm_path_r/design/lsu/el2_lsu_dccm_mem.sv  
+			$fm_path_r/design/lsu/el2_lsu_dccm_ctl.sv  
+			$fm_path_r/design/lsu/el2_lsu_trigger.sv  
+			$fm_path_r/design/dbg/el2_dbg.sv  
+			$fm_path_r/design/dmi/dmi_wrapper.sv 
+			$fm_path_r/design/dmi/dmi_jtag_to_core_sync.sv 
+			$fm_path_r/design/dmi/rvjtag_tap.sv 				
+    "
+
+# Setting top reference design
+	set_top r:/WORK/el2_swerv_wrapper
+}
+# Loading verilog implementation file
+	read_sverilog -i  "         	\
+			./generated_rtl/quasar_wrapper.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/mem.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/ifu_ic_mem.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/ifu_iccm_mem.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/lsu_dccm_mem.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/dmi_wrapper.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/dmi_jtag_to_core_sync.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/rvjtag_tap.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/gated_latch.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/beh_lib.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/mem_lib.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/ltch.sv    	  	
+    "
+# Setting top implementation design
+	set_top i:/WORK/quasar_wrapper
+
+# Setting BLack Boxes on Memories
+	set_black_box r:/WORK/el2_mem
+	set_black_box i:/WORK/mem_ICACHE_BEAT_BITS*
+# Setting User Match on ports
+	source $LEC_ROOT/setup_files/port.fms
+
+# Setting User Match on Black Box Pins
+	source $LEC_ROOT/setup_files/BBPIN.fms
+
+# Setting User Match on enabels of CGC
+	source $LEC_ROOT/setup_files/LAT.fms
+
+# Setting User Match on Flip Flops
+	source $LEC_ROOT/setup_files/DFF.fms
+
+# Setting up constants potentially constant registers 
+	source $LEC_ROOT/setup_files/constant.fms
+
+	if {[verify] != 1} {
+		set verification_failing_points_limit 500
+		  start_gui &
+	}
+	
+# Save Current Session
+	save_session -replace $LEC_ROOT/LEC_PASSED.fss
+
+exit

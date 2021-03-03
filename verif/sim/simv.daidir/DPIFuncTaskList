@@ -1,0 +1,5 @@
+import_DPI svapfGetAttempt SnpsSVA_classes
+import_DPI svapfReportResult SnpsSVA_classes
+import_DPI svapfGetAssertEnabled SnpsSVA_classes
+DirectC SdisableFork 
+DirectC Wterminatesynch 

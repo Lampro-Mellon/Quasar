@@ -1,0 +1,13 @@
+[0m[[0m[31merror[0m] [0m[0m/home/users/laraib.khan/Videos/Quasar/design/src/main/scala/mem.scala:28:53: no arguments allowed for nullary constructor dccm_ext_in_pkt_t: ()include.dccm_ext_in_pkt_t[0m
+[0m[[0m[31merror[0m] [0m[0m  val dccm_ext_in_pkt = Input(new dccm_ext_in_pkt_t(DCCM_NUM_BANKS))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/users/laraib.khan/Videos/Quasar/design/src/main/scala/mem.scala:29:35: not found: type iccm_ext_in_pkt_t[0m
+[0m[[0m[31merror[0m] [0m[0m  val iccm_ext_in_pkt = Input(new iccm_ext_in_pkt_t(ICCM_NUM_BANKS))[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/users/laraib.khan/Videos/Quasar/design/src/main/scala/mem.scala:30:79: no arguments allowed for nullary constructor ic_data_ext_in_pkt_t: ()include.ic_data_ext_in_pkt_t[0m
+[0m[[0m[31merror[0m] [0m[0m  val ic_data_ext_in_pkt = Input(Vec(ICACHE_NUM_WAYS,new ic_data_ext_in_pkt_t(ICACHE_NUM_WAYS)))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/users/laraib.khan/Videos/Quasar/design/src/main/scala/mem.scala:31:57: no arguments allowed for nullary constructor ic_tag_ext_in_pkt_t: ()include.ic_tag_ext_in_pkt_t[0m
+[0m[[0m[31merror[0m] [0m[0m  val ic_tag_ext_in_pkt = Input(new ic_tag_ext_in_pkt_t(ICACHE_NUM_WAYS))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0mfour errors found[0m
