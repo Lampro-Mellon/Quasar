@@ -167,7 +167,7 @@ module rvlsadder
 
 endmodule // rvlsadder
 
-// assume we only maintain pc[31:1] in the pipe
+//assume we only maintain pc[31:1] in the pipe
 
 module rvbradder
   (
