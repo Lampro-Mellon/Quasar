@@ -136,7 +136,7 @@ Snapshots are placed in `$BUILD_PATH` directory.
 
 #### 3. Run sbt
 ```
-    make -f $RV_ROOT/tools/Makefile sbt
+    make -f $RV_ROOT/tools/Makefile sbt_
 ```
 This command will generate the Quasar wrapper in system verilog in the `generated_rtl` directory and runs the `reset_script.py`
 *   In the reset_script we do a post verilog-generation changes, these changes are as follows:
