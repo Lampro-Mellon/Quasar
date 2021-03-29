@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
+// Copyright 2019 Western Digital Corporation or its affiliates.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -65,6 +66,6 @@ _finish:
 .data
 hw_data:
 .ascii "----------------------------------\n"
-.ascii "Hello World from Quasar @LM !!\n"
+.ascii "Hello World from SweRV EL2 @WDC !!\n"
 .ascii "----------------------------------\n"
 .byte 0

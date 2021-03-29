@@ -466,6 +466,8 @@ module mem#(
    assign ic_data_ext_in_pkt[1][1].TEST_RNM = ic_data_ext_in_pkt_1_TEST_RNM_1;
    assign ic_data_ext_in_pkt[1][1].BC1      = ic_data_ext_in_pkt_1_BC1_1;
    assign ic_data_ext_in_pkt[1][1].BC2      = ic_data_ext_in_pkt_1_BC2_1;
+ 
+   wire active_clk;
 
    rvoclkhdr active_cg   ( .en(1'b1),         .l1clk(active_clk), .* );
 

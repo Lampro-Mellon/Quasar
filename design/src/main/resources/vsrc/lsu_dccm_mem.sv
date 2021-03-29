@@ -122,7 +122,7 @@ module lsu_dccm_mem
 
 `ifdef VERILATOR
 
-        ram #(DCCM_INDEX_DEPTH,39)  ram (
+        el2_ram #(DCCM_INDEX_DEPTH,39)  ram (
                                   // Primary ports
                                   .ME(dccm_clken[i]),
                                   .CLK(clk),

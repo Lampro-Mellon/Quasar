@@ -94,7 +94,7 @@ module ifu_ic_mem
    .ICACHE_TAG_DEPTH(ICACHE_TAG_DEPTH),
    .ICACHE_WAYPACK(ICACHE_WAYPACK),
    .ICACHE_INDEX_HI(ICACHE_INDEX_HI),
-   .ICACHE_TAG_INDEX_LO(ICACHE_TAG_INDEX_LO))
+   .ICACHE_TAG_INDEX_LO(ICACHE_TAG_INDEX_LO)) ic_tag_inst
           (
            .*,
            .ic_wr_en     (ic_wr_en[ICACHE_NUM_WAYS-1:0]),

@@ -776,23 +776,6 @@ module TEC_RV_ICG
 
 endmodule
 
-
-module rvclkhdr
-  (
-   input  logic en,
-   input  logic clk,
-   input  logic scan_mode,
-   output logic l1clk
-   );
-
-   logic   SE;
-   assign       SE = 0;
-
-   TEC_RV_ICG clkhdr ( .*, .EN(en), .CK(clk), .Q(l1clk));
-
-endmodule // rvclkhdr
-
-
 module rvoclkhdr
   (
    input  logic en,
