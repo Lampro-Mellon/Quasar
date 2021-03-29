@@ -1,5 +1,5 @@
 import re
-infile= open("./configs/snapshots/default/param.vh",'r')
+infile= open("./design/snapshots/default/param.vh",'r')
 params = []
 lines = infile.readlines() 
 for line in lines:

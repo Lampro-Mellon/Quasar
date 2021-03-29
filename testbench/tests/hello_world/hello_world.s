@@ -37,6 +37,6 @@ loop:
 .data
 hw_data:
 .ascii "----------------------------------\n"
-.ascii "Hello World from SweRV EL2 @WDC !!\n"
+.ascii "Hello World from QUASAR 2.0 @LMDC !!\n"
 .ascii "----------------------------------\n"
 .byte 0

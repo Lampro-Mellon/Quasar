@@ -1,6 +1,0 @@
- set_constant i:/WORK/quasar_wrapper/core/dec/decode/cam_raw_0_bits_tag_reg[2] 0
- set_constant i:/WORK/quasar_wrapper/core/dec/decode/cam_raw_1_bits_tag_reg[2] 0
- set_constant i:/WORK/quasar_wrapper/core/dec/decode/cam_raw_2_bits_tag_reg[2] 0
- set_constant i:/WORK/quasar_wrapper/core/dec/decode/cam_raw_3_bits_tag_reg[2] 0
- set_constant r:/WORK/el2_swerv_wrapper/swerv/lsu/bus_intf/bus_buffer/obuf_tag0ff/genblock.dffs/dout_reg[2] 0
- set_constant r:/WORK/el2_swerv_wrapper/swerv/lsu/bus_intf/bus_buffer/obuf_tag1ff/genblock.dffs/dout_reg[2] 0

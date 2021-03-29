@@ -15,7 +15,7 @@ delete_list7 = ["posedge _T_597"]
 delete_list8 = ["posedge io_dbg_rst_l"]
 delete_list9 = ["if (rst_not)"]
 delete_list10 = ["posedge rst_not"]
-#delete_list11 = ["TEST_RNM"]
+delete_list11 = ["rvclkhdr"]
 
 fin = open(infile)
 fout = open(outfile, "w+")
@@ -49,6 +49,9 @@ for line in fin:
 
 	for word in delete_list10:
 		line = line.replace(word, "negedge rst_not")
+	
+	for word in delete_list11:
+		line = line.replace(word, "rvclkhdr_ch")
 
 		fout.write(line)
 fin.close()
