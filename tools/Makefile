@@ -37,7 +37,7 @@ BUILD_DIR = ${RV_ROOT}/design/snapshots/${snapshot}
 TBDIR = ${RV_ROOT}/testbench
 
 # Define test name
-TEST = dhry
+TEST = hello_world
 
 # Define test name
 ifneq (,$(wildcard $(TBDIR)/asm/$(TEST).s))
