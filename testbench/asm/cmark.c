@@ -22,8 +22,6 @@ EEMBC
 El Dorado Hills, CA, 95762
 */
 
-//#include "/wd/users/jrahmeh/coremark_v1.0/riscv/coremark.h"
-
 /*
 Author : Shay Gal-On, EEMBC
 

@@ -41,3 +41,4 @@ high_perf               | Large BTB/BHT, AXI4 interface
 `quasar.config` may be edited to add additional target configurations, or new configurations may be created via the command line `-set` or `-unset` options.
 
 **Run `$RV_ROOT/configs/quasar.config -h` for options and settable parameters.**
+
