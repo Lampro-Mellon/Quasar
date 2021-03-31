@@ -10,7 +10,6 @@ class lsu_ecc extends Module with lib with RequireAsyncReset {
   val io = IO(new Bundle{
 
     val lsu_c2_r_clk        	     = Input(Clock())
-    val clk_override               = Input(Bool())
     val lsu_pkt_m           	     = Flipped(Valid(new lsu_pkt_t))
     val lsu_pkt_r           	     = Flipped(Valid(new lsu_pkt_t))
     val stbuf_data_any	   	       = Input(UInt(DCCM_DATA_WIDTH.W))
@@ -103,7 +102,7 @@ class lsu_ecc extends Module with lib with RequireAsyncReset {
     ldst_dual_r := io.lsu_addr_r(2) =/= io.end_addr_r(2)
     is_ldst_r := io.lsu_pkt_r.valid & (io.lsu_pkt_r.bits.load | io.lsu_pkt_r.bits.store) & io.addr_in_dccm_r & io.lsu_dccm_rden_r
     is_ldst_lo_r := is_ldst_r & !io.dec_tlu_core_ecc_disable
-    is_ldst_hi_r := is_ldst_r & ldst_dual_r  & !io.dec_tlu_core_ecc_disable
+    is_ldst_hi_r := is_ldst_r & (ldst_dual_r | io.lsu_pkt_r.bits.dma) & !io.dec_tlu_core_ecc_disable
     is_ldst_hi_any  := is_ldst_hi_r
     dccm_rdata_hi_any  := io.dccm_rdata_hi_r
     dccm_data_ecc_hi_any := io.dccm_data_ecc_hi_r
@@ -118,8 +117,7 @@ class lsu_ecc extends Module with lib with RequireAsyncReset {
     double_ecc_error_lo_r  := double_ecc_error_lo_any
     io.lsu_single_ecc_error_r := io.single_ecc_error_hi_r | io.single_ecc_error_lo_r;
     io.lsu_double_ecc_error_r := double_ecc_error_hi_r | double_ecc_error_lo_r
-  }
-    .otherwise {
+  }.otherwise {
       ldst_dual_m := io.lsu_addr_m(2) =/= io.end_addr_m(2)
       is_ldst_m := io.lsu_pkt_m.valid & (io.lsu_pkt_m.bits.load | io.lsu_pkt_m.bits.store) & io.addr_in_dccm_m & io.lsu_dccm_rden_m
       is_ldst_lo_m := is_ldst_m & !io.dec_tlu_core_ecc_disable
@@ -141,18 +139,19 @@ class lsu_ecc extends Module with lib with RequireAsyncReset {
       withClock(io.lsu_c2_r_clk) {io.lsu_double_ecc_error_r  := RegNext(io.lsu_double_ecc_error_m,0.U)}
       withClock(io.lsu_c2_r_clk) {io.single_ecc_error_lo_r   := RegNext(single_ecc_error_lo_any,0.U)}
       withClock(io.lsu_c2_r_clk) {io.single_ecc_error_hi_r   := RegNext(single_ecc_error_hi_any,0.U)}
-      io.sec_data_hi_r           := rvdffe(io.sec_data_hi_m,io.lsu_single_ecc_error_m | io.clk_override,clock,io.scan_mode)
-      io.sec_data_lo_r           := rvdffe(io.sec_data_lo_m,io.lsu_single_ecc_error_m | io.clk_override,clock,io.scan_mode)
-  }
+      withClock(io.lsu_c2_r_clk) {io.sec_data_hi_r           := RegNext(io.sec_data_hi_m,0.U)}
+      withClock(io.lsu_c2_r_clk) {io.sec_data_lo_r           := RegNext(io.sec_data_lo_m,0.U)}
+    }
   // Logic for ECC generation during write
   dccm_wdata_lo_any := Mux(io.ld_single_ecc_error_r_ff.asBool, io.sec_data_lo_r_ff,Mux(io.dma_dccm_wen.asBool, io.dma_dccm_wdata_lo, io.stbuf_data_any))
-  dccm_wdata_hi_any := Mux(io.ld_single_ecc_error_r_ff.asBool, io.sec_data_hi_r_ff,Mux(io.dma_dccm_wen.asBool, io.dma_dccm_wdata_hi, 0.U))
+  dccm_wdata_hi_any := Mux(io.ld_single_ecc_error_r_ff.asBool, io.sec_data_hi_r_ff,Mux(io.dma_dccm_wen.asBool, io.dma_dccm_wdata_hi, io.stbuf_data_any))
   io.sec_data_ecc_hi_r_ff  := dccm_wdata_ecc_hi_any
   io.sec_data_ecc_lo_r_ff  := dccm_wdata_ecc_lo_any
   io.stbuf_ecc_any         := dccm_wdata_ecc_lo_any
   io.dma_dccm_wdata_ecc_hi := dccm_wdata_ecc_hi_any
   io.dma_dccm_wdata_ecc_lo := dccm_wdata_ecc_lo_any
 
-  io.sec_data_hi_r_ff := rvdffe(io.sec_data_hi_r, io.ld_single_ecc_error_r| io.clk_override,clock,io.scan_mode)
-  io.sec_data_lo_r_ff := rvdffe(io.sec_data_lo_r, io.ld_single_ecc_error_r| io.clk_override,clock,io.scan_mode)
+  io.sec_data_hi_r_ff := rvdffe(io.sec_data_hi_r, io.ld_single_ecc_error_r,clock,io.scan_mode)
+  io.sec_data_lo_r_ff := rvdffe(io.sec_data_lo_r, io.ld_single_ecc_error_r,clock,io.scan_mode)
+
 }

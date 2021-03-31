@@ -8,16 +8,12 @@ import lsu._
 class dec_IO extends Bundle with lib {
   val free_clk              = Input(Clock())
   val active_clk            = Input(Clock())
-  val free_l2clk            = Input(Clock())
   val lsu_fastint_stall_any = Input(Bool())           // needed by lsu for 2nd pass of dma with ecc correction, stall next cycle
   val dec_pause_state_cg    = Output(Bool())          // to top for active state clock gating
-  val dec_tlu_core_empty    = Output(Bool())
   val rst_vec               = Input(UInt(31.W))       // [31:1] reset vector, from core pins
-  val ifu_i0_fa_index       = Input(UInt(log2Ceil(BTB_SIZE).W))
-  val dec_fa_error_index    = Output(UInt(log2Ceil(BTB_SIZE).W))
+
   val nmi_int               = Input(Bool())           // NMI pin
   val nmi_vec               = Input(UInt(31.W))       // [31:1] NMI vector, from pins
-  val lsu_nonblock_load_data = Input(UInt(32.W))
 
   val i_cpu_halt_req        = Input(Bool())           // Asynchronous Halt request to CPU
   val i_cpu_run_req         = Input(Bool())           // Asynchronous Restart request to CPU
@@ -70,7 +66,6 @@ class dec_IO extends Bundle with lib {
   val dec_tlu_resume_ack        = Output(Bool())       // Resume acknowledge
   val dec_tlu_mpc_halted_only   = Output(Bool())       // Core is halted only due to MPC
   val dec_dbg_rddata            = Output(UInt(32.W))       // debug command read data
-  val dec_csr_rddata_d			    = Output(UInt(32.W))
 
   val dec_dbg_cmd_done          = Output(Bool())      // abstract command is done
   val dec_dbg_cmd_fail          = Output(Bool())      // abstract command failed (illegal reg address)
@@ -84,9 +79,8 @@ class dec_IO extends Bundle with lib {
   val dec_tlu_perfcnt1          = Output(Bool())      // toggles when slot0 perf counter 1 has an event inc
   val dec_tlu_perfcnt2          = Output(Bool())      // toggles when slot0 perf counter 2 has an event inc
   val dec_tlu_perfcnt3          = Output(Bool())      // toggles when slot0 perf counter 3 has an event inc
-  val dec_tlu_flush_lower_wb    = Output(Bool())
   val dec_lsu_valid_raw_d       = Output(Bool())
-  val trace_rv_trace_pkt        = Output(new trace_pkt_t)        // trace packet
+  val rv_trace_pkt              = (new trace_pkt_t)        // trace packet
 
   // clock gating overrides from mcgc
   val dec_tlu_misc_clk_override = Output(Bool())       // override misc clock domain gating
@@ -94,11 +88,8 @@ class dec_IO extends Bundle with lib {
   val dec_tlu_lsu_clk_override  = Output(Bool())       // override load/store clock domain gating
   val dec_tlu_bus_clk_override  = Output(Bool())       // override bus clock domain gating
   val dec_tlu_pic_clk_override  = Output(Bool())       // override PIC clock domain gating
-  val dec_tlu_picio_clk_override  = Output(Bool())
   val dec_tlu_dccm_clk_override = Output(Bool())       // override DCCM clock domain gating
   val dec_tlu_icm_clk_override  = Output(Bool())       // override ICCM clock domain gating
-
-  val dec_i0_decode_d           =   Output(Bool())
 
   val scan_mode                 = Input(Bool())
   val ifu_dec = Flipped(new ifu_dec)
@@ -120,10 +111,6 @@ class dec extends Module with param with RequireAsyncReset{
   val               dec_tlu_exc_cause_wb1 = WireInit(UInt(5.W),0.U)
   val               dec_tlu_mtval_wb1 = WireInit(UInt(32.W),0.U)
   val               dec_tlu_i0_exc_valid_wb1 = WireInit(Bool(),0.B)
-  val               dec_tlu_trace_disable = WireInit(Bool(),0.B)
- // val               dec_i0_bp_fa_index = WireInit(UInt(log2Ceil(BTB_SIZE).W),0.U)
-  //val               dec_debug_valid_d = WireInit(Bool(),0.B)
-
 
 
   //--------------------------------------------------------------------------//
@@ -138,20 +125,17 @@ class dec extends Module with param with RequireAsyncReset{
   instbuff.io.ifu_ib <> io.ifu_dec.dec_aln.aln_ib
   instbuff.io.ib_exu <> io.dec_exu.ib_exu
   instbuff.io.dbg_ib <> io.dec_dbg.dbg_ib
-  instbuff.io.ifu_i0_fa_index := io.ifu_i0_fa_index
   dec_trigger.io.dec_i0_pc_d := instbuff.io.ib_exu.dec_i0_pc_d
   dec_trigger.io.trigger_pkt_any := tlu.io.trigger_pkt_any
 
   val dec_i0_trigger_match_d = dec_trigger.io.dec_i0_trigger_match_d
   dontTouch(dec_i0_trigger_match_d)
   decode.io.dec_aln <> io.ifu_dec.dec_aln.aln_dec
-  io.dec_i0_decode_d := decode.io.dec_i0_decode_d
+
   decode.io.decode_exu<> io.dec_exu.decode_exu
   decode.io.dec_alu<> io.dec_exu.dec_alu
   decode.io.dec_div<> io.dec_exu.dec_div
   decode.io.dctl_dma <> io.dec_dma.dctl_dma
-  decode.io.dec_tlu_trace_disable              := tlu.io.dec_tlu_trace_disable
-  decode.io.dec_debug_valid_d                  := instbuff.io.dec_debug_valid_d
   decode.io.dec_tlu_flush_extint               :=  tlu.io.dec_tlu_flush_extint
   decode.io.dec_tlu_force_halt                 :=  tlu.io.tlu_mem.dec_tlu_force_halt
   decode.io.dctl_busbuff <> io.lsu_dec.dctl_busbuff
@@ -161,18 +145,18 @@ class dec extends Module with param with RequireAsyncReset{
   decode.io.lsu_trigger_match_m                :=  io.lsu_trigger_match_m
   decode.io.lsu_pmu_misaligned_m               :=  io.lsu_pmu_misaligned_m
   decode.io.dec_tlu_debug_stall                :=  tlu.io.dec_tlu_debug_stall
-  decode.io.dec_i0_bp_fa_index                 :=  instbuff.io.dec_i0_bp_fa_index
   decode.io.dec_tlu_flush_leak_one_r           :=  tlu.io.tlu_bp.dec_tlu_flush_leak_one_wb
   decode.io.dec_debug_fence_d                  :=  instbuff.io.dec_debug_fence_d
   decode.io.dbg_dctl <> io.dec_dbg.dbg_dctl
   decode.io.dec_i0_icaf_d                      :=  instbuff.io.dec_i0_icaf_d
-  decode.io.dec_i0_icaf_second_d               :=  instbuff.io.dec_i0_icaf_second_d
+  decode.io.dec_i0_icaf_f1_d                   :=  instbuff.io.dec_i0_icaf_f1_d
   decode.io.dec_i0_icaf_type_d                 :=  instbuff.io.dec_i0_icaf_type_d
   decode.io.dec_i0_dbecc_d                     :=  instbuff.io.dec_i0_dbecc_d
   decode.io.dec_i0_brp                         :=  instbuff.io.dec_i0_brp
   decode.io.dec_i0_bp_index                    :=  instbuff.io.dec_i0_bp_index
   decode.io.dec_i0_bp_fghr                     :=  instbuff.io.dec_i0_bp_fghr
   decode.io.dec_i0_bp_btag                     :=  instbuff.io.dec_i0_bp_btag
+  decode.io.dec_i0_pc_d                        :=  instbuff.io.ib_exu.dec_i0_pc_d
   decode.io.lsu_idle_any                       :=  io.lsu_idle_any
   decode.io.lsu_load_stall_any                 :=  io.lsu_load_stall_any
   decode.io.lsu_store_stall_any                :=  io.lsu_store_stall_any
@@ -192,19 +176,16 @@ class dec extends Module with param with RequireAsyncReset{
   decode.io.exu_flush_final                    :=  io.exu_flush_final
   decode.io.dec_i0_instr_d                     :=  instbuff.io.dec_i0_instr_d
   decode.io.dec_ib0_valid_d                    :=  instbuff.io.dec_ib0_valid_d
-  decode.io.free_l2clk                         :=  io.free_l2clk
+  decode.io.free_clk                           :=  io.free_clk
   decode.io.active_clk                         :=  io.active_clk
   decode.io.clk_override                       :=  tlu.io.dec_tlu_dec_clk_override
   decode.io.scan_mode                          :=  io.scan_mode
-  dec_i0_inst_wb1                              :=   decode.io.dec_i0_inst_wb   //for tracer
-  dec_i0_pc_wb1                                :=   decode.io.dec_i0_pc_wb     //for tracer
-  io.lsu_p                                     :=   decode.io.lsu_p
-  io.dec_lsu_valid_raw_d                       :=   decode.io.dec_lsu_valid_raw_d
-  io.dec_lsu_offset_d                          :=   decode.io.dec_lsu_offset_d
-  io.dec_pause_state_cg                        :=   decode.io.dec_pause_state_cg
-  io.dec_exu.decode_exu.dec_qual_lsu_d         :=   decode.io.decode_exu.dec_qual_lsu_d
-  io.dec_fa_error_index                        :=decode.io.dec_fa_error_index
-
+  dec_i0_inst_wb1                      :=   decode.io.dec_i0_inst_wb1   //for tracer
+  dec_i0_pc_wb1                        :=   decode.io.dec_i0_pc_wb1     //for tracer
+  io.lsu_p                             :=   decode.io.lsu_p
+  io.dec_lsu_valid_raw_d               :=   decode.io.dec_lsu_valid_raw_d
+  io.dec_lsu_offset_d                  :=   decode.io.dec_lsu_offset_d
+  io.dec_pause_state_cg                :=   decode.io.dec_pause_state_cg
   gpr.io.raddr0       := decode.io.dec_i0_rs1_d
   gpr.io.raddr1       := decode.io.dec_i0_rs2_d
   gpr.io.wen0         := decode.io.dec_i0_wen_r
@@ -212,19 +193,18 @@ class dec extends Module with param with RequireAsyncReset{
   gpr.io.wd0          := decode.io.dec_i0_wdata_r
   gpr.io.wen1         := decode.io.dec_nonblock_load_wen
   gpr.io.waddr1       := decode.io.dec_nonblock_load_waddr
-  gpr.io.wd1          := io.lsu_nonblock_load_data
+  gpr.io.wd1          := io.lsu_dec.dctl_busbuff.lsu_nonblock_load_data
   gpr.io.wen2         := io.exu_div_wren
   gpr.io.waddr2       := decode.io.div_waddr_wb
   gpr.io.wd2          := io.exu_div_result
   gpr.io.scan_mode    := io.scan_mode
   io.dec_exu.gpr_exu <> gpr.io.gpr_exu
-
   tlu.io.tlu_mem <> io.ifu_dec.dec_mem_ctrl
   tlu.io.tlu_ifc <> io.ifu_dec.dec_ifc
   tlu.io.tlu_bp  <> io.ifu_dec.dec_bp
   tlu.io.tlu_exu <> io.dec_exu.tlu_exu
   tlu.io.tlu_dma <> io.dec_dma.tlu_dma
-  tlu.io.free_l2clk                         :=  io.free_l2clk
+  tlu.io.active_clk                         :=  io.active_clk
   tlu.io.free_clk                           :=  io.free_clk
   tlu.io.scan_mode                          :=  io.scan_mode
   tlu.io.rst_vec                            :=  io.rst_vec
@@ -259,7 +239,7 @@ class dec extends Module with param with RequireAsyncReset{
   tlu.io.dec_tlu_i0_pc_r                    :=  decode.io.dec_tlu_i0_pc_r
   tlu.io.dec_tlu_packet_r                   :=  decode.io.dec_tlu_packet_r
   tlu.io.dec_illegal_inst                   :=  decode.io.dec_illegal_inst
-  tlu.io.dec_i0_decode_d                    :=  decode.io.dec_i0_decode_d
+  tlu.io.dec_i0_decode_d                    :=  decode.io.dec_aln.dec_i0_decode_d
   tlu.io.exu_i0_br_way_r                    :=  io.exu_i0_br_way_r
   tlu.io.dbg_halt_req                       :=  io.dbg_halt_req
   tlu.io.dbg_resume_req                     :=  io.dbg_resume_req
@@ -302,26 +282,20 @@ class dec extends Module with param with RequireAsyncReset{
   io.dec_tlu_pic_clk_override      := tlu.io.dec_tlu_pic_clk_override
   io.dec_tlu_dccm_clk_override     := tlu.io.dec_tlu_dccm_clk_override
   io.dec_tlu_icm_clk_override      := tlu.io.dec_tlu_icm_clk_override
-  io.dec_tlu_picio_clk_override    := tlu.io.dec_tlu_picio_clk_override
-  io.dec_tlu_core_empty            := tlu.io.dec_tlu_core_empty
-  io.dec_csr_rddata_d              := tlu.io.dec_csr_rddata_d
-  io.dec_tlu_flush_lower_wb        := tlu.io.dec_tlu_flush_lower_wb
 
   //--------------------------------------------------------------------------//
 
-  io.trace_rv_trace_pkt.rv_i_insn_ip := decode.io.dec_i0_inst_wb
-  io.trace_rv_trace_pkt.rv_i_address_ip := Cat(decode.io.dec_i0_pc_wb, 0.U)
-  io.trace_rv_trace_pkt.rv_i_valid_ip := tlu.io.dec_tlu_int_valid_wb1 | tlu.io.dec_tlu_i0_valid_wb1 | tlu.io.dec_tlu_i0_exc_valid_wb1
-  io.trace_rv_trace_pkt.rv_i_exception_ip := tlu.io.dec_tlu_int_valid_wb1 | tlu.io.dec_tlu_i0_exc_valid_wb1
-  io.trace_rv_trace_pkt.rv_i_ecause_ip := tlu.io.dec_tlu_exc_cause_wb1(4,0)
-  io.trace_rv_trace_pkt.rv_i_interrupt_ip := tlu.io.dec_tlu_int_valid_wb1
-  io.trace_rv_trace_pkt.rv_i_tval_ip := tlu.io.dec_tlu_mtval_wb1
+  io.rv_trace_pkt.rv_i_insn_ip := decode.io.dec_i0_inst_wb1
+  io.rv_trace_pkt.rv_i_address_ip := Cat(decode.io.dec_i0_pc_wb1, 0.U)
+  io.rv_trace_pkt.rv_i_valid_ip := Cat(tlu.io.dec_tlu_int_valid_wb1, tlu.io.dec_tlu_i0_valid_wb1 | tlu.io.dec_tlu_i0_exc_valid_wb1)
+  io.rv_trace_pkt.rv_i_exception_ip := Cat(tlu.io.dec_tlu_int_valid_wb1, tlu.io.dec_tlu_i0_exc_valid_wb1)
+  io.rv_trace_pkt.rv_i_ecause_ip := tlu.io.dec_tlu_exc_cause_wb1(4,0)
+  io.rv_trace_pkt.rv_i_interrupt_ip := Cat(tlu.io.dec_tlu_int_valid_wb1, 0.U)
+  io.rv_trace_pkt.rv_i_tval_ip := tlu.io.dec_tlu_mtval_wb1
 
 
   // debug command read data
   io.dec_dbg_rddata := decode.io.dec_i0_wdata_r
 }
-object dec_main extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new dec()))
-}
+
 

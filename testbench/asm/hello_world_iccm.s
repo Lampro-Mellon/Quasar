@@ -63,7 +63,7 @@ _finish:
 .data
 hw_data:
 .ascii "----------------------------------------\n"
-.ascii " Hello World from QUASAR ICCM  @LMDC !! \n"
+.ascii "Hello World from Quasar ICCM  @LM !!    \n"
 .ascii "----------------------------------------\n"
 .byte 0
 

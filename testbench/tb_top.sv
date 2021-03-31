@@ -19,7 +19,13 @@ module tb_top ( input bit core_clk );
 module tb_top;
     bit                         core_clk;
 `endif
-    logic                       rst_l;
+/*
+initial begin
+	$fsdbDumpfile("testing.fsdb");
+	$fsdbDumpvars();
+	$fsdbDumpon();
+end*/
+     logic                       rst_l;
     logic                       porst_l;
     logic                       nmi_int;
 
@@ -27,48 +33,48 @@ module tb_top;
     logic        [31:0]         nmi_vector;
     logic        [31:1]         jtag_id;
 
-    logic        [31:0]         ic_haddr        ;
-    logic        [2:0]          ic_hburst       ;
-    logic                       ic_hmastlock    ;
-    logic        [3:0]          ic_hprot        ;
-    logic        [2:0]          ic_hsize        ;
-    logic        [1:0]          ic_htrans       ;
-    logic                       ic_hwrite       ;
-    logic        [63:0]         ic_hrdata       ;
-    logic                       ic_hready       ;
-    logic                       ic_hresp        ;
+    logic        [31:0]         ic_haddr;
+    logic        [2:0]          ic_hburst;
+    logic                       ic_hmastlock;
+    logic        [3:0]          ic_hprot;
+    logic        [2:0]          ic_hsize;
+    logic        [1:0]          ic_htrans;
+    logic                       ic_hwrite;
+    logic        [63:0]         ic_hrdata;
+    logic                       ic_hready;
+    logic                       ic_hresp;
 
-    logic        [31:0]         lsu_haddr       ;
-    logic        [2:0]          lsu_hburst      ;
-    logic                       lsu_hmastlock   ;
-    logic        [3:0]          lsu_hprot       ;
-    logic        [2:0]          lsu_hsize       ;
-    logic        [1:0]          lsu_htrans      ;
-    logic                       lsu_hwrite      ;
-    logic        [63:0]         lsu_hrdata      ;
-    logic        [63:0]         lsu_hwdata      ;
-    logic                       lsu_hready      ;
-    logic                       lsu_hresp        ;
+    logic        [31:0]         lsu_haddr;
+    logic        [2:0]          lsu_hburst;
+    logic                       lsu_hmastlock;
+    logic        [3:0]          lsu_hprot;
+    logic        [2:0]          lsu_hsize;
+    logic        [1:0]          lsu_htrans;
+    logic                       lsu_hwrite;
+    logic        [63:0]         lsu_hrdata;
+    logic        [63:0]         lsu_hwdata;
+    logic                       lsu_hready;
+    logic                       lsu_hresp;
 
-    logic        [31:0]         sb_haddr        ;
-    logic        [2:0]          sb_hburst       ;
-    logic                       sb_hmastlock    ;
-    logic        [3:0]          sb_hprot        ;
-    logic        [2:0]          sb_hsize        ;
-    logic        [1:0]          sb_htrans       ;
-    logic                       sb_hwrite       ;
+    logic        [31:0]         sb_haddr;
+    logic        [2:0]          sb_hburst;
+    logic                       sb_hmastlock;
+    logic        [3:0]          sb_hprot;
+    logic        [2:0]          sb_hsize;
+    logic        [1:0]          sb_htrans;
+    logic                       sb_hwrite;
 
-    logic        [63:0]         sb_hrdata       ;
-    logic        [63:0]         sb_hwdata       ;
-    logic                       sb_hready       ;
-    logic                       sb_hresp        ;
+    logic        [63:0]         sb_hrdata;
+    logic        [63:0]         sb_hwdata;
+    logic                       sb_hready;
+    logic                       sb_hresp;
 
     logic        [31:0]         trace_rv_i_insn_ip;
     logic        [31:0]         trace_rv_i_address_ip;
-    logic                       trace_rv_i_valid_ip;
-    logic                       trace_rv_i_exception_ip;
+    logic        [1:0]          trace_rv_i_valid_ip;
+    logic        [1:0]          trace_rv_i_exception_ip;
     logic        [4:0]          trace_rv_i_ecause_ip;
-    logic                       trace_rv_i_interrupt_ip;
+    logic        [1:0]          trace_rv_i_interrupt_ip;
     logic        [31:0]         trace_rv_i_tval_ip;
 
     logic                       o_debug_mode_status;
@@ -80,10 +86,10 @@ module tb_top;
     logic                       o_cpu_run_ack;
 
     logic                       mailbox_write;
-    logic        [63:0]         dma_hrdata       ;
-    logic        [63:0]         dma_hwdata       ;
-    logic                       dma_hready       ;
-    logic                       dma_hresp        ;
+    logic        [63:0]         dma_hrdata;
+    logic        [63:0]         dma_hwdata;
+    logic                       dma_hready;
+    logic                       dma_hresp;
 
     logic                       mpc_debug_halt_req;
     logic                       mpc_debug_run_req;
@@ -92,15 +98,15 @@ module tb_top;
     logic                       mpc_debug_run_ack;
     logic                       debug_brkpt_status;
 
-    int                         cycleCnt;
+    bit        [31:0]           cycleCnt;
     logic                       mailbox_data_val;
 
     wire                        dma_hready_out;
     int                         commit_count;
 
-    logic                       wb_valid;
-    logic [4:0]                 wb_dest;
-    logic [31:0]                wb_data;
+    logic                       wb_valid[1:0];
+    logic [4:0]                 wb_dest[1:0];
+    logic [31:0]                wb_data[1:0];
 
 `ifdef RV_BUILD_AXI4
    //-------------------------- LSU AXI signals--------------------------
@@ -307,8 +313,8 @@ module tb_top;
 
 `endif
     wire[63:0] WriteData;
-    string                      abi_reg[32]; // ABI register names
-
+	wire[63:0] ifu_brg_out_hwdata;
+	
 
     assign mailbox_write = lmem.mailbox_write;
     assign WriteData = lmem.WriteData;
@@ -346,27 +352,24 @@ module tb_top;
 
     // trace monitor
     always @(posedge core_clk) begin
-        wb_valid  <= rvtop.core.dec.decode_io_dec_i0_wen_r;
-        wb_dest   <= rvtop.core.dec.decode_io_dec_i0_waddr_r;
-        wb_data   <= rvtop.core.dec.decode_io_dec_i0_wdata_r;
-        if (trace_rv_i_valid_ip) begin
+        wb_valid[0]  <= rvtop.core.dec.decode_io_dec_i0_wen_r;
+        wb_dest[0]   <= rvtop.core.dec.decode_io_dec_i0_waddr_r;
+        wb_data[0]   <= rvtop.core.dec.decode_io_dec_i0_wdata_r;
+        if (trace_rv_i_valid_ip !== 0) begin
            $fwrite(tp,"%b,%h,%h,%0h,%0h,3,%b,%h,%h,%b\n", trace_rv_i_valid_ip, 0, trace_rv_i_address_ip,
                   0, trace_rv_i_insn_ip,trace_rv_i_exception_ip,trace_rv_i_ecause_ip,
                   trace_rv_i_tval_ip,trace_rv_i_interrupt_ip);
            // Basic trace - no exception register updates
            // #1 0 ee000000 b0201073 c 0b02       00000000
-           commit_count++;
-           $fwrite (el, "%10d : %8s 0 %h %h%13s ; %s\n", cycleCnt, $sformatf("#%0d",commit_count),
-                        trace_rv_i_address_ip, trace_rv_i_insn_ip,
-                        (wb_dest !=0 && wb_valid)?  $sformatf("%s=%h", abi_reg[wb_dest], wb_data) : "             ",
-                        dasm(trace_rv_i_insn_ip, trace_rv_i_address_ip, wb_dest & {5{wb_valid}}, wb_data)
-                   );
+           for (int i=0; i<1; i++)
+               if (trace_rv_i_valid_ip[i]==1) begin
+                   commit_count++;
+                   $fwrite (el, "%5d : %6s 0 %h %b %s\n", cycleCnt, $sformatf("#%0d",commit_count),
+                          trace_rv_i_address_ip[31+i*32 -:32], trace_rv_i_insn_ip[31+i*32-:32],
+                          (wb_dest[i] !=0 && wb_data[0])?  $sformatf("r%0d=%h", wb_dest[i], wb_data[i]) : "");
+               end
+        end
     end
-        if(rvtop.core.dec.decode_io_dec_nonblock_load_wen)
-           $fwrite (el, "%10d : %32s=%h ; nbL\n", cycleCnt, abi_reg[rvtop.core.dec.decode_io_dec_nonblock_load_waddr], rvtop.core.dec.io_lsu_nonblock_load_data);
-        if(rvtop.core.dec.io_exu_div_wren)
-           $fwrite (el, "%10d : %32s=%h ; nbD\n", cycleCnt, abi_reg[rvtop.core.dec.decode_io_div_waddr_wb], rvtop.core.dec.io_exu_div_result);
-  end
 
 
 //////////////////////////////////////////////////pic tracer///////////////////////////////////////////////////////
@@ -510,47 +513,15 @@ always @(posedge core_clk) begin
 end
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     initial begin
-        abi_reg[0] = "zero";
-        abi_reg[1] = "ra";
-        abi_reg[2] = "sp";
-        abi_reg[3] = "gp";
-        abi_reg[4] = "tp";
-        abi_reg[5] = "t0";
-        abi_reg[6] = "t1";
-        abi_reg[7] = "t2";
-        abi_reg[8] = "s0";
-        abi_reg[9] = "s1";
-        abi_reg[10] = "a0";
-        abi_reg[11] = "a1";
-        abi_reg[12] = "a2";
-        abi_reg[13] = "a3";
-        abi_reg[14] = "a4";
-        abi_reg[15] = "a5";
-        abi_reg[16] = "a6";
-        abi_reg[17] = "a7";
-        abi_reg[18] = "s2";
-        abi_reg[19] = "s3";
-        abi_reg[20] = "s4";
-        abi_reg[21] = "s5";
-        abi_reg[22] = "s6";
-        abi_reg[23] = "s7";
-        abi_reg[24] = "s8";
-        abi_reg[25] = "s9";
-        abi_reg[26] = "s10";
-        abi_reg[27] = "s11";
-        abi_reg[28] = "t3";
-        abi_reg[29] = "t4";
-        abi_reg[30] = "t5";
-        abi_reg[31] = "t6";
     // tie offs
         jtag_id[31:28] = 4'b1;
         jtag_id[27:12] = '0;
         jtag_id[11:1]  = 11'h45;
-        reset_vector = `RV_RESET_VEC;
+        reset_vector = 32'h0;
         nmi_vector   = 32'hee000000;
         nmi_int   = 0;
 
-        $readmemh("program.hex",  lmem.mem);
+        $readmemh("data.hex",     lmem.mem);
         $readmemh("program.hex",  imem.mem);
         tp = $fopen("trace_port.csv","w");
         el = $fopen("exec.log","w");
@@ -588,7 +559,6 @@ end
    //=========================================================================-
    // RTL instance
    //=========================================================================-
-/* verilator lint_off PINMISSING */
 quasar_wrapper rvtop (
     .reset                  ( rst_l         ),
     .io_dbg_rst_l              ( porst_l       ),
@@ -884,137 +854,10 @@ quasar_wrapper rvtop (
     .io_o_debug_mode_status    ( o_debug_mode_status),
     .io_o_cpu_run_ack          ( o_cpu_run_ack ),     // Core response to run req
 
-    .io_dccm_ext_in_pkt_TEST1_0('0),
-    .io_dccm_ext_in_pkt_TEST1_1('0),
-    .io_dccm_ext_in_pkt_TEST1_2('0),
-    .io_dccm_ext_in_pkt_TEST1_3('0),
-    .io_dccm_ext_in_pkt_RME_0('0),
-    .io_dccm_ext_in_pkt_RME_1('0),
-    .io_dccm_ext_in_pkt_RME_2('0),
-    .io_dccm_ext_in_pkt_RME_3('0),
-    .io_dccm_ext_in_pkt_RM_0('0),
-    .io_dccm_ext_in_pkt_RM_1('0),
-    .io_dccm_ext_in_pkt_RM_2('0),
-    .io_dccm_ext_in_pkt_RM_3('0),
-    .io_dccm_ext_in_pkt_LS_0('0),
-    .io_dccm_ext_in_pkt_LS_1('0),
-    .io_dccm_ext_in_pkt_LS_2('0),
-    .io_dccm_ext_in_pkt_LS_3('0),
-    .io_dccm_ext_in_pkt_DS_0('0),
-    .io_dccm_ext_in_pkt_DS_1('0),
-    .io_dccm_ext_in_pkt_DS_2('0),
-    .io_dccm_ext_in_pkt_DS_3('0),
-    .io_dccm_ext_in_pkt_SD_0('0),
-    .io_dccm_ext_in_pkt_SD_1('0),
-    .io_dccm_ext_in_pkt_SD_2('0),
-    .io_dccm_ext_in_pkt_SD_3('0),
-    .io_dccm_ext_in_pkt_TEST_RNM_0('0),
-    .io_dccm_ext_in_pkt_TEST_RNM_1('0),
-    .io_dccm_ext_in_pkt_TEST_RNM_2('0),
-    .io_dccm_ext_in_pkt_TEST_RNM_3('0),
-    .io_dccm_ext_in_pkt_BC1_0('0),
-    .io_dccm_ext_in_pkt_BC1_1('0),
-    .io_dccm_ext_in_pkt_BC1_2('0),
-    .io_dccm_ext_in_pkt_BC1_3('0),
-    .io_dccm_ext_in_pkt_BC2_0('0),
-    .io_dccm_ext_in_pkt_BC2_1('0),
-    .io_dccm_ext_in_pkt_BC2_2('0),
-    .io_dccm_ext_in_pkt_BC2_3('0),
-    .io_iccm_ext_in_pkt_TEST1_0('0),
-    .io_iccm_ext_in_pkt_TEST1_1('0),
-    .io_iccm_ext_in_pkt_TEST1_2('0),
-    .io_iccm_ext_in_pkt_TEST1_3('0),
-    .io_iccm_ext_in_pkt_RME_0('0),
-    .io_iccm_ext_in_pkt_RME_1('0),
-    .io_iccm_ext_in_pkt_RME_2('0),
-    .io_iccm_ext_in_pkt_RME_3('0),
-    .io_iccm_ext_in_pkt_RM_0('0),
-    .io_iccm_ext_in_pkt_RM_1('0),
-    .io_iccm_ext_in_pkt_RM_2('0),
-    .io_iccm_ext_in_pkt_RM_3('0),
-    .io_iccm_ext_in_pkt_LS_0('0),
-    .io_iccm_ext_in_pkt_LS_1('0),
-    .io_iccm_ext_in_pkt_LS_2('0),
-    .io_iccm_ext_in_pkt_LS_3('0),
-    .io_iccm_ext_in_pkt_DS_0('0),
-    .io_iccm_ext_in_pkt_DS_1('0),
-    .io_iccm_ext_in_pkt_DS_2('0),
-    .io_iccm_ext_in_pkt_DS_3('0),
-    .io_iccm_ext_in_pkt_SD_0('0),
-    .io_iccm_ext_in_pkt_SD_1('0),
-    .io_iccm_ext_in_pkt_SD_2('0),
-    .io_iccm_ext_in_pkt_SD_3('0),
-    .io_iccm_ext_in_pkt_TEST_RNM_0('0),
-    .io_iccm_ext_in_pkt_TEST_RNM_1('0),
-    .io_iccm_ext_in_pkt_TEST_RNM_2('0),
-    .io_iccm_ext_in_pkt_TEST_RNM_3('0),
-    .io_iccm_ext_in_pkt_BC1_0('0),
-    .io_iccm_ext_in_pkt_BC1_1('0),
-    .io_iccm_ext_in_pkt_BC1_2('0),
-    .io_iccm_ext_in_pkt_BC1_3('0),
-    .io_iccm_ext_in_pkt_BC2_0('0),
-    .io_iccm_ext_in_pkt_BC2_1('0),
-    .io_iccm_ext_in_pkt_BC2_2('0),
-    .io_iccm_ext_in_pkt_BC2_3('0),
-    .io_ic_data_ext_in_pkt_0_TEST1_0('0),
-    .io_ic_data_ext_in_pkt_0_TEST1_1('0),
-    .io_ic_data_ext_in_pkt_0_RME_0('0),
-    .io_ic_data_ext_in_pkt_0_RME_1('0),
-    .io_ic_data_ext_in_pkt_0_RM_0('0),
-    .io_ic_data_ext_in_pkt_0_RM_1('0),
-    .io_ic_data_ext_in_pkt_0_LS_0('0),
-    .io_ic_data_ext_in_pkt_0_LS_1('0),
-    .io_ic_data_ext_in_pkt_0_DS_0('0),
-    .io_ic_data_ext_in_pkt_0_DS_1('0),
-    .io_ic_data_ext_in_pkt_0_SD_0('0),
-    .io_ic_data_ext_in_pkt_0_SD_1('0),
-    .io_ic_data_ext_in_pkt_0_TEST_RNM_0('0),
-    .io_ic_data_ext_in_pkt_0_TEST_RNM_1('0),
-    .io_ic_data_ext_in_pkt_0_BC1_0('0),
-    .io_ic_data_ext_in_pkt_0_BC1_1('0),
-    .io_ic_data_ext_in_pkt_0_BC2_0('0),
-    .io_ic_data_ext_in_pkt_0_BC2_1('0),
-    .io_ic_data_ext_in_pkt_1_TEST1_0('0),
-    .io_ic_data_ext_in_pkt_1_TEST1_1('0),
-    .io_ic_data_ext_in_pkt_1_RME_0('0),
-    .io_ic_data_ext_in_pkt_1_RME_1('0),
-    .io_ic_data_ext_in_pkt_1_RM_0('0),
-    .io_ic_data_ext_in_pkt_1_RM_1('0),
-    .io_ic_data_ext_in_pkt_1_LS_0('0),
-    .io_ic_data_ext_in_pkt_1_LS_1('0),
-    .io_ic_data_ext_in_pkt_1_DS_0('0),
-    .io_ic_data_ext_in_pkt_1_DS_1('0),
-    .io_ic_data_ext_in_pkt_1_SD_0('0),
-    .io_ic_data_ext_in_pkt_1_SD_1('0),
-    .io_ic_data_ext_in_pkt_1_TEST_RNM_0('0),
-    .io_ic_data_ext_in_pkt_1_TEST_RNM_1('0),
-    .io_ic_data_ext_in_pkt_1_BC1_0('0),
-    .io_ic_data_ext_in_pkt_1_BC1_1('0),
-    .io_ic_data_ext_in_pkt_1_BC2_0('0),
-    .io_ic_data_ext_in_pkt_1_BC2_1('0),
-    .io_ic_tag_ext_in_pkt_TEST1_0('0),
-    .io_ic_tag_ext_in_pkt_TEST1_1('0),
-    .io_ic_tag_ext_in_pkt_RME_0('0),
-    .io_ic_tag_ext_in_pkt_RME_1('0),
-    .io_ic_tag_ext_in_pkt_RM_0('0),
-    .io_ic_tag_ext_in_pkt_RM_1('0),
-    .io_ic_tag_ext_in_pkt_LS_0('0),
-    .io_ic_tag_ext_in_pkt_LS_1('0),
-    .io_ic_tag_ext_in_pkt_DS_0('0),
-    .io_ic_tag_ext_in_pkt_DS_1('0),
-    .io_ic_tag_ext_in_pkt_SD_0('0),
-    .io_ic_tag_ext_in_pkt_SD_1('0),
-    .io_ic_tag_ext_in_pkt_TEST_RNM_0('0),
-    .io_ic_tag_ext_in_pkt_TEST_RNM_1('0),
-    .io_ic_tag_ext_in_pkt_BC1_0('0),
-    .io_ic_tag_ext_in_pkt_BC1_1('0),
-    .io_ic_tag_ext_in_pkt_BC2_0('0),
-    .io_ic_tag_ext_in_pkt_BC2_1('0),
-
-    .io_dec_tlu_perfcnt0(),
-    .io_dec_tlu_perfcnt1(),
-    .io_dec_tlu_perfcnt2(),
-    .io_dec_tlu_perfcnt3(),
+    .io_dec_tlu_perfcnt0       (),
+    .io_dec_tlu_perfcnt1       (),
+    .io_dec_tlu_perfcnt2       (),
+    .io_dec_tlu_perfcnt3       (),
 
     .io_soft_int               ('0),
     .io_core_id                ('0),
@@ -1022,7 +865,9 @@ quasar_wrapper rvtop (
     .io_mbist_mode             ( 1'b0 )        // to enable mbist
 
 );
-//=========================================================================-
+
+
+   //=========================================================================-
    // AHB I$ instance
    //=========================================================================-
 `ifdef RV_BUILD_AHB_LITE
@@ -1223,15 +1068,16 @@ axi_lsu_dma_bridge # (`RV_LSU_BUS_TAG,`RV_LSU_BUS_TAG ) bridge(
 
 task preload_iccm;
 bit[31:0] data;
-bit[31:0] addr, eaddr, saddr;
-
+bit[31:0] addr, eaddr, saddr, faddr;
+int adr;
 /*
 addresses:
- 0xfffffff0 - ICCM start address to load
- 0xfffffff4 - ICCM end address to load
+ 0xffec - ICCM start address to load
+ 0xfff0 - ICCM end address to load
+ 0xfff4 - imem start address
 */
 
-addr = 'hffff_fff0;
+addr = 'hffec;
 saddr = {lmem.mem[addr+3],lmem.mem[addr+2],lmem.mem[addr+1],lmem.mem[addr]};
 if ( (saddr < `RV_ICCM_SADR) || (saddr > `RV_ICCM_EADR)) return;
 `ifndef RV_ICCM_ENABLE
@@ -1240,43 +1086,49 @@ if ( (saddr < `RV_ICCM_SADR) || (saddr > `RV_ICCM_EADR)) return;
     $display("********************************************************");
     $finish;
 `endif
-addr += 4;
+init_iccm;
+addr = 'hfff0;
 eaddr = {lmem.mem[addr+3],lmem.mem[addr+2],lmem.mem[addr+1],lmem.mem[addr]};
+addr = 'hfff4;
+faddr = {lmem.mem[addr+3],lmem.mem[addr+2],lmem.mem[addr+1],lmem.mem[addr]};
 $display("ICCM pre-load from %h to %h", saddr, eaddr);
 
 for(addr= saddr; addr <= eaddr; addr+=4) begin
-    data = {imem.mem[addr+3],imem.mem[addr+2],imem.mem[addr+1],imem.mem[addr]};
+    adr = faddr & 'hffff;
+    data = {imem.mem[adr+3],imem.mem[adr+2],imem.mem[adr+1],imem.mem[adr]};
     slam_iccm_ram(addr, data == 0 ? 0 : {riscv_ecc32(data),data});
+    faddr+=4;
 end
 
 endtask
 
-
 task preload_dccm;
 bit[31:0] data;
-bit[31:0] addr, saddr, eaddr;
-
+bit[31:0] addr, eaddr;
+int adr;
 /*
 addresses:
- 0xffff_fff8 - DCCM start address to load
- 0xffff_fffc - DCCM end address to load
+ 0xfff8 - DCCM start address to load
+ 0xfffc - ICCM end address to load
+ 0x0    - lmem start addres to load from
 */
 
-addr = 'hffff_fff8;
-saddr = {lmem.mem[addr+3],lmem.mem[addr+2],lmem.mem[addr+1],lmem.mem[addr]};
-if (saddr < `RV_DCCM_SADR || saddr > `RV_DCCM_EADR) return;
+addr = 'hfff8;
+eaddr = {lmem.mem[addr+3],lmem.mem[addr+2],lmem.mem[addr+1],lmem.mem[addr]};
+if (eaddr != `RV_DCCM_SADR) return;
 `ifndef RV_DCCM_ENABLE
     $display("********************************************************");
     $display("DCCM preload: there is no DCCM in SweRV, terminating !!!");
     $display("********************************************************");
     $finish;
 `endif
-addr += 4;
+addr = 'hfffc;
 eaddr = {lmem.mem[addr+3],lmem.mem[addr+2],lmem.mem[addr+1],lmem.mem[addr]};
-$display("DCCM pre-load from %h to %h", saddr, eaddr);
+$display("DCCM pre-load from %h to %h", `RV_DCCM_SADR, `RV_DCCM_EADR);
 
-for(addr=saddr; addr <= eaddr; addr+=4) begin
-    data = {lmem.mem[addr+3],lmem.mem[addr+2],lmem.mem[addr+1],lmem.mem[addr]};
+for(addr=`RV_DCCM_SADR; addr <= eaddr; addr+=4) begin
+    adr = addr & 'hffff;
+    data = {lmem.mem[adr+3],lmem.mem[adr+2],lmem.mem[adr+1],lmem.mem[adr]};
     slam_dccm_ram(addr, data == 0 ? 0 : {riscv_ecc32(data),data});
 end
 
@@ -1432,8 +1284,5 @@ function int get_iccm_bank(input[31:0] addr,  output int bank_idx);
 `endif
 endfunction
 
-/* verilator lint_off CASEINCOMPLETE */
-`include "testbench/dasm.svi"
-/* verilator lint_on CASEINCOMPLETE */
 
 endmodule

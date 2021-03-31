@@ -9,14 +9,9 @@ import include._
 @chiselName
 class ifu extends Module with lib with RequireAsyncReset {
   val io = IO(new Bundle{
-    val ifu_i0_fa_index         = Output(UInt(log2Ceil(BTB_SIZE).W))
-    val dec_i0_decode_d         = Input(Bool()) // Dec
-    val dec_fa_error_index      = Input(UInt(log2Ceil(BTB_SIZE).W))// Fully associative btb error index
-
-
-    val exu_flush_final         = Input(Bool())
-    val exu_flush_path_final    = Input(UInt(31.W))
-    val free_l2clk              = Input(Clock())
+    val exu_flush_final       = Input(Bool())
+    val exu_flush_path_final  = Input(UInt(31.W))
+    val free_clk              = Input(Clock())
     val active_clk            = Input(Clock())
     val ifu_dec               = new ifu_dec() // IFU and DEC interconnects
     val exu_ifu               = new exu_ifu() // IFU and EXU interconnects
@@ -42,7 +37,8 @@ class ifu extends Module with lib with RequireAsyncReset {
   val ifc_ctl = Module(new ifu_ifc_ctl)
 
   // IFC wiring Inputs
-  ifc_ctl.io.free_l2clk := io.free_l2clk
+  ifc_ctl.io.active_clk := io.active_clk
+  ifc_ctl.io.free_clk := io.free_clk
   ifc_ctl.io.scan_mode := io.scan_mode
   ifc_ctl.io.ic_hit_f := mem_ctl.io.ic_hit_f
   ifc_ctl.io.ifu_fb_consume1 := aln_ctl.io.ifu_fb_consume1
@@ -75,16 +71,13 @@ class ifu extends Module with lib with RequireAsyncReset {
   aln_ctl.io.ifu_bp_ret_f := bp_ctl.io.ifu_bp_ret_f
   aln_ctl.io.exu_flush_final := io.exu_flush_final
   aln_ctl.io.dec_aln <> io.ifu_dec.dec_aln
-  io.ifu_i0_fa_index                                   := aln_ctl.io.ifu_i0_fa_index
-  aln_ctl.io.dec_i0_decode_d :=  io.dec_i0_decode_d
-  aln_ctl.io.ifu_bp_fa_index_f := bp_ctl.io.ifu_bp_fa_index_f
-
   aln_ctl.io.ifu_fetch_data_f := mem_ctl.io.ic_data_f
   aln_ctl.io.ifu_fetch_val := mem_ctl.io.ifu_fetch_val
   aln_ctl.io.ifu_fetch_pc := ifc_ctl.io.ifc_fetch_addr_f
 
   // BP wiring Inputs
   bp_ctl.io.scan_mode := io.scan_mode
+  bp_ctl.io.active_clk := io.active_clk
   bp_ctl.io.ic_hit_f := mem_ctl.io.ic_hit_f
   bp_ctl.io.ifc_fetch_addr_f := ifc_ctl.io.ifc_fetch_addr_f
   bp_ctl.io.ifc_fetch_req_f := ifc_ctl.io.ifc_fetch_req_f
@@ -92,10 +85,9 @@ class ifu extends Module with lib with RequireAsyncReset {
   bp_ctl.io.exu_bp <> io.exu_ifu.exu_bp
   bp_ctl.io.exu_flush_final := io.exu_flush_final
   bp_ctl.io.dec_tlu_flush_lower_wb := io.dec_tlu_flush_lower_wb
-  bp_ctl.io.dec_fa_error_index :=   io.dec_fa_error_index
 
   // mem-ctl Inputs
-  mem_ctl.io.free_l2clk := io.free_l2clk
+  mem_ctl.io.free_clk := io.free_clk
   mem_ctl.io.active_clk := io.active_clk
   mem_ctl.io.exu_flush_final := io.exu_flush_final
   mem_ctl.io.dec_mem_ctrl <> io.ifu_dec.dec_mem_ctrl
@@ -127,6 +119,3 @@ class ifu extends Module with lib with RequireAsyncReset {
 }
 
 
-object ifu_top extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new ifu()))
-}

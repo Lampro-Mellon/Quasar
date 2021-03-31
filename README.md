@@ -1,6 +1,6 @@
-# Quasar RISC-V Core 2.0 from Lampro Mellon
+# Quasar RISC-V Core 1.0 from Lampro Mellon
 
-This repository contains the Quasar Core design in CHISEL.
+This repository contains the SweRV-EL2 Core written in CHISEL named "Quasar".
 
 ## License
 
@@ -40,22 +40,18 @@ Quasar is a Chiselified version of EL2 SweRV RISC-V Core.
     ├── generated_rtl                           # Quasar wrapper
     ├── testbench 
     │   ├── asm                                 # Example assembly files
-    │   ├── hex                                 # Canned demo hex files   
-    │   └── tests                               # Example tests
+    │   └── hex                                 # Canned demo hex files
     ├── tools                                   # Scripts/Makefiles
     ├── tracer_logs                             # generated log files
     └── verif                                     
-        ├── LEC 
-            ├── formality_work 
-                └── formality_log               # LEC log files
-            └── setup_files                     # user_match files
+        ├── LEC                                  
         └── sim                                 # Simulation log/dump files
 
 ## Dependencies
 
-- Verilator **(4.102 or later)** must be installed on the system if running with verilator.
+- Verilator **(4.030 or later)** must be installed on the system if running with verilator.
 - Vcs must be installed on the system if running with vcs.
-- RISCV tool chain (based on gcc version 8.3 or higher) must be
+- RISCV tool chain (based on gcc version 7.3 or higher) must be
 installed so that it can be used to prepare RISCV binaries to run.
 - Sbt **(1.3.13 or later)** must be installed on the system.
 
@@ -67,7 +63,7 @@ installed so that it can be used to prepare RISCV binaries to run.
 4. Run make with $RV_ROOT/tools/Makefile
 
 ## Release Notes for this version
-Please see [release-notes](release-notes.md) for changes and bug fixes in this version of Quasar.
+Please see [release notes](release-notes.md) for changes and bug fixes in this version of Quasar.
 
 ### Configurations
 
@@ -99,8 +95,7 @@ $RV_ROOT/design/snapshots/default
     ├── pd_defines.vh                           # `defines for physical design
     ├── perl_configs.pl                         # Perl %configs hash for scripting
     ├── pic_map_auto.h                          # PIC memory map based on configure size
-    ├── whisper.json                            # JSON file for swerv-iss 
-    └── link.ld                                 # default linker control file
+    └── whisper.json                            # JSON file for swerv-iss
 ```
 #### 1. Generate scala parameter  
 ```
@@ -141,9 +136,9 @@ Snapshots are placed in `$BUILD_PATH` directory.
 
 #### 3. Run sbt
 ```
-    make -f $RV_ROOT/tools/Makefile sbt_
+    make -f $RV_ROOT/tools/Makefile sbt
 ```
-This command will generate the Quasar wrapper in system verilog of Quasar chisel, in the `generated_rtl` directory and runs the `reset_script.py`
+This command will generate the Quasar wrapper in system verilog in the `generated_rtl` directory and runs the `reset_script.py`
 *   In the reset_script we do a post verilog-generation changes, these changes are as follows:
     
     * Replace `posedge reset` with `negedge reset`
@@ -162,7 +157,7 @@ The simulation produces output on the screen like:
 VerilatorTB: Start of sim
 
 ----------------------------------
- Hello World from QUASAR @LMDC !!
+Hello World from Quasar @LM     !!
 ----------------------------------
 TEST_PASSED
 
@@ -185,7 +180,21 @@ You can re-execute simulation using:
 ```    
     make -f $RV_ROOT/tools/Makefile verilator
 ```
-#### 5. Default for VCS/Verilotor
+The simulation run/build command has following generic form:
+```
+    make -f $RV_ROOT/tools/Makefile [<simulator>] [debug=1] [snapshot=mybuild] [target=<target>] [TEST=<test>] [TEST_DIR=<path_to_test_dir>]
+```
+where:
+``` 
+<simulator> -  can be 'verilator' (by default) , 'vcs' - Synopsys VCS. if not provided, 'make' cleans work directory, builds verilator executable and runs a test.
+debug=1     -  allows VCD generation for verilator and VCS and SHM waves for irun option.
+<target>    -  predefined CPU configurations 'default' ( by default), 'default_ahb', 'typical_pd', 'high_perf'. 
+TEST        -  allows to run a C (<test>.c) or assembly (<test>.s) test, hello_world is run by default. 
+TEST_DIR    -  alternative to test source directory testbench/asm or testbench/tests.
+<snapshot>  -  run and build executable model of custom CPU configuration, remember to provide 'snapshot' argument for runs on custom configurations.
+CONF_PARAMS -  allows to provide -set options to quasar.conf script to alter predefined targets parameters.
+```
+#### Default for VCS/Verilotor
 If you want to run default configuration on verilator use the following command
 ```
 make -f $RV_ROOT/tools/Makefile
@@ -193,21 +202,6 @@ make -f $RV_ROOT/tools/Makefile
 For VCS use
 ```
 make -f $RV_ROOT/tools/Makefile vcs_all
-```
-
-The simulation run/build command has following generic form:
-```
-    make -f $RV_ROOT/tools/Makefile [<simulator>] [debug=1] [snapshot=mybuild] [target=<target>] [TEST=<test>] [TEST_DIR=<path_to_test_dir>]
-```
-where:
-``` 
-<simulator> -  can be 'verilator' (by default) , 'vcs' - Synopsys VCS, 'riviera'- Aldec Riviera-PRO. If not provided, 'make' cleans work directory, builds verilator executable and runs a test.
-debug=1     -  allows VCD generation for verilator and VCS and SHM waves for irun option.
-<target>    -  predefined CPU configurations 'default' ( by default), 'default_ahb', 'typical_pd', 'high_perf'. 
-TEST        -  allows to run a C (<test>.c) or assembly (<test>.s) test, hello_world is run by default. 
-TEST_DIR    -  alternative to test source directory testbench/asm or testbench/tests.
-<snapshot>  -  run and build executable model of custom CPU configuration, remember to provide 'snapshot' argument for runs on custom configurations.
-CONF_PARAMS -  allows to provide -set options to quasar.conf script to alter predefined targets parameters.
 ```
 Example:
 ```
@@ -220,6 +214,7 @@ If you want to compile a test only, you can run:
 ```
     make -f $RV_ROOT/tools/Makefile program.hex TEST=<test> [TEST_DIR=/path/to/dir]
 ```
+
 The Makefile uses  `snapshot/<target>/link.ld` file, generated by quasar.conf script by default to build test executable. User can provide test specific linker file in form `<test_name>.ld` to build the test executable, in the same directory with the test source.
 
 User also can create a test specific makefile in form `<test_name>.makefile`, containing building instructions how to create `program.hex` file used by simulation. The private makefile should be in the same directory as the test source. See examples in `testbench/asm` directory.
@@ -234,27 +229,15 @@ Note: You may need to delete `program.hex` file from work directory, when run a 
 
 The `$RV_ROOT/testbench/asm` directory contains following tests ready to simulate:
 ```
-hello_world      -  default test program to run, prints Hello World message to screen and console.log
+hello_world      - default tes to run, prints Hello World message to screen and console.log
 hello_world_dccm  - the same as above, but takes the string from preloaded DCCM.
-hello_world_iccm  - the same as hello_world, but loads the test code to ICCM via LSU to DMA bridge and then executes it from there. Runs on QUASAR with AXI4 buses only. 
+hello_world_iccm  - the same as hello_world, but loads the test code to ICCM via LSU to DMA bridge and then executes
+                  it from there. Runs on QUASAR with AXI4 buses only. 
 cmark             - coremark benchmark running with code and data in external memories
 cmark_dccm        - the same as above, running data and stack from DCCM (faster)
-cmark_iccm        - the same as above with preloaded code to ICCM.
-
-dhry              - Run dhrystone. (Scale by 1757 to get DMIPS/MHZ)
+cmark_iccm        - the same as above with preloaded code to ICCM. 
 ```
 
 The `$RV_ROOT/testbench/hex` directory contains precompiled hex files of the tests, ready for simulation in case RISCV SW tools are not installed.
 
-#### 6. Logical Equivalence Checking of Quasar
-If you want to perform LEC on quasar, use the following command
-```
-make -f $RV_ROOT/tools/Makefile lec
-```
-This command will call the LEC Makefile to clone Quasar along with the SweRV-EL2 and run `sbt` for chisel-generated RTL. Then, this will take file for user-match the ports, blockbox pins, latches, flops and perform the LEC of Quasar.
-Following log files are created in `$RV_ROOT/verif/LEC/formality_work/formality_log` :
-`fm_shell_command.log`  gives the detail of instructions
-`formality.log`         gives the detail of undriven nets
-
 **Note**: The testbench has a simple synthesizable bridge that allows you to load the ICCM via load/store instructions. This is only supported for AXI4 builds.
-

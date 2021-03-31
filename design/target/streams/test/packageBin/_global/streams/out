@@ -1,0 +1,13 @@
+[0m[[0m[0mdebug[0m] [0m[0mPackaging /home/waleedbinehsan/Desktop/SweRV-Chisel/target/scala-2.12/chisel-module-template_2.12-3.3.0-tests.jar ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	lib[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chisel/target/scala-2.12/test-classes/lib[0m
+[0m[[0m[0mdebug[0m] [0m[0m	lib/GCDMain$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chisel/target/scala-2.12/test-classes/lib/GCDMain$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	lib/GCDMain$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chisel/target/scala-2.12/test-classes/lib/GCDMain$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	lib/Tester.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chisel/target/scala-2.12/test-classes/lib/Tester.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	lib/GCDMain.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/waleedbinehsan/Desktop/SweRV-Chisel/target/scala-2.12/test-classes/lib/GCDMain.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mDone packaging.[0m

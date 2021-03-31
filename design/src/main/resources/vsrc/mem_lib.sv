@@ -16,17 +16,7 @@
 `define EL2_LOCAL_RAM_TEST_IO          \
 input logic WE,              \
 input logic ME,              \
-input logic CLK,             \
-input logic TEST1,           \
-input logic RME,             \
-input logic  [3:0] RM,       \
-input logic LS,              \
-input logic DS,              \
-input logic SD,              \
-input logic TEST_RNM,        \
-input logic BC1,             \
-input logic BC2,             \
-output logic ROP
+input logic CLK
 
 `define EL2_RAM(depth, width)              \
 module ram_``depth``x``width(               \
@@ -36,22 +26,11 @@ module ram_``depth``x``width(               \
     `EL2_LOCAL_RAM_TEST_IO                 \
 );                                          \
 reg [(width-1):0] ram_core [(depth-1):0];   \
-`ifdef GTLSIM                               \
-integer i;                                  \
-initial begin                               \
-   for (i=0; i<depth; i=i+1)                \
-     ram_core[i] = '0;                      \
-end                                         \
-`endif                                      \
-always @(posedge CLK) begin                 \
-`ifdef GTLSIM                               \
-   if (ME && WE) ram_core[ADR] <= D;        \
-`else                                       \
-   if (ME && WE) begin ram_core[ADR] <= D; Q <= 'x; end  \
-`endif                                      \
+                                            \
+always @(posedge CLK) begin              \
+   if (ME && WE) ram_core[ADR] = D;        \
    if (ME && ~WE) Q <= ram_core[ADR];       \
 end                                         \
-assign ROP = ME;                            \
                                             \
 endmodule
 
@@ -63,22 +42,12 @@ module ram_be_``depth``x``width(            \
     `EL2_LOCAL_RAM_TEST_IO                 \
 );                                          \
 reg [(width-1):0] ram_core [(depth-1):0];   \
-`ifdef GTLSIM                               \
-integer i;                                  \
-initial begin                               \
-   for (i=0; i<depth; i=i+1)                \
-     ram_core[i] = '0;                      \
+                                            \
+always @(posedge CLK) begin              \
+   if (ME && WE) ram_core[ADR] = D & WEM | ~WEM & ram_core[ADR];\
+   if (ME && ~WE) Q <= ram_core[ADR];       \
 end                                         \
-`endif                                      \
-always @(posedge CLK) begin                 \
-`ifdef GTLSIM                               \
-   if (ME && WE)       ram_core[ADR] <= D & WEM | ~WEM & ram_core[ADR];      \
-`else                                       \
-   if (ME && WE) begin ram_core[ADR] <= D & WEM | ~WEM & ram_core[ADR]; Q <= 'x; end  \
-`endif                                      \
-   if (ME && ~WE) Q <= ram_core[ADR];          \
-end                                         \
-assign ROP = ME;                            \
+                                            \
                                             \
 endmodule
 
@@ -92,11 +61,7 @@ output logic [(width-1):0] Q,
 reg [(width-1):0] ram_core [(depth-1):0];
 
 always @(posedge CLK) begin
-`ifdef GTLSIM
-   if (ME && WE)       ram_core[ADR] <= D;
-`else
-   if (ME && WE) begin ram_core[ADR] <= D; Q <= 'x; end
-`endif
+   if (ME && WE) ram_core[ADR] = D;
    if (ME && ~WE) Q <= ram_core[ADR];
 end
 endmodule
@@ -207,7 +172,6 @@ endmodule
 `EL2_RAM_BE(256, 52)
 `EL2_RAM_BE(128, 52)
 `EL2_RAM_BE(64, 52)
-`EL2_RAM_BE(32, 52)
 `EL2_RAM_BE(4096, 104)
 `EL2_RAM_BE(2048, 104)
 `EL2_RAM_BE(1024, 104)
@@ -215,7 +179,6 @@ endmodule
 `EL2_RAM_BE(256, 104)
 `EL2_RAM_BE(128, 104)
 `EL2_RAM_BE(64, 104)
-`EL2_RAM_BE(32, 104)
 `EL2_RAM_BE(4096, 44)
 `EL2_RAM_BE(2048, 44)
 `EL2_RAM_BE(1024, 44)
@@ -223,7 +186,6 @@ endmodule
 `EL2_RAM_BE(256, 44)
 `EL2_RAM_BE(128, 44)
 `EL2_RAM_BE(64, 44)
-`EL2_RAM_BE(32, 44)
 `EL2_RAM_BE(4096, 88)
 `EL2_RAM_BE(2048, 88)
 `EL2_RAM_BE(1024, 88)
@@ -231,13 +193,10 @@ endmodule
 `EL2_RAM_BE(256, 88)
 `EL2_RAM_BE(128, 88)
 `EL2_RAM_BE(64, 88)
-`EL2_RAM_BE(32, 88)
-`EL2_RAM(64, 39)
 
 
 `undef EL2_RAM
 `undef EL2_RAM_BE
 `undef EL2_LOCAL_RAM_TEST_IO
-
 
 

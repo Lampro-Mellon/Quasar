@@ -12,16 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-CONF_PARAMS = -set build_axi4
-
 TEST_CFLAGS = -g -O3 -funroll-all-loops
 ABI = -mabi=ilp32 -march=rv32imc
-
-# Check for RV_ROOT
-ifeq (,$(wildcard ${RV_ROOT}/configs/quasar.config))
-$(error env var RV_ROOT does not point to a valid dir! Exiting!)
-endif
 
 # Allow snapshot override
 target = default
@@ -31,7 +23,8 @@ snapshot = $(target)
 QUASAR_CONFIG = ${RV_ROOT}/configs/quasar.config
 VCS = vcs
 VERILATOR = verilator
-GCC_PREFIX = /home/users/cores/chipyard/riscv-tools-install/bin/riscv64-unknown-elf
+GCC_PREFIX = riscv64-unknown-elf
+GCC_PREFIX_cpp = /home/users/cores/chipyard/riscv-tools-install/bin/riscv64-unknown-elf#riscv toolchain path
 BUILD_DIR = ${RV_ROOT}/design/snapshots/${snapshot}
 TBDIR = ${RV_ROOT}/testbench
 
@@ -39,44 +32,22 @@ TBDIR = ${RV_ROOT}/testbench
 TEST = hello_world
 
 # Define test name
-ifneq (,$(wildcard $(TBDIR)/asm/$(TEST).s))
-	TEST_DIR = ${TBDIR}/asm
-else
-ifneq (,$(wildcard $(TBDIR)/asm/$(TEST).c))
-	TEST_DIR = ${TBDIR}/asm
-else
-ifneq (,$(wildcard $(TBDIR)/tests/$(TEST)))
-	TEST_DIR = $(TBDIR)/tests/$(TEST)
-else 
-	TEST_DIR = ${TBDIR}/asm
-endif
-endif
-endif
-
+TEST_DIR = ${TBDIR}/asm
 HEX_DIR = ${TBDIR}/hex
-
-OFILES = $(TEST).o
-OFILES_PATH = ${RV_ROOT}/verif/sim
-
-ifdef debug
- DEBUG_PLUS = +dumpon
- IRUN_DEBUG = -access +rc
- IRUN_DEBUG_RUN = -input ${RV_ROOT}/testbench/input.tcl
- VCS_DEBUG = -debug_access
- VERILATOR_DEBUG = --trace
-endif
 
 # provide specific link file
 ifeq (,$(wildcard $(TEST_DIR)/$(TEST).ld))
-	LINK = $(BUILD_DIR)/link.ld
+	LINK = $(TBDIR)/link.ld
 else
 	LINK = $(TEST_DIR)/$(TEST).ld
 endif
 
+ifdef debug
+ DEBUG_PLUS = +dumpon
+ 
+endif
+
 VPATH = $(TEST_DIR) $(BUILD_DIR) $(TBDIR)
-
--include $(TEST_DIR)/$(TEST).mki
-
 TBFILES = $(TBDIR)/tb_top.sv 
 
 defines  = $(BUILD_DIR)/common_defines.vh
@@ -92,18 +63,28 @@ CFLAGS += "-std=c++11"
 # compiles), or -O for balance.
 VERILATOR_MAKE_FLAGS = OPT_FAST="-Os"
 #############Targets#######################################
-all:	clean sbt_ verilator
+all:	clean conf sbt_ verilator
 
-vcs_all: clean sbt_ vcs
+vcs_all: clean conf sbt_ vcs
 ############ Model Builds ###############################
-conf: 
+conf:
 	BUILD_PATH=${BUILD_DIR} ${RV_ROOT}/configs/quasar.config -target=$(target) $(CONF_PARAMS)
+	
 
-sbt_: conf
+sbt_:
 	cd ${RV_ROOT}/design/ && exec sbt "run" 
 	python3 ${RV_ROOT}/design/reset_script.py
 	rm -rf ${RV_ROOT}/design/quasar_wrapper.v
 	mv ${RV_ROOT}/design/quasar_wrapper.sv ${RV_ROOT}/generated_rtl/quasar_wrapper.sv 
+
+
+vcs-build: ${TBFILES} conf
+	$(VCS) -full64 -LDFLAGS '-Wl,--no-as-needed' -assert svaext -sverilog +define+RV_OPENSOURCE \
+	  +error+500 -debug_access \
+	  ${BUILD_DIR}/common_defines.vh \
+	  +incdir+$(BUILD_DIR)  +libext+.v $(defines) \
+	  -f ${RV_ROOT}/testbench/flist ${TBFILES} -l ${RV_ROOT}/verif/sim/vcs.log
+
 
 verilator-build: ${TBFILES} conf test_tb_top.cpp
 	echo '`undef RV_ASSERT_ON' >> ${BUILD_DIR}/common_defines.vh
@@ -114,66 +95,46 @@ verilator-build: ${TBFILES} conf test_tb_top.cpp
 	cp ${RV_ROOT}/testbench/test_tb_top.cpp obj_dir/
 	$(MAKE) -j -e -C obj_dir/ -f Vtb_top.mk $(VERILATOR_MAKE_FLAGS)
 
-vcs-build: ${TBFILES} conf
-	$(VCS) -full64 -LDFLAGS '-Wl,--no-as-needed' -assert svaext -sverilog +define+RV_OPENSOURCE \
-	  +error+500 -debug_access +lint=TFIPC-L \
-	  ${BUILD_DIR}/common_defines.vh \
-	  +incdir+$(BUILD_DIR)  +libext+.v $(defines) \
-	  -f ${RV_ROOT}/testbench/flist ${TBFILES} -l $(OFILES_PATH)/vcs.log
-
 
 ############ TEST Simulation ###############################
 
-vcs: program.hex vcs-build 
-	./simv $(DEBUG_PLUS) +vcs+lic+wait  -l $(OFILES_PATH)/vcs.log
-	@rm -rf program.hex $(addprefix $(OFILES_PATH)/,csrc simv* vc_hdrs.h ucli.key console.log *.csv obj_dir)
-	@mv csrc simv* vc_hdrs.h ucli.key console.log *.csv $(OFILES_PATH)
-	@mv *.log ${RV_ROOT}/tracer_logs
+vcs: program.hex vcs-build
+	./simv $(DEBUG_PLUS) +vcs+lic+wait  -l ${RV_ROOT}/verif/sim/vcs.log
+	rm -rf program.hex data.hex
+	mv csrc simv* vc_hdrs.h ucli.key console.log *.csv ${RV_ROOT}/verif/sim
+	mv *.log ${RV_ROOT}/tracer_logs
 
-ifeq ($(shell which fm_shell 2> /dev/null),)
-lec:
-	$(error Unable to locate the executable file for formality! Exiting!)
-else
-lec:
-	python3 ${RV_ROOT}/verif/LEC/config.py
+lec: #verilator
+	rm -rf ${RV_ROOT}/verif/LEC/LEC_RTL
+	git clone https://github.com/Lampro-Mellon/LEC_RTL.git
+	mv LEC_RTL ${RV_ROOT}/verif/LEC
 	fm_shell -f ${RV_ROOT}/verif/LEC/formality_work/run_me.fms
 	@mv *.log ${RV_ROOT}/verif/LEC/formality_work/formality_log
-endif
 
 verilator: program.hex verilator-build
 	./obj_dir/Vtb_top
-	@rm -rf program.hex $(addprefix $(OFILES_PATH)/,csrc simv* vc_hdrs.h ucli.key console.log *.csv obj_dir)
-	@mv  console.log *.csv obj_dir $(OFILES_PATH)
-	@mv *.log ${RV_ROOT}/tracer_logs
+	rm -rf program.hex data.hex
+	mv  console.log *.csv obj_dir ${RV_ROOT}/verif/sim
+	mv *.log ${RV_ROOT}/tracer_logs
 
-############ TEST build ###############################
-
-ifeq ($(shell which $(GCC_PREFIX)-gcc 2> /dev/null),)
-program.hex: ${BUILD_DIR}/defines.h
-	@echo " !!! No $(GCC_PREFIX)-gcc in path, using canned hex files !!"
-	cp ${HEX_DIR}/$(TEST).hex program.hex
-else
-ifneq (,$(wildcard $(TEST_DIR)/$(TEST).makefile))
-program.hex:
-	@echo Building $(TEST) via $(TEST_DIR)/$(TEST).makefile
-	$(MAKE) -f $(TEST_DIR)/$(TEST).makefile
-else 
-program.hex: $(OFILES) $(LINK)
+program.hex: $(TEST).o $(LINK)
 	@echo Building $(TEST)
-	cd $(OFILES_PATH) && $(GCC_PREFIX)-gcc -Wl,-m,elf32lriscv -Wl,--discard-none -T$(LINK) -o $(TEST).exe $(OFILES) \
-	-nostartfiles -nostdlib $(TEST_LIBS) 
-	$(GCC_PREFIX)-objcopy -O verilog  $(OFILES_PATH)/$(TEST).exe program.hex
-	$(GCC_PREFIX)-objdump -S  $(OFILES_PATH)/$(TEST).exe > $(OFILES_PATH)/$(TEST).dis
+	$(GCC_PREFIX_cpp)-ld -m elf32lriscv --discard-none -T$(LINK) -o ${RV_ROOT}/verif/sim/$(TEST).exe ${RV_ROOT}/verif/sim/$(TEST).o
+	$(GCC_PREFIX_cpp)-objcopy -O verilog --only-section ".data*" --change-section-lma .data*-0x10000 ${RV_ROOT}/verif/sim/$(TEST).exe ${RV_ROOT}/data.hex
+	$(GCC_PREFIX_cpp)-objcopy -O verilog --only-section ".text*"  ${RV_ROOT}/verif/sim/$(TEST).exe ${RV_ROOT}/program.hex
+	$(GCC_PREFIX_cpp)-objdump -S  ${RV_ROOT}/verif/sim/$(TEST).exe > ${RV_ROOT}/verif/sim/$(TEST).dis
+	$(GCC_PREFIX_cpp)-nm -f posix -C ${RV_ROOT}/verif/sim/$(TEST).exe > ${RV_ROOT}/verif/sim/$(TEST).tbl
 	@echo Completed building $(TEST)
-endif
-endif
+	
 
 %.o : %.s conf
-	$(GCC_PREFIX)-cpp -I${BUILD_DIR}  $<  > $(OFILES_PATH)/$*.cpp.s
-	$(GCC_PREFIX)-as ${ABI} $(OFILES_PATH)/$*.cpp.s -o $(OFILES_PATH)/$(@F)
+	$(GCC_PREFIX_cpp)-cpp -I${BUILD_DIR}  $<  > ${RV_ROOT}/verif/sim/$(TEST).cpp.s
+	$(GCC_PREFIX_cpp)-as -march=rv32gc ${RV_ROOT}/verif/sim/$(TEST).cpp.s -o ${RV_ROOT}/verif/sim/$(TEST).o
 
-%.o : %.c conf	
-	$(GCC_PREFIX)-gcc ${includes} ${TEST_CFLAGS} -DCOMPILER_FLAGS="\"${TEST_CFLAGS}\"" ${ABI} -nostdlib -c $< -o $(OFILES_PATH)/$(@F)
+
+
+%.o : %.c conf
+	$(GCC_PREFIX_cpp)-gcc -I${BUILD_DIR} ${TEST_CFLAGS} ${ABI} -nostdlib -c $< -o ${RV_ROOT}/verif/sim/$(TEST).o	
 
 help:
 	@echo Make sure the environment variable RV_ROOT is set.
@@ -187,27 +148,25 @@ clean:
 	rm -rf ${RV_ROOT}/design/*.json
 	rm -rf ${RV_ROOT}/design/*.fir
 	rm -rf ${RV_ROOT}/generated_rtl/*.sv
-	rm -rf $(OFILES_PATH)/*.log 
-	rm -rf $(OFILES_PATH)/*.s 
-	rm -rf $(OFILES_PATH)/*.hex 
-	rm -rf $(OFILES_PATH)/*.dis 
-	rm -rf $(OFILES_PATH)/*.tbl 
-	rm -rf $(OFILES_PATH)/vcs* 
-	rm -rf $(OFILES_PATH)/simv* 
+	rm -rf ${RV_ROOT}/verif/sim/*.log 
+	rm -rf ${RV_ROOT}/verif/sim/*.s 
+	rm -rf ${RV_ROOT}/verif/sim/*.hex 
+	rm -rf ${RV_ROOT}/verif/sim/*.dis 
+	rm -rf ${RV_ROOT}/verif/sim/*.tbl 
+	rm -rf ${RV_ROOT}/verif/sim/vcs* 
+	rm -rf ${RV_ROOT}/verif/sim/simv* 
 	rm -rf ${RV_ROOT}/design/src/main/scala/lib/param.scala
 	rm -rf ${RV_ROOT}/design/snapshots
-	rm -rf $(OFILES_PATH)/quasar*
-	rm -rf $(OFILES_PATH)/*.exe 
-	rm -rf $(OFILES_PATH)/obj* 
-	rm -rf $(OFILES_PATH)/*.o 
-	rm -rf $(OFILES_PATH)/ucli.key 
-	rm -rf $(OFILES_PATH)/vc_hdrs.h 
-	rm -rf $(OFILES_PATH)/csrc 
-	rm -rf $(OFILES_PATH)/*.csv 
-	rm -rf $(OFILES_PATH)/work
-	rm -rf $(OFILES_PATH)/*.dump
-	rm -rf $(OFILES_PATH)/*.fsdb
-	rm -rf ${RV_ROOT}/FM_WORK
-	rm -rf ${RV_ROOT}/tracer_logs/*.log
-	rm -rf *.log *.lck *.s *.hex *.dis *.tbl vcs* simv* quasar* *.exe obj* *.o ucli.key vc_hdrs.h csrc *.csv work *.dump *.fsdb
+	rm -rf ${RV_ROOT}/verif/sim/quasar*
+	rm -rf ${RV_ROOT}/verif/sim/*.exe 
+	rm -rf ${RV_ROOT}/verif/sim/obj* 
+	rm -rf ${RV_ROOT}/verif/sim/*.o 
+	rm -rf ${RV_ROOT}/verif/sim/ucli.key 
+	rm -rf ${RV_ROOT}/verif/sim/vc_hdrs.h 
+	rm -rf ${RV_ROOT}/verif/sim/csrc 
+	rm -rf ${RV_ROOT}/verif/sim/*.csv 
+	rm -rf ${RV_ROOT}/verif/sim/work
+	rm -rf ${RV_ROOT}/verif/sim/*.dump
+	rm -rf ${RV_ROOT}/verif/sim/*.fsdb
+	rm -rf *.log *.s *.hex *.dis *.tbl vcs* simv* quasar* *.exe obj* *.o ucli.key vc_hdrs.h csrc *.csv work *.dump *.fsdb
 

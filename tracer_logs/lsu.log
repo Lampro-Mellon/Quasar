@@ -1,0 +1,1 @@
+write en, write addrs hi,write addrs lo, write data hi,write data lo,	read_en, read addrs hi,read addrs lo, read data hi,read data lo, dma valid, dma read data 

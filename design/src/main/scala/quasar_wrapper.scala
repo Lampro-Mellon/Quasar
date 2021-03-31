@@ -56,15 +56,10 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     val o_cpu_run_ack = Output(Bool())
     val mbist_mode = Input(Bool())
 
-    val dccm_ext_in_pkt = Input(new ext_in_pkt_t(DCCM_NUM_BANKS))
-    val iccm_ext_in_pkt = Input(new ext_in_pkt_t(ICCM_NUM_BANKS))
-    val ic_data_ext_in_pkt = Input(Vec(ICACHE_NUM_WAYS,new ext_in_pkt_t(ICACHE_NUM_WAYS)))
-    val ic_tag_ext_in_pkt = Input(new ext_in_pkt_t(ICACHE_NUM_WAYS))
     val rv_trace_pkt = new trace_pkt_t()
     val scan_mode = Input(Bool())
 
   })
- // val core_rst_l = core.io.core_rst_l
   val mem = Module(new quasar.mem())
   val dmi_wrapper = Module(new dmi_wrapper())
   val core = Module(new quasar())
@@ -81,7 +76,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   core.io.dmi_reg_addr := dmi_wrapper.io.reg_wr_addr
   core.io.dmi_reg_en := dmi_wrapper.io.reg_en
   core.io.dmi_reg_wr_en := dmi_wrapper.io.reg_wr_en
- // core.io.dmi_hard_reset := dmi_wrapper.io.dmi_hard_reset
+  core.io.dmi_hard_reset := dmi_wrapper.io.dmi_hard_reset
   io.jtag_tdo := dmi_wrapper.io.tdo
 
   // Memory signals
@@ -90,12 +85,8 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   mem.io.dec_tlu_core_ecc_disable := core.io.dec_tlu_core_ecc_disable
   mem.io.dccm <> core.io.dccm
   mem.io.rst_l := core.io.core_rst_l
-  mem.io.clk := core.io.active_l2clk
+  mem.io.clk := clock
   mem.io.scan_mode := io.scan_mode
-  mem.io.dccm_ext_in_pkt := io.dccm_ext_in_pkt
-  mem.io.iccm_ext_in_pkt := io.iccm_ext_in_pkt
-  mem.io.ic_data_ext_in_pkt := io.ic_data_ext_in_pkt
-  mem.io.ic_tag_ext_in_pkt := io.ic_tag_ext_in_pkt
   // Memory outputs
   core.io.dbg_rst_l := io.dbg_rst_l
   core.io.ic <> mem.io.ic
@@ -149,8 +140,8 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   core.io.soft_int := io.soft_int
   core.io.extintsrc_req := io.extintsrc_req
 
-
   // Outputs
+  val core_rst_l = core.io.core_rst_l
   io.rv_trace_pkt <> core.io.rv_trace_pkt
 
   // external halt/run interface
@@ -169,6 +160,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   io.dec_tlu_perfcnt3 := core.io.dec_tlu_perfcnt3
 
 }
-object QUASAR_Wrp extends App {
-  println((new chisel3.stage.ChiselStage).emitVerilog(new quasar_wrapper()))
+
+object wrapper extends App {
+  (new chisel3.stage.ChiselStage).emitVerilog(new quasar_wrapper)
 }

@@ -6,12 +6,10 @@
 	set LEC_ROOT [pwd]/verif/LEC
 
 # Set formality path to refference design
-	set fm_path_r $LEC_ROOT/LEC_RTL/Golden_RTL
+	set fm_path_r $LEC_ROOT/LEC_RTL/Golden_RTL/
 
 # Synopsis Auto Setup
 	set synopsys_auto_setup true
-
-set_host_options -max_cores 8
 
 if {![file isdirectory $fm_path_r]} {
    puts "ERROR: path is not valid"
@@ -58,69 +56,57 @@ if {![file isdirectory $fm_path_r]} {
 			$fm_path_r/design/lsu/el2_lsu_dccm_mem.sv  
 			$fm_path_r/design/lsu/el2_lsu_dccm_ctl.sv  
 			$fm_path_r/design/lsu/el2_lsu_trigger.sv  
-			$fm_path_r/design/dbg/el2_dbg.sv
-			$fm_path_r/design/dmi/rvjtag_tap.v
-			$fm_path_r/design/dmi/dmi_jtag_to_core_sync.v    
-			$fm_path_r/design/dmi/dmi_wrapper.v 
-							
+			$fm_path_r/design/dbg/el2_dbg.sv  
+			$fm_path_r/design/dmi/dmi_wrapper.sv 
+			$fm_path_r/design/dmi/dmi_jtag_to_core_sync.sv 
+			$fm_path_r/design/dmi/rvjtag_tap.sv 				
     "
 
- # Setting top reference design
+# Setting top reference design
 	set_top r:/WORK/el2_swerv_wrapper
 }
- # Loading verilog implementation file
+# Loading verilog implementation file
 	read_sverilog -i  "         	\
- 			$LEC_ROOT/LEC_RTL/generated_rtl/pkt.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/beh_lib.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/mem_lib.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/ifu_ic_mem.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/gated_latch.sv 
- 			$LEC_ROOT/LEC_RTL/generated_rtl/ifu_iccm_mem.sv 
- 			$LEC_ROOT/LEC_RTL/generated_rtl/lsu_dccm_mem.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/mem.sv   
- 			$LEC_ROOT/LEC_RTL/generated_rtl/dmi_jtag_to_core_sync.sv 
- 			$LEC_ROOT/LEC_RTL/generated_rtl/rvjtag_tap.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/dmi_wrapper.sv  	
- 			./generated_rtl/quasar_wrapper.sv 
- 
- 				  	
-     "
- # Setting top implementation design
- 	set_top i:/WORK/quasar_wrapper
- 
- # Setting Black Boxes on Memories
+			./generated_rtl/quasar_wrapper.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/mem.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/ifu_ic_mem.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/ifu_iccm_mem.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/lsu_dccm_mem.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/dmi_wrapper.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/dmi_jtag_to_core_sync.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/rvjtag_tap.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/gated_latch.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/beh_lib.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/mem_lib.sv 
+			$LEC_ROOT/LEC_RTL/generated_rtl/ltch.sv    	  	
+    "
+# Setting top implementation design
+	set_top i:/WORK/quasar_wrapper
+
+# Setting BLack Boxes on Memories
 	set_black_box r:/WORK/el2_mem
- 	set_black_box i:/WORK/mem_DCCM_BANK_BITS*
+	set_black_box i:/WORK/mem_ICACHE_BEAT_BITS*
+# Setting User Match on ports
+	source $LEC_ROOT/setup_files/port.fms
 
- # Setting User Match on input ports
- 	source $LEC_ROOT/setup_files/Input_ports_1.3.fms
+# Setting User Match on Black Box Pins
+	source $LEC_ROOT/setup_files/BBPIN.fms
 
- # Setting User Match on output ports
- 	source $LEC_ROOT/setup_files/Output_ports_1.3.fms
- 
- # Setting User Match on input Black Box Pins
-	source $LEC_ROOT/setup_files/BB_input_pins_1.3.fms
+# Setting User Match on enabels of CGC
+	source $LEC_ROOT/setup_files/LAT.fms
 
- # Setting User Match on output Black Box Pins
-	source $LEC_ROOT/setup_files/BB_output_pins_1.3.fms
+# Setting User Match on Flip Flops
+	source $LEC_ROOT/setup_files/DFF.fms
 
- # Setting User Match on Flip Flops
- 	source $LEC_ROOT/setup_files/DFF_1.3.fms
- 
- # Setting up constants potentially constant registers 
- 	source $LEC_ROOT/setup_files/Constant_1.3.fms
+# Setting up constants potentially constant registers 
+	source $LEC_ROOT/setup_files/constant.fms
 
- # Setting up dont verify points 
- 	source $LEC_ROOT/setup_files/Dont_verify_points_1.3.fms
- 
- 	if {[verify] != 1} {
- 		set verification_failing_points_limit 500
- 		  start_gui &
- 	}
- 	
- # Save Current Session
- 	save_session -replace $LEC_ROOT/LEC_PASSED.fss
- 
- # Toal Elapsed Time in Seconds
-	elapsed_time
- exit
+	if {[verify] != 1} {
+		set verification_failing_points_limit 500
+		  start_gui &
+	}
+	
+# Save Current Session
+	save_session -replace $LEC_ROOT/LEC_PASSED.fss
+
+exit

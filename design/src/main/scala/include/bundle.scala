@@ -175,8 +175,6 @@ class dma_dccm_ctl extends Bundle{
 class lsu_exu extends Bundle{
   val exu_lsu_rs1_d                     = Input(UInt(32.W))
   val exu_lsu_rs2_d                     = Input(UInt(32.W))
-  val lsu_result_m                      = Output(UInt(32.W))
-  //val lsu_nonblock_load_data            = Output(UInt(32.W))
 }
 class lsu_dec extends Bundle {
   val tlu_busbuff = new tlu_busbuff
@@ -204,6 +202,7 @@ class dctl_busbuff extends Bundle with lib{
   val lsu_nonblock_load_data_valid      = Output(Bool())
   val lsu_nonblock_load_data_error      = Output(Bool())
   val lsu_nonblock_load_data_tag        = Output(UInt(LSU_NUM_NBLOAD_WIDTH.W))
+  val lsu_nonblock_load_data            = Output(UInt(32.W))
 }
 class lsu_tlu extends Bundle {
   val lsu_pmu_load_external_m           = Output(Bool())
@@ -219,17 +218,6 @@ class iccm_mem extends Bundle with lib {
   val wr_data = Output(UInt(78.W))
   val rd_data = Input(UInt(64.W))
   val rd_data_ecc = Input(UInt(78.W))
-}
-class ext_in_pkt_t(val size :Int) extends  Bundle{
-  val TEST1           = Vec(size,UInt(1.W))
-  val RME             = Vec(size,UInt(1.W))
-  val RM              = Vec(size,UInt(4.W))
-  val LS              = Vec(size,UInt(1.W))
-  val DS              = Vec(size,UInt(1.W))
-  val SD              = Vec(size,UInt(1.W))
-  val TEST_RNM        = Vec(size,UInt(1.W))
-  val BC1             = Vec(size,UInt(1.W))
-  val BC2             = Vec(size,UInt(1.W))
 }
 class ic_mem extends Bundle with lib {
   val rw_addr = Output(UInt(31.W))
@@ -252,12 +240,11 @@ class ic_mem extends Bundle with lib {
   val debug_way = Output(UInt(ICACHE_NUM_WAYS.W))
   val premux_data = Output(UInt(64.W))
   val sel_premux_data = Output(Bool())
-
 }
 class aln_ib extends Bundle with lib{
   val ifu_i0_icaf             = Output(Bool())
   val ifu_i0_icaf_type        = Output(UInt(2.W))
-  val ifu_i0_icaf_second          = Output(Bool())
+  val ifu_i0_icaf_f1          = Output(Bool())
   val ifu_i0_dbecc            = Output(Bool())
   val ifu_i0_bp_index         = Output(UInt((BTB_ADDR_HI-BTB_ADDR_LO+1).W))
   val ifu_i0_bp_fghr          = Output(UInt(BHT_GHR_SIZE.W))
@@ -269,7 +256,7 @@ class aln_ib extends Bundle with lib{
   val i0_brp                  = Valid(new br_pkt_t)
 }
 class aln_dec extends Bundle{
-  //val dec_i0_decode_d         = Input(Bool()) // Dec
+  val dec_i0_decode_d = Input(Bool()) // Dec
   val ifu_i0_cinst            = Output(UInt(16.W)) // Dec
 }
 class dec_aln extends Bundle with lib {
@@ -308,12 +295,12 @@ class dma_ifc extends  Bundle{
 }
 
 class trace_pkt_t extends Bundle{
-  val rv_i_valid_ip      = Output(UInt(1.W)  )
+  val rv_i_valid_ip      = Output(UInt(2.W)  )
   val rv_i_insn_ip       = Output(UInt(32.W) )
   val rv_i_address_ip    = Output(UInt(32.W) )
-  val rv_i_exception_ip  = Output(UInt(1.W)  )
+  val rv_i_exception_ip  = Output(UInt(2.W)  )
   val rv_i_ecause_ip     = Output(UInt(5.W)  )
-  val rv_i_interrupt_ip  = Output(UInt(1.W)  )
+  val rv_i_interrupt_ip  = Output(UInt(2.W)  )
   val rv_i_tval_ip       = Output(UInt(32.W) )
 }
 
@@ -329,12 +316,6 @@ class dbg_ib extends Bundle{
   val dbg_cmd_addr            = Input(UInt(32.W))    // command address
 }
 
-class dbg_dma extends Bundle {
-  val dbg_dma_bubble        = Input(Bool())     // Debug needs a bubble to send a valid
-  val dma_dbg_ready         = Output(Bool())    // DMA is ready to accept debug request
-
-}
-
 class dbg_dctl extends Bundle{
   val dbg_cmd_wrdata          = Input(UInt(32.W))    // command write data, for fence/fence_i
 }
@@ -342,7 +323,6 @@ class dbg_dctl extends Bundle{
 class dec_alu extends Bundle {
   val                  dec_i0_alu_decode_d          = Input(UInt(1.W))          // Valid
   val                  dec_csr_ren_d                = Input(Bool())          // extra decode
-  // val                  dec_csr_rddata_d             = Input(UInt(32.W))
   val                  dec_i0_br_immed_d            = Input(UInt(12.W))         // Branch offset
   val                  exu_i0_pc_x                  = Output(UInt(31.W))        // flopped PC
 }
@@ -384,14 +364,13 @@ class decode_exu extends Bundle with lib{
   val		i0_predict_index_d		=Input(UInt(((BTB_ADDR_HI-BTB_ADDR_LO)+1).W))   // DEC predict index
   val		i0_predict_btag_d		  =Input(UInt(BTB_BTAG_SIZE.W))               // DEC predict branch tag
   val		dec_i0_rs1_en_d			  =Input(UInt(1.W))                           // Qualify GPR RS1 data
-  val		dec_i0_branch_d			  =Input(UInt(1.W))                           // Qualify GPR RS1 data
   val		dec_i0_rs2_en_d			  =Input(UInt(1.W))                           // Qualify GPR RS2 data
   val		dec_i0_immed_d			  =Input(UInt(32.W))                          // DEC data immediate
-  val		dec_i0_result_r       =Input(UInt(32.W))                          // DEC result in R-stage
-  val   dec_qual_lsu_d        = Input(Bool())
+  val		dec_i0_rs1_bypass_data_d=Input(UInt(32.W))                      	// DEC bypass data
+  val		dec_i0_rs2_bypass_data_d=Input(UInt(32.W))                      	// DEC bypass data
   val		dec_i0_select_pc_d		=Input(UInt(1.W))                           // PC select to RS1
-  val		dec_i0_rs1_bypass_en_d	=Input(UInt(4.W))                       	// DEC bypass select  1 - X-stage, 0 - dec bypass data
-  val		dec_i0_rs2_bypass_en_d	=Input(UInt(4.W))                        	// DEC bypass select  1 - X-stage, 0 - dec bypass data
+  val		dec_i0_rs1_bypass_en_d	=Input(UInt(2.W))                       	// DEC bypass select  1 - X-stage, 0 - dec bypass data
+  val		dec_i0_rs2_bypass_en_d	=Input(UInt(2.W))                        	// DEC bypass select  1 - X-stage, 0 - dec bypass data
   val		mul_p					        =Flipped(Valid(new mul_pkt_t))                   // DEC {valid, operand signs, low, operand bypass}
   val		pred_correct_npc_x		=Input(UInt(31.W))                          // DEC NPC for correctly predicted branch
   val		dec_extint_stall		  =Input(Bool())                           // External stall mux select
@@ -477,16 +456,18 @@ class predict_pkt_t extends Bundle {
   val toffset    = UInt(12.W)
   val br_error   = UInt(1.W)
   val br_start_error = UInt(1.W)
+  val prett      = UInt(31.W)
   val pcall      = UInt(1.W)
+  val pret       = UInt(1.W)
   val pja        = UInt(1.W)
   val way        = UInt(1.W)
-  val pret       = UInt(1.W)
-  val prett      = UInt(31.W)
 }
+
+
 class trap_pkt_t extends Bundle {
   val legal     = UInt(1.W)
   val icaf      = UInt(1.W)
-  val icaf_second   = UInt(1.W)
+  val icaf_f1   = UInt(1.W)
   val icaf_type = UInt(2.W)
   val fence_i   = UInt(1.W)
   val i0trigger = UInt(4.W)
@@ -495,6 +476,7 @@ class trap_pkt_t extends Bundle {
   val pmu_divide         = UInt(1.W)
   val pmu_lsu_misaligned = UInt(1.W)
 }
+
 class dest_pkt_t extends Bundle {
   val i0rd      = UInt(5.W)
   val i0load    = UInt(1.W)
@@ -520,45 +502,20 @@ class reg_pkt_t extends Bundle {
 
 
 class alu_pkt_t extends Bundle {
-  val clz        = UInt(1.W)
-  val ctz        = UInt(1.W)
-  val pcnt       = UInt(1.W)
-  val sext_b     = UInt(1.W)
-  val sext_h     = UInt(1.W)
-  val slo        = UInt(1.W)
-  val sro        = UInt(1.W)
-  val min        = UInt(1.W)
-  val max        = UInt(1.W)
-  val pack       = UInt(1.W)
-  val packu      = UInt(1.W)
-  val packh      = UInt(1.W)
-  val rol        = UInt(1.W)
-  val ror        = UInt(1.W)
-  val grev       = UInt(1.W)
-  val gorc       = UInt(1.W)
-  val zbb        = UInt(1.W)
-  val sbset      = UInt(1.W)
-  val sbclr      = UInt(1.W)
-  val sbinv      = UInt(1.W)
-  val sbext      = UInt(1.W)
-  val sh1add     = UInt(1.W)
-  val sh2add     = UInt(1.W)
-  val sh3add     = UInt(1.W)
-  val zba        = UInt(1.W)
-  val land       = UInt(1.W)
-  val lor        = UInt(1.W)
-  val lxor       = UInt(1.W)
-  val sll        = UInt(1.W)
-  val srl        = UInt(1.W)
-  val sra        = UInt(1.W)
-  val beq        = UInt(1.W)
-  val bne        = UInt(1.W)
-  val blt        = UInt(1.W)
-  val bge        = UInt(1.W)
-  val add        = UInt(1.W)
-  val sub        = UInt(1.W)
-  val slt        = UInt(1.W)
-  val unsign     = UInt(1.W)
+  val land     = UInt(1.W)
+  val lor      = UInt(1.W)
+  val lxor     = UInt(1.W)
+  val sll      = UInt(1.W)
+  val srl      = UInt(1.W)
+  val sra      = UInt(1.W)
+  val beq      = UInt(1.W)
+  val bne      = UInt(1.W)
+  val blt      = UInt(1.W)
+  val bge      = UInt(1.W)
+  val add      = UInt(1.W)
+  val sub      = UInt(1.W)
+  val slt      = UInt(1.W)
+  val unsign   = UInt(1.W)
   val jal        = UInt(1.W)
   val predict_t  = UInt(1.W)
   val predict_nt = UInt(1.W)
@@ -568,7 +525,6 @@ class alu_pkt_t extends Bundle {
 
 class lsu_pkt_t extends Bundle {
   val fast_int   = Bool()
-  val stack      = Bool()
   val by         = Bool()
   val half       = Bool()
   val word       = Bool()
@@ -589,106 +545,61 @@ class lsu_error_pkt_t extends Bundle {
   val mscause      = UInt(4.W)
   val addr         = UInt(32.W)
 }
+
 class dec_pkt_t extends Bundle {
-  val clz           = Bool()
-  val ctz           = Bool()
-  val pcnt          = Bool()
-  val sext_b        = Bool()
-  val sext_h        = Bool()
-  val slo           = Bool()
-  val sro           = Bool()
-  val min           = Bool()
-  val max           = Bool()
-  val pack          = Bool()
-  val packu         = Bool()
-  val packh         = Bool()
-  val rol           = Bool()
-  val ror           = Bool()
-  val grev          = Bool()
-  val gorc          = Bool()
-  val zbb           = Bool()
-  val sbset         = Bool()
-  val sbclr         = Bool()
-  val sbinv         = Bool()
-  val sbext         = Bool()
-  val zbs           = Bool()
-  val bext          = Bool()
-  val bdep          = Bool()
-  val zbe           = Bool()
-  val clmul         = Bool()
-  val clmulh        = Bool()
-  val clmulr        = Bool()
-  val zbc           = Bool()
-  val shfl          = Bool()
-  val unshfl        = Bool()
-  val zbp           = Bool()
-  val crc32_b       = Bool()
-  val crc32_h       = Bool()
-  val crc32_w       = Bool()
-  val crc32c_b      = Bool()
-  val crc32c_h      = Bool()
-  val crc32c_w      = Bool()
-  val zbr           = Bool()
-  val bfp           = Bool()
-  val zbf           = Bool()
-  val sh1add        = Bool()
-  val sh2add        = Bool()
-  val sh3add        = Bool()
-  val zba           = Bool()
-  val alu           = Bool()
-  val rs1           = Bool()
-  val rs2           = Bool()
-  val imm12         = Bool()
-  val rd            = Bool()
-  val shimm5        = Bool()
-  val imm20         = Bool()
-  val pc            = Bool()
-  val load          = Bool()
-  val store         = Bool()
-  val lsu           = Bool()
-  val add           = Bool()
-  val sub           = Bool()
-  val land          = Bool()
-  val lor           = Bool()
-  val lxor          = Bool()
-  val sll           = Bool()
-  val sra           = Bool()
-  val srl           = Bool()
-  val slt           = Bool()
-  val unsign        = Bool()
-  val condbr        = Bool()
-  val beq           = Bool()
-  val bne           = Bool()
-  val bge           = Bool()
-  val blt           = Bool()
-  val jal           = Bool()
-  val by            = Bool()
-  val half          = Bool()
-  val word          = Bool()
-  val csr_read      = Bool()
-  val csr_clr       = Bool()
-  val csr_set       = Bool()
-  val csr_write     = Bool()
-  val csr_imm       = Bool()
-  val presync       = Bool()
-  val postsync      = Bool()
-  val ebreak        = Bool()
-  val ecall         = Bool()
-  val mret          = Bool()
-  val mul           = Bool()
-  val rs1_sign      = Bool()
-  val rs2_sign      = Bool()
-  val low           = Bool()
-  val div           = Bool()
-  val rem           = Bool()
-  val fence         = Bool()
-  val fence_i       = Bool()
-  val pm_alu        = Bool()
-  val legal         = Bool()
+  val alu       = Bool()
+  val rs1       = Bool()
+  val rs2       = Bool()
+  val imm12     = Bool()
+  val rd        = Bool()
+  val shimm5    = Bool()
+  val imm20     = Bool()
+  val pc        = Bool()
+  val load      = Bool()
+  val store     = Bool()
+  val lsu       = Bool()
+  val add       = Bool()
+  val sub       = Bool()
+  val land      = Bool()
+  val lor       = Bool()
+  val lxor      = Bool()
+  val sll       = Bool()
+  val sra       = Bool()
+  val srl       = Bool()
+  val slt       = Bool()
+  val unsign    = Bool()
+  val condbr    = Bool()
+  val beq       = Bool()
+  val bne       = Bool()
+  val bge       = Bool()
+  val blt       = Bool()
+  val jal       = Bool()
+  val by        = Bool()
+  val half      = Bool()
+  val word      = Bool()
+  val csr_read  = Bool()
+  val csr_clr   = Bool()
+  val csr_set   = Bool()
+  val csr_write = Bool()
+  val csr_imm   = Bool()
+  val presync   = Bool()
+  val postsync  = Bool()
+  val ebreak    = Bool()
+  val ecall     = Bool()
+  val mret      = Bool()
+  val mul       = Bool()
+  val rs1_sign  = Bool()
+  val rs2_sign  = Bool()
+  val low       = Bool()
+  val div       = Bool()
+  val rem       = Bool()
+  val fence     = Bool()
+  val fence_i   = Bool()
+  val pm_alu    = Bool()
+  val legal     = Bool()
 }
 
 class mul_pkt_t extends Bundle {
-  // val valid     = UInt(1.W)
   val rs1_sign  = UInt(1.W)
   val rs2_sign  = UInt(1.W)
   val low       = UInt(1.W)
@@ -698,7 +609,6 @@ class mul_pkt_t extends Bundle {
   val clmulh    = UInt(1.W)
   val clmulr    = UInt(1.W)
   val grev      = UInt(1.W)
-  val gorc      = UInt(1.W)
   val shfl      = UInt(1.W)
   val unshfl    = UInt(1.W)
   val crc32_b   = UInt(1.W)
@@ -835,9 +745,9 @@ class dec_tlu_csr_pkt extends Bundle{
   val csr_mitcnt0 			=UInt(1.W)
   val csr_mitcnt1 			=UInt(1.W)
   val csr_mpmc 				=UInt(1.W)
-  //  val csr_mcpc 				=UInt(1.W)
+  val csr_mcpc 				=UInt(1.W)
   val csr_meicpct 			=UInt(1.W)
-  //  val csr_mdeau 				=UInt(1.W)
+  val csr_mdeau 				=UInt(1.W)
   val csr_micect 				=UInt(1.W)
   val csr_miccmect 			=UInt(1.W)
   val csr_mdccmect 			=UInt(1.W)

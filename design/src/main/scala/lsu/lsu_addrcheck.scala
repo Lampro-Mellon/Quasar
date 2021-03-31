@@ -52,7 +52,7 @@ class lsu_addrcheck extends Module with RequireAsyncReset with lib
   val (end_addr_in_pic_d,end_addr_in_pic_region_d) = rvrangecheck_ch(io.end_addr_d(31,0) ,aslong(PIC_BASE_ADDR).U ,PIC_SIZE)
 
   val start_addr_dccm_or_pic = start_addr_in_dccm_region_d | start_addr_in_pic_region_d
-  val base_reg_dccm_or_pic   = ((io.rs1_region_d(3,0) === DCCM_REGION.U) & DCCM_ENABLE.U) | (io.rs1_region_d(3,0) === PIC_REGION.U)//base region
+  val base_reg_dccm_or_pic   = (io.rs1_region_d(3,0) === DCCM_REGION.U) | (io.rs1_region_d(3,0) === PIC_REGION.U) //base region
   io.addr_in_dccm_d            := (start_addr_in_dccm_d & end_addr_in_dccm_d)
   io.addr_in_pic_d             := (start_addr_in_pic_d & end_addr_in_pic_d)
 
@@ -87,7 +87,7 @@ class lsu_addrcheck extends Module with RequireAsyncReset with lib
 
   val unmapped_access_fault_d = WireInit(1.U(1.W))
   val mpu_access_fault_d      = WireInit(1.U(1.W))
-  if(DCCM_ENABLE & (DCCM_REGION == PIC_REGION)){
+  if(DCCM_REGION == PIC_REGION){
     unmapped_access_fault_d := ((start_addr_in_dccm_region_d & !(start_addr_in_dccm_d | start_addr_in_pic_d))  |
       // 0. Addr in dccm/pic region but not in dccm/pic offset
       (end_addr_in_dccm_region_d & !(end_addr_in_dccm_d | end_addr_in_pic_d))       |
@@ -120,3 +120,4 @@ class lsu_addrcheck extends Module with RequireAsyncReset with lib
 
   withClock(io.lsu_c2_m_clk){io.is_sideeffects_m := RegNext(is_sideeffects_d,0.U)} //TBD for clock and reset
 }
+

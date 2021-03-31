@@ -23,7 +23,7 @@ class ifu_compress_ctl extends Module with lib{
   out(13) := pat(List(15, -14, -13, 11, -10, 0)) | pat(List(15, -14, -13, 11, 6, 0)) | (io.din(14)&(!io.din(0)))
 
   out(12) := pat(List(15, -14, -13, 6, 5, 0)) | pat(List(15, -14, -13, -11, 0)) | pat(List(15, -14, -13, -10, 0)) |
-    pat(List(-15, -14, 1)) | pat(List(15, 14, 13))
+  pat(List(-15, -14, 1)) | pat(List(15, 14, 13))
 
   out(6) := (pat(List(15, -14, -6, -5, -4, -3, -2)) & !io.din(0)) | pat(List(-14, 13)) | pat(List(15, 14, 0))
 
@@ -54,7 +54,7 @@ class ifu_compress_ctl extends Module with lib{
 
   val rdrd = pat(List(-14,6,1)) | pat(List(-15,14,11,0)) | pat(List(-14,5,1)) | pat(List(-15,14,10,0)) |
     pat(List(-14,4,1)) | pat(List(-15,14,9,0)) | pat(List(-14,3,1)) | pat(List(-15,14,-8,0)) |
-    pat(List(-14,2,1)) | pat(List(-15,14,7,0)) | pat(List(-15,1)) | pat(List(-15,-13,0))
+  pat(List(-14,2,1)) | pat(List(-15,14,7,0)) | pat(List(-15,1)) | pat(List(-15,-13,0))
 
   val rdrs1 = pat(List(-14,12,11,1)) | pat(List(-14,12,10,1)) | pat(List(-14,12,9,1)) |
     pat(List(-14,12,8,1)) | pat(List(-14,12,7,1)) | pat(List(-14,-12,-6,-5,-4,-3,-2,1)) |
@@ -104,7 +104,7 @@ class ifu_compress_ctl extends Module with lib{
   val l1_6 = Cat(out(6),out(5),out(4),out(3),out(2),out(1),out(0)).asUInt()
 
   val l1_11 = Cat(out(11),out(10),out(9),out(8),out(7)).asUInt | Mux1H(Seq(rdrd.asBool->rdd,
-    rdprd.asBool->rdpd, rs2prd.asBool->rs2pd, rdeq1.asBool->1.U(5.W), rdeq2.asBool->2.U(5.W)))
+  rdprd.asBool->rdpd, rs2prd.asBool->rs2pd, rdeq1.asBool->1.U(5.W), rdeq2.asBool->2.U(5.W)))
 
   val l1_14 = Cat(out(14),out(13),out(12))
 
@@ -132,16 +132,16 @@ class ifu_compress_ctl extends Module with lib{
 
   val l2_31 = l1(31,20) |
     Mux1H(Seq(simm5_0.asBool->Cat(repl(7, simm5d(5)), simm5d(4,0)),
-      uimm9_2.asBool->Cat(0.U(2.W), uimm9d, 0.U(2.W)),
-      simm9_4.asBool->Cat(repl(3, simm9d(5)), simm9d(4,0), 0.U(4.W)),
-      ulwimm6_2.asBool->Cat(0.U(5.W), ulwimm6d, 0.U(2.W)),
-      ulwspimm7_2.asBool->Cat(0.U(4.W), ulwspimm7d, 0.U(2.W)),
-      uimm5_0.asBool->Cat(0.U(6.W), uimm5d),
-      sjaloffset11_1.asBool->Cat(sjald(19), sjald(9,0), sjald(10)),
-      sluimm17_12.asBool->sluimmd(19,8)))
+              uimm9_2.asBool->Cat(0.U(2.W), uimm9d, 0.U(2.W)),
+              simm9_4.asBool->Cat(repl(3, simm9d(5)), simm9d(4,0), 0.U(4.W)),
+              ulwimm6_2.asBool->Cat(0.U(5.W), ulwimm6d, 0.U(2.W)),
+              ulwspimm7_2.asBool->Cat(0.U(4.W), ulwspimm7d, 0.U(2.W)),
+              uimm5_0.asBool->Cat(0.U(6.W), uimm5d),
+              sjaloffset11_1.asBool->Cat(sjald(19), sjald(9,0), sjald(10)),
+              sluimm17_12.asBool->sluimmd(19,8)))
 
   val l2_19 = l1(19,12) | Mux1H(Seq(sjaloffset11_1.asBool->sjald(19,12),
-    sluimm17_12.asBool->sluimmd(7,0)))
+                                    sluimm17_12.asBool->sluimmd(7,0)))
   val l2 = Cat(l2_31, l2_19, l1(11,0))
 
   val sbr8d = Cat(io.din(12),io.din(6),io.din(5),io.din(2),io.din(11),io.din(10),io.din(4),io.din(3),0.U)

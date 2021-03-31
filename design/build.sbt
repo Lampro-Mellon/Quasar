@@ -30,9 +30,6 @@ version := "3.3.0"
 
 scalaVersion := "2.12.10"
 
-// Making the main-class
-mainClass in (Compile, run) := Some("wrapper")
-
 crossScalaVersions := Seq("2.12.10", "2.11.12")
 
 resolvers ++= Seq(
