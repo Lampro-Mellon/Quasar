@@ -55,20 +55,22 @@ endif
 
 HEX_DIR = ${TBDIR}/hex
 
-# provide specific link file
-ifeq (,$(wildcard $(TEST_DIR)/$(TEST).ld))
-	LINK = $(BUILD_DIR)/link.ld
-else
-	LINK = $(TEST_DIR)/$(TEST).ld
-endif
-
 OFILES = $(TEST).o
 OFILES_PATH = ${RV_ROOT}/verif/sim
 
 ifdef debug
  DEBUG_PLUS = +dumpon
+ IRUN_DEBUG = -access +rc
+ IRUN_DEBUG_RUN = -input ${RV_ROOT}/testbench/input.tcl
  VCS_DEBUG = -debug_access
  VERILATOR_DEBUG = --trace
+endif
+
+# provide specific link file
+ifeq (,$(wildcard $(TEST_DIR)/$(TEST).ld))
+	LINK = $(BUILD_DIR)/link.ld
+else
+	LINK = $(TEST_DIR)/$(TEST).ld
 endif
 
 VPATH = $(TEST_DIR) $(BUILD_DIR) $(TBDIR)
@@ -122,9 +124,9 @@ vcs-build: ${TBFILES} conf
 
 ############ TEST Simulation ###############################
 
-vcs: program.hex vcs-build
+vcs: program.hex vcs-build 
 	./simv $(DEBUG_PLUS) +vcs+lic+wait  -l $(OFILES_PATH)/vcs.log
-	@rm -rf program.hex $(addprefix $(OFILES_PATH)/,csrc simv* vc_hdrs.h ucli.key console.log *.csv)
+	@rm -rf program.hex $(addprefix $(OFILES_PATH)/,csrc simv* vc_hdrs.h ucli.key console.log *.csv obj_dir)
 	@mv csrc simv* vc_hdrs.h ucli.key console.log *.csv $(OFILES_PATH)
 	@mv *.log ${RV_ROOT}/tracer_logs
 
@@ -140,7 +142,7 @@ endif
 
 verilator: program.hex verilator-build
 	./obj_dir/Vtb_top
-	@rm -rf program.hex $(addprefix $(OFILES_PATH)/,csrc simv* vc_hdrs.h ucli.key console.log *.csv)
+	@rm -rf program.hex $(addprefix $(OFILES_PATH)/,csrc simv* vc_hdrs.h ucli.key console.log *.csv obj_dir)
 	@mv  console.log *.csv obj_dir $(OFILES_PATH)
 	@mv *.log ${RV_ROOT}/tracer_logs
 
@@ -155,12 +157,11 @@ ifneq (,$(wildcard $(TEST_DIR)/$(TEST).makefile))
 program.hex:
 	@echo Building $(TEST) via $(TEST_DIR)/$(TEST).makefile
 	$(MAKE) -f $(TEST_DIR)/$(TEST).makefile
-else
+else 
 program.hex: $(OFILES) $(LINK)
 	@echo Building $(TEST)
-	$(GCC_PREFIX)-gcc -Wl,-m,elf32lriscv -Wl,--discard-none -T$(LINK) -o $(OFILES_PATH)/$(TEST).exe \
-	$(addprefix $(OFILES_PATH)/,$(OFILES)) \
-	-nostartfiles -nostdlib $(TEST_LIBS)
+	cd $(OFILES_PATH) && $(GCC_PREFIX)-gcc -Wl,-m,elf32lriscv -Wl,--discard-none -T$(LINK) -o $(TEST).exe $(OFILES) \
+	-nostartfiles -nostdlib $(TEST_LIBS) 
 	$(GCC_PREFIX)-objcopy -O verilog  $(OFILES_PATH)/$(TEST).exe program.hex
 	$(GCC_PREFIX)-objdump -S  $(OFILES_PATH)/$(TEST).exe > $(OFILES_PATH)/$(TEST).dis
 	@echo Completed building $(TEST)
