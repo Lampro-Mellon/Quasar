@@ -70,17 +70,17 @@ if {![file isdirectory $fm_path_r]} {
 }
  # Loading verilog implementation file
 	read_sverilog -i  "         	\
- 			$LEC_ROOT/LEC_RTL/generated_rtl/pkt.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/beh_lib.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/mem_lib.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/ifu_ic_mem.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/gated_latch.sv 
- 			$LEC_ROOT/LEC_RTL/generated_rtl/ifu_iccm_mem.sv 
- 			$LEC_ROOT/LEC_RTL/generated_rtl/lsu_dccm_mem.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/mem.sv   
- 			$LEC_ROOT/LEC_RTL/generated_rtl/dmi_jtag_to_core_sync.sv 
- 			$LEC_ROOT/LEC_RTL/generated_rtl/rvjtag_tap.sv
- 			$LEC_ROOT/LEC_RTL/generated_rtl/dmi_wrapper.sv  	
+ 			$LEC_ROOT/LEC_RTL/BB_RTL/pkt.sv
+ 			$LEC_ROOT/LEC_RTL/BB_RTL/beh_lib.sv
+ 			$LEC_ROOT/LEC_RTL/BB_RTL/mem_lib.sv
+ 			$LEC_ROOT/LEC_RTL/BB_RTL/ifu_ic_mem.sv
+ 			$LEC_ROOT/LEC_RTL/BB_RTL/gated_latch.sv 
+ 			$LEC_ROOT/LEC_RTL/BB_RTL/ifu_iccm_mem.sv 
+ 			$LEC_ROOT/LEC_RTL/BB_RTL/lsu_dccm_mem.sv
+ 			$LEC_ROOT/LEC_RTL/BB_RTL/mem.sv   
+ 			$LEC_ROOT/LEC_RTL/BB_RTL/dmi_jtag_to_core_sync.sv 
+ 			$LEC_ROOT/LEC_RTL/BB_RTL/rvjtag_tap.sv
+ 			$LEC_ROOT/LEC_RTL/BB_RTL/dmi_wrapper.sv  	
  			./generated_rtl/quasar_wrapper.sv 
  
  				  	

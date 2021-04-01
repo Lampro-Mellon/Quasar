@@ -92,14 +92,14 @@ CFLAGS += "-std=c++11"
 # compiles), or -O for balance.
 VERILATOR_MAKE_FLAGS = OPT_FAST="-Os"
 #############Targets#######################################
-all:	clean sbt_ verilator
+all:	clean conf sbt_ verilator
 
-vcs_all: clean sbt_ vcs
+vcs_all: clean conf sbt_ vcs
 ############ Model Builds ###############################
 conf: 
 	BUILD_PATH=${BUILD_DIR} ${RV_ROOT}/configs/quasar.config -target=$(target) $(CONF_PARAMS)
 
-sbt_: conf
+sbt_: 
 	cd ${RV_ROOT}/design/ && exec sbt "run" 
 	python3 ${RV_ROOT}/design/reset_script.py
 	rm -rf ${RV_ROOT}/design/quasar_wrapper.v
@@ -134,7 +134,10 @@ ifeq ($(shell which fm_shell 2> /dev/null),)
 lec:
 	$(error Unable to locate the executable file for formality! Exiting!)
 else
-lec:
+lec: sbt_
+	rm -rf ${RV_ROOT}/verif/LEC/LEC_RTL
+	git clone https://github.com/Lampro-Mellon/LEC-RTL.git LEC_RTL
+	mv LEC_RTL ${RV_ROOT}/verif/LEC
 	python3 ${RV_ROOT}/verif/LEC/config.py
 	fm_shell -f ${RV_ROOT}/verif/LEC/formality_work/run_me.fms
 	@mv *.log ${RV_ROOT}/verif/LEC/formality_work/formality_log
@@ -209,5 +212,7 @@ clean:
 	rm -rf $(OFILES_PATH)/*.fsdb
 	rm -rf ${RV_ROOT}/FM_WORK
 	rm -rf ${RV_ROOT}/tracer_logs/*.log
+	rm -rf ${RV_ROOT}/verif/LEC/formality_work/formality_log/*.log
+	rm -rf ${RV_ROOT}/verif/LEC/*.fss
 	rm -rf *.log *.lck *.s *.hex *.dis *.tbl vcs* simv* quasar* *.exe obj* *.o ucli.key vc_hdrs.h csrc *.csv work *.dump *.fsdb
 
