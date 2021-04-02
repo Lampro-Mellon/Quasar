@@ -1,6 +1,6 @@
 
 # Set Search Path for Golden/Implementation Design
-	set search_path "./verif/LEC ./verif/LEC/LEC_RTL/Golden_RTL ./verif/LEC/LEC_RTL/generated_rtl"
+	set search_path "./verif/LEC ./verif/LEC/LEC_RTL/Golden_RTL ./verif/LEC/LEC_RTL/Imp_BB_RTL"
 
 # Set LEC_ROOT to presentt working directory
 	set LEC_ROOT [pwd]/verif/LEC
@@ -70,17 +70,17 @@ if {![file isdirectory $fm_path_r]} {
 }
  # Loading verilog implementation file
 	read_sverilog -i  "         	\
- 			$LEC_ROOT/LEC_RTL/BB_RTL/pkt.sv
- 			$LEC_ROOT/LEC_RTL/BB_RTL/beh_lib.sv
- 			$LEC_ROOT/LEC_RTL/BB_RTL/mem_lib.sv
- 			$LEC_ROOT/LEC_RTL/BB_RTL/ifu_ic_mem.sv
- 			$LEC_ROOT/LEC_RTL/BB_RTL/gated_latch.sv 
- 			$LEC_ROOT/LEC_RTL/BB_RTL/ifu_iccm_mem.sv 
- 			$LEC_ROOT/LEC_RTL/BB_RTL/lsu_dccm_mem.sv
- 			$LEC_ROOT/LEC_RTL/BB_RTL/mem.sv   
- 			$LEC_ROOT/LEC_RTL/BB_RTL/dmi_jtag_to_core_sync.sv 
- 			$LEC_ROOT/LEC_RTL/BB_RTL/rvjtag_tap.sv
- 			$LEC_ROOT/LEC_RTL/BB_RTL/dmi_wrapper.sv  	
+ 			$LEC_ROOT/LEC_RTL/Imp_BB_RTL/pkt.sv
+ 			$LEC_ROOT/LEC_RTL/Imp_BB_RTL/beh_lib.sv
+ 			$LEC_ROOT/LEC_RTL/Imp_BB_RTL/mem_lib.sv
+ 			$LEC_ROOT/LEC_RTL/Imp_BB_RTL/ifu_ic_mem.sv
+ 			$LEC_ROOT/LEC_RTL/Imp_BB_RTL/gated_latch.sv 
+ 			$LEC_ROOT/LEC_RTL/Imp_BB_RTL/ifu_iccm_mem.sv 
+ 			$LEC_ROOT/LEC_RTL/Imp_BB_RTL/lsu_dccm_mem.sv
+ 			$LEC_ROOT/LEC_RTL/Imp_BB_RTL/mem.sv   
+ 			$LEC_ROOT/LEC_RTL/Imp_BB_RTL/dmi_jtag_to_core_sync.sv 
+ 			$LEC_ROOT/LEC_RTL/Imp_BB_RTL/rvjtag_tap.sv
+ 			$LEC_ROOT/LEC_RTL/Imp_BB_RTL/dmi_wrapper.sv  	
  			./generated_rtl/quasar_wrapper.sv 
  
  				  	
@@ -93,25 +93,25 @@ if {![file isdirectory $fm_path_r]} {
  	set_black_box i:/WORK/mem_DCCM_BANK_BITS*
 
  # Setting User Match on input ports
- 	source $LEC_ROOT/setup_files/Input_ports_1.3.fms
+ 	source $LEC_ROOT/setup_files/Input_ports_2.0.fms
 
  # Setting User Match on output ports
- 	source $LEC_ROOT/setup_files/Output_ports_1.3.fms
+ 	source $LEC_ROOT/setup_files/Output_ports_2.0.fms
  
  # Setting User Match on input Black Box Pins
-	source $LEC_ROOT/setup_files/BB_input_pins_1.3.fms
+	source $LEC_ROOT/setup_files/BB_input_pins_2.0.fms
 
  # Setting User Match on output Black Box Pins
-	source $LEC_ROOT/setup_files/BB_output_pins_1.3.fms
+	source $LEC_ROOT/setup_files/BB_output_pins_2.0.fms
 
  # Setting User Match on Flip Flops
- 	source $LEC_ROOT/setup_files/DFF_1.3.fms
+ 	source $LEC_ROOT/setup_files/DFF_2.0.fms
  
  # Setting up constants potentially constant registers 
- 	source $LEC_ROOT/setup_files/Constant_1.3.fms
+ 	source $LEC_ROOT/setup_files/Constant_2.0.fms
 
  # Setting up dont verify points 
- 	source $LEC_ROOT/setup_files/Dont_verify_points_1.3.fms
+ 	source $LEC_ROOT/setup_files/Dont_verify_points_2.0.fms
  
  	if {[verify] != 1} {
  		set verification_failing_points_limit 500
