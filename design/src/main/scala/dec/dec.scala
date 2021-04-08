@@ -121,10 +121,7 @@ class dec extends Module with param with RequireAsyncReset{
   val               dec_tlu_mtval_wb1 = WireInit(UInt(32.W),0.U)
   val               dec_tlu_i0_exc_valid_wb1 = WireInit(Bool(),0.B)
   val               dec_tlu_trace_disable = WireInit(Bool(),0.B)
- // val               dec_i0_bp_fa_index = WireInit(UInt(log2Ceil(BTB_SIZE).W),0.U)
-  //val               dec_debug_valid_d = WireInit(Bool(),0.B)
-
-
+ 
 
   //--------------------------------------------------------------------------//
   val instbuff = Module(new dec_ib_ctl)
