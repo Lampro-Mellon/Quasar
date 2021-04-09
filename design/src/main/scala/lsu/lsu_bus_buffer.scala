@@ -51,7 +51,6 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
     val lsu_bus_buffer_pend_any   = Output(Bool())
     val lsu_bus_buffer_full_any   = Output(Bool())
     val lsu_bus_buffer_empty_any  = Output(Bool())
-   // val lsu_bus_idle_any          = Output(Bool())
     val ld_byte_hit_buf_lo        = Output((UInt(4.W)))
     val ld_byte_hit_buf_hi        = Output((UInt(4.W)))
     val ld_fwddata_buf_lo         = Output((UInt(32.W)))
@@ -285,7 +284,6 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   val bus_cmd_ready = WireInit(Bool(), false.B)
   val obuf_valid = WireInit(Bool(), false.B)
   val obuf_nosend = WireInit(Bool(), false.B)
- // val lsu_bus_cntr_overflow = WireInit(Bool(), false.B)
   val bus_addr_match_pending = WireInit(Bool(), false.B)
 
   obuf_wr_en := ((ibuf_buf_byp & io.lsu_commit_r & !(io.is_sideeffects_r & bus_sideeffect_pend)) |
@@ -553,7 +551,6 @@ class lsu_bus_buffer extends Module with RequireAsyncReset with lib {
   val lsu_nonblock_addr_offset = indexing(buf_addr, io.dctl_busbuff.lsu_nonblock_load_data_tag)(1,0)
   val lsu_nonblock_sz = indexing(buf_sz, io.dctl_busbuff.lsu_nonblock_load_data_tag)
   val lsu_nonblock_unsign = indexing(buf_unsign, io.dctl_busbuff.lsu_nonblock_load_data_tag)
- // val lsu_nonblock_dual = indexing(buf_dual.map(_.asUInt).reverse.reduce(Cat(_,_)), io.dctl_busbuff.lsu_nonblock_load_data_tag)
   val lsu_nonblock_data_unalgn = Cat(lsu_nonblock_load_data_hi, lsu_nonblock_load_data_lo) >> (lsu_nonblock_addr_offset * 8.U)
 
   io.dctl_busbuff.lsu_nonblock_load_data_valid := lsu_nonblock_load_data_ready & !io.dctl_busbuff.lsu_nonblock_load_data_error
