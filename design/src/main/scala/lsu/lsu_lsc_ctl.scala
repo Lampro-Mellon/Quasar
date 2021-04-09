@@ -38,8 +38,6 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
 
     val picm_mask_data_m = Input(UInt(32.W))
     val bus_read_data_m  = Input(UInt(32.W))  //coming from bus interface
-
-   // val lsu_result_m      = Output(UInt(32.W))
     val lsu_result_corr_r = Output(UInt(32.W))     // This is the ECC corrected data going to RF
 
     // lsu address down the pipe
@@ -117,7 +115,6 @@ class  lsu_lsc_ctl extends Module with RequireAsyncReset with lib
   val addrcheck = Module(new lsu_addrcheck())
 
   addrcheck.io.lsu_c2_m_clk              := io.lsu_c2_m_clk
-  //val rst_l = IO(Input(1.W)) //implicit
   addrcheck.io.start_addr_d              := full_addr_d
   addrcheck.io.end_addr_d                := full_end_addr_d
   addrcheck.io.lsu_pkt_d                 := io.lsu_pkt_d
