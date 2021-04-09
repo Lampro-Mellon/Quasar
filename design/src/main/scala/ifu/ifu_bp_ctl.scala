@@ -447,8 +447,8 @@ class ifu_bp_ctl extends Module with lib with RequireAsyncReset {
      val ifc_fetch_addr_p1_f = io.ifc_fetch_addr_f(FA_CMP_LOWER-1,1) + 1.U
   
   
-     val fetch_mp_collision_f = ((io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === io.ifc_fetch_addr_f) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
-     val fetch_mp_collision_p1_f = ( (io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === Cat(io.ifc_fetch_addr_f(30,FA_CMP_LOWER), ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1))) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
+    fetch_mp_collision_f := ((io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === io.ifc_fetch_addr_f) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
+    fetch_mp_collision_p1_f := ( (io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === Cat(io.ifc_fetch_addr_f(30,FA_CMP_LOWER), ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1))) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
      val btb_upper_hit = Wire(Vec(BTB_SIZE,Bool()))
      val btb_offset_0 = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
      val btb_used = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
@@ -460,8 +460,8 @@ class ifu_bp_ctl extends Module with lib with RequireAsyncReset {
      val hit1 = WireInit(UInt(1.W) ,init = 0.U)
   
      btb_upper_hit :=  (0 until BTB_SIZE).map(i=> ((btbdata(i)(BTB_DWIDTH_TOP,FA_TAG_END_UPPER) === io.ifc_fetch_addr_f(30,FA_CMP_LOWER)) & btbdata(i)(0) & ~wr0_en(i)))
-     val btb_offset_0  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === io.ifc_fetch_addr_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
-     val btb_offset_1  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
+     //btb_offset_0  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === io.ifc_fetch_addr_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
+     //btb_offset_1  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
   
      // hit unless we are also writing this entry at the same time
      val hit0_index = MuxCase(1.U, (0 until BTB_SIZE).map(i=> btb_offset_0(i) -> i.U))
