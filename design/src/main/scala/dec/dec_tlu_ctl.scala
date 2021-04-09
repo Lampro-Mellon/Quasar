@@ -45,7 +45,6 @@ trait CSR_VAL {
 class dec_tlu_ctl_IO extends Bundle with lib {
 	val tlu_exu = Flipped(new tlu_exu)
 	val tlu_dma = new tlu_dma
-	//	val active_clk    = Input(Clock())
 	val free_clk      = Input(Clock())
 	val free_l2clk      = Input(Clock())
 	val scan_mode     = Input(Bool())
@@ -96,10 +95,6 @@ class dec_tlu_ctl_IO extends Bundle with lib {
 	val dbg_resume_req = Input(UInt(1.W)) // DM requests a resume
 	val dec_div_active = Input(UInt(1.W)) // oop div is active
 	val trigger_pkt_any             = Output(Vec(4,new trigger_pkt_t))// trigger info for trigger blocks
-	//	val pic_claimid  = Input(UInt(8.W)) // pic claimid for csr
-	//	val pic_pl = Input(UInt(4.W)) // pic priv level for csr
-	//	val mhwakeup = Input(UInt(1.W)) // high priority external int, wakeup if halted
-	//	val mexintpend= Input(UInt(1.W)) // external interrupt pending
 	val timer_int= Input(UInt(1.W)) // timer interrupt pending
 	val soft_int= Input(UInt(1.W)) // software interrupt pending
 	val o_cpu_halt_status     = Output(UInt(1.W)) // PMU interface, halted
@@ -114,8 +109,6 @@ class dec_tlu_ctl_IO extends Bundle with lib {
 	val mpc_debug_halt_ack          = Output(UInt(1.W)) // Halt ack
 	val mpc_debug_run_ack           = Output(UInt(1.W)) // Run ack
 	val debug_brkpt_status          = Output(UInt(1.W)) // debug breakpoint
-	//	val dec_tlu_meicurpl            = Output(UInt(4.W)) // to PIC
-	//	val  dec_tlu_meipt              = Output(UInt(4.W)) // to PIC
 	val  dec_csr_rddata_d           = Output(UInt(32.W))      // csr read data at wb
 	val dec_csr_legal_d             = Output(UInt(1.W))              // csr indicates legal operation
 	val dec_tlu_i0_kill_writeb_wb   = Output(UInt(1.W))    // I0 is flushed, don't writeback any results to arch state
@@ -176,8 +169,6 @@ class dec_tlu_ctl extends Module with lib with RequireAsyncReset with CSR_VAL{
 	val take_ce_int						=WireInit(UInt(1.W),0.U)
 	val take_ext_int_start 				=WireInit(UInt(1.W),0.U)
 	val ext_int_freeze 					=WireInit(UInt(1.W),0.U)
-	//   	val ext_int_freeze_d1 				=WireInit(UInt(1.W),0.U)
-	//   	val take_ext_int_start_d1 			=WireInit(UInt(1.W),0.U)
 	val take_ext_int_start_d2 			=WireInit(UInt(1.W),0.U)
 	val take_ext_int_start_d3 			=WireInit(UInt(1.W),0.U)
 	val fast_int_meicpct 				=WireInit(UInt(1.W),0.U)
@@ -285,7 +276,6 @@ class dec_tlu_ctl extends Module with lib with RequireAsyncReset with CSR_VAL{
 	int_timers.io.free_l2clk				:=io.free_l2clk
 	int_timers.io.scan_mode				:=io.scan_mode
 	int_timers.io.dec_csr_wen_r_mod		:=dec_csr_wen_r_mod
-	//	int_timers.io.dec_csr_rdaddr_d		:=io.dec_csr_rdaddr_d
 	int_timers.io.dec_csr_wraddr_r		:=io.dec_csr_wraddr_r
 	int_timers.io.dec_csr_wrdata_r		:=io.dec_csr_wrdata_r
 	int_timers.io.csr_mitctl0			:=csr_pkt.csr_mitctl0
@@ -319,8 +309,7 @@ class dec_tlu_ctl extends Module with lib with RequireAsyncReset with CSR_VAL{
 	// for CSRs that have inpipe writes only
 	val csr_wr_clk=rvoclkhdr(clock,(dec_csr_wen_r_mod | clk_override).asBool,io.scan_mode)
 	int_timers.io.csr_wr_clk                   := csr_wr_clk
-	//	val lsu_r_wb_clk=rvclkhdr(clock,(io.lsu_error_pkt_r.valid | lsu_exc_valid_r_d1 | clk_override).asBool,io.scan_mode)
-
+	
 	val e4_valid = io.dec_tlu_i0_valid_r
 	val e4e5_valid = e4_valid | e5_valid
 	val flush_clkvalid = internal_dbg_halt_mode_f | i_cpu_run_req_d1 | interrupt_valid_r | interrupt_valid_r_d1 | reset_delayed | pause_expired_r | pause_expired_wb | ic_perr_r  | iccm_sbecc_r  | clk_override
@@ -333,8 +322,6 @@ class dec_tlu_ctl extends Module with lib with RequireAsyncReset with CSR_VAL{
 	val ifu_iccm_rd_ecc_single_err_f  =rvdffie(io.tlu_mem.ifu_iccm_rd_ecc_single_err,io.free_l2clk, reset.asAsyncReset(), io.scan_mode)
 
 	val iccm_repair_state_d1		=rvdffie(iccm_repair_state_ns,io.free_l2clk, reset.asAsyncReset(), io.scan_mode)
-	//	ic_perr_r_d1					:=withClock(io.free_clk){RegNext(ic_perr_r,0.U)}
-	//	iccm_sbecc_r_d1					:=withClock(io.free_clk){RegNext(iccm_sbecc_r,0.U)}
 	e5_valid						          :=rvdffie(e4_valid,io.free_l2clk, reset.asAsyncReset(), io.scan_mode)
 	internal_dbg_halt_mode_f		  :=rvdffie(internal_dbg_halt_mode,io.free_l2clk, reset.asAsyncReset(), io.scan_mode)
 	val lsu_pmu_load_external_r		 =rvdffie(io.lsu_tlu.lsu_pmu_load_external_m,io.free_l2clk, reset.asAsyncReset(), io.scan_mode)
@@ -790,9 +777,6 @@ class dec_tlu_ctl extends Module with lib with RequireAsyncReset with CSR_VAL{
 	int_exc.io.take_ext_int_start_d1   := csr.io.take_ext_int_start_d1
 	int_exc.io.take_ext_int_start_d2   := csr.io.take_ext_int_start_d2
 	int_exc.io.take_ext_int_start_d3   := csr.io.take_ext_int_start_d3
-	//	take_ext_int_start_d1             :=   csr.io.take_ext_int_start_d1
-	//	take_ext_int_start_d2             :=   csr.io.take_ext_int_start_d2
-	//	take_ext_int_start_d3             :=   csr.io.take_ext_int_start_d3
 	ext_int_freeze                    :=   int_exc.io.ext_int_freeze
 	take_ext_int                      := int_exc.io.take_ext_int
 	fast_int_meicpct                  := int_exc.io.fast_int_meicpct
@@ -965,10 +949,8 @@ class dec_tlu_ctl extends Module with lib with RequireAsyncReset with CSR_VAL{
 	mdseac_locked_f   := csr.io.mdseac_locked_f
 	csr.io.nmi_int_detected_f           := nmi_int_detected_f
 	csr.io.internal_dbg_halt_mode_f2    := internal_dbg_halt_mode_f2
-	//  ext_int_freeze_d1      := csr.io.ext_int_freeze_d1
 	csr.io.ic_perr_r                    := ic_perr_r
 	csr.io.iccm_sbecc_r                 := iccm_sbecc_r
-	//  csr.io.lsu_single_ecc_error_r_d1    := lsu_single_ecc_error_r_d1
 	csr.io.ifu_miss_state_idle_f        := ifu_miss_state_idle_f
 	csr.io.lsu_idle_any_f               := lsu_idle_any_f
 	csr.io.dbg_tlu_halted_f             := dbg_tlu_halted_f
@@ -1179,7 +1161,6 @@ trait CSRs{
 class CSR_IO extends Bundle with lib {
 	val free_l2clk                          = Input(Clock())
 	val free_clk                          = Input(Clock())
-	//  val active_clk                        = Input(Clock())
 	val scan_mode                         = Input(Bool())
 	val dec_csr_wrdata_r                  = Input(UInt(32.W))
 	val dec_csr_wraddr_r                  = Input(UInt(12.W))
@@ -1209,8 +1190,6 @@ class CSR_IO extends Bundle with lib {
 	val dec_tlu_i0_exc_valid_wb1          = Output(UInt(1.W))
 	val dec_tlu_i0_valid_wb1              = Output(UInt(1.W))
 	val dec_csr_wen_r                     = Input(UInt(1.W))
-	//val dec_tlu_force_halt                = Output(UInt(1.W))
-	//val dec_tlu_flush_extint              = Output(UInt(1.W))
 	val dec_tlu_mtval_wb1                 = Output(UInt(32.W))
 	val dec_tlu_exc_cause_wb1             = Output(UInt(5.W))
 	val dec_tlu_perfcnt0                  = Output(UInt(1.W))
@@ -1236,17 +1215,7 @@ class CSR_IO extends Bundle with lib {
 	val dec_tlu_pic_clk_override          = Output(UInt(1.W))
 	val dec_tlu_dccm_clk_override         = Output(UInt(1.W))
 	val dec_tlu_icm_clk_override          = Output(UInt(1.W))
-	//val dec_csr_legal_d                   = Output(UInt(1.W))
 	val dec_csr_rddata_d                  = Output(UInt(32.W))
-	//val dec_tlu_postsync_d                = Output(UInt(1.W))
-	//val dec_tlu_presync_d                 = Output(UInt(1.W))
-	//val dec_tlu_flush_pause_r             = Output(UInt(1.W))
-	//val dec_tlu_flush_lower_r             = Output(UInt(1.W))
-	//val dec_tlu_i0_kill_writeb_r          = Output(UInt(1.W))
-	//val dec_tlu_flush_lower_wb            = Output(UInt(1.W))
-	//val dec_tlu_i0_kill_writeb_wb         = Output(UInt(1.W))
-	// val dec_tlu_flush_leak_one_wb          = Output(UInt(1.W))
-	//val dec_tlu_debug_stall               = Output(UInt(1.W))
 	val dec_tlu_pipelining_disable        = Output(UInt(1.W))
 	val dec_tlu_wr_pause_r                = Output(UInt(1.W))
 	val ifu_pmu_bus_busy                  = Input(UInt(1.W))
@@ -1388,35 +1357,24 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 	val io = IO(new CSR_IO)
 
 	////////////////////////////////wires///////////////////////////////
-	//	val lsu_single_ecc_error_r_d1   = WireInit(UInt(1.W),0.U)
-	//	val lsu_i0_exc_r_d1             = WireInit(UInt(1.W),0.U)
 	val miccme_ce_req               = WireInit(UInt(1.W),0.U)
 	val mice_ce_req                 = WireInit(UInt(1.W),0.U)
 	val mdccme_ce_req               = WireInit(UInt(1.W),0.U)
 	val pc_r_d1                     = WireInit(UInt(31.W),0.U)
 	val mpmc_b_ns                   = WireInit(UInt(1.W),0.U)
 	val mpmc_b                      = WireInit(UInt(1.W),0.U)
-	//	val wr_mcycleh_r                = WireInit(UInt(1.W), 0.U)
 	val mcycleh                     = WireInit(UInt(32.W),0.U)
-	//  val minstretl_inc               = WireInit(UInt(33.W),0.U)
 	val wr_minstreth_r              = WireInit(UInt(1.W),0.U)
 	val minstretl                   = WireInit(UInt(32.W),0.U)
-	//  val minstreth_inc               = WireInit(UInt(32.W),0.U)
 	val minstreth                   = WireInit(UInt(32.W),0.U)
 	val mfdc_ns                     = WireInit(UInt(16.W),0.U)
 	val mfdc_int                    = WireInit(UInt(16.W),0.U)
-	//  val mhpmc6_incr                 = WireInit(UInt(64.W),0.U)
-	//  val mhpmc5_incr                 = WireInit(UInt(64.W),0.U)
-	//  val mhpmc4_incr                 = WireInit(UInt(64.W),0.U)
-	//  val perfcnt_halted              = WireInit(UInt(1.W),0.U)
-	//  val mhpmc3_incr                 = WireInit(UInt(64.W),0.U)
 	val mhpme_vec                   = Wire(Vec(4,UInt(10.W)))
 	val mtdata2_t					          = Wire(Vec(4,UInt(32.W)))
 	val wr_meicpct_r 				        = WireInit(UInt(1.W),0.U)
 	val force_halt_ctr_f			      = WireInit(UInt(32.W),0.U)
 	val mdccmect_inc                = WireInit(UInt(27.W),0.U)
 	val miccmect_inc                = WireInit(UInt(27.W),0.U)
-	//  val fw_halted                   = WireInit(UInt(1.W),0.U)
 	val micect_inc                  = WireInit(UInt(27.W),0.U)
 	val mdseac_en                   = WireInit(UInt(1.W),0.U)
 	val mie                         = WireInit(UInt(6.W),0.U)
@@ -1426,25 +1384,12 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 	val mscause                     = WireInit(UInt(4.W),0.U)
 	val mtval                       = WireInit(UInt(32.W),0.U)
 	val meicurpl 					          = WireInit(UInt(4.W),0.U)
-	//  val meicidpl 					          = WireInit(UInt(4.W),0.U)
 	val meipt 					            = WireInit(UInt(4.W),0.U)
 	val mfdc                        = WireInit(UInt(19.W),0.U)
 	val mtsel                       = WireInit(UInt(2.W),0.U)
 	val micect                      = WireInit(UInt(32.W),0.U)
 	val miccmect                    = WireInit(UInt(32.W),0.U)
 	val mdccmect                    = WireInit(UInt(32.W),0.U)
-	//  val mhpmc3h                     = WireInit(UInt(32.W),0.U)
-	//  val mhpmc3                      = WireInit(UInt(32.W),0.U)
-	//  val mhpmc4h                     = WireInit(UInt(32.W),0.U)
-	//  val mhpmc4                      = WireInit(UInt(32.W),0.U)
-	//  val mhpmc5h                     = WireInit(UInt(32.W),0.U)
-	//  val mhpmc5                      = WireInit(UInt(32.W),0.U)
-	//  val mhpmc6h                     = WireInit(UInt(32.W),0.U)
-	//  val mhpmc6                      = WireInit(UInt(32.W),0.U)
-	//  val mhpme3                      = WireInit(UInt(10.W),0.U)
-	//  val mhpme4                      = WireInit(UInt(10.W),0.U)
-	//  val mhpme5                      = WireInit(UInt(10.W),0.U)
-	//  val mhpme6                      = WireInit(UInt(10.W),0.U)
 	val mfdht 					            = WireInit(UInt(6.W),0.U)
 	val mfdhs                       = WireInit(UInt(2.W),0.U)
 	val mcountinhibit               = WireInit(UInt(7.W),0.U)
@@ -1487,9 +1432,7 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 
 	// gate MIE if we are single stepping and DCSR[STEPIE] is off
 	io.mstatus_mie_ns := io.mstatus(MSTATUS_MIE) & (~io.dcsr_single_step_running_f | io.dcsr(DCSR_STEPIE))
-	// io.mstatus := withClock(io.free_clk) {
-	//   RegNext(mstatus_ns,0.U)
-	// }
+	
 
 	// ----------------------------------------------------------------------
 	// MTVEC (RW)
@@ -1514,9 +1457,7 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 	val ce_int = (mdccme_ce_req | miccme_ce_req | mice_ce_req)
 
 	val mip_ns = Cat(ce_int, io.dec_timer_t0_pulse, io.dec_timer_t1_pulse, io.mexintpend, io.timer_int_sync, io.soft_int_sync)
-	// io.mip := withClock(io.free_clk) {
-	//   RegNext(mip_ns,0.U)
-	// }
+	
 
 	// ----------------------------------------------------------------------
 	// MIE (RW)
@@ -1541,8 +1482,6 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 	val wr_mcyclel_r = io.dec_csr_wen_r_mod & (io.dec_csr_wraddr_r(11,0) === MCYCLEL)
 
 	val mcyclel_cout_in = ~(kill_ebreak_count_r | (io.dec_tlu_dbg_halted & io.dcsr(DCSR_STOPC)) | io.dec_tlu_pmu_fw_halted | mcountinhibit(0))
-	// val mcyclel_cout_f = WireInit(Bool())
-	// val mcyclel_inc  = WireInit(UInt(32.W),0.U)
 	val mcyclel_inc1                 = WireInit(UInt(9.W),0.U)
 	val mcyclel_inc2                 = WireInit(UInt(25.W),0.U)
 	mcyclel_inc1 := mcyclel(7,0) +&  Cat(0.U(7.W), 1.U(1.W))
@@ -1551,7 +1490,6 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 	val mcyclel_ns = Mux(wr_mcyclel_r.asBool, io.dec_csr_wrdata_r, mcyclel_inc(31,0))
 	val mcyclel_cout = mcyclel_inc2(24).asBool
 	mcyclel := Cat(rvdffe(mcyclel_ns(31,8), (wr_mcyclel_r | (mcyclel_inc1(8) & mcyclel_cout_in.asUInt).asBool), io.free_l2clk, io.scan_mode),rvdffe(mcyclel_ns(7,0),( wr_mcyclel_r | mcyclel_cout_in.asUInt).asBool, io.free_l2clk, io.scan_mode))
-	// val mcyclel_cout_f = withClock(io.free_clk) {RegNext((mcyclel_cout & !wr_mcycleh_r),0.U)}
 	// ----------------------------------------------------------------------
 	// MCYCLEH (RW)
 	// [63:32] : Higher Cycle count
@@ -1579,7 +1517,6 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 	val i0_valid_no_ebreak_ecall_r = (io.dec_tlu_i0_valid_r & !(io.ebreak_r | io.ecall_r | io.ebreak_to_debug_mode_r | io.illegal_r | mcountinhibit(2))).asBool()
 
 	val wr_minstretl_r = io.dec_csr_wen_r_mod & (io.dec_csr_wraddr_r(11,0) === MINSTRETL)
-	// val minstretl_inc = WireInit(UInt(32.W))
 	val minstretl_inc1 = WireInit(UInt(9.W),0.U)
 	val minstretl_inc2 = WireInit(UInt(25.W),0.U)
 	minstretl_inc1 := minstretl(7,0) +& Cat(0.U(7.W), 1.U(1.W))
@@ -1593,9 +1530,7 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 	val minstretl_ns = Mux(wr_minstretl_r.asBool, io.dec_csr_wrdata_r , minstretl_inc(31,0))
 
 	minstretl := Cat(rvdffe(minstretl_ns(31,8),wr_minstretl_r | (minstretl_inc1(8) & minstret_enable),clock,io.scan_mode),rvdffe(minstretl_ns(7,0),minstret_enable.asBool,clock,io.scan_mode))
-	// val minstret_enable_f = withClock(io.free_clk){RegNext(minstret_enable,0.U)}
-	// val minstretl_cout_f  = withClock(io.free_clk){RegNext((minstretl_cout & ~wr_minstreth_r),0.U)}
-
+	
 	val minstretl_read = minstretl
 	// ----------------------------------------------------------------------
 	// MINSTRETH (RW)
@@ -1604,8 +1539,6 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 
 	wr_minstreth_r := (io.dec_csr_wen_r_mod & (io.dec_csr_wraddr_r(11,0) === MINSTRETH)).asBool
 
-	//val minstret_enable_f = WireInit(Bool())
-	//	val minstretl_cout_f = WireInit(Bool())
 	val minstreth_inc = minstreth + Cat(0.U(31.W), perfmux_flop.io.minstretl_cout_f )
 	val minstreth_ns  = Mux(wr_minstreth_r.asBool, io.dec_csr_wrdata_r, minstreth_inc)
 
@@ -1787,8 +1720,7 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 
 
 	mfdc_int := rvdffe(mfdc_ns,wr_mfdc_r.asBool,clock,io.scan_mode)
-	//  rvdffe #(15)  mfdc_ff (.*, .en(wr_mfdc_r), .din({mfdc_ns[14:0]}), .dout(mfdc_int[14:0]));
-
+	
 	// flip poweron value of bit 6 for AXI build
 	if(BUILD_AXI4){
 		// flip poweron valid of bit 12
@@ -2205,8 +2137,6 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 	val icache_rd_valid = io.allow_dbg_halt_csr_write & io.dec_csr_any_unq_d & io.dec_i0_decode_d & ~io.dec_csr_wen_unq_d & (io.dec_csr_rdaddr_d(11,0) === DICAGO)
 	val icache_wr_valid = io.allow_dbg_halt_csr_write & io.dec_csr_wen_r_mod & (io.dec_csr_wraddr_r(11,0) === DICAGO)
 
-	// val icache_rd_valid_f = WireInit(UInt(1.W),0.U)
-	// val icache_wr_valid_f = WireInit(UInt(1.W),0.U)
 
 	io.dec_tlu_ic_diag_pkt.icache_rd_valid := perfmux_flop.io.icache_rd_valid_f
 	io.dec_tlu_ic_diag_pkt.icache_wr_valid := perfmux_flop.io.icache_wr_valid_f
@@ -2317,7 +2247,6 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 
 	// Generate the muxed incs for all counters based on event type
 
-	//	val mhpmc_inc_r                        =perfmux_flop.io.mhpmc_inc_r    //mux out
 	perfmux_flop.io.mcountinhibit                   := mcountinhibit
 	perfmux_flop.io.mhpme_vec                       := mhpme_vec
 	perfmux_flop.io.ifu_pmu_ic_hit                  := io.ifu_pmu_ic_hit
@@ -2366,19 +2295,8 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 	perfmux_flop.io.rfpc_i0_r                       := io.rfpc_i0_r
 	perfmux_flop.io.dec_tlu_br0_start_error_r       := io.dec_tlu_br0_start_error_r
 	//flop outputs
-	//	mcyclel_cout_f                := perfmux_flop.io.mcyclel_cout_f
-	//	minstret_enable_f             := perfmux_flop.io.minstret_enable_f
-	//	minstretl_cout_f              := perfmux_flop.io.minstretl_cout_f
-	//	fw_halted                     := perfmux_flop.io.fw_halted
-	//	meicidpl                      := perfmux_flop.io.meicidpl
-	//	icache_rd_valid_f             := perfmux_flop.io.icache_rd_valid_f
-	//	icache_wr_valid_f             := perfmux_flop.io.icache_wr_valid_f
-	//	val mhpmc_inc_r_d1                = perfmux_flop.io.mhpmc_inc_r_d1
-	//	val perfcnt_halted_d1             = perfmux_flop.io.perfcnt_halted_d1
 	io.mdseac_locked_f               := perfmux_flop.io.mdseac_locked_f
-	//	lsu_single_ecc_error_r_d1        := perfmux_flop.io.lsu_single_ecc_error_r_d1
 	io.lsu_exc_valid_r_d1            := perfmux_flop.io.lsu_exc_valid_r_d1
-	//	lsu_i0_exc_r_d1                  := perfmux_flop.io.lsu_i0_exc_r_d1
 	io.take_ext_int_start_d1         := perfmux_flop.io.take_ext_int_start_d1
 	io.take_ext_int_start_d2         := perfmux_flop.io.take_ext_int_start_d2
 	io.take_ext_int_start_d3         := perfmux_flop.io.take_ext_int_start_d3
@@ -2421,18 +2339,6 @@ class csr_tlu extends Module with lib with CSRs with RequireAsyncReset {
 	perf_csrs.io.mhpmc_inc_r_d1              :=   perfmux_flop.io.mhpmc_inc_r_d1
 	perf_csrs.io.perfcnt_halted_d1           :=   perfmux_flop.io.perfcnt_halted_d1
 	//Outputs
-	//	 mhpmc3h          := perf_csrs.io.mhpmc3h
-	//	 mhpmc3           := perf_csrs.io.mhpmc3
-	//	 mhpmc4h          := perf_csrs.io.mhpmc4h
-	//	 mhpmc4           := perf_csrs.io.mhpmc4
-	//	 mhpmc5h          := perf_csrs.io.mhpmc5h
-	//	 mhpmc5           := perf_csrs.io.mhpmc5
-	//	 mhpmc6h          := perf_csrs.io.mhpmc6h
-	//	 mhpmc6           := perf_csrs.io.mhpmc6
-	//	 mhpme3           := perf_csrs.io.mhpme3
-	//	 mhpme4           := perf_csrs.io.mhpme4
-	//	 mhpme5           := perf_csrs.io.mhpme5
-	//	 mhpme6           := perf_csrs.io.mhpme6
 	io.dec_tlu_perfcnt0 := perf_csrs.io.dec_tlu_perfcnt0
 	io.dec_tlu_perfcnt1 := perf_csrs.io.dec_tlu_perfcnt1
 	io.dec_tlu_perfcnt2 := perf_csrs.io.dec_tlu_perfcnt2
@@ -2783,7 +2689,6 @@ class perf_mux_and_flops extends Module with CSRs with lib with RequireAsyncRese
 		val meicidpl_ns               = Input(UInt(4.W))
 		val icache_rd_valid           = Input(Bool())
 		val icache_wr_valid           = Input(Bool())
-		//		val mhpmc_inc_r               = Input(Bool())
 		val perfcnt_halted            = Input(Bool())
 		val mstatus_ns                = Input(UInt(2.W))
 		val scan_mode                 = Input(Bool())
@@ -3086,10 +2991,6 @@ class int_exc extends Module with CSRs with lib with RequireAsyncReset{
 
 
 	if(FAST_INTERRUPT_REDIRECT) {
-		//	take_ext_int_start_d1:=withClock(io.free_clk){RegNext(take_ext_int_start,0.U)}
-		//	take_ext_int_start_d2:=withClock(io.free_clk){RegNext(take_ext_int_start_d1,0.U)}
-		//	take_ext_int_start_d3:=withClock(io.free_clk){RegNext(take_ext_int_start_d2,0.U)}
-		//	ext_int_freeze_d1	 :=withClock(io.free_clk){RegNext(ext_int_freeze,0.U)}
 		io.take_ext_int_start := io.ext_int_ready & ~block_interrupts;
 		io.ext_int_freeze := io.take_ext_int_start | io.take_ext_int_start_d1 | io.take_ext_int_start_d2 | io.take_ext_int_start_d3
 		io.take_ext_int := io.take_ext_int_start_d3 & ~io.lsu_fir_error.orR
@@ -3098,10 +2999,6 @@ class int_exc extends Module with CSRs with lib with RequireAsyncReset{
 	}else{
 		io.take_ext_int_start := 0.U(1.W)
 		io.ext_int_freeze := 0.U(1.W)
-		//		io.ext_int_freeze_d1 := 0.U(1.W)
-		//		io.take_ext_int_start_d1 := 0.U(1.W)
-		//		io.take_ext_int_start_d2 := 0.U(1.W)
-		//		io.take_ext_int_start_d3 := 0.U(1.W)
 		io.fast_int_meicpct := 0.U(1.W)
 		io.ignore_ext_int_due_to_lsu_stall := 0.U(1.W)
 		io.take_ext_int := io.ext_int_ready & ~block_interrupts
@@ -3144,11 +3041,9 @@ class int_exc extends Module with CSRs with lib with RequireAsyncReset{
 	io.tlu_flush_path_r_d1:=rvdffpcie(tlu_flush_path_r,io.tlu_flush_lower_r,reset.asAsyncReset(),clock, io.scan_mode)//withClock(e4e5_int_clk){RegNext(tlu_flush_path_r,0.U)} ///After Combining Code revisit this
 
 	io.dec_tlu_flush_lower_wb 	:= io.tlu_flush_lower_r_d1
-	//    io.tlu_mem.dec_tlu_flush_lower_wb 	:= io.dec_tlu_flush_lower_wb
 	io.dec_tlu_flush_lower_r 	:= io.tlu_flush_lower_r
 	io.dec_tlu_flush_path_r 	:= tlu_flush_path_r ///After Combining Code revisit this
 
-	// this is used to capture mepc, etc.
 	io.exc_or_int_valid_r := io.lsu_exc_valid_r | io.i0_exception_valid_r | io.interrupt_valid_r | (io.i0_trigger_hit_r & ~io.trigger_hit_dmode_r)
 
 	io.interrupt_valid_r_d1				  :=rvdffie(io.interrupt_valid_r, clock,reset.asAsyncReset(),io.scan_mode)//withClock(e4e5_int_clk){RegNext(interrupt_valid_r,0.U)}
@@ -3225,9 +3120,7 @@ class dec_decode_csr_read extends Module with RequireAsyncReset{
 	io.csr_pkt.csr_mitcnt0 				:=pattern(List(6,-5,4,-2,'z'))
 	io.csr_pkt.csr_mitcnt1 				:=pattern(List(6,2,-1,0))
 	io.csr_pkt.csr_mpmc 				:=pattern(List(6,-4,-3,2,1))
-	//	io.csr_pkt.csr_mcpc 				:=pattern(List(10,6,-4,-3,-2,1))
 	io.csr_pkt.csr_meicpct 				:=pattern(List(11,6,1,'z'))
-	//	io.csr_pkt.csr_mdeau 				:=pattern(List(-10,7,6,-3))
 	io.csr_pkt.csr_micect 				:=pattern(List(6,5,-3,-1,'z'))
 	io.csr_pkt.csr_miccmect 			:=pattern(List(6,5,-3,0))
 	io.csr_pkt.csr_mdccmect 			:=pattern(List(6,5,1,'z'))
@@ -3390,7 +3283,6 @@ class dec_timer_ctl_IO extends Bundle{
 	val csr_wr_clk        = Input(Clock())
 	val scan_mode				=Input(Bool())
 	val dec_csr_wen_r_mod		=Input(UInt(1.W))     // csr write enable at wb
-	//	val dec_csr_rdaddr_d		=Input(UInt(12.W))    // read address for csr
 	val dec_csr_wraddr_r		=Input(UInt(12.W))    // write address for csr
 	val dec_csr_wrdata_r		=Input(UInt(32.W))    // csr write data at wb
 

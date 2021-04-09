@@ -2,7 +2,6 @@
 import chisel3._
 import chisel3.util._
 import include._
-//import dbg._
 import scala.collection._
 import lib._
 
@@ -69,32 +68,6 @@ class dma_ctrl extends Module with lib with RequireAsyncReset {
   val dma_address_error = WireInit(Bool(), false.B)
   val dma_alignment_error = WireInit(Bool(), false.B)
 
-  //  val fifo_cmd_en = (0 until DEPTH).map(i=>((bus_cmd_sent & io.dma_bus_clk_en) | (io.dbg_cmd_valid & io.dbg_cmd_type(1))) & (WrPtr === i.U).asUInt()).reverse.reduce(Cat(_,_))
-  //
-  //  val fifo_data_en = (0 until DEPTH).map(i => ((((bus_cmd_sent & fifo_write_in & io.dma_bus_clk_en) | (io.dbg_cmd_valid & io.dbg_cmd_type(1) & io.dbg_cmd_write)) &
-  //    (i.U === WrPtr)) | ((dma_address_error | dma_alignment_error) & (i.U === RdPtr)) |
-  //    (io.dccm_dma_rvalid & (i.U === io.dccm_dma_rtag)) |
-  //    (io.iccm_dma_rvalid & (i.U === io.iccm_dma_rtag))).asUInt).reverse.reduce(Cat(_,_))
-  //
-  //  val fifo_pend_en = (0 until DEPTH).map(i => ((io.dma_dccm_req | io.dma_iccm_req) & !io.dma_mem_write & (i.U === RdPtr)).asUInt).reverse.reduce(Cat(_,_))
-  //
-  //  val dma_dbg_cmd_error = WireInit(Bool(), false.B)
-  //
-  //  val fifo_error_en = (0 until DEPTH).map(i => (((dma_address_error.asBool | dma_alignment_error.asBool | dma_dbg_cmd_error) &
-  //    (i.U === RdPtr)) | ((io.dccm_dma_rvalid & io.dccm_dma_ecc_error) & (i.U === io.dccm_dma_rtag)) |
-  //    ((io.iccm_dma_rvalid & io.iccm_dma_ecc_error) & (i.U === io.iccm_dma_rtag))).asUInt).reverse.reduce(Cat(_,_))
-  //  val fifo_error_in = Wire(Vec(DEPTH, UInt(2.W)))
-  //  val fifo_error = Wire(Vec(DEPTH, UInt(2.W)))
-  //  val fifo_error_bus_en = (0 until DMA_BUF_DEPTH).map(i=>(((fifo_error_in(i).orR & fifo_error_en(i)) | fifo_error(i).orR) & io.dma_bus_clk_en).asUInt).reverse.reduce(Cat(_,_))
-  //  val fifo_done_en = (0 until DMA_BUF_DEPTH).map(i=>(((fifo_error(i).orR | fifo_error_en(i) | ((io.dma_dccm_req | io.dma_iccm_req) & io.dma_mem_write)) & (i.U === RdPtr)) |
-  //    (io.dccm_dma_rvalid & (i.U === io.dccm_dma_rtag)) | (io.iccm_dma_rvalid & (i.U === io.iccm_dma_rtag))).asUInt).reverse.reduce(Cat(_,_))
-  //  val fifo_done = WireInit(UInt(DEPTH.W), 0.U)
-  //  val fifo_done_bus_en = (0 until DMA_BUF_DEPTH).map(i => ((fifo_done_en(i) | fifo_done(i)) & io.dma_bus_clk_en).asUInt).reverse.reduce(Cat(_,_))
-  //  val bus_rsp_sent = WireInit(Bool(), false.B)
-  //  val bus_posted_write_done = WireInit(Bool(), false.B)
-  //  val RspPtr = WireInit(UInt(DEPTH_PTR.W), 0.U)
-  //  val fifo_reset = (0 until DMA_BUF_DEPTH).map(i=>((((bus_rsp_sent | bus_posted_write_done) & io.dma_bus_clk_en) | io.dma_dbg_cmd_done) & (i.U === RspPtr)).asUInt()).reverse.reduce(Cat(_,_))
-  //  fifo_error_in := (0 until DMA_BUF_DEPTH).map(i=>Mux(io.dccm_dma_rvalid & (io.dccm_dma_rtag===i.U), Cat(0.U(1.W),io.dccm_dma_ecc_error), Mux(io.iccm_dma_rvalid & (io.iccm_dma_rtag===i.U), Cat(0.U(1.W),io.iccm_dma_ecc_error), Cat(dma_address_error | dma_alignment_error | dma_dbg_cmd_error, dma_alignment_error))))
   val fifo_cmd_en = WireInit(UInt(DMA_BUF_DEPTH.W), 0.U)
 
   val fifo_data_en = WireInit(UInt(DMA_BUF_DEPTH.W), 0.U)
@@ -155,7 +128,7 @@ class dma_ctrl extends Module with lib with RequireAsyncReset {
   val fifo_posted_write = (0 until DMA_BUF_DEPTH).map(i => (withClock(dma_buffer_c1_clk) {RegEnable(fifo_posted_write_in, 0.U, fifo_cmd_en(i))})).reverse.reduce(Cat(_,_))
   val fifo_dbg          = (0 until DMA_BUF_DEPTH).map(i => withClock(dma_buffer_c1_clk) {RegEnable(fifo_dbg_in, 0.U, fifo_cmd_en(i))}).reverse.reduce(Cat(_,_))
 
-  val fifo_data = Wire(Vec(DMA_BUF_DEPTH,UInt(64.W)))//VecInit.tabulate(DMA_BUF_DEPTH)(i =>rvdffe(fifo_data_in(i), fifo_data_en(i), clock, io.scan_mode))
+  val fifo_data = Wire(Vec(DMA_BUF_DEPTH,UInt(64.W)))
   (0 until DMA_BUF_DEPTH).map(i => fifo_data(i) := rvdffe(fifo_data_in(i), fifo_data_en(i), clock, io.scan_mode))
   val bus_cmd_tag = WireInit(UInt(DMA_BUS_TAG.W),0.U)
   val bus_cmd_mid = WireInit(UInt(DMA_BUS_ID.W),0.U)

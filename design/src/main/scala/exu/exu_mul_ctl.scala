@@ -23,14 +23,6 @@ class exu_mul_ctl extends Module with RequireAsyncReset with lib {
   val low_x                = WireInit(0.U(1.W))
 
   // *** Start - BitManip ***
-
-  //  val   bitmanip_sel_d = WireInit(Bool(),0.B)
-  //  val   bitmanip_sel_x = WireInit(Bool(),0.B)
-  //  val   bitmanip_d     = WireInit(UInt(32.W),0.U)
-  //  val   bitmanip_x     = WireInit(UInt(32.W),0.U)
-
-
-
   // ZBE
   val        ap_bext = WireInit(Bool(),0.B)
   val        ap_bdep = WireInit(Bool(),0.B)
@@ -187,14 +179,6 @@ class exu_mul_ctl extends Module with RequireAsyncReset with lib {
   //
   //     return x;
   //  }
-
-
-  //  logic        [31:0]    gorc1_d;
-  //  logic        [31:0]    gorc2_d;
-  //  logic        [31:0]    gorc4_d;
-  //  logic        [31:0]    gorc8_d;
-  //  logic        [31:0]    gorc_d;
-  //
 
   val gorc1_d  = ( Fill(32,io.rs2_in(0)) & Range(0, 31, 2).map(i=> Cat(io.rs1_in(i),io.rs1_in(i+1))).reverse.reduce(Cat(_,_)) ) | io.rs1_in
 
@@ -378,9 +362,6 @@ class exu_mul_ctl extends Module with RequireAsyncReset with lib {
     ap_crc32c_w ->       crc32c_wd(32)(31,0)                      ,
     ap_bfp      ->       bfp_result_d(31,0) ))
 
-
-
-  //rvdffe #(33) i_bitmanip_ff    (.*, .clk(clk),  .din({bitmanip_sel_d,bitmanip_d[31:0]}),   .dout({bitmanip_sel_x,bitmanip_x[31:0]}),   .en(bit_x_enable));
   val bitmanip_sel_x = rvdffe(bitmanip_sel_d,bit_x_enable,clock,io.scan_mode)
   val bitmanip_x = rvdffe(bitmanip_d,bit_x_enable,clock,io.scan_mode)
 

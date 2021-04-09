@@ -438,60 +438,60 @@ class ifu_bp_ctl extends Module with lib with RequireAsyncReset {
     btb_bank0_rd_data_way0_p1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_p1_f === i.U).asBool -> btb_bank0_rd_data_way0_out(i)))
     btb_bank0_rd_data_way1_p1_f := Mux1H((0 until LRU_SIZE).map(i => (btb_rd_addr_p1_f === i.U).asBool -> btb_bank0_rd_data_way1_out(i)))
   }
-  //  if(BTB_FULLYA){
-  //    val fetch_mp_collision_f = WireInit(Bool(),init = false.B)
-  //    val fetch_mp_collision_p1_f = WireInit(Bool() ,init = false.B)
-  //
-  //    // Fully Associative tag hash uses bits 31:3. Bits 2:1 are the offset bits used for the 4 tag comp banks
-  //    // Full tag used to speed up lookup. There is one 31:3 cmp per entry, and 4 2:1 cmps per entry.
-  //    val ifc_fetch_addr_p1_f = io.ifc_fetch_addr_f(FA_CMP_LOWER-1,1) + 1.U
-  //
-  //
-  //    // val fetch_mp_collision_f = ((io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === io.ifc_fetch_addr_f) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
-  // //   val fetch_mp_collision_p1_f = ( (io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === Cat(io.ifc_fetch_addr_f(30,FA_CMP_LOWER), ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1))) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
-  // //   val btb_upper_hit = Wire(Vec(BTB_SIZE,Bool()))
-  //    val btb_offset_0 = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
-  //    val btb_used = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
-  //    val btb_offset_1 = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
-  //    val wr0_en       = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
-  //    val btbdata = Wire(Vec(BTB_SIZE,UInt(BTB_DWIDTH.W)))
-  //    btbdata := btbdata.map(i=> 0.U)
-  //    val hit0 = WireInit(UInt(1.W) ,init = 0.U)
-  //    val hit1 = WireInit(UInt(1.W) ,init = 0.U)
-  //
-  //  //  btb_upper_hit :=  (0 until BTB_SIZE).map(i=> ((btbdata(i)(BTB_DWIDTH_TOP,FA_TAG_END_UPPER) === io.ifc_fetch_addr_f(30,FA_CMP_LOWER)) & btbdata(i)(0) & ~wr0_en(i)))
-  //  //  val btb_offset_0  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === io.ifc_fetch_addr_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
-  // //   val btb_offset_1  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
-  //
-  //    // hit unless we are also writing this entry at the same time
-  //    val hit0_index = MuxCase(1.U, (0 until BTB_SIZE).map(i=> btb_offset_0(i) -> i.U))
-  //    val hit1_index = MuxCase(1.U, (0 until BTB_SIZE).map(i=> btb_offset_1(i) -> i.U))
-  //    // Mux out the 2 potential branches
-  //   btb_vbank0_rd_data_f := (0 until BTB_SIZE ).map(i=> if(btb_offset_1(i) == 1) Mux(fetch_mp_collision_f,btb_wr_data,btbdata(i)) else 0.U ).reverse.reduce(Cat(_,_))
-  //   btb_vbank1_rd_data_f :=(0 until BTB_SIZE).map(i=> if(btb_offset_1(i) == 1) Mux(fetch_mp_collision_p1_f,btb_wr_data,btbdata(i)) else 0.U).reverse.reduce(Cat(_,_))
-  //    val btb_fa_wr_addr0 = MuxCase(1.U, (0 until BTB_SIZE).map(i=> !btb_used(i) -> i.U))
-  //
-  //    vwayhit_f := Cat(hit1,hit0) & Cat(eoc_mask,1.U)
-  //    way_raw := vwayhit_f | Cat(fetch_mp_collision_p1_f, fetch_mp_collision_f)
-  //    wr0_en := (0 until BTB_SIZE).map(i=> ((btb_fa_wr_addr0(BTB_FA_INDEX,0) === i.asUInt()) & (exu_mp_valid_write & ~io.exu_bp.exu_mp_pkt.bits.way)) |
-  //    ((io.dec_fa_error_index === i.asUInt()) & dec_tlu_error_wb)).reverse.reduce(Cat(_,_))
-  //    btbdata := (0 until BTB_SIZE).map(i=> rvdffe(btb_wr_data,wr0_en(i),clock,io.scan_mode))
-  //
-  //    io.ifu_bp_fa_index_f(1) := Mux(hit1,hit1_index,0.U)
-  //    io.ifu_bp_fa_index_f(0) := Mux(hit0,hit0_index,0.U)
-  //
-  //    val btb_used_reset = btb_used.andR()
-  //    val btb_used_ns = Mux1H(Seq(
-  //      vwayhit_f(1).asBool -> (1.U(32.W) << hit1_index(BTB_FA_INDEX,0)),
-  //      vwayhit_f(0).asBool() -> (1.U(32.W) << hit0_index(BTB_FA_INDEX,0)),
-  //      (exu_mp_valid_write & !io.exu_bp.exu_mp_pkt.bits.way & !dec_tlu_error_wb).asBool() -> (1.U(32.W) << btb_fa_wr_addr0(BTB_FA_INDEX,0)),
-  //      btb_used_reset.asBool -> Fill(BTB_SIZE,0.U),
-  //      (!btb_used_reset & dec_tlu_error_wb ).asBool  -> (btb_used & ~(1.U(32.W) << io.dec_fa_error_index(BTB_FA_INDEX,0))),
-  //      !(btb_used_reset | dec_tlu_error_wb ).asBool() -> btb_used
-  //    ))
-  //    val write_used = btb_used_reset | io.ifu_bp_hit_taken_f | exu_mp_valid_write | dec_tlu_error_wb
-  //     btb_used := rvdffe(btb_used_ns,write_used.asBool(),clock,io.scan_mode)
-  //  }
+   if(BTB_FULLYA){
+     val fetch_mp_collision_f = WireInit(Bool(),init = false.B)
+     val fetch_mp_collision_p1_f = WireInit(Bool() ,init = false.B)
+  
+     // Fully Associative tag hash uses bits 31:3. Bits 2:1 are the offset bits used for the 4 tag comp banks
+     // Full tag used to speed up lookup. There is one 31:3 cmp per entry, and 4 2:1 cmps per entry.
+     val ifc_fetch_addr_p1_f = io.ifc_fetch_addr_f(FA_CMP_LOWER-1,1) + 1.U
+  
+  
+    fetch_mp_collision_f := ((io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === io.ifc_fetch_addr_f) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
+    fetch_mp_collision_p1_f := ( (io.exu_bp.exu_mp_btag(BTB_BTAG_SIZE-1,0) === Cat(io.ifc_fetch_addr_f(30,FA_CMP_LOWER), ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1))) & exu_mp_valid & io.ifc_fetch_req_f & ~io.exu_bp.exu_mp_pkt.bits.way)
+     val btb_upper_hit = Wire(Vec(BTB_SIZE,Bool()))
+     val btb_offset_0 = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
+     val btb_used = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
+     val btb_offset_1 = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
+     val wr0_en       = WireInit(UInt(BTB_SIZE.W) ,init = 0.U)
+     val btbdata = Wire(Vec(BTB_SIZE,UInt(BTB_DWIDTH.W)))
+     btbdata := btbdata.map(i=> 0.U)
+     val hit0 = WireInit(UInt(1.W) ,init = 0.U)
+     val hit1 = WireInit(UInt(1.W) ,init = 0.U)
+  
+     btb_upper_hit :=  (0 until BTB_SIZE).map(i=> ((btbdata(i)(BTB_DWIDTH_TOP,FA_TAG_END_UPPER) === io.ifc_fetch_addr_f(30,FA_CMP_LOWER)) & btbdata(i)(0) & ~wr0_en(i)))
+     //btb_offset_0  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === io.ifc_fetch_addr_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
+     //btb_offset_1  = (0 until BTB_SIZE).map(i=> (btbdata(i)(FA_TAG_START_LOWER,FA_TAG_END_LOWER) === ifc_fetch_addr_p1_f(FA_CMP_LOWER-1,1)) & btb_upper_hit(i))
+  
+     // hit unless we are also writing this entry at the same time
+     val hit0_index = MuxCase(1.U, (0 until BTB_SIZE).map(i=> btb_offset_0(i) -> i.U))
+     val hit1_index = MuxCase(1.U, (0 until BTB_SIZE).map(i=> btb_offset_1(i) -> i.U))
+     // Mux out the 2 potential branches
+    btb_vbank0_rd_data_f := (0 until BTB_SIZE ).map(i=> if(btb_offset_1(i) == 1) Mux(fetch_mp_collision_f,btb_wr_data,btbdata(i)) else 0.U ).reverse.reduce(Cat(_,_))
+    btb_vbank1_rd_data_f :=(0 until BTB_SIZE).map(i=> if(btb_offset_1(i) == 1) Mux(fetch_mp_collision_p1_f,btb_wr_data,btbdata(i)) else 0.U).reverse.reduce(Cat(_,_))
+     val btb_fa_wr_addr0 = MuxCase(1.U, (0 until BTB_SIZE).map(i=> !btb_used(i) -> i.U))
+  
+     vwayhit_f := Cat(hit1,hit0) & Cat(eoc_mask,1.U)
+     way_raw := vwayhit_f | Cat(fetch_mp_collision_p1_f, fetch_mp_collision_f)
+     wr0_en := (0 until BTB_SIZE).map(i=> ((btb_fa_wr_addr0(BTB_FA_INDEX,0) === i.asUInt()) & (exu_mp_valid_write & ~io.exu_bp.exu_mp_pkt.bits.way)) |
+     ((io.dec_fa_error_index === i.asUInt()) & dec_tlu_error_wb)).reverse.reduce(Cat(_,_))
+     btbdata := (0 until BTB_SIZE).map(i=> rvdffe(btb_wr_data,wr0_en(i),clock,io.scan_mode))
+  
+     io.ifu_bp_fa_index_f(1) := Mux(hit1,hit1_index,0.U)
+     io.ifu_bp_fa_index_f(0) := Mux(hit0,hit0_index,0.U)
+  
+     val btb_used_reset = btb_used.andR()
+     val btb_used_ns = Mux1H(Seq(
+       vwayhit_f(1).asBool -> (1.U(32.W) << hit1_index(BTB_FA_INDEX,0)),
+       vwayhit_f(0).asBool() -> (1.U(32.W) << hit0_index(BTB_FA_INDEX,0)),
+       (exu_mp_valid_write & !io.exu_bp.exu_mp_pkt.bits.way & !dec_tlu_error_wb).asBool() -> (1.U(32.W) << btb_fa_wr_addr0(BTB_FA_INDEX,0)),
+       btb_used_reset.asBool -> Fill(BTB_SIZE,0.U),
+       (!btb_used_reset & dec_tlu_error_wb ).asBool  -> (btb_used & ~(1.U(32.W) << io.dec_fa_error_index(BTB_FA_INDEX,0))),
+       !(btb_used_reset | dec_tlu_error_wb ).asBool() -> btb_used
+     ))
+     val write_used = btb_used_reset | io.ifu_bp_hit_taken_f | exu_mp_valid_write | dec_tlu_error_wb
+      btb_used := rvdffe(btb_used_ns,write_used.asBool(),clock,io.scan_mode)
+   }
 
   val bht_bank_clken = Wire(Vec(2, Vec(BHT_ARRAY_DEPTH/NUM_BHT_LOOP, Bool())))
 
@@ -530,6 +530,3 @@ class ifu_bp_ctl extends Module with lib with RequireAsyncReset {
   bht_bank1_rd_data_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_f===i.U).asBool->bht_bank_rd_data_out(1)(i)))
   bht_bank0_rd_data_p1_f := Mux1H((0 until BHT_ARRAY_DEPTH).map(i=>(bht_rd_addr_p1_f===i.U).asBool->bht_bank_rd_data_out(0)(i)))
 }
-//object bp_MAIN extends App {
-//  println((new chisel3.stage.ChiselStage).emitVerilog(new ifu_bp_ctl()))
-//}

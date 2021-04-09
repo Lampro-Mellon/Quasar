@@ -18,9 +18,9 @@ class quasar_bundle extends Bundle with  lib{
   val ifu_ahb = new ahb_channel
   val sb_ahb = new ahb_channel
   val dma_ahb = new Bundle{
-    val sig = Flipped(new ahb_channel())
-    val hsel = Input(Bool())
-    val hreadyin = Input(Bool())}
+  val sig = Flipped(new ahb_channel())
+  val hsel = Input(Bool())
+  val hreadyin = Input(Bool())}
 
   val active_l2clk = Output(Clock())
   val free_l2clk = Output(Clock())
@@ -63,7 +63,6 @@ class quasar_bundle extends Bundle with  lib{
   val dmi_reg_wr_en = Input(Bool())
   val dmi_reg_wdata = Input(UInt(32.W))
   val dmi_reg_rdata = Output(UInt(32.W))
-  //  val dmi_hard_reset = Input(Bool())
   val extintsrc_req = Input(UInt(PIC_TOTAL_INT.W))
   val timer_int = Input(Bool())
   val soft_int = Input(Bool())
