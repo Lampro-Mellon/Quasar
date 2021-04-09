@@ -47,7 +47,6 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
     val lsu_bus_buffer_pend_any       = Output(Bool())
     val lsu_bus_buffer_full_any       = Output(Bool())
     val lsu_bus_buffer_empty_any      = Output(Bool())
-    //val lsu_bus_idle_any              = Output(Bool())
     val bus_read_data_m               = Output(UInt(32.W))
     val lsu_nonblock_load_data        = Output((UInt(32.W)))
     val dctl_busbuff = new dctl_busbuff()
@@ -135,7 +134,6 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
   io.lsu_bus_buffer_pend_any         := bus_buffer.io.lsu_bus_buffer_pend_any
   io.lsu_bus_buffer_full_any         := bus_buffer.io.lsu_bus_buffer_full_any
   io.lsu_bus_buffer_empty_any        := bus_buffer.io.lsu_bus_buffer_empty_any
-  //io.lsu_bus_idle_any                := bus_buffer.io.lsu_bus_idle_any
   ld_byte_hit_buf_lo                 := bus_buffer.io.ld_byte_hit_buf_lo
   ld_byte_hit_buf_hi                 := bus_buffer.io.ld_byte_hit_buf_hi
   ld_fwddata_buf_lo                  := bus_buffer.io.ld_fwddata_buf_lo
