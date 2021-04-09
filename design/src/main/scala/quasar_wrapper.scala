@@ -64,7 +64,7 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
     val scan_mode = Input(Bool())
 
   })
- // val core_rst_l = core.io.core_rst_l
+
   val mem = Module(new quasar.mem())
   val dmi_wrapper = Module(new dmi_wrapper())
   val core = Module(new quasar())
@@ -81,7 +81,6 @@ class quasar_wrapper extends Module with lib with RequireAsyncReset {
   core.io.dmi_reg_addr := dmi_wrapper.io.reg_wr_addr
   core.io.dmi_reg_en := dmi_wrapper.io.reg_en
   core.io.dmi_reg_wr_en := dmi_wrapper.io.reg_wr_en
- // core.io.dmi_hard_reset := dmi_wrapper.io.dmi_hard_reset
   io.jtag_tdo := dmi_wrapper.io.tdo
 
   // Memory signals
