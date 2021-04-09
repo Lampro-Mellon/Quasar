@@ -31,7 +31,6 @@ class lsu extends Module with RequireAsyncReset with param with lib {
     val dec_tlu_mrac_ff                   = Input(UInt(32.W))
 
     //Outputs
-  //  val lsu_result_m                      = Output(UInt(32.W))
     val lsu_result_corr_r                 = Output(UInt(32.W))
     val lsu_load_stall_any                = Output(Bool())
     val lsu_store_stall_any               = Output(Bool())
@@ -56,22 +55,13 @@ class lsu extends Module with RequireAsyncReset with param with lib {
   val dma_mem_tag_m                = WireInit(0.U(3.W))
   val lsu_raw_fwd_lo_r             = WireInit(0.U(1.W))
   val lsu_raw_fwd_hi_r             = WireInit(0.U(1.W))
-//  val lsu_busm_clken               = WireInit(0.U(1.W))
   val lsu_bus_obuf_c1_clken        = WireInit(0.U(1.W))
-//  val lsu_addr_d                   = WireInit(0.U(32.W))
-//  val lsu_addr_m                   = WireInit(0.U(32.W))
-//  val lsu_addr_r                   = WireInit(0.U(32.W))
-//  val end_addr_d                   = WireInit(0.U(32.W))
-//  val end_addr_m                   = WireInit(0.U(32.W))
-//  val end_addr_r                   = WireInit(0.U(32.W))
   val lsu_busreq_r                 = WireInit(Bool(),false.B)
   val ldst_dual_d = WireInit(Bool(),false.B)
   val ldst_dual_m = WireInit(Bool(),false.B)
   val ldst_dual_r = WireInit(Bool(),false.B)
 
   val lsu_lsc_ctl    = Module(new lsu_lsc_ctl())
- // io.lsu_exu.lsu_result_m := lsu_lsc_ctl.io.lsu_result_m
- // io.lsu_nonblock_load_data := bus_intf.io.lsu_nonblock_load_data
   io.lsu_result_corr_r := lsu_lsc_ctl.io.lsu_result_corr_r
   val dccm_ctl       = Module(new lsu_dccm_ctl())
   val stbuf          = Module(new lsu_stbuf())
