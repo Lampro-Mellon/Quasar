@@ -114,7 +114,6 @@ class ifu_bp_ctl extends Module with lib with RequireAsyncReset {
   // Hash the second pc
   val btb_rd_addr_p1_f = btb_addr_hash(Cat(fetch_addr_p1_f,0.U))
 
-  // TODO
   val btb_sel_f = Cat(~bht_dir_f(0),bht_dir_f(0))
 
   // Checking of the pc is a multiple of 4, if it is fetch-start will be "01"

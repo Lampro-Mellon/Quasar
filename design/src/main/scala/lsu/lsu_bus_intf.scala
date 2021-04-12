@@ -112,10 +112,10 @@ class  lsu_bus_intf extends Module with RequireAsyncReset with lib {
   bus_buffer.io.lsu_busm_clk                      := io.lsu_busm_clk
   bus_buffer.io.dec_lsu_valid_raw_d               := io.dec_lsu_valid_raw_d
 
-  //
+  
   bus_buffer.io.lsu_pkt_m <> io.lsu_pkt_m
   bus_buffer.io.lsu_pkt_r <> io.lsu_pkt_r
-  //
+
 
   bus_buffer.io.lsu_addr_m           := io.lsu_addr_m
   bus_buffer.io.end_addr_m           := io.end_addr_m
